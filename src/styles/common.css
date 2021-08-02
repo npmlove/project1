@@ -1,0 +1,8 @@
+.el-input__inner {
+  /* 修改输入框的内边距 */
+  padding: 0 5px;
+}
+.el-textarea__inner {
+  /* 修改文本域的内边距 */
+  padding: 5px 5px;
+}
