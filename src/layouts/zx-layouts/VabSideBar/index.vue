@@ -45,52 +45,52 @@
         const routes = JSON.parse(JSON.stringify(vm.$router.options.routes))
 
 
-        if(!sessionStorage.getItem('menu')){
-          vm.$router.push('/')
-          sessionStorage.clear()
-          return
-        }
-        const menu = JSON.parse(sessionStorage.getItem('menu'))
-        const routesArr = []
-        for (var i = 0; i < routes.length; i++) {
-          for (var q = 0; q < menu.length; q++) {
-            const menuTitle = menu[q].name
-            const childrenArr = menu[q].children
-            if (routes[i].name === menuTitle && childrenArr.length != 0) {
-              routesArr.push(routes[i])
-            }
-          }
-        }
-        const routesArr1 = vm.unique1(routesArr)
-        var param = {}
-        for (var ii = 0; ii < menu.length; ii++) {
-          var temp = menu[ii]
-          for(var aaa = 0; aaa < temp.children.length; aaa++){
-            param[temp.children[aaa].name] = temp
-          }
-        }
-        var newData = []
-        for (var iii = 0; iii < routesArr1.length; iii++) {
-          var tempiii = routesArr1[iii]
-          // var path = tempiii.path
+        // if(!sessionStorage.getItem('menu')){
+        //   vm.$router.push('/')
+        //   sessionStorage.clear()
+        //   return
+        // }
+        // const menu = JSON.parse(sessionStorage.getItem('menu'))
+        // const routesArr = []
+        // for (var i = 0; i < routes.length; i++) {
+        //   for (var q = 0; q < menu.length; q++) {
+        //     const menuTitle = menu[q].name
+        //     const childrenArr = menu[q].children
+        //     if (routes[i].name === menuTitle && childrenArr.length != 0) {
+        //       routesArr.push(routes[i])
+        //     }
+        //   }
+        // }
+        // const routesArr1 = vm.unique1(routesArr)
+        // var param = {}
+        // for (var ii = 0; ii < menu.length; ii++) {
+        //   var temp = menu[ii]
+        //   for(var aaa = 0; aaa < temp.children.length; aaa++){
+        //     param[temp.children[aaa].name] = temp
+        //   }
+        // }
+        // var newData = []
+        // for (var iii = 0; iii < routesArr1.length; iii++) {
+        //   var tempiii = routesArr1[iii]
+        //   // var path = tempiii.path
 
-          var newChildren = []
-          var children = tempiii.children || []
-          for (var j = 0; j < children.length; j++) {
-            var c = children[j]
-            var childrenPath = c.path
-            if ((c.hidden !== undefined && c.hidden) || param[childrenPath]) {
-              newChildren.push(c)
-            }
-          }
-          if (newChildren.length === 0) {
-            continue
-          }
-          var row = tempiii
-          row.children = newChildren
-          newData.push(row)
-        }
-        return newData
+        //   var newChildren = []
+        //   var children = tempiii.children || []
+        //   for (var j = 0; j < children.length; j++) {
+        //     var c = children[j]
+        //     var childrenPath = c.path
+        //     if ((c.hidden !== undefined && c.hidden) || param[childrenPath]) {
+        //       newChildren.push(c)
+        //     }
+        //   }
+        //   if (newChildren.length === 0) {
+        //     continue
+        //   }
+        //   var row = tempiii
+        //   row.children = newChildren
+        //   newData.push(row)
+        // }
+        return routes
 
         // return routes
       },

@@ -44,9 +44,3 @@ vue-admin-beautiful-pro 使用注意事项:
 - 支持打包自动生成 7Z 压缩包以及自动化部署
 - 支持 errorlog 错误拦截
 - 支持多主题、多布局切换
-
-## 商用注意事项
-
-此项目可免费用于商业用途，请遵守 MIT 协议并保留作者技术支持声明，如需自定义版权信息请联系客服 QQ 783963206。
-
-6.10 解决页面图标乱码问题，卸载 sass 安装 node-sass  参考：http://www.5imoban.net/jiaocheng/bootstrap/2020/1110/4373.html
