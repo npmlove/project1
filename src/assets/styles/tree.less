@@ -1,0 +1,21 @@
+.content-wrapper {
+  /deep/
+  .el-tree-node__content {
+    .el-tree-node__expand-icon {
+      font-size: 16px;
+      &.expanded {
+        transform: rotate(0deg);
+        &.el-icon-caret-right {
+          &::before {
+            content: "\e7a2";
+          }
+        }
+      }
+      &.el-icon-caret-right {
+        &::before {
+          content: "\e7a0";
+        }
+      }
+    }
+  }
+}

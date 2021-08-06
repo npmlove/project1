@@ -1,0 +1,119 @@
+.content-wrapper {
+  box-sizing: border-box;
+  padding: 20px;
+  background: #f3f6f9;
+  .shouqi {
+    cursor: pointer;
+    color: #3985ca;
+    position: relative;
+    display: inline-block;
+    height: 36px;
+    vertical-align: bottom;
+    line-height: 36px;
+    margin-left: 10px;
+    .iconfont {
+      font-size: 2px;
+      position: absolute;
+      height: 20px;
+      line-height: 20px;
+      margin-top: 7px;
+    }
+  }
+  .el-form {
+    background-color: #FFF;
+  }
+  .el-form--inline .el-form-item {
+    margin-bottom: 0;
+    vertical-align: bottom;
+  }
+  .content-search-normal {
+    padding: 20px 0 20px 30px;
+    background: #fff;
+  }
+  .content-search-high {
+    padding: 0 0 20px 30px;
+  }
+  .parimary_btn {
+    background-color: #9ac143 !important;
+    border-color: #9ac143 !important;
+  }
+  .display_order {
+    padding-left: 30px;
+    @media (max-width: 1700px) {
+      li {
+        width: 30%;
+      }
+    }
+    li {
+      .lb {
+        width: 100px;
+        margin-right: 20px;
+      }
+    }
+  }
+  .title {
+    &.tab {
+      padding-bottom: 10px;
+      background: #fff;
+      .title-txt {
+        padding-top: 20px;
+        span {
+          padding-top: 20px;
+        }
+        i {
+          border-bottom-width: 5px;
+        }
+      }
+    }
+    overflow: hidden;
+    .title-txt {
+      position: relative;
+      float: left;
+      padding-top: 35px;
+      margin-left: 50px;
+      height: 35px;
+      cursor: pointer;
+      &:first-child {
+        margin-left: 30px;
+      }
+      &.active {
+        color: #3985ca;
+        i {
+          border-bottom: 5px solid #3985ca;
+        }
+      }
+      span {
+        padding-top: 40px;
+        font-size: 14px;
+      }
+      i {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+      }
+    }
+    .el-button {
+      float: right;
+    }
+  }
+  .select-export {
+    margin-right: 20px;
+    position: relative;
+    color: #606266;
+    span {
+      position: absolute;
+      left: 20px;
+      top: 10px;
+      z-index: 9999;
+    }
+    /deep/
+    .el-input {
+      .el-input__inner {
+        padding-left: 50px;
+        &::placeholder {
+          color: #606266;
+        }
+      }
+    }
+  }
+}

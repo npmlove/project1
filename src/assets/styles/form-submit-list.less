@@ -1,0 +1,185 @@
+@import url("../../assets/styles/form-tishi.less");
+.content-wrapper {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  background-color: #F7FAFF !important;
+  .el-form {
+    background-color: #FFF;
+    padding: 22px 20px 0 20px;
+    height: 100%;
+  }
+  .el-form--inline .el-form-item {
+    vertical-align: bottom;
+  }
+  /deep/
+  .radio-group {
+    .el-form-item__content,
+    .el-form-item__label {
+      height: 20px;
+      line-height: 20px;
+    }
+  }
+  /deep/
+  .el-table__empty-block {
+    display: none;
+  }
+  .mb0 {
+    margin-bottom: 2px;
+  }
+  .mb10 {
+    margin-bottom: 10px;
+  }
+  // 不固定高度
+  /deep/
+  .autoHeight {
+    &.lh45 {
+      .el-form-item__label {
+        line-height: 55px;
+      } 
+    }
+    .el-form-item__content {
+      height: auto;
+    }
+  }
+  // 无数据
+  .noData {
+    padding-left: 30px;
+    padding-top: 20px;
+    height: 80px;
+    p {
+      line-height: 35px;
+      padding-left: 25px;
+      color: #474f5a;
+    }
+  }
+  /deep/
+  .el-table__empty-block {
+    min-height: auto;
+  }
+  /deep/
+  .textArea {
+    .el-form-item__content {
+      height: 65px;
+      .el-textarea__inner {
+        resize: none;
+        padding: 10px 15px;
+      }
+    }
+  }
+  /deep/
+  .el-checkbox-group {
+    display: inline-block;
+  }
+  /**
+    选择按钮，打开弹窗
+  */ 
+  .choiceBtn {
+    display: inline-block;
+		height: 34px;
+		line-height: 34px;
+		text-align: center;
+		width: 108px;
+		border: 1px #3985ca dashed;
+		color: #3985ca;
+		cursor: pointer;
+		border-radius: 5px;
+  }
+  .linkedGoodsUl {
+    overflow: hidden;
+    width: 300px;
+    li {
+      float: left;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      /deep/
+      .el-input__inner {
+        text-align: center;
+      }
+    }
+  }
+  // 可编辑表格
+  /deep/
+  .edit-table {
+    display: inline-block;
+    .el-table {
+      &::before {
+        width: 0;
+      }
+      .cell {
+        padding-left: 10px;
+        padding-right: 10px;
+        a {
+          padding: 0 5px;
+        }
+      }
+      th {
+        border: none;
+        background-color: #fff;
+        color: #606266;
+      }
+      .el-select {
+        &.borderError {
+          .el-input__inner {
+            border-color: #dc2424 !important;
+          }
+        }
+      }
+      // 可编辑样式
+      .edit-cell {
+        height: 34px;
+        width: 100%;
+        text-align: center;
+        border: 1px solid #ebeef5;
+        background-color: #fff;
+        border-color: #e4e7ed;
+        &:hover {
+          border-color: #7D7D7D;
+        }
+        &.borderError {
+          border-color: #dc2424;
+        }
+      }
+      // 表格row
+      .el-table__row {
+        background: #F7FAFF;
+        td {
+          height: 50px;
+          border-top: 1px solid #ebeef5;
+          border-bottom: 1px solid #ebeef5;
+          &:first-child {
+            border-left: 1px solid #ebeef5;
+          }
+          &:nth-last-child(2) {
+            border-right: 1px solid #ebeef5;
+          }
+          &:last-child {
+            background: #fff;
+            border: none;
+            .cell {
+              padding: 0;
+            }
+          }
+        }
+        &:nth-child(even) {
+          td {
+            border-top: none;
+            border-bottom: none;
+          }
+        }
+        &:last-child {
+          td {
+            border-bottom: none;
+          }
+        }
+      }
+    }
+    // 表格底部按钮
+    .table-btn {
+      padding: 7px 0 7px 10px;
+      background: #F7FAFF;
+      border: 1px solid #ebeef5;
+      // border-top: none;
+    }
+  }
+}

@@ -1,0 +1,266 @@
+import Layout from '../components/layout/Layout'
+
+const autoRoutes = [{
+    path: '/login',
+    component: () => import('@/pages/login/index.vue'),
+    hidden: true
+  },
+  {
+    path: '/',
+    component: () => import('@/pages/login/index.vue'),
+    hidden: true
+  },
+  {
+    path: '*',
+    component: () => import('@/pages/404.vue'),
+    hidden: true
+  }
+]
+
+//管理模块
+const adminUserCenter = [{
+  path: '/adminUser',
+  component: Layout,
+  name: 'adminUser',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title: '管理员',
+    icon: 'icon iconfont icon-shengchan',
+    breadcrumb: true
+  },
+  children: [
+    {
+      path: 'userCenter',
+      component: () => import('@/pages/adminUser/userCenter.vue'),
+      name: 'userCenter',
+      meta: {
+        title: '用户管理',
+        keepAlive:true,
+        needLogin: true
+      },
+    },
+    {
+      path: 'roleCenter',
+      component: () => import('@/pages/adminUser/roleCenter.vue'),
+      name: 'roleCenter',
+      meta: {
+        title: '角色管理',
+        keepAlive:true,
+        needLogin: true
+      },
+    },
+    {
+      path: 'userAdd',
+      component: () => import('@/pages/adminUser/userAdd.vue'),
+      name: 'userAdd',
+      hidden: true,
+      meta: {
+        title: '新增用户',
+        keepAlive:true,
+        needLogin: true
+      },
+    },
+    {
+      path: 'userEdit',
+      component: () => import('@/pages/adminUser/userEdit.vue'),
+      name: 'userEdit',
+      hidden: true,
+      meta: {
+        title: '编辑用户',
+        keepAlive:true,
+        needLogin: true
+      },
+    },
+    {
+      path: 'homePage',
+      component: () => import('@/pages/adminUser/homePage.vue'),
+      name: 'homePage',
+      hidden: true,
+      meta: {
+        title: '首页',
+        keepAlive:false,
+        needLogin: true
+      }
+    }
+  ]
+}]
+
+// 航线管理
+const routeManagementCenter = [{
+  path: '/routeManagement',
+  component: Layout,
+  name: 'routeManagement',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title: '航线管理',
+    icon: 'icon iconfont icon-kucun',
+    breadcrumb: false
+  },
+  children: [
+    {
+      path: 'routeManage',
+      component: () => import('@/pages/routeManagement/routeManage.vue'),
+      name: 'routeManage',
+      meta: {
+        title: '航线列表',
+        keepAlive:true,
+        needLogin: true
+      }
+    },
+    {
+      path: 'routeAdd',
+      component: () => import('@/pages/routeManagement/routeAdd.vue'),
+      name: 'routeAdd',
+      hidden: true,
+      meta: {
+        title: '新增航线',
+        keepAlive:false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'routeDetails',
+      component: () => import('@/pages/routeManagement/routeDetails.vue'),
+      name: 'routeDetails',
+      hidden: true,
+      meta: {
+        title: '航线详情',
+        keepAlive:false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'routeEdit',
+      component: () => import('@/pages/routeManagement/routeEdit.vue'),
+      name: 'routeEdit',
+      hidden: true,
+      meta: {
+        title: '编辑航线',
+        keepAlive:false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'routeImport',
+      component: () => import('@/pages/routeManagement/routeImport.vue'),
+      name: 'routeImport',
+      hidden: true,
+      meta: {
+        title: '导入航线',
+        keepAlive:false,
+        needLogin: true
+      }
+    }
+  ]
+}]
+
+// 广告模块
+const adverManagementCenter = [{
+  path: '/adverManagement',
+  component: Layout,
+  name: 'adverManagement',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title: '广告模块',
+    icon: 'icon iconfont icon-yuangongguanli',
+    breadcrumb: false
+  },
+  children: [
+    {
+      path: 'adverCenter',
+      component: () => import('@/pages/adverManagement/adverCenter.vue'),
+      name: 'adverCenter',
+      meta: {
+        title: '广告列表',
+        keepAlive:true,
+        needLogin: true
+      }
+    },
+    {
+      path: 'adverAdd',
+      component: () => import('@/pages/adverManagement/adverAdd.vue'),
+      name: 'adverAdd',
+      hidden: true,
+      meta: {
+        title: '新增广告',
+        keepAlive:false,
+        needLogin: true
+      }
+    }
+  ]
+}]
+
+// 新闻管理
+const newsManagementCenter = [{
+  path: '/newsManagement',
+  component: Layout,
+  name: 'newsManagement',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title: '新闻管理',
+    icon: 'icon iconfont icon-shezhi',
+    breadcrumb: false
+  },
+  children: [
+    {
+      path: 'newsCenter',
+      component: () => import('@/pages/newsManagement/newsCenter.vue'),
+      name: 'newsCenter',
+      meta: {
+        title: '综合新闻',
+        keepAlive:true,
+        needLogin: true
+      }
+    },
+    {
+      path: 'companyCenter',
+      component: () => import('@/pages/newsManagement/companyCenter.vue'),
+      name: 'companyCenter',
+      meta: {
+        title: '公司动态',
+        keepAlive:false,
+        needLogin: true
+      }
+    }
+  ]
+}]
+
+// 用户管理
+const userManagementCenter = [{
+  path: '/userManagement',
+  component: Layout,
+  name: 'userManagement',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title: '用户管理',
+    icon: 'icon iconfont icon-ECN',
+    breadcrumb: false
+  },
+  children: [{
+      path: 'userCenter',
+      component: () => import('@/pages/userManagement/userCenter.vue'),
+      name: 'userCenter',
+      meta: {
+        title: '用户列表',
+        keepAlive:false,
+        needLogin: true
+      }
+    }
+  ]
+}]
+
+const routes = [
+  ...autoRoutes,
+  ...routeManagementCenter,
+  ...adverManagementCenter,
+  ...newsManagementCenter,
+  ...userManagementCenter,
+  ...adminUserCenter
+]
+
+export default routes
