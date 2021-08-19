@@ -127,7 +127,7 @@ export default {
       sessionStorage.clear()
       return
     }else{
-      this.userName = JSON.parse(sessionStorage.getItem('userInfo')).RealName
+      this.userName = JSON.parse(sessionStorage.getItem('userInfo')).roleName
     }
   }
 }

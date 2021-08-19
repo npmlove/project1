@@ -10,7 +10,7 @@
       </div>
     </el-form>
     <div class="content">
-      <Table ref="multipleTable1" :checkbox="false" :tableData='tableData' :columns='columns' :='aa'
+      <Table ref="multipleTable1" :checkbox="false" :tableData='tableData' :columns='columns'
         :operation='operation' :total='total' :currentPage='pageNum' :pageSize='pageSize' @handleClick='handleClick'>
       </Table>
     </div>
