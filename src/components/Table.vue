@@ -31,7 +31,10 @@
         >
         <template slot-scope="scope">
           <span @click="handleItemClick(column.handle, scope)">
-            <span v-html="getDataName(scope.row, column)"></span>
+            <span v-if="column.prop == 'state' && column.label == '状态'">
+              <el-switch v-model="scope.row.state == '0'" disabled></el-switch>
+            </span>
+            <span v-else v-html="getDataName(scope.row, column)"></span>
           </span>
         </template>
       </el-table-column>
@@ -45,7 +48,9 @@
         >
         <template slot-scope="scope">
           <a v-for="(item, index) in operation.options" @click.prevent="handleClick(item.method, scope.row, $event)">
-            <span style="color: #00a06e;">{{item.label}}</span>
+            <span v-if="scope.row.state == 1 && item.method == 'del'">启用</span>
+            <span v-else-if="scope.row.state == 0 && item.method == 'del'">禁用</span>
+            <span v-else style="color: #00a06e;">{{item.label}}</span>
           </a>
         </template>
       </el-table-column>

@@ -109,7 +109,7 @@ const adminUserCenter = [{
       hidden: true,
       meta: {
         title: '编辑用户',
-        keepAlive:true,
+        keepAlive:false,
         needLogin: true
       },
     },

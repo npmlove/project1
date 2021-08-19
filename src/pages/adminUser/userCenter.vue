@@ -1,12 +1,12 @@
 <template>
   <div class="content-wrapper">
     <div class="content">
-      
+
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
           <el-form-item>
             <el-input style="width: 200px;" size="medium" v-model="loginName" clearable placeholder="请输入账号"></el-input>
-          </el-form-item> 
+          </el-form-item>
 
           <el-form-item>
             <el-input style="width: 200px;" size="medium" v-model="name" clearable placeholder="请输入姓名"></el-input>
@@ -37,43 +37,37 @@
           </el-form-item>
         </div>
       </el-form>
-
-   <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' width="150px">
-        <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px"
-          size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
-          <el-form-item prop="newPassword" label="新密码">
-            <el-input style="width: 280px;" size="medium" v-model="ruleForm.newPassword" clearable placeholder="请输入新密码">
-            </el-input>
-          </el-form-item>
-          <el-form-item prop="checknewPassword" label="校验密码">
-            <el-input style="width: 280px;" size="medium" v-model="ruleForm.checknewPassword" clearable
-              placeholder="请再次输入新密码"></el-input>
-          </el-form-item>
-        </el-form>
-        <!-- 底部按钮 -->
-        <div slot="footer" class="dialog-footer">
-          <div style="text-align: center;padding-top:20px;">
-            <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
-             @click="submitForm('ruleForm')">确定</el-button>
-          </div>
-        </div>
-      </el-dialog>
-
       <Table ref="multipleTable1" :checkbox="false" :tableData='tableData' :columns='columns' :operation='operation'
         :total='total' :currentPage='pageNum' :pageSize='pageSize' @sizeChange='handleSizeChange'
         @currentChange='handleCurrentChange' @handleClick='handleClick'>
       </Table>
-
-
     </div>
+    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' width="150px">
+      <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px"
+        size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
+        <el-form-item prop="newPassword" label="新密码">
+          <el-input style="width: 280px;" size="medium" v-model="ruleForm.newPassword" clearable placeholder="请输入新密码">
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="checknewPassword" label="校验密码">
+          <el-input style="width: 280px;" size="medium" v-model="ruleForm.checknewPassword" clearable
+            placeholder="请再次输入新密码"></el-input>
+        </el-form-item>
+      </el-form>
+      <!-- 底部按钮 -->
+      <div slot="footer" class="dialog-footer">
+        <div style="text-align: center;padding-top:20px;">
+          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+            @click="submitForm('ruleForm')">确定</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import Table from '@/components/Table'
-  import {
-    toData
-  } from '@/util/assist'
+  import { toData } from '@/util/assist'
   export default {
     data() {
       var validatePass2 = (rule, value, callback) => {
@@ -92,74 +86,28 @@
         pageNum: 1,
         total: 0,
         // 列
-
-        columns: [{
-            label: '账号',
-            prop: 'loginName',
-            show: true,
-            width: '160'
-          },
-          {
-            label: '姓名',
-            prop: 'name',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '手机号',
-            prop: 'tel',
-            show: true,
-            width: '150'
-          },
-          {
-            label: '角色',
-            prop: 'roleName',
-            show: true,
-            width: '150'
-          },
-          {
-            label: '状态',
-            prop: 'state',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '注册时间',
-            prop: 'createTime',
-            show: true,
-            width: '100'
-          }
+        columns: [
+          {label: '账号', prop: 'loginName', show: true, width: '160'},
+          {label: '姓名', prop: 'name', show: true, width: '100'},
+          {label: '手机号', prop: 'tel', show: true, width: '150'},
+          {label: '角色', prop: 'roleName', show: true, width: '150'},
+          {label: '状态', prop: 'state', show: true, width: '100'},
+          {label: '注册时间', prop: 'createTime', show: true, width: '100'}
         ],
         // 操作
         operation: {
           show: true,
           label: '操作',
           width: '120',
-          options: [{
-              label: '编辑',
-              method: 'edit'
-            },
-            {
-              label: '删除',
-              method: 'del'
-            },
-            {
-              label: '密码重置',
-              method: 'revise'
-            }
+          options: [
+            {label: '编辑', method: 'edit'},
+            {label: '禁用', method: 'del'},
+            {label: '密码重置', method: 'revise'}
           ]
         },
         rules: {
-          newPassword: [{
-            required: true,
-            message: '请输入新密码',
-            trigger: 'blur'
-          }],
-          checknewPassword: [{
-            required: true,
-             validator: validatePass2,
-            trigger: 'blur'
-          }]
+          newPassword: [{required: true, message: '请输入新密码', trigger: 'blur'}],
+          checknewPassword: [{required: true, validator: validatePass2, trigger: 'blur'}]
         },
         labelPosition: 'right',
         loginName: '',
@@ -169,8 +117,6 @@
         roleOpt: [],
         dialogTitle: '密码修改',
         dialogFormVisible: false,
-        newPassword: '',
-        id: '',
         ruleForm: {
           newPassword: '',
           id: '',
@@ -179,7 +125,7 @@
       }
     },
     activated() {
-     this.initRoleSearch()
+      this.initRoleSearch()
       this.initUserSearch()
     },
     methods: {
@@ -252,11 +198,28 @@
             }
           })
         } else if (scope.method == 'del') {
-         // this.delFlag  == 1
-         // if(this.delFlag==0)
-         //  this. initRoleSearch()
+          console.log(scope)
+          var json = {
+            state: scope.row.state == 0 ? 1 : 0,
+            delFlag: scope.row.delFlag == 0 ? 1 : 0,
+            id: scope.row.id
+          }
+          this.$http.post(this.$service.userUpdate,json).then(data => {
+            if(data.code == 200){
+              this.initUserSearch()
+              if(json.state == 1){
+                this.$message.success('禁用成功')
+              }else{
+                this.$message.success('启用成功')
+              }
+              
+            }else{
+              this.$message.error(data.message)
+            }
+          })
         } else if (scope.method == 'revise') {
           this.dialogFormVisible = true
+          this.ruleForm.id = scope.row.id
         }
       },
       //修改密码确定
@@ -264,17 +227,22 @@
         this.$refs[ruleForm].validate((valid, object) => {
           if (valid) {
             var params = {
-             id :ruleForm.id,
-             newPassword :ruleForm.newPassword,
+              id: this.ruleForm.id,
+              newPassword: this.ruleForm.newPassword,
             }
             params = toData(params)
 
             this.$http.get(this.$service.userUpdatePassword + '?' + params).then(data => {
               if (data.code == 200) {
-                //this.moduleId = scope.row.id
-                 this.ruleForm.newPassword = data.newPassword
-                 this.ruleForm.id = data.id
-                this.closeDialog()
+                this.$message.success('密码重置成功')
+                this.dialogFormVisible = false
+                this.ruleForm = {
+                  newPassword: '',
+                  id: '',
+                  checknewPassword: ''
+                }
+              }else{
+                this.$message.error(data.message)
               }
             }).catch((e) => {
               console.log(e)
@@ -294,11 +262,11 @@
       },
       handleCurrentChange(e) {
         this.pageNum = e
-        this.initGetOrderList()
+        this.initUserSearch()
       },
       handleSizeChange(e) {
         this.pageSize = e
-        this.initGetOrderList()
+        this.initUserSearch()
       },
       closeDialog() {
         this.dialogFormVisible = false

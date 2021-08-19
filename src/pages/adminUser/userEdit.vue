@@ -17,7 +17,7 @@
               v-for="item in roleOpt"
               :key="item.Value"
               :label="item.roleName"
-              :value="item.id">
+              :value='item.id+"#"+item.roleName'>
             </el-option>
           </el-select>
         </el-form-item>
@@ -78,7 +78,7 @@
         idcard: this.$route.query.idcard,
         loginName: this.$route.query.loginName,
         name: this.$route.query.name ,
-        roleId: this.$route.query.roleId,
+        roleId: this.$route.query.roleId+"#"+this.$route.query.roleName,
         roleName: this.$route.query.roleName,
         state: this.$route.query.state,
         tel: this.$route.query.tel,
@@ -91,6 +91,9 @@
       submitForm(ruleForm) {
         this.$refs[ruleForm].validate((valid,object) => {
           if (valid) {
+            var roleStr = JSON.parse(JSON.stringify(this.ruleForm.roleId))
+            this.ruleForm.roleId = roleStr.split("#")[0]
+            this.ruleForm.roleName = roleStr.split("#")[1]
             this.$http.post(this.$service.userUpdate,this.ruleForm).then(data => {
               if(data.code == 200){
                 this.$router.push('/adminUser/userCenter')
