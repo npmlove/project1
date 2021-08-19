@@ -1,4 +1,4 @@
-<template>
+ <template>
   <div class="content-wrapper">
     <div class="content">
       <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="150px" size="medium" class="demo-form-inline" style="padding-left: 20px;">
@@ -77,7 +77,7 @@
         delFlag: this.$route.query.delFlag,
         idcard: this.$route.query.idcard,
         loginName: this.$route.query.loginName,
-        name: this.$route.query.name,
+        name: this.$route.query.name ,
         roleId: this.$route.query.roleId,
         roleName: this.$route.query.roleName,
         state: this.$route.query.state,

@@ -1,22 +1,36 @@
+//正式环境
+var pulicWeb = '/dcErp/faw'
+
+//测试环境
+//var pulicWeb = '/dcErpTest/faw'
+
 
 const serviceApi = {
   // 登录
-  login: '/faw/t-sys-user/login',
+  login: pulicWeb+'/t-sys-user/login',
   //用户查询
-  userSearch: '/faw/t-sys-user/search',
+  userSearch: pulicWeb+'/t-sys-user/search',
   //用户新增
-  userAdd: '/faw/t-sys-user/add',
+  userAdd: pulicWeb+'/t-sys-user/add',
   //用户编辑
-  userUpdate: '/faw/t-sys-user/update',
+  userUpdate: pulicWeb+'/t-sys-user/update',
+  //用户修改密码
+  userUpdatePassword: pulicWeb+'/t-sys-user/updatePassword',
   //角色查询
-  roleSearch: '/faw/t-sys-role/search',
+  roleSearch: pulicWeb+'/t-sys-role/search',
   //新增角色
-  roleAdd: '/faw/t-sys-role/add',
+  roleAdd: pulicWeb+'/t-sys-role/add',
   //删除角色
-  roleDelete:'/faw/t-sys-role/delete',
+  roleDelete: pulicWeb+'/t-sys-role/delete',
   //编辑角色
-  roleUpdate: '/faw/t-sys-role/update'
-  
-
+  roleUpdate: pulicWeb+'/t-sys-role/update',
+  //模块查询
+  moduleSearch: pulicWeb+'/t-sys-module/search',
+  //模块新增
+  moduleAdd: pulicWeb+'/t-sys-module/add',
+  //模块修改
+  moduleUpdate: pulicWeb+'/t-sys-module/update',
+  //模块删除
+  moduleDelete: pulicWeb+'/t-sys-module/delete'
 }
 export default serviceApi

@@ -41,6 +41,7 @@
   import qs from 'qs'
   export default {
     data() {
+
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
@@ -50,6 +51,7 @@
           callback();
         }
       }
+
       var telPhone = (rule, value, callback) => {
         var reg = /^(1[3456789])\d{9}$/
         if (value === '') {
@@ -60,6 +62,7 @@
           callback();
         }
       }
+
       return {
         labelPosition: 'right',
         ruleForm: {
@@ -79,7 +82,8 @@
             {required: true, message: '请输入账号', trigger: 'blur'},
             { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
           ],
-          name: [{required: true, message: '请输入姓名', trigger: 'blur'}],
+          name: [{required: true, message: '请输入姓名', trigger: 'blur'},
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}],
           tel: [{required: true, validator: telPhone, trigger: 'blur' }],
           roleId: [{required: true, message: '请选择角色', trigger: 'change'}],
           password: [

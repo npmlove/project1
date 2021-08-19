@@ -17,6 +17,37 @@ const autoRoutes = [{
   }
 ]
 
+//自我测试模块
+
+// const adminUserCenter1=[{
+//   path: '/adminUser',
+//   component: Layout,
+//   name: 'adminUser',
+//   redirect: 'noredirect',
+//   alwaysShow: true,
+//   meta: {
+//     title: '管理员1',
+//     icon: 'icon iconfont icon-shengchan',
+//     breadcrumb: true
+//   },
+//   children:[
+//     {
+
+//         path: 'userCenter',
+//         component: () => import('@/pages/adminUser/roleCenter.vue'),
+//         name: 'userCenter',
+//         meta: {
+//           title: '用户管理',
+//           keepAlive:true,
+//           needLogin: true
+//         },
+//       },
+
+
+//   ]
+// }]
+//自我测试模块
+
 //管理模块
 const adminUserCenter = [{
   path: '/adminUser',
@@ -35,7 +66,7 @@ const adminUserCenter = [{
       component: () => import('@/pages/adminUser/userCenter.vue'),
       name: 'userCenter',
       meta: {
-        title: '用户管理',
+        title: '账号管理',
         keepAlive:true,
         needLogin: true
       },
@@ -46,6 +77,16 @@ const adminUserCenter = [{
       name: 'roleCenter',
       meta: {
         title: '角色管理',
+        keepAlive:true,
+        needLogin: true
+      },
+    },
+    {
+      path: 'authorityCenter',
+      component: () => import('@/pages/adminUser/authorityCenter.vue'),
+      name: 'authorityCenter',
+      meta: {
+        title: '权限管理',
         keepAlive:true,
         needLogin: true
       },
@@ -164,7 +205,7 @@ const adverManagementCenter = [{
   redirect: 'noredirect',
   alwaysShow: true,
   meta: {
-    title: '广告模块',
+    title: '广告管理',
     icon: 'icon iconfont icon-yuangongguanli',
     breadcrumb: false
   },
@@ -261,6 +302,7 @@ const routes = [
   ...newsManagementCenter,
   ...userManagementCenter,
   ...adminUserCenter
+ // ...adminUserCenter1
 ]
 
 export default routes

@@ -61,9 +61,6 @@ Vue.config.productionTip = false
 Vue.prototype.$message = Message
 Vue.prototype.$service = serviceAPI
 Vue.prototype.imgWebUrl = ''
-// Vue.prototype.imgWebUrl = 'http://192.168.1.222:89'
-// Vue.prototype.imgWebUrl = 'http://192.168.1.161:81'
-// Vue.prototype.imgWebUrl = 'http://192.168.2.241:81'
 
 //判断是否登录
 router.beforeEach(function (to, from, next) {
