@@ -75,7 +75,7 @@
             prop: 'createTime',
             show: true,
             width: '100'
-          } 
+          }
         ],
         //操作
         operation: {
@@ -85,7 +85,7 @@
           options: [{
               label: '编辑',
               method: 'edit'
-            },        
+            },
             {
               label: '删除',
               method: 'del'
@@ -98,7 +98,7 @@
           path: '',
           title: ''
         },
-  
+
         rules: {
           name: [{required: true, message: '请输入权限名称',trigger: 'blur' }],
           path: [{required: true, message: '请输入权限路径', trigger: 'blur'}],

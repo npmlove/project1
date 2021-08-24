@@ -32,7 +32,7 @@
         <template slot-scope="scope">
           <span @click="handleItemClick(column.handle, scope)">
             <span v-if="column.prop == 'state' && column.label == '状态'">
-              <el-switch v-model="scope.row.state == '0'" disabled></el-switch>
+              <el-switch v-model="scope.row.state == '0'"  ></el-switch>
             </span>
             <span v-else v-html="getDataName(scope.row, column)"></span>
           </span>

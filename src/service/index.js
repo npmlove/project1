@@ -31,6 +31,18 @@ const serviceApi = {
   //模块修改
   moduleUpdate: pulicWeb+'/t-sys-module/update',
   //模块删除
-  moduleDelete: pulicWeb+'/t-sys-module/delete'
+  moduleDelete: pulicWeb+'/t-sys-module/delete',
+  //代理列表查询
+  agentList: pulicWeb+'/t-agent/list',
+  //代理列表新增
+  agentSave:pulicWeb+'/t-agent/save',
+  //代理列表修改
+  agentUpdate:pulicWeb+'/t-agent/update',
+  //代理列表删除
+  agentDelete:pulicWeb+'/t-agent/delete',
+  //上传Banner图片
+  uploadBannerImage:pulicWeb+ '/t-banner/uploadBannerImage',
+
+
 }
 export default serviceApi

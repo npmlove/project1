@@ -198,11 +198,11 @@
             }
           })
         } else if (scope.method == 'del') {
-          console.log(scope)
+         // console.log(scope)
           var json = {
             state: scope.row.state == 0 ? 1 : 0,
-            delFlag: scope.row.delFlag == 0 ? 1 : 0,
-            id: scope.row.id
+            // delFlag: scope.row.delFlag == 0 ? 1 : 0,
+             id: scope.row.id
           }
           this.$http.post(this.$service.userUpdate,json).then(data => {
             if(data.code == 200){
@@ -289,9 +289,10 @@
   }
 </script>
 
-<style scoped lang="less">
-  @import url("../../assets/icon/iconfont.css");
 
+<style scoped lang="less">
+ @import url("../../assets/icon/iconfont.css");
+ 
   .content-wrapper {
     width: 100%;
     box-sizing: border-box;

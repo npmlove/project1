@@ -92,7 +92,9 @@
         this.$refs[ruleForm].validate((valid,object) => {
           if (valid) {
             var roleStr = JSON.parse(JSON.stringify(this.ruleForm.roleId))
+			    console.log( roleStr)
             this.ruleForm.roleId = roleStr.split("#")[0]
+            console.log(roleStr.split("#"))
             this.ruleForm.roleName = roleStr.split("#")[1]
             this.$http.post(this.$service.userUpdate,this.ruleForm).then(data => {
               if(data.code == 200){

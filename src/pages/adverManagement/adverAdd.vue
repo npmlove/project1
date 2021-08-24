@@ -1,25 +1,32 @@
 <template>
-	<div class="content-wrapper">
+ <div class="content-wrapper">
     <div class="content">
       <div class="echarts-all">
+
         <div>
           <div id="echartsPie1" style="width: 100%;height: 100%;"></div>
         </div>
+
         <div>
           <div id="echartsPie2" style="width: 100%;height: 100%;"></div>
         </div>
+
         <div>
           <div id="echartsPie3" style="width: 100%;height: 100%;"></div>
         </div>
+
         <div>
 
         </div>
+
         <div>
           <div id="echartsPie5" style="width: 100%;height: 100%;"></div>
         </div>
+
         <div>
           <div id="echartsPie6" style="width: 100%;height: 100%;"></div>
         </div>
+
       </div>
     </div>
   </div>
@@ -31,14 +38,14 @@
   export default {
     data() {
       return {
-        
+
       }
     },
     mounted() {
-      
+
     },
     methods: {
-      
+
     }
   }
 </script>

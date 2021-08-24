@@ -17,36 +17,32 @@ const autoRoutes = [{
   }
 ]
 
-//自我测试模块
-
-// const adminUserCenter1=[{
-//   path: '/adminUser',
-//   component: Layout,
-//   name: 'adminUser',
-//   redirect: 'noredirect',
-//   alwaysShow: true,
-//   meta: {
-//     title: '管理员1',
-//     icon: 'icon iconfont icon-shengchan',
-//     breadcrumb: true
-//   },
-//   children:[
-//     {
-
-//         path: 'userCenter',
-//         component: () => import('@/pages/adminUser/roleCenter.vue'),
-//         name: 'userCenter',
-//         meta: {
-//           title: '用户管理',
-//           keepAlive:true,
-//           needLogin: true
-//         },
-//       },
 
 
-//   ]
-// }]
-//自我测试模块
+//代理管理
+const agentManagement=[{
+  path:'/agentManagement',
+  component:Layout,
+  name:'agentManagement',
+  redirect:'noredirect',
+  alwaysShow:true,
+  meta:{
+    title:'代理管理',
+    icon: 'icon iconfont icon-diannao',
+    breadcrumb: true
+  },
+  children:[{
+    path: 'agentList',
+    component: () => import('@/pages/agentManagement/agentList.vue'),
+    name: 'agentList',
+    meta: {
+      title: '代理列表',
+      keepAlive:true,
+      needLogin: true
+  },},]
+
+},
+]
 
 //管理模块
 const adminUserCenter = [{
@@ -187,9 +183,9 @@ const routeManagementCenter = [{
       path: 'routeImport',
       component: () => import('@/pages/routeManagement/routeImport.vue'),
       name: 'routeImport',
-      hidden: true,
+      hidden: false,
       meta: {
-        title: '导入航线',
+        title: ' 航线导入',
         keepAlive:false,
         needLogin: true
       }
@@ -230,7 +226,17 @@ const adverManagementCenter = [{
         keepAlive:false,
         needLogin: true
       }
-    }
+    },
+    {
+      path: 'bannerNew',
+      component: () => import('@/pages/adverManagement/bannerNew.vue'),
+      name: 'bannerNew',
+      meta: {
+        title: 'banner广告位',
+        keepAlive:true,
+        needLogin: true
+      }
+    },
   ]
 }]
 
@@ -299,10 +305,11 @@ const routes = [
   ...autoRoutes,
   ...routeManagementCenter,
   ...adverManagementCenter,
+  ...agentManagement,
   ...newsManagementCenter,
   ...userManagementCenter,
   ...adminUserCenter
- // ...adminUserCenter1
+
 ]
 
 export default routes
