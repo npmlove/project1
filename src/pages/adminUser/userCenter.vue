@@ -1,7 +1,6 @@
 <template>
   <div class="content-wrapper">
     <div class="content">
-
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
           <el-form-item>
@@ -212,7 +211,7 @@
               }else{
                 this.$message.success('启用成功')
               }
-              
+
             }else{
               this.$message.error(data.message)
             }
@@ -231,7 +230,6 @@
               newPassword: this.ruleForm.newPassword,
             }
             params = toData(params)
-
             this.$http.get(this.$service.userUpdatePassword + '?' + params).then(data => {
               if (data.code == 200) {
                 this.$message.success('密码重置成功')
@@ -292,7 +290,7 @@
 
 <style scoped lang="less">
  @import url("../../assets/icon/iconfont.css");
- 
+
   .content-wrapper {
     width: 100%;
     box-sizing: border-box;

@@ -121,7 +121,6 @@
           if (data.code == 200) {
             //总记录数
             // this.total = data.data.total
-
             this.tableData = data.data
           }
         }).catch((e) => {
@@ -133,7 +132,6 @@
           if (valid) {
 
             if(this.dialogTitle == '编辑权限'){
-              //t-sys-module/update
               this.ruleForm.id = this.moduleId
               this.$http.post(this.$service.moduleUpdate,this.ruleForm).then(data => {
                 if(data.code == 200){

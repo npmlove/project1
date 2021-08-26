@@ -41,7 +41,11 @@ const serviceApi = {
   //代理列表删除
   agentDelete:pulicWeb+'/t-agent/delete',
   //上传Banner图片
-  uploadBannerImage:pulicWeb+ '/t-banner/uploadBannerImage',
+  uploadBannerImage:pulicWeb+'/t-banner/uploadBannerImage',
+  //保存/修改Banner信息
+  changeBanner:pulicWeb+'/t-banner/changeBanner',
+  //后台广告管理展示
+  manageBannerList:pulicWeb+'/t-banner/manageBannerList'
 
 
 }

@@ -7,6 +7,8 @@
             <el-input style="width: 200px;" size="medium" v-model="agentName" clearable placeholder="请输入代理名称"></el-input>
           </el-form-item>
           <el-form-item label="代理简称">
+<!-- 唯一性  编辑同校验 -->
+
             <el-input style="width: 200px;" size="medium" v-model="agentAbbreviation" clearable placeholder="请输入代理简称"></el-input>
           </el-form-item>
            <el-form-item style="float: right;margin-right: 20px">

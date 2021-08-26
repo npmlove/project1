@@ -60,7 +60,7 @@ import '@/assets/custom.css'
 Vue.config.productionTip = false
 Vue.prototype.$message = Message
 Vue.prototype.$service = serviceAPI
-Vue.prototype.imgWebUrl = ''
+Vue.prototype.imgUrl = 'http://121.5.49.152'
 
 //判断是否登录
 router.beforeEach(function (to, from, next) {
