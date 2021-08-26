@@ -48,9 +48,7 @@
         >
         <template slot-scope="scope">
           <a v-for="(item, index) in operation.options" @click.prevent="handleClick(item.method, scope.row, $event)">
-            <span v-if="scope.row.state == 1 && item.method == 'del'">启用</span>
-            <span v-else-if="scope.row.state == 0 && item.method == 'del'">禁用</span>
-            <span v-else style="color: #00a06e;">{{item.label}}</span>
+            <span style="color: #00a06e;">{{item.label}}</span>
           </a>
         </template>
       </el-table-column>

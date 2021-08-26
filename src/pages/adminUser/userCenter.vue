@@ -100,7 +100,7 @@
           width: '120',
           options: [
             {label: '编辑', method: 'edit'},
-            {label: '禁用', method: 'del'},
+            {label: '删除', method: 'del'},
             {label: '密码重置', method: 'revise'}
           ]
         },
@@ -138,6 +138,7 @@
           name: this.name,
           tel: this.tel,
           roleName: this.roleName,
+          delFlag: 0
         }
         params = toData(params)
         vm.$http.get(vm.$service.userSearch + '?' + params).then(data => {
@@ -197,21 +198,14 @@
             }
           })
         } else if (scope.method == 'del') {
-         // console.log(scope)
           var json = {
-            state: scope.row.state == 0 ? 1 : 0,
-            // delFlag: scope.row.delFlag == 0 ? 1 : 0,
-             id: scope.row.id
+            delFlag: scope.row.delFlag == 0 ? 1 : 0,
+            id: scope.row.id
           }
           this.$http.post(this.$service.userUpdate,json).then(data => {
             if(data.code == 200){
               this.initUserSearch()
-              if(json.state == 1){
-                this.$message.success('禁用成功')
-              }else{
-                this.$message.success('启用成功')
-              }
-
+              this.$message.success('删除成功')
             }else{
               this.$message.error(data.message)
             }
