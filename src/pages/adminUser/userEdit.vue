@@ -54,7 +54,7 @@
           name: '',
           roleId: '',
           roleName: '',
-          state: 0,
+          status: 0,
           tel: '',
           id: '',
           password: ''
@@ -80,7 +80,7 @@
         name: this.$route.query.name ,
         roleId: this.$route.query.roleId+"#"+this.$route.query.roleName,
         roleName: this.$route.query.roleName,
-        state: this.$route.query.state,
+        status: this.$route.query.status,
         tel: this.$route.query.tel,
         id: this.$route.query.id,
         password: this.$route.query.password

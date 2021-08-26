@@ -4,19 +4,30 @@
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="loginName" clearable placeholder="请输入账号"></el-input>
+            <el-input style="width: 130px;" size="medium" :maxlength="inputMax" v-model="loginName" clearable placeholder="起运港三字码"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="name" clearable placeholder="请输入姓名"></el-input>
+            <el-input style="width: 130px;" size="medium" :maxlength="inputMax" v-model="name" clearable placeholder="目的港三字码"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="tel" clearable placeholder="请输入电话"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="tel" clearable placeholder="代理公司名称"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-select placeholder="请选择角色" size="medium" v-model="roleName" clearable style="width: 200px;">
+            <el-input style="width: 130px;" size="medium" :maxlength="inputMax" v-model="tel" clearable placeholder="航司代码"></el-input>
+          </el-form-item>
+
+          <el-form-item>
+            <el-select placeholder="中转/直飞" size="medium" v-model="roleName" clearable style="width: 130px;">
+              <el-option v-for="item in roleOpt" :key="item.Value" :label="item.roleName" :value="item.roleName">
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item>
+            <el-select placeholder="状态" size="medium" v-model="roleName" clearable style="width: 130px;">
               <el-option v-for="item in roleOpt" :key="item.Value" :label="item.roleName" :value="item.roleName">
               </el-option>
             </el-select>
@@ -29,9 +40,9 @@
             </el-row>
           </el-form-item>
 
-          <el-form-item style="float: right;margin-right: 20px">
+          <el-form-item style="float: right;margin-right: 0">
             <el-row>
-              <el-button @click="newAdd" size="medium" type="primary">新增用户</el-button>
+              <el-button @click="newAdd" size="medium" type="primary">新增航线</el-button>
             </el-row>
           </el-form-item>
         </div>
@@ -53,44 +64,16 @@
       </Table>
     </div>
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' width="150px">
-      <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px"
-        size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
-        <el-form-item prop="newPassword" label="新密码">
-          <el-input style="width: 280px;" size="medium" v-model="ruleForm.newPassword" clearable placeholder="请输入新密码">
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="checknewPassword" label="校验密码">
-          <el-input style="width: 280px;" size="medium" v-model="ruleForm.checknewPassword" clearable
-            placeholder="请再次输入新密码"></el-input>
-        </el-form-item>
-      </el-form>
-      <!-- 底部按钮 -->
-      <div slot="footer" class="dialog-footer">
-        <div style="text-align: center;padding-top:20px;">
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
-            @click="submitForm('ruleForm')">确定</el-button>
-        </div>
-      </div>
+
     </el-dialog>
   </div>
 </template>
 
 <script>
   import Table from '@/components/Table'
-  import {
-    toData
-  } from '@/util/assist'
+  import { toData } from '@/util/assist'
   export default {
     data() {
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm.newPassword) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
-      }
       return {
         //table
         tableData: [],
@@ -98,41 +81,78 @@
         pageNum: 1,
         total: 0,
         // 列
-        columns: [{
-            label: '账号',
+        columns: [
+          {
+            label: '航线ID',
             prop: 'loginName',
             show: true,
             width: '160'
           },
           {
-            label: '姓名',
+            label: '航班代码',
             prop: 'name',
             show: true,
             width: '100'
           },
           {
-            label: '手机号',
+            label: '起运港',
             prop: 'tel',
             show: true,
             width: '150'
           },
           {
-            label: '角色',
+            label: '目的港',
+            prop: 'roleName',
+            show: true,
+            width: '150'
+          },
+          {
+            label: '航线区域',
+            prop: 'state',
+            show: true,
+            width: '100'
+          },
+          {
+            label: '中转/直飞',
+            prop: 'createTime',
+            show: true,
+            width: '100'
+          },
+          {
+            label: '航程',
+            prop: 'roleName',
+            show: true,
+            width: '150'
+          },
+          {
+            label: '飞机型号',
+            prop: 'roleName',
+            show: true,
+            width: '150'
+          },
+          {
+            label: '托盘',
+            prop: 'roleName',
+            show: true,
+            width: '150'
+          },
+          {
+            label: '散货',
+            prop: 'roleName',
+            show: true,
+            width: '150'
+          },
+          {
+            label: '更新时间',
             prop: 'roleName',
             show: true,
             width: '150'
           },
           {
             label: '状态',
-            prop: 'state',
+            prop: 'roleName',
             show: true,
-            width: '100'
-          },
-          {
-            label: '注册时间',
-            prop: 'createTime',
-            show: true,
-            width: '100'
+            width: '150'
           }
         ],
         // 操作
@@ -140,33 +160,30 @@
           show: true,
           label: '操作',
           width: '120',
-          options: [{
-              label: '编辑',
-              method: 'edit'
+          options: [
+            {
+              label: '编辑价格',
+              method: 'priceEdit'
             },
             {
-              label: '删除',
-              method: 'del'
+              label: '查看价格',
+              method: 'priceView'
             },
             {
-              label: '密码重置',
-              method: 'revise'
+              label: '编辑航线',
+              method: 'routeEdit'
+            },
+            {
+              label: '删除航线',
+              method: 'routeDel'
+            },
+            {
+              label: '查看航线',
+              method: 'routeView'
             }
           ]
         },
-        rules: {
-          newPassword: [{
-            required: true,
-            message: '请输入新密码',
-            trigger: 'blur'
-          }],
-          checknewPassword: [{
-            required: true,
-            validator: validatePass2,
-            trigger: 'blur'
-          }]
-        },
-        labelPosition: 'right',
+
         loginName: '',
         name: '',
         tel: '',
@@ -235,7 +252,7 @@
       },
       //新增
       newAdd() {
-        this.$router.push('/adminUser/userAdd')
+        this.$router.push('/routeManagement/routeAdd')
       },
       //操作
       handleClick(scope) {
@@ -424,7 +441,7 @@
   }
 
   .content-search-normal {
-    padding: 20px 0 20px 30px;
+    padding: 20px;
     background: #fff;
   }
 

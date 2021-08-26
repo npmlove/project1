@@ -15,6 +15,7 @@
           <el-form-item>
             <el-row>
               <el-button @click="searchClick" size="medium" type="primary">搜索 </el-button>
+              <el-button @click="restClick" size="medium" type="primary">清空</el-button>
             </el-row>
           </el-form-item>
           <el-form-item style="float: right;margin-right: 0">
@@ -154,7 +155,14 @@
         this.pageNum = 1
         this.initAgentSearch()
       },
-
+      //清空
+      restClick() {
+        this.agentName = ''
+        this.agentAbbreviation = ''
+        this.pageSize = 10
+        this.pageNum = 1
+        this.initAgentSearch()
+      },
 
       //新增
       newAdd() {

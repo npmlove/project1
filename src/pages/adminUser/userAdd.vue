@@ -74,7 +74,7 @@
           checkPassword: '',
           roleId: '',
           roleName: '',
-          state: 0,
+          status: 0,
           tel: ''
         },
         rules: {

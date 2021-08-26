@@ -124,7 +124,7 @@
           },
           {
             label: '状态',
-            prop: 'state',
+            prop: 'status',
             show: true,
             width: '100'
           },
@@ -250,14 +250,14 @@
               name: scope.row.name,
               roleId: scope.row.roleId,
               roleName: scope.row.roleName,
-              state: scope.row.state,
+              status: scope.row.status,
               tel: scope.row.tel,
               password: scope.row.password
             }
           })
         } else if (scope.method == 'del') {
           var json = {
-            delFlag: scope.row.delFlag == 0 ? 1 : 0,
+            status: -1,
             id: scope.row.id
           }
           this.$http.post(this.$service.userUpdate, json).then(data => {
@@ -275,13 +275,13 @@
       },
       switchChangeUser(scope) {
         var json = {
-          state: scope.row.state == 0 ? 1 : 0,
+          status: scope.row.status == 0 ? 1 : 0,
           id: scope.row.id
         }
         this.$http.post(this.$service.userUpdate, json).then(data => {
           if (data.code == 200) {
             this.initUserSearch()
-            if(scope.row.state == 1){
+            if(scope.row.status == 1){
               this.$message.success('启用成功')
             }else{
               this.$message.success('禁用成功')
