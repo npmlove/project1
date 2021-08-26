@@ -18,7 +18,7 @@
       <el-form :label-position="labelPosition" :inline="true" size="medium" class="dialog-demo">
         <div class="rest-style" style="margin-top: 20px;">
           <el-form-item label="角色名称" label-width="120px" required>
-            <el-input size="medium" v-model="roleName" placeholder="请输入角色名称" maxlength="10"></el-input>
+            <el-input size="medium" :maxlength="inputMax" v-model="roleName" placeholder="请输入角色名称" maxlength="10"></el-input>
           </el-form-item>
         </div>
       </el-form>

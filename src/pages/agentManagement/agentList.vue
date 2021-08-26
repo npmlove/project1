@@ -2,40 +2,31 @@
   <div class="content-wrapper">
     <div class="content">
       <el-form :inline="true" size="medium" class="demo-form-inline">
-        <div class="content-search-normal" style="padding-left: 20px">
+        <div class="content-search-normal">
           <el-form-item label="代理名称">
-            <el-input style="width: 200px;" size="medium" v-model="agentName" clearable placeholder="请输入代理名称">
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="agentName" clearable placeholder="请输入代理名称">
             </el-input>
           </el-form-item>
           <el-form-item label="代理简称">
             <!-- 唯一性  编辑同校验 -->
-            <el-input style="width: 200px;" size="medium" v-model="agentAbbreviation" clearable placeholder="请输入代理简称">
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="agentAbbreviation" clearable placeholder="请输入代理简称">
             </el-input>
-          </el-form-item>
-          <el-form-item style="float: right;margin-right: 20px">
-            <el-row>
-              <el-button @click="newAdd" size="medium" type="primary">新增</el-button>
-            </el-row>
           </el-form-item>
           <el-form-item>
             <el-row>
               <el-button @click="searchClick" size="medium" type="primary">搜索 </el-button>
             </el-row>
           </el-form-item>
+          <el-form-item style="float: right;margin-right: 0">
+            <el-row>
+              <el-button @click="newAdd" size="medium" type="primary">新增</el-button>
+            </el-row>
+          </el-form-item>
         </div>
       </el-form>
-      <Table
-        :checkbox="false"
-        :tableData='tableData'
-        :columns='columns'
-        :operation='operation'
-        :total='total'
-        :currentPage='pageNum'
-        :pageSize='pageSize'
-        @sizeChange='handleSizeChange'
-        @currentChange='handleCurrentChange'
-        @handleClick='handleClick'
-      >
+      <Table :checkbox="false" :tableData='tableData' :columns='columns' :operation='operation' :total='total'
+        :currentPage='pageNum' :pageSize='pageSize' @sizeChange='handleSizeChange' @currentChange='handleCurrentChange'
+        @handleClick='handleClick'>
       </Table>
     </div>
 
@@ -44,12 +35,12 @@
         size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
         <el-form-item prop="agentName" label="代理名称">
           <el-input style="width: 280px;" size="medium" v-model="ruleForm.agentName" clearable placeholder="请输入代理名称"
-            maxlength="20">
+             :maxlength="inputMax">
           </el-input>
         </el-form-item>
         <el-form-item prop="agentAbbreviation" label="代理简称">
-          <el-input style="width: 280px;" size="medium" v-model="ruleForm.agentCode" clearable
-            placeholder="请输入代理简称" maxlength="20"></el-input>
+          <el-input style="width: 280px;" size="medium" v-model="ruleForm.agentCode" clearable placeholder="请输入代理简称"
+             :maxlength="inputMax"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部按钮 -->
@@ -266,25 +257,18 @@
     background-color: #FFF;
   }
 
-  /* .el-form--inline.el-form-item{
-  margin-bottom: 0;
-  vertical-align: bottom;
-} */
-  /* &:hover{
-   color: #f1e3d5 !important;
-   background-color: red !important;
- } */
-  .wrapper,
-  .content {
+  .el-form--inline .el-form-item {
+    margin-bottom: 0;
+    vertical-align: bottom;
+  }
+  .wrapper, .content {
     width: 100%;
-
-    /*background-color: #fff;*/
+    background-color: #fff;
   }
 
   .content-search-normal {
-    padding: 20px 0 10px 30px;
+    padding: 20px;
     background: #fff;
-    /* background: red; */
   }
 
   .el-dialog {

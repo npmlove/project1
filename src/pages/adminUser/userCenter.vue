@@ -4,15 +4,15 @@
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" v-model="loginName" clearable placeholder="请输入账号"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="loginName" clearable placeholder="请输入账号"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" v-model="name" clearable placeholder="请输入姓名"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="name" clearable placeholder="请输入姓名"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" v-model="tel" clearable placeholder="请输入电话"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="tel" clearable placeholder="请输入电话"></el-input>
           </el-form-item>
 
           <el-form-item>
@@ -29,7 +29,7 @@
             </el-row>
           </el-form-item>
 
-          <el-form-item style="float: right;margin-right: 20px">
+          <el-form-item style="float: right;margin-right: 0">
             <el-row>
               <el-button @click="newAdd" size="medium" type="primary">新增用户</el-button>
             </el-row>
@@ -56,11 +56,11 @@
       <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px"
         size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
         <el-form-item prop="newPassword" label="新密码">
-          <el-input style="width: 280px;" size="medium" v-model="ruleForm.newPassword" clearable placeholder="请输入新密码">
+          <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.newPassword" clearable placeholder="请输入新密码">
           </el-input>
         </el-form-item>
         <el-form-item prop="checknewPassword" label="校验密码">
-          <el-input style="width: 280px;" size="medium" v-model="ruleForm.checknewPassword" clearable
+          <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.checknewPassword" clearable
             placeholder="请再次输入新密码"></el-input>
         </el-form-item>
       </el-form>
@@ -424,7 +424,7 @@
   }
 
   .content-search-normal {
-    padding: 20px 0 20px 30px;
+    padding: 20px;
     background: #fff;
   }
 

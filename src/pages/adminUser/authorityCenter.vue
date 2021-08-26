@@ -18,15 +18,15 @@
        <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px" size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
 
          <el-form-item prop="name" label="权限名称">
-           <el-input style="width: 280px;" size="medium" v-model="ruleForm.name"  clearable placeholder="请输入权限名称"></el-input>
+           <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.name"  clearable placeholder="请输入权限名称"></el-input>
          </el-form-item>
 
          <el-form-item prop="path" label="权限路径">
-           <el-input style="width: 280px;" size="medium" v-model="ruleForm.path"  clearable placeholder="请输入权限路径"></el-input>
+           <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.path"  clearable placeholder="请输入权限路径"></el-input>
          </el-form-item>
 
          <el-form-item prop="title" label="权限标签">
-           <el-input style="width: 280px;" size="medium" v-model="ruleForm.title"  clearable placeholder="请输入权限标签"></el-input>
+           <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.title"  clearable placeholder="请输入权限标签"></el-input>
          </el-form-item>
        </el-form>
         <!-- 底部按钮 -->
