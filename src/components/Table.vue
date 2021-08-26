@@ -32,7 +32,7 @@
         <template slot-scope="scope">
           <span @click="handleItemClick(column.handle, scope)">
             <span v-if="column.prop == 'state' && column.label == '状态'">
-              <el-switch v-model="scope.row.state == '0'"  ></el-switch>
+              <el-switch @change="switchChangeUser(scope)" v-model="scope.row.state == '0'"  ></el-switch>
             </span>
             <span v-else v-html="getDataName(scope.row, column)"></span>
           </span>
@@ -187,6 +187,10 @@ export default {
     // 复选框选择
     handleSelect (val) {
       this.$emit('selectChange', val)
+    },
+    //开关
+    switchChangeUser(val) {
+      this.$emit('switchChangeUser',val)
     },
     //去重
     unique1(arr) {

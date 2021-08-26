@@ -36,9 +36,20 @@
           </el-form-item>
         </div>
       </el-form>
-      <Table ref="multipleTable1" :checkbox="false" :tableData='tableData' :columns='columns' :operation='operation'
-        :total='total' :currentPage='pageNum' :pageSize='pageSize' @sizeChange='handleSizeChange'
-        @currentChange='handleCurrentChange' @handleClick='handleClick'>
+      <Table
+        ref="multipleTable1"
+        :checkbox="false"
+        :tableData='tableData'
+        :columns='columns'
+        :operation='operation'
+        :total='total'
+        :currentPage='pageNum'
+        :pageSize='pageSize'
+        @sizeChange='handleSizeChange'
+        @currentChange='handleCurrentChange'
+        @handleClick='handleClick'
+        @switchChangeUser='switchChangeUser'
+        >
       </Table>
     </div>
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' width="150px">
@@ -66,7 +77,9 @@
 
 <script>
   import Table from '@/components/Table'
-  import { toData } from '@/util/assist'
+  import {
+    toData
+  } from '@/util/assist'
   export default {
     data() {
       var validatePass2 = (rule, value, callback) => {
@@ -85,28 +98,73 @@
         pageNum: 1,
         total: 0,
         // 列
-        columns: [
-          {label: '账号', prop: 'loginName', show: true, width: '160'},
-          {label: '姓名', prop: 'name', show: true, width: '100'},
-          {label: '手机号', prop: 'tel', show: true, width: '150'},
-          {label: '角色', prop: 'roleName', show: true, width: '150'},
-          {label: '状态', prop: 'state', show: true, width: '100'},
-          {label: '注册时间', prop: 'createTime', show: true, width: '100'}
+        columns: [{
+            label: '账号',
+            prop: 'loginName',
+            show: true,
+            width: '160'
+          },
+          {
+            label: '姓名',
+            prop: 'name',
+            show: true,
+            width: '100'
+          },
+          {
+            label: '手机号',
+            prop: 'tel',
+            show: true,
+            width: '150'
+          },
+          {
+            label: '角色',
+            prop: 'roleName',
+            show: true,
+            width: '150'
+          },
+          {
+            label: '状态',
+            prop: 'state',
+            show: true,
+            width: '100'
+          },
+          {
+            label: '注册时间',
+            prop: 'createTime',
+            show: true,
+            width: '100'
+          }
         ],
         // 操作
         operation: {
           show: true,
           label: '操作',
           width: '120',
-          options: [
-            {label: '编辑', method: 'edit'},
-            {label: '删除', method: 'del'},
-            {label: '密码重置', method: 'revise'}
+          options: [{
+              label: '编辑',
+              method: 'edit'
+            },
+            {
+              label: '删除',
+              method: 'del'
+            },
+            {
+              label: '密码重置',
+              method: 'revise'
+            }
           ]
         },
         rules: {
-          newPassword: [{required: true, message: '请输入新密码', trigger: 'blur'}],
-          checknewPassword: [{required: true, validator: validatePass2, trigger: 'blur'}]
+          newPassword: [{
+            required: true,
+            message: '请输入新密码',
+            trigger: 'blur'
+          }],
+          checknewPassword: [{
+            required: true,
+            validator: validatePass2,
+            trigger: 'blur'
+          }]
         },
         labelPosition: 'right',
         loginName: '',
@@ -202,11 +260,11 @@
             delFlag: scope.row.delFlag == 0 ? 1 : 0,
             id: scope.row.id
           }
-          this.$http.post(this.$service.userUpdate,json).then(data => {
-            if(data.code == 200){
+          this.$http.post(this.$service.userUpdate, json).then(data => {
+            if (data.code == 200) {
               this.initUserSearch()
               this.$message.success('删除成功')
-            }else{
+            } else {
               this.$message.error(data.message)
             }
           })
@@ -214,6 +272,24 @@
           this.dialogFormVisible = true
           this.ruleForm.id = scope.row.id
         }
+      },
+      switchChangeUser(scope) {
+        var json = {
+          state: scope.row.state == 0 ? 1 : 0,
+          id: scope.row.id
+        }
+        this.$http.post(this.$service.userUpdate, json).then(data => {
+          if (data.code == 200) {
+            this.initUserSearch()
+            if(scope.row.state == 1){
+              this.$message.success('启用成功')
+            }else{
+              this.$message.success('禁用成功')
+            }
+          } else {
+            this.$message.error(data.message)
+          }
+        })
       },
       //修改密码确定
       submitForm(ruleForm) {
@@ -233,7 +309,7 @@
                   id: '',
                   checknewPassword: ''
                 }
-              }else{
+              } else {
                 this.$message.error(data.message)
               }
             }).catch((e) => {
@@ -283,7 +359,7 @@
 
 
 <style scoped lang="less">
- @import url("../../assets/icon/iconfont.css");
+  @import url("../../assets/icon/iconfont.css");
 
   .content-wrapper {
     width: 100%;
