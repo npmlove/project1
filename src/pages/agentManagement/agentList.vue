@@ -4,13 +4,10 @@
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
           <el-form-item label="代理名称">
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="agentName" clearable placeholder="请输入代理名称">
-            </el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="agentName" clearable  placeholder="请输入代理名称"></el-input>
           </el-form-item>
           <el-form-item label="代理简称">
-            <!-- 唯一性  编辑同校验 -->
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="agentAbbreviation" clearable placeholder="请输入代理简称">
-            </el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="agentAbbreviation" clearable placeholder="请输入代理简称"></el-input>
           </el-form-item>
           <el-form-item>
             <el-row>
@@ -25,30 +22,33 @@
           </el-form-item>
         </div>
       </el-form>
-      <Table :checkbox="false" :tableData='tableData' :columns='columns' :operation='operation' :total='total'
-        :currentPage='pageNum' :pageSize='pageSize' @sizeChange='handleSizeChange' @currentChange='handleCurrentChange'
+      <Table
+        :checkbox="false"
+        :tableData='tableData'
+        :columns='columns'
+        :operation='operation'
+        :total='total'
+        :currentPage='pageNum'
+        :pageSize='pageSize'
+        @sizeChange='handleSizeChange'
+        @currentChange='handleCurrentChange'
         @handleClick='handleClick'>
       </Table>
     </div>
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' width="200px">
-      <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px"
-        size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
+      <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px" size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
         <el-form-item prop="agentName" label="代理名称">
-          <el-input style="width: 280px;" size="medium" v-model="ruleForm.agentName" clearable placeholder="请输入代理名称"
-             :maxlength="inputMax">
-          </el-input>
+          <el-input style="width: 280px;" v-model="ruleForm.agentName" clearable placeholder="请输入代理名称" :maxlength="inputMax"></el-input>
         </el-form-item>
-        <el-form-item prop="agentAbbreviation" label="代理简称">
-          <el-input style="width: 280px;" size="medium" v-model="ruleForm.agentCode" clearable placeholder="请输入代理简称"
-             :maxlength="inputMax"></el-input>
+        <el-form-item prop="agentCode" label="代理简称">
+          <el-input style="width: 280px;" v-model="ruleForm.agentCode" clearable placeholder="请输入代理简称" :maxlength="inputMax"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部按钮 -->
       <div slot="footer" class="dialog-footer">
         <div style="text-align: center;padding-top:20px;">
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
-            @click="dialogComfirm('ruleForm')">确定</el-button>
+          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary" @click="dialogComfirm('ruleForm')">确定</el-button>
         </div>
       </div>
     </el-dialog>
@@ -104,28 +104,19 @@
             },
           ]
         },
+        agentId: '',
+        ruleForm: {
+          agentName: '',
+          agentCode: ''
+        },
         rules: {
-          agentName: [{
-            required: true,
-            message: '请输入代理名称',
-            trigger: 'blur'
-          }],
-          agentAbbreviation: [{
-            required: true,
-            message: '请输入代理简称',
-            trigger: 'blur'
-          }]
+          agentName: [{ required: true, message: '请输入代理名称', trigger: 'blur'}],
+          agentCode: [{required: true, message: '请输入代理简称', trigger: 'blur'}]
         },
         labelPosition: 'right',
         agentName: '',
         agentAbbreviation: '',
-        ruleForm: {
-          agentName: '',
-          agentCode: '',
-          id: ''
-        },
-
-        dialogTitle: '新增代理',
+        dialogTitle: '',
         dialogFormVisible: false,
       }
     },
@@ -168,6 +159,10 @@
       newAdd() {
         this.dialogFormVisible = true
         this.dialogTitle = '新增代理'
+        this.ruleForm = {
+          agentName: '',
+          agentCode: ''
+        }
       },
       dialogComfirm(ruleForm) {
         this.$refs[ruleForm].validate((valid, object) => {
@@ -175,13 +170,21 @@
             if (this.dialogTitle == '新增代理') {
               this.$http.post(this.$service.agentSave, this.ruleForm).then(data => {
                 if (data.code == 200) {
+                  this.$message.success('新增成功')
                   this.initAgentSearch()
                   this.dialogFormVisible = false
                 }
               })
             } else if (this.dialogTitle == '编辑代理') {
-              this.$http.put(this.$service.agentUpdate, this.ruleForm).then(data => {
+              var data = {
+                agentCode: this.ruleForm.agentCode,
+                agentName: this.ruleForm.agentName,
+                id: this.agentId,
+                status: '0'
+              }
+              this.$http.put(this.$service.agentUpdate, data).then(data => {
                 if (data.code == 200) {
+                  this.$message.success('编辑成功')
                   this.initAgentSearch()
                   this.dialogFormVisible = false
                 } else {
@@ -209,7 +212,7 @@
           this.dialogFormVisible = true
           this.ruleForm.agentName = scope.row.agentName
           this.ruleForm.agentCode = scope.row.agentCode
-          this.ruleForm.id = scope.row.id
+          this.agentId = scope.row.id
         } else if (scope.method == 'del') {
           this.$http.put(this.$service.agentDelete + '?id=' + scope.row.id).then(data => {
             if (data.code == 200) {
@@ -219,7 +222,6 @@
               this.$message.error(data.message)
             }
           })
-
         }
       },
 
@@ -233,10 +235,7 @@
       },
       closeDialog() {
         this.dialogFormVisible = false
-        this.ruleForm = {
-          agentName: '',
-          agentAbbreviation: '',
-        }
+        this.agentId = ''
       },
     },
     watch: {
@@ -269,7 +268,9 @@
     margin-bottom: 0;
     vertical-align: bottom;
   }
-  .wrapper, .content {
+
+  .wrapper,
+  .content {
     width: 100%;
     background-color: #fff;
   }
