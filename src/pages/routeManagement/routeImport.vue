@@ -92,10 +92,9 @@
     methods: {
       // 导入文件的上传
       handleChange(file) {
-        console.log(file.raw)
         this.excelInfo = file.raw;
         this.importExcelDisabled = false;
-        const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        const isExcel = file.raw.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         const isLt2M = file.size / 1024 / 1024 < 2;
 
         if (!isExcel) {
@@ -128,8 +127,6 @@
         const formdate = new FormData();
         formdate.append("excel", this.excelInfo);
         axios.post(this.$service.airlineExcelImport, formdate,{responseType: 'arraybuffer'}).then(res => {
-          console.log(res,"res")
-          console.log(res.byteLength,"size")
           if (res.byteLength==0){
             this.$message.success('导入成功')
             this.importExcelDialogVisible= false
@@ -140,7 +137,6 @@
           }
           const aLink = document.createElement("a");
           let blob = new Blob([res], {type: "application/vnd.ms-excel"})
-          console.log(blob)
           aLink.href = URL.createObjectURL(blob)
           aLink.setAttribute('download', '导入失败文件' + '.xlsx') // 设置下载文件名称
 
@@ -151,10 +147,8 @@
       downTemplate(){
         axios.get(this.$service.downloadTemplate, {responseType: 'arraybuffer'}).then((res) => {
           // if(res.status == "200") {
-          console.log(res.headers)
           const aLink = document.createElement("a");
           let blob = new Blob([res], {type: "application/vnd.ms-excel"})
-          console.log(blob)
           aLink.href = URL.createObjectURL(blob)
           aLink.setAttribute('download', '价格导入模板' + '.xlsx') // 设置下载文件名称
           aLink.click()
@@ -171,10 +165,8 @@
         }).then(() => {
           axios.post(this.$service.airlineExcelExport, {ids: this.ids}, {responseType: 'arraybuffer'}).then((res) => {
             // if(res.status == "200") {
-            console.log(res.headers)
             const aLink = document.createElement("a");
             let blob = new Blob([res], {type: "application/vnd.ms-excel"})
-            console.log(blob)
             aLink.href = URL.createObjectURL(blob)
             if (this.ids.length > 1) {
               aLink.setAttribute('download', '客户资源' + '.zip') // 设置下载文件名称
