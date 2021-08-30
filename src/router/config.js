@@ -153,7 +153,7 @@ const routeManagementCenter = [{
       hidden: true,
       meta: {
         title: '新增航线',
-        keepAlive:false,
+        keepAlive:true,
         needLogin: true
       }
     },

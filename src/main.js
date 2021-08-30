@@ -24,7 +24,7 @@ import { Col, Row, Button, Switch,
   Breadcrumb, BreadcrumbItem, Tree,
   CheckboxGroup, Steps, Step, Scrollbar, Tabs, tabPane, Popover, Collapse, CollapseItem,
   Timeline, TimelineItem, Image, Message, Divider, TimePicker, Tag, Cascader, Carousel, CarouselItem, InputNumber, Card,
-  MessageBox
+  MessageBox, Autocomplete
 } from 'element-ui'
 Vue.use(Timeline)
 Vue.use(TimelineItem)
@@ -52,6 +52,11 @@ Vue.use(Badge)
 Vue.use(Upload)
 Vue.use(InputNumber)
 Vue.use(Scrollbar)
+Vue.use(Step)
+Vue.use(Steps)
+Vue.use(Autocomplete)
+Vue.use(Tag)
+Vue.use(CheckboxGroup)
 import '@/assets/icon/iconfont.css'
 import '@/assets/custom.css'
 

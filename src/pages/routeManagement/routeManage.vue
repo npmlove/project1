@@ -12,7 +12,7 @@
           </el-form-item>
 
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="tel" clearable placeholder="代理公司名称"></el-input>
+            <el-input style="width: 130px;" size="medium" :maxlength="inputMax" v-model="tel" clearable placeholder="代理公司名称"></el-input>
           </el-form-item>
 
           <el-form-item>
@@ -159,7 +159,7 @@
         operation: {
           show: true,
           label: '操作',
-          width: '120',
+          width: '380',
           options: [
             {
               label: '编辑价格',

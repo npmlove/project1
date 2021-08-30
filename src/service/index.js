@@ -35,17 +35,24 @@ const serviceApi = {
   //代理列表查询
   agentList: pulicWeb+'/t-agent/list',
   //代理列表新增
-  agentSave:pulicWeb+'/t-agent/save',
+  agentSave: pulicWeb+'/t-agent/save',
   //代理列表修改
-  agentUpdate:pulicWeb+'/t-agent/update',
+  agentUpdate: pulicWeb+'/t-agent/update',
   //代理列表删除
-  agentDelete:pulicWeb+'/t-agent/delete',
+  agentDelete: pulicWeb+'/t-agent/delete',
   //上传Banner图片
-  uploadBannerImage:pulicWeb+'/t-banner/uploadBannerImage',
+  uploadBannerImage: pulicWeb+'/t-banner/uploadBannerImage',
   //保存/修改Banner信息
-  changeBanner:pulicWeb+'/t-banner/changeBanner',
+  changeBanner: pulicWeb+'/t-banner/changeBanner',
   //后台广告管理展示
-  manageBannerList:pulicWeb+'/t-banner/manageBannerList'
+  manageBannerList: pulicWeb+'/t-banner/manageBannerList',
+  //三字代码查询分页
+  airportSearchByPage: pulicWeb+'/t-airport/word-code/searchByPage',
+  //二字代码查询分页
+  companySearchByPage: pulicWeb+'/t-air-company/word-code/searchByPage',
+  //新增航线
+  airlineSave: pulicWeb+'/t-airline/save'
+
 
 
 }
