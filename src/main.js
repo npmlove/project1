@@ -67,7 +67,7 @@ Vue.prototype.$message = Message
 Vue.prototype.$service = serviceAPI
 Vue.prototype.inputMax = 50
 Vue.prototype.imgUrl = 'http://121.5.49.152'
-
+Vue.prototype.$confirm = MessageBox.confirm
 //判断是否登录
 router.beforeEach(function (to, from, next) {
   if (to.meta.needLogin) {
