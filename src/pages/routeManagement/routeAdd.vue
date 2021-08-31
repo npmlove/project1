@@ -490,7 +490,6 @@
           }
           newAgent.push(newJson)
         }
-
         var data = {
           pol: this.ruleForm.pol,
           pod: this.ruleForm.pod,
@@ -503,7 +502,11 @@
           legDetail: JSON.stringify(this.airportTableArr),
           airlineAgentInsertDTOS: newAgent
         }
-        console.log(data)
+        this.$http.post(this.$service.airlineSave,data).then((data) => {
+          if(data.code == 200){
+            
+          }
+        })
       },
       //起始港三字码
       initAirportSearchByPage(keyWord,type) {

@@ -1,33 +1,19 @@
 <template>
-	<div class="content-wrapper">
+  <div class="content-wrapper">
     <div class="content">
-      <div class="echarts-all">
-        <div>
-          <div id="echartsPie1" style="width: 100%;height: 100%;"></div>
-        </div>
-        <div>
-          <div id="echartsPie2" style="width: 100%;height: 100%;"></div>
-        </div>
-        <div>
-          <div id="echartsPie3" style="width: 100%;height: 100%;"></div>
-        </div>
-        <div>
+      <el-tabs type="border-card" @tab-click="handleTabClick">
+        <el-tab-pane label="航线信息">
 
-        </div>
-        <div>
-          <div id="echartsPie5" style="width: 100%;height: 100%;"></div>
-        </div>
-        <div>
-          <div id="echartsPie6" style="width: 100%;height: 100%;"></div>
-        </div>
-      </div>
+        </el-tab-pane>
+        <el-tab-pane label="航线报价">
+
+        </el-tab-pane>
+      </el-tabs>
     </div>
   </div>
 </template>
 
 <script>
-  import qs from 'qs'
-  import echarts from 'echarts'
   export default {
     data() {
       return {
@@ -38,39 +24,83 @@
       
     },
     methods: {
-      
+      handleTabClick(e) {
+        
+      }
     }
   }
 </script>
 
 <style scoped lang="less">
-	@import url("../../assets/icon/iconfont.css");
-	.content-wrapper {
-		width: 100%;
+  @import url("../../assets/icon/iconfont.css");
+
+  .content-wrapper {
+    width: 100%;
     box-sizing: border-box;
     /*height: 100%;*/
     padding: 20px;
     overflow: hidden;
     background-color: #f3f6f9 !important;
   }
-  .echarts-all{
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .echarts-all > div{
-    width: 32.33%;
-    height: 45vh;
-    min-width: 450px;
-    min-height: 430px;
-    margin-right: 1.5%;
-    border: 1px solid #dedede;
-    box-sizing: border-box;
+
+  .el-form {
     background-color: #FFF;
-    margin-top: 15px;
-    // padding: 15px;
   }
-  .echarts-all > div:nth-of-type(3n){
-    margin-right: 0;
+
+  .el-form--inline .el-form-item {
+    margin-bottom: 0;
+    vertical-align: bottom;
+  }
+
+  .parimary_btn {
+    background-color: #9ac143 !important;
+    border-color: #9ac143 !important;
+
+    &:hover {
+      color: #f1e3d5 !important;
+      background-color: #7f9e3c !important;
+      border-color: #7f9e3c !important;
+    }
+  }
+
+  .icon-shouqi {
+    color: #3985ca;
+    margin-right: 2px;
+    font-size: 14px;
+    margin-left: 15px;
+  }
+
+  .shouqi {
+    cursor: pointer;
+    color: #3985ca;
+    position: relative;
+  }
+
+  .shouqi .iconfont {
+    font-size: 2px;
+    position: absolute;
+    height: 20px;
+    line-height: 20px;
+    margin-top: 7px;
+    margin-left: 10px;
+  }
+
+  .wrapper,
+  .content {
+    width: 100%;
+    /*background-color: #fff;*/
+  }
+
+  .el-table .sort-caret.ascending {
+    border-bottom-color: #FFF;
+  }
+
+  .content-search-normal {
+    padding: 20px 0 20px 20px;
+    background: #fff;
+  }
+
+  .content-search-high {
+    padding: 0 0 20px 30px;
   }
 </style>

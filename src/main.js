@@ -58,6 +58,8 @@ Vue.use(Autocomplete)
 Vue.use(Tag)
 Vue.use(CheckboxGroup)
 Vue.use(Drawer)
+Vue.use(Tabs)
+Vue.use(tabPane)
 import '@/assets/icon/iconfont.css'
 import '@/assets/custom.css'
 

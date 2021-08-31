@@ -60,7 +60,7 @@ const serviceApi = {
   airlineSave: pulicWeb+'/t-airline/save',
   //航司线管理列表
   airlineSearchByPage: pulicWeb+'/t-airline/searchByPage'
-  
+
 
 
 

@@ -113,105 +113,28 @@
         total: 0,
         // 列
         columns: [
-          {
-            label: '航线ID',
-            prop: 'id',
-            show: true,
-            width: '120'
-          },
-          {
-            label: '航班代码',
-            prop: 'airCompanyCode',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '起运港',
-            prop: 'pol',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '目的港',
-            prop: 'pod',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '航线区域',
-            prop: 'continent',
-            show: true,
-            width: '150'
-          },
-          {
-            label: '中转/直飞',
-            prop: 'nonStop',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '航程',
-            prop: 'legCount',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '飞机型号',
-            prop: 'planeType',
-            show: true,
-            width: '150'
-          },
-          {
-            label: '托盘',
-            prop: 'tray',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '散货',
-            prop: 'bulkCargo',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '上架/下架',
-            prop: 'status',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '更新时间',
-            prop: 'updateTime',
-            show: true,
-            width: '180'
-          }
+          {label: '航线ID', prop: 'id', show: true, width: '120'},
+          {label: '航班代码', prop: 'airCompanyCode', show: true, width: '100'},
+          {label: '起运港', prop: 'pol', show: true, width: '100'},
+          {label: '目的港', prop: 'pod', show: true, width: '100'},
+          {label: '航线区域', prop: 'continent', show: true, width: '150'},
+          {label: '中转/直飞', prop: 'nonStop', show: true, width: '100'},
+          {label: '航程', prop: 'legCount', show: true, width: '100'},
+          {label: '飞机型号', prop: 'planeType', show: true, width: '150'},
+          {label: '托盘', prop: 'tray', show: true, width: '100'},
+          {label: '散货', prop: 'bulkCargo', show: true, width: '100'},
+          {label: '上架/下架', prop: 'status', show: true, width: '100'},
+          {label: '更新时间',prop: 'updateTime', show: true, width: '180'}
         ],
         // 操作
         operation: {
           show: true,
           label: '操作',
-          width: '380',
+          width: '180',
           options: [
-            {
-              label: '编辑价格',
-              method: 'priceEdit'
-            },
-            {
-              label: '查看价格',
-              method: 'priceView'
-            },
-            {
-              label: '编辑航线',
-              method: 'routeEdit'
-            },
-            {
-              label: '删除航线',
-              method: 'routeDel'
-            },
-            {
-              label: '查看航线',
-              method: 'routeView'
-            }
+            {label: '编辑', method: 'routeEdit'},
+            {label: '删除', method: 'routeDel'},
+            {label: '查看', method: 'routeView'}
           ]
         },
         pol: '',
@@ -350,38 +273,22 @@
       },
       //操作
       handleClick(scope) {
-        if (scope.method == 'edit') {
+        if (scope.method == 'routeEdit') {
           this.$router.push({
-            path: '/adminUser/userEdit',
+            path: '/routeManagement/routeEdit',
             query: {
-              delFlag: scope.row.delFlag,
-              id: scope.row.id,
-              idcard: scope.row.idcard,
-              loginName: scope.row.loginName,
-              name: scope.row.name,
-              roleId: scope.row.roleId,
-              roleName: scope.row.roleName,
-              state: scope.row.state,
-              tel: scope.row.tel,
-              password: scope.row.password
+              id: scope.row.id
             }
           })
-        } else if (scope.method == 'del') {
-          var json = {
-            delFlag: scope.row.delFlag == 0 ? 1 : 0,
-            id: scope.row.id
-          }
-          this.$http.post(this.$service.userUpdate, json).then(data => {
-            if (data.code == 200) {
-              this.initUserSearch()
-              this.$message.success('删除成功')
-            } else {
-              this.$message.error(data.message)
+        } else if (scope.method == 'routeDel') {
+
+        } else if (scope.method == 'routeView') {
+          this.$router.push({
+            path: '/routeManagement/routeDetails',
+            query: {
+              id: scope.row.id
             }
           })
-        } else if (scope.method == 'revise') {
-          this.dialogFormVisible = true
-          this.ruleForm.id = scope.row.id
         }
       },
       handleCurrentChange(e) {
