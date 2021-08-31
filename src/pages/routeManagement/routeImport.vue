@@ -2,9 +2,8 @@
   <div class="content-wrapper">
     <div class="content">
       <div style="font-size: 16px;font-weight: 100;margin-bottom: 10px;">数据导入</div>
-      <div style="font-size: 14px;color: #999;">温馨提示：请按模块说明填写信息后上传，可支持多个文件同时导入，支持格式：xls</div>
+      <div style="font-size: 14px;color: #999;">温馨提示：请按<a :href="href">下载模板</a>说明填写信息后上传，可支持多个文件同时导入，支持格式：xls</div>
       <div style="margin: 20px 0;display: flex;align-items: flex-start;">
-        <el-button type="warning" size="medium" @click="downTemplate">下载模板</el-button>
         <el-upload
           style="display: inline-block;margin-left: 10px;"
           class="upload-demo"
@@ -37,10 +36,11 @@
       return {
         ids: '',
         excelInfo: "", //文件信息
+        href: ''
       }
     },
     mounted() {
-
+      this.href = this.imgUrl+'/image/template/excelTemplate.xlsx'
     },
     methods: {
       // 导入文件的上传
@@ -85,24 +85,6 @@
       // 预览文件
       handlePreview(file) {
         window.location.href = URL.createObjectURL(file.raw);
-      },
-      //下载模块
-      downTemplate() {
-        // axios.get(this.$service.downloadTemplate, {responseType: 'arraybuffer' }).then((res) => {
-        //   const aLink = document.createElement("a");
-        //   let blob = new Blob([res], {
-        //     type: "application/vnd.ms-excel"
-        //   })
-        //   aLink.href = URL.createObjectURL(blob)
-        //   aLink.setAttribute('download', '价格导入模板' + '.xlsx') // 设置下载文件名称
-        //   aLink.click()
-        //   document.body.appendChild(aLink)
-        // })
-        const aLink = document.createElement("a");
-        // let blob = new Blob([res], {
-        //   type: "application/vnd.ms-excel"
-        // })
-        aLink.href = this.imgUrl+'/image/template/航线价格导入模板.xlsx'
       },
       //导出
       handleExport() {

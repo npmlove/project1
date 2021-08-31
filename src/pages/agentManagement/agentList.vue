@@ -7,7 +7,7 @@
             <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="agentName" clearable  placeholder="请输入代理名称"></el-input>
           </el-form-item>
           <el-form-item label="代理简称">
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="agentAbbreviation" clearable placeholder="请输入代理简称"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="agentCode" clearable placeholder="请输入代理简称"></el-input>
           </el-form-item>
           <el-form-item>
             <el-row>
@@ -115,7 +115,7 @@
         },
         labelPosition: 'right',
         agentName: '',
-        agentAbbreviation: '',
+        agentCode: '',
         dialogTitle: '',
         dialogFormVisible: false,
       }
@@ -130,7 +130,7 @@
           pageNum: this.pageNum,
           pageSize: this.pageSize,
           agentName: this.agentName,
-          agentAbbreviation: this.agentAbbreviation,
+          agentCode: this.agentCode,
         }
         this.$http.post(this.$service.agentList, params).then(data => {
           if (data.code == 200) {
@@ -149,7 +149,7 @@
       //清空
       restClick() {
         this.agentName = ''
-        this.agentAbbreviation = ''
+        this.agentCode = ''
         this.pageSize = 10
         this.pageNum = 1
         this.initAgentSearch()

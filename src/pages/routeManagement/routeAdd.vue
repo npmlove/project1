@@ -504,11 +504,11 @@
           fullLeg: newFullLeg.toString(),
           legCount: this.airportTableArr.length,
           legDetail: JSON.stringify(this.airportTableArr),
-          airlineAgentInsertDTOS: JSON.stringify(newAgent)
+          airlineAgentInsertDTOS: newAgent
         }
         this.$http.post(this.$service.airlineSave,data).then((data) => {
           if(data.code == 200){
-            
+
           }else{
             this.$message.error(data.message)
           }
