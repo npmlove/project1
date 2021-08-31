@@ -1,69 +1,33 @@
 <template>
   <div class="content-wrapper">
     <div class="main-title">
-      <el-button
-        class="in-out-button"
-        @click="checkImportExcelDialogVisible"
-      >导入
-      </el-button
-      >
-
+      <el-button class="in-out-button" @click="checkImportExcelDialogVisible">导入</el-button>
     </div>
     <!-- 导入弹框 -->
-    <el-dialog
-      title="导入"
-      :visible.sync="importExcelDialogVisible"
-      width="600px"
-      class="import-class"
-      destroy-on-close
-      @close="excelInfo=''"
-    >
-      <div
-        v-loading="loadingUpload">
+    <el-dialog title="导入" :visible.sync="importExcelDialogVisible" width="600px" class="import-class" destroy-on-close
+      @close="excelInfo=''">
+      <div v-loading="loadingUpload">
         <div>
-          第一步：请<a
-         @click="downTemplate"
-        >下载模板</a
-        >，按说明填写信息后上传
+          第一步：请<a @click="downTemplate">下载模板</a>，按说明填写信息后上传
         </div>
         <div class="uploadExcel">
           <span>第二步：导入文件</span>
-          <el-upload
-            class="upload-demo"
-            action="#"
-            :on-change="handleChange"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :auto-upload="false"
-          >
-            <el-button slot="trigger" size="small" type="primary" v-if="excelInfo==''"
-            >选取文件
-            </el-button
-            >
+          <el-upload class="upload-demo" action="#" :on-change="handleChange" :on-preview="handlePreview"
+            :on-remove="handleRemove" :auto-upload="false">
+            <el-button slot="trigger" size="small" type="primary" v-if="excelInfo==''">选取文件
+            </el-button>
           </el-upload>
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="importExcelDialogVisible = false">取 消</el-button>
-          <el-button
-            type="danger"
-            :disabled="importExcelDisabled"
-            @click="importExcel"
-          >确 定</el-button
-          >
-        </span></div>
+          <el-button type="danger" :disabled="importExcelDisabled" @click="importExcel">确 定</el-button>
+        </span>
+      </div>
     </el-dialog>
     <div class="content">
-      <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ids" clearable
-                placeholder="例: 1,2,3,4"></el-input>
+      <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ids" clearable placeholder="例: 1,2,3,4"></el-input>
       <div class="echarts-all">
-
-        <el-button type="warning"
-                   size="small"
-                   plain
-                   icon="el-icon-download"
-                   @click="handleExport">导出
-        </el-button>
-
+        <el-button type="warning" size="small" plain icon="el-icon-download" @click="handleExport">导出</el-button>
       </div>
     </div>
 
@@ -72,7 +36,6 @@
 
 <script>
   import axios from "axios";
-
 
   export default {
     data() {
@@ -126,17 +89,21 @@
         this.importExcelDisabled = true;
         const formdate = new FormData();
         formdate.append("excel", this.excelInfo);
-        axios.post(this.$service.airlineExcelImport, formdate,{responseType: 'arraybuffer'}).then(res => {
-          if (res.byteLength==0){
+        axios.post(this.$service.airlineExcelImport, formdate, {
+          responseType: 'arraybuffer'
+        }).then(res => {
+          if (res.byteLength == 0) {
             this.$message.success('导入成功')
-            this.importExcelDialogVisible= false
+            this.importExcelDialogVisible = false
             return;
-          }else{
+          } else {
             this.$message.success('导入失败,请查看失败文件')
-            this.importExcelDialogVisible= false
+            this.importExcelDialogVisible = false
           }
           const aLink = document.createElement("a");
-          let blob = new Blob([res], {type: "application/vnd.ms-excel"})
+          let blob = new Blob([res], {
+            type: "application/vnd.ms-excel"
+          })
           aLink.href = URL.createObjectURL(blob)
           aLink.setAttribute('download', '导入失败文件' + '.xlsx') // 设置下载文件名称
 
@@ -144,11 +111,15 @@
           document.body.appendChild(aLink)
         })
       },
-      downTemplate(){
-        axios.get(this.$service.downloadTemplate, {responseType: 'arraybuffer'}).then((res) => {
+      downTemplate() {
+        axios.get(this.$service.downloadTemplate, {
+          responseType: 'arraybuffer'
+        }).then((res) => {
           // if(res.status == "200") {
           const aLink = document.createElement("a");
-          let blob = new Blob([res], {type: "application/vnd.ms-excel"})
+          let blob = new Blob([res], {
+            type: "application/vnd.ms-excel"
+          })
           aLink.href = URL.createObjectURL(blob)
           aLink.setAttribute('download', '价格导入模板' + '.xlsx') // 设置下载文件名称
           aLink.click()
@@ -163,10 +134,16 @@
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          axios.post(this.$service.airlineExcelExport, {ids: this.ids}, {responseType: 'arraybuffer'}).then((res) => {
+          axios.post(this.$service.airlineExcelExport, {
+            ids: this.ids
+          }, {
+            responseType: 'arraybuffer'
+          }).then((res) => {
             // if(res.status == "200") {
             const aLink = document.createElement("a");
-            let blob = new Blob([res], {type: "application/vnd.ms-excel"})
+            let blob = new Blob([res], {
+              type: "application/vnd.ms-excel"
+            })
             aLink.href = URL.createObjectURL(blob)
             if (this.ids.length > 1) {
               aLink.setAttribute('download', '客户资源' + '.zip') // 设置下载文件名称
@@ -181,8 +158,7 @@
           })
 
         });
-      }
-      ,
+      },
     }
   }
 </script>
@@ -205,7 +181,7 @@
     flex-wrap: wrap;
   }
 
-  .echarts-all > div {
+  .echarts-all>div {
     width: 32.33%;
     height: 45vh;
     min-width: 450px;
@@ -218,7 +194,7 @@
     // padding: 15px;
   }
 
-  .echarts-all > div:nth-of-type(3n) {
+  .echarts-all>div:nth-of-type(3n) {
     margin-right: 0;
   }
 
