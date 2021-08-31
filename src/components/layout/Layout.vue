@@ -70,15 +70,16 @@ export default {
         }
         .el-submenu__icon-arrow {
           right: 30px;
+          color: #2273CE;
         }
       }
       &.is-active {
-        background-color: #00A06E;
-        color: #FFF;
+        // background-color: #2273CE;
+        color: #2273CE;
         .el-submenu__title {
-          color: #FFF;
+          color: #2273CE;
           .icon {
-            color: #FFF;
+            color: #2273CE !important;
           }
         }
       }
@@ -88,10 +89,9 @@ export default {
           height: 40px;
           line-height: 40px;
           &.is-active {
-            background: #00A06E;
-            color: #FFF;
-            // border-left: 4px solid #00A06E;
-            background-color: ;
+            // background: #2273CE;
+            color: #2273CE;
+            border-right: 4px solid #2273CE;
           }
         }
 

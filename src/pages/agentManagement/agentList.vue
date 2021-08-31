@@ -17,7 +17,7 @@
           </el-form-item>
           <el-form-item style="float: right;margin-right: 0">
             <el-row>
-              <el-button @click="newAdd" size="medium" type="primary">新增</el-button>
+              <el-button @click="newAdd" size="medium">新增</el-button>
             </el-row>
           </el-form-item>
         </div>

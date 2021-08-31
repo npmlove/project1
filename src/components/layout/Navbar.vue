@@ -1,8 +1,8 @@
 <template>
-  <div class="header-container" style="background: #313131">
+  <div class="header-container" style="background: #2273CE">
     <div class="logo">
-      <!-- <img src="../../assets/logo_icon@2x.png" /> -->
-      <div class="hongying">logo</div>
+      <img src="../../assets/logo.png" style="width: 157px;height: 28px;" />
+      <!-- <div class="hongying">logo</div> -->
     </div>
     <div class="user-info">
       <div class="user">{{userName}}</div>

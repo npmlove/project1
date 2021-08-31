@@ -22,7 +22,7 @@ sup,sub{vertical-align:baseline}
 html {overflow: hidden;height: 100%;font-size: 50px;-webkit-tap-highlight-color: transparent;}
 body {height:100%;font-family: Arial Regular, "Microsoft Yahei", Helvetica, sans-serif;color: #474f5a;font-size: 12px;line-height: 1;-webkit-text-size-adjust: none;}
 hr {height: .02rem;margin: .1rem 0;border: medium none;border-top: .02rem solid #cacaca;}
-a {color: #00A06E;text-decoration: none;cursor: pointer;padding: 0 5px}
+a {color: #2273CE;text-decoration: none;cursor: pointer;padding: 0 5px}
 input::-webkit-input-placeholder,textarea::-webkit-input-placeholder {color: #ccc;font-size: 14px;font-family: Arial Regular,"Microsoft Yahei"}
 ::-webkit-scrollbar {
   width: 5px;

@@ -27,10 +27,21 @@ body{
 .el-button--default{
 	width: 100px;
 }
+.el-button{
+  color: #2273CE;
+  border-color: #2273CE;
+  background-color: #FFF;
+}
+.el-button:hover {
+  color: #2273CE !important;
+  border-color: #2273CE !important;
+  background-color: #FFF !important;
+}
 .el-button--primary{
   width: 100px;
-  background-color: #00A06E !important;
-  border-color: #00A06E !important;
+  background-color: #2273CE !important;
+  border-color: #2273CE !important;
+  color: #FFF;
 }
 .shouqi .iconfont{
 	font-size: 12px !important;
@@ -81,7 +92,7 @@ body{
 	font-stretch: normal;
 	line-height: 40px;
 	color: #474f5a;
-	border-left: 4px solid #00A06E !important;
+	border-left: 4px solid #2273CE !important;
 	padding-left: 15px;
 }
 .el-input__suffix {
@@ -128,7 +139,7 @@ body{
   height: 49px;
   line-height: 49px;
   padding: 0;
-  background-color: #00A06E;
+  background-color: #2273CE;
   color: #fff;
   font-weight: normal;
 }
@@ -187,15 +198,10 @@ body{
   overflow: auto;
 }
 
-.el-button:hover {
-  color: #787878 !important;
-  border-color: #ccc !important;
-  background-color: #ccc !important;
-}
 .el-button--primary:hover {
   color: #FFF !important;
-  border-color: #00A06E !important;
-  background-color: #00A06E !important;
+  border-color: #2273CE !important;
+  background-color: #2273CE !important;
 }
 .el-form-item__content {
   height: 36px;
@@ -219,15 +225,15 @@ body{
 	background-color: #F9F9F9;
 }
 .el-checkbox__input.is-checked+.el-checkbox__label {
-	color: #00A06E !important;
+	color: #2273CE !important;
 }
 .el-checkbox__input.is-checked .el-checkbox__inner,
 .el-checkbox__input.is-indeterminate .el-checkbox__inner {
-	background-color: #00A06E !important;
-  border-color: #00A06E !important;
+	background-color: #2273CE !important;
+  border-color: #2273CE !important;
 }
 .el-pager li.active {
-	color: #00A06E !important;
+	color: #2273CE !important;
 	/*border: 1px #3985ca solid;*/
 }
 .el-pagination__editor.el-input .el-input__inner {
@@ -240,11 +246,11 @@ body{
 	/*color: #333 !important;*/
 }
 .el-radio__input.is-checked+.el-radio__label {
-  color: #00A06E !important;
+  color: #2273CE !important;
 }
 .el-radio__input.is-checked .el-radio__inner {
-  border-color: #00A06E !important;
-  background: #00A06E !important;
+  border-color: #2273CE !important;
+  background: #2273CE !important;
 }
 
 .display_order{
@@ -363,10 +369,10 @@ textarea {
   border-color: #FFF !important;
 }
 .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active{
-  color: #00A06E !important;
+  color: #2273CE !important;
 }
 .el-tabs--border-card>.el-tabs__header .el-tabs__item:hover{
-  color: #00A06E !important;
+  color: #2273CE !important;
 }
 .text-area-list .el-textarea__inner{
   height: 100px !important;
@@ -504,10 +510,10 @@ textarea {
   margin-bottom: 10px;
 }
 .el-timeline-item__tail{
-  border-color: #00A06E;
+  border-color: #2273CE;
 }
 .el-timeline-item__node{
-  background-color: #00A06E;
+  background-color: #2273CE;
 }
 .el-table td, .el-table th{
   text-overflow: inherit;
@@ -586,7 +592,7 @@ textarea {
     width: 10px;
     height: 10px;
     position: absolute;
-    background-color: #00A06E;
+    background-color: #2273CE;
     border-radius: 50%;
     right: 0;
   }
@@ -600,7 +606,7 @@ textarea {
     width: 1px;
     height: 100%;
     position: absolute;
-    background-color: #00A06E;
+    background-color: #2273CE;
     left: -5px;
   }
   .timeline-total .class3::after{
@@ -616,10 +622,10 @@ textarea {
     background-color: #cdcdcd;
   }
   .timeline-total .class2::after{
-    background-color: #00A06E;
+    background-color: #2273CE;
   }
   .timeline-total .class2::before{
-    background-color: #00A06E;
+    background-color: #2273CE;
   }
 .re-form .el-form-item__content{
   height: auto;
@@ -638,4 +644,18 @@ textarea {
 }
 .el-drawer__header{
   font-size: 16px;
+}
+.el-switch.is-checked .el-switch__core{
+  border-color: #2273CE;
+  background-color: #2273CE;
+}
+.el-step__head.is-success{
+  color: #2273CE;
+  border-color: #2273CE;
+}
+.el-step__title.is-success{
+  color: #2273CE;
+}
+.el-switch__label.is-active{
+  color: #2273CE;
 }

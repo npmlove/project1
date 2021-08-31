@@ -140,10 +140,10 @@ export default {
       width: 100%;
       bottom: 0;
       left: 0;
-      border-bottom: 3px solid #00A06E;
+      border-bottom: 3px solid #2273CE;
     }
     .back {
-      color: #00A06E;
+      color: #2273CE;
       font-weight: normal;
     }
   }
@@ -219,6 +219,6 @@ export default {
 }
 .ul-list li.active{
   background-color: #f3f6f9 !important;
-  color: #00A06E;
+  color: #2273CE;
 }
 </style>

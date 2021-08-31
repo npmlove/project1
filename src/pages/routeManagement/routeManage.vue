@@ -74,7 +74,7 @@
 
           <el-form-item style="float: right;margin-right: 0">
             <el-row>
-              <el-button @click="newAdd" size="medium" type="primary">新增航线</el-button>
+              <el-button @click="newAdd" size="medium">新增航线</el-button>
             </el-row>
           </el-form-item>
         </div>

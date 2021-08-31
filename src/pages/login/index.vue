@@ -1,23 +1,25 @@
 <template>
   <div class="login_bg">
-    <div class="land_logo"></div>
+    <div class="land_logo">
+      <div style="margin-left: 30px;">
+        <img src="../../assets/logo.png" style="width: 157px;height: 28px;"/>
+      </div>
+    </div>
     <div class="login_content">
       <div class="el-total form_list">
-        <div class="el-login">系统</div>
-        <div class="list-item">
-          <div class="list">
-            <img mode="aspectFit" src="../../assets/zhanghao@2x.png" />
-            <input v-model="form.name" class="input" type="text" placeholder="请输入账号" />
-          </div>
-          <div class="list">
-            <img src="../../assets/mima@2x.png" />
-            <input v-model="form.pwd" class="input" type="password" placeholder="请输入密码" />
-          </div>
+        <div class="el-login">账号登录</div>
+        <el-form :label-position="labelPosition" label-width="60px" size="medium" class="demo-form-inline">
+          <el-form-item label="账号">
+            <el-input v-model="form.name" type="text" placeholder="请输入账号" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="密码">
+            <el-input v-model="form.pwd" type="password" placeholder="请输入密码" clearable></el-input>
+          </el-form-item>
           <div class="error">{{errorTitle}}</div>
           <div class="list">
             <el-button @click="onSubmit" type="primary">登录</el-button>
           </div>
-        </div>
+        </el-form>
       </div>
     </div>
   </div>
@@ -35,6 +37,7 @@
           pwd: '',
           yzm: ''
         },
+        labelPosition: 'right',
         flag: true,
         errorTitle: ''
       }
@@ -87,48 +90,35 @@
   }
 
   .land_logo {
+    background-color: #2273CE;
+    height: 64px;
     display: flex;
-    padding: 22px;
-    padding-bottom: 0;
+    align-items: center;
   }
-
-  .land_logo>div.logo-ziti {
-    font-size: 18px;
-    font-weight: 500;
-    color: rgba(246, 246, 246, 1);
-    height: 32px;
-    // line-height: 32px;
-    margin-left: 20px;
-    // background-image: url(../../assets/MES@2x.png);
-    background-size: contain;
-    background-repeat: no-repeat;
-    width: 120px;
-    background-position: center;
-    height: 48px;
-  }
-
   .login_content {
     width: 386px;
-    height: 400px;
+    height: 360px;
     position: absolute;
     top: 50%;
     margin-top: -200px;
     background-color: #FFF;
     right: 12%;
-    border-radius: 10px;
+    // border-radius: 10px;
   }
 
   .el-login {
-    font-size: 24px;
-    color: #00A06E;
+    font-size: 20px;
+    color: #FFF;
     text-align: center;
     font-weight: 500;
-    padding: 45px 0;
+    padding: 35px 0;
+    background-color: #2273CE;
   }
 
   .el-form {
     width: 320px;
     margin: 0 auto;
+    margin-top: 40px;
   }
 
   .el-button {
@@ -178,7 +168,7 @@
   .form_list .list .btn {
     width: 100%;
     height: 40px;
-    background-color: #00A06E;
+    background-color: #2273CE;
     color: #FFF;
     font-size: 15px;
     border-radius: 5px;
@@ -195,6 +185,6 @@
     font-size: 14px;
     margin-top: -15px;
     height: 20px;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
   }
 </style>

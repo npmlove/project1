@@ -48,7 +48,7 @@
         >
         <template slot-scope="scope">
           <a v-for="(item, index) in operation.options" @click.prevent="handleClick(item.method, scope.row, $event)">
-            <span style="color: #00a06e;">{{item.label}}</span>
+            <span style="color: #2273CE;">{{item.label}}</span>
           </a>
         </template>
       </el-table-column>

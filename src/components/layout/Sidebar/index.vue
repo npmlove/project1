@@ -5,7 +5,7 @@
         <!--导航菜单-->
         <el-menu :default-active="activePath">
           <sidebar-item
-          style="color:#fff"
+            style="color:#fff"
             v-for="route in routes"
             :key="route.path"
             :item="route"

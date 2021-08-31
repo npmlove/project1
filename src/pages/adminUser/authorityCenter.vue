@@ -5,7 +5,7 @@
         <div class="content-search-normal">
           <el-form-item style="float: right;margin-right: 20px">
             <el-row>
-              <el-button @click="newAdd" size="medium" type="primary">新增权限</el-button>
+              <el-button @click="newAdd" size="medium">新增权限</el-button>
             </el-row>
           </el-form-item>
         </div>
