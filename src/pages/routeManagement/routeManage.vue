@@ -91,6 +91,7 @@
         @sizeChange='handleSizeChange'
         @currentChange='handleCurrentChange'
         @handleClick='handleClick'
+        @switchChangeUser="switchChangeUser"
         >
       </Table>
     </div>
@@ -123,7 +124,7 @@
           {label: '飞机型号', prop: 'planeType', show: true, width: '150'},
           {label: '托盘', prop: 'tray', show: true, width: '100'},
           {label: '散货', prop: 'bulkCargo', show: true, width: '100'},
-          {label: '上架/下架', prop: 'status', show: true, width: '100'},
+          {label: '状态', prop: 'status', show: true, width: '100'},
           {label: '更新时间',prop: 'updateTime', show: true, width: '180'}
         ],
         // 操作
@@ -227,6 +228,22 @@
       agentMethod(agentName) {
         this.initAgentList(agentName)
       },
+      switchChangeUser(item) {
+        var data = {
+          id: item.row.id,
+          status: item.row.status ? 0 : 1
+        }
+        this.$http.post(this.$service.airlineUpdate,data).then(data => {
+          if (data.code == 200) {
+            this.$message.success('状态更新成功')
+            this.initAirlineSearchByPage()
+          }else{
+            this.$message.error('状态更新失败')
+          }
+        }).catch((e) => {
+          console.log(e)
+        })
+      },
       //航线列表
       initAirlineSearchByPage() {
         const vm = this
@@ -266,6 +283,9 @@
         this.pageSize = 10
         this.pageNum = 1
         this.initAirlineSearchByPage()
+        this.initAirportSearchByPage()
+        this.initCompanySearchByPage()
+        this.initAgentList()
       },
       //新增
       newAdd() {
@@ -273,6 +293,7 @@
       },
       //操作
       handleClick(scope) {
+        var vm = this
         if (scope.method == 'routeEdit') {
           this.$router.push({
             path: '/routeManagement/routeEdit',
@@ -281,7 +302,22 @@
             }
           })
         } else if (scope.method == 'routeDel') {
-
+          this.$confirm("确定删除这条航线?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+            vm.$http.delete(vm.$service.airlineDelete+'?id='+scope.row.id).then(data => {
+              if (data.code == 200) {
+                vm.$message.success('删除成功')
+                this.initAirlineSearchByPage()
+              }else{
+                vm.$message.error('删除失败')
+              }
+            })
+          }).catch(() => {
+            console.log('取消')
+          })
         } else if (scope.method == 'routeView') {
           this.$router.push({
             path: '/routeManagement/routeDetails',

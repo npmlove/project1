@@ -278,7 +278,7 @@
                 </div>
               </div>
             </div>
-            <div v-if="(item.ratesList.length != 2)" class="rest-style" style="margin-top: 20px;">
+            <div v-if="(item.ratesList.length != 2) && (listItem.cargoType.length != 2)" class="rest-style" style="margin-top: 20px;">
               <el-form-item label=" " label-width="150px">
                 <el-button @click="addCargoType(index,listIndex)" style="height: 36px;line-height: 36px;padding: 0;" type="primary">添加代理报价</el-button>
               </el-form-item>

@@ -59,8 +59,11 @@ const serviceApi = {
   //新增航线
   airlineSave: pulicWeb+'/t-airline/save',
   //航司线管理列表
-  airlineSearchByPage: pulicWeb+'/t-airline/searchByPage'
-
+  airlineSearchByPage: pulicWeb+'/t-airline/searchByPage',
+  //航线信息修改/上架下架按钮
+  airlineUpdate: pulicWeb+'/t-airline/update',
+  //航线删除
+  airlineDelete: pulicWeb+'/t-airline/delete'
 
 
 
