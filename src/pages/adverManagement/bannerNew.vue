@@ -3,6 +3,9 @@
     <div class="content">
       <el-form :label-position="labelPosition" label-width="80px" size="medium" class="demo-form-inline">
         <div class="banner-list" v-for="(item,index) in bannerArr" :key="index">
+          <el-form-item label="轮播名称">
+            <el-input :value="'广告轮播'+(index+1)" style="width: 85%;" clearable placeholder="请输入链接地址" :maxlength="inputMax" :disabled="true"></el-input>
+          </el-form-item>
           <el-form-item @click="aaa(index)" class="up-input" label="图片">
             <div @click="getImageTypeIndex(index)">
               <el-upload
@@ -14,13 +17,14 @@
                 <img v-if="item.bannerPath" :src="imgUrl+item.bannerPath" style="width: 100%;height: 100%;">
                 <i v-else class="el-icon-plus avatar-uploader-icon "></i>
               </el-upload>
+              <div style="font-size: 14px;color: #999;">建议尺寸1920*600</div>
             </div>
           </el-form-item>
-          <el-form-item label="链接地址">
-            <el-input v-model="item.bannerUrl" style="width: 85%;" clearable placeholder="请输入代理简称" :maxlength="inputMax"></el-input>
+          <el-form-item label="链接地址" style="padding-top: 20px;">
+            <el-input v-model="item.bannerUrl" style="width: 85%;" clearable placeholder="请输入链接地址" :maxlength="inputMax"></el-input>
           </el-form-item>
           <el-form-item label="状态">
-            <el-switch v-model="item.status" active-text="启用" inactive-text="禁用" ></el-switch>
+            <el-switch v-model="item.status" active-text="禁用" active-color="#C0CCDA" inactive-color="#409EFF" inactive-text="启用" ></el-switch>
           </el-form-item>
         </div>
       </el-form>
@@ -87,7 +91,7 @@
             this.$message.error('您还有banner没有配置')
             return
           }
-          this.bannerArr[i].status = this.bannerArr[i].status ? 1 : 0
+          this.bannerArr[i].status = this.bannerArr[i].status ? 0 : 1
           if(!this.bannerArr[i].sort){
             this.bannerArr[i].sort = i+1
           }
@@ -109,9 +113,9 @@
             this.bannerArr = data.data
             for(var q = 0; q < this.bannerArr.length; q++){
               if(this.bannerArr[q].status == '1'){
-                this.bannerArr[q].status = true
-              }else{
                 this.bannerArr[q].status = false
+              }else{
+                this.bannerArr[q].status = true
               }
             }
             for(var i = 0; i < leg; i++){

@@ -471,7 +471,7 @@
           for(var a = 0; a < this.airlineAgent[q].ratesList.length; a++){
             var list = {}
             list.cargoType = this.airlineAgent[q].ratesList[a].cargoType.toString()
-            list.RatesDTO = []
+            list.ratesInsertDTOS = []
             for(var z = 0; z < this.airlineAgent[q].ratesList[a].tableData.length; z++){
               var childer = {
                 vw: this.airlineAgent[q].ratesList[a].tableData[z].vw,
@@ -484,7 +484,7 @@
                 ratesLevel4: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel4,
                 ratesLevel5: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel5,
               }
-              list.RatesDTO.push(childer)
+              list.ratesInsertDTOS.push(childer)
             }
             newJson.ratesList.push(list)
           }
@@ -504,7 +504,7 @@
         }
         this.$http.post(this.$service.airlineSave,data).then((data) => {
           if(data.code == 200){
-            
+
           }
         })
       },
