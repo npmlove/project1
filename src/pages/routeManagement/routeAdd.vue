@@ -504,7 +504,8 @@
           fullLeg: newFullLeg.toString(),
           legCount: this.airportTableArr.length,
           legDetail: JSON.stringify(this.airportTableArr),
-          airlineAgentInsertDTOS: newAgent
+          airlineAgentInsertDTOS: newAgent,
+          remark: this.ruleForm.remark
         }
         this.$http.post(this.$service.airlineSave,data).then((data) => {
           if(data.code == 200){
@@ -716,7 +717,7 @@
           otherFeesArr: [],
           ratesList: [
             {
-              cargoType: ['散货价'],
+              cargoType: ['0'],
               vw: '',
               tableData: []
             }

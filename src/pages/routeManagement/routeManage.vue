@@ -227,7 +227,7 @@
       agentMethod(agentName) {
         this.initAgentList(agentName)
       },
-      //获取用户列表
+      //航线列表
       initAirlineSearchByPage() {
         const vm = this
         var data = {
