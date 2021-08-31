@@ -781,6 +781,12 @@
     background-color: #FFF;
     padding: 20px;
     box-sizing: border-box;
+    /deep/ .el-form{
+      background-color: transparent;
+    }
+    /deep/ .el-form--inline .el-form-item{
+      margin-bottom: 20px;
+    }
 
     /deep/ .textArea {
       .el-form-item__content {

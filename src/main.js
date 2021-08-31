@@ -13,7 +13,8 @@ import Export2Excel from '@/vendor/Export2Excel.js'
 import '@/vendor/directives3'
 
 
-//import pinyin from 'js-pinyin'
+import '@/assets/icon/iconfont.css'
+import '@/assets/custom.css'
 import '@/assets/reset.css'
 import { Col, Row, Button, Switch,
   Table, DatePicker, Menu, MenuItem,
@@ -60,8 +61,7 @@ Vue.use(CheckboxGroup)
 Vue.use(Drawer)
 Vue.use(Tabs)
 Vue.use(tabPane)
-import '@/assets/icon/iconfont.css'
-import '@/assets/custom.css'
+
 
 
 
