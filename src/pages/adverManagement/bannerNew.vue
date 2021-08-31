@@ -83,7 +83,11 @@
       //保存
       dialogComfirm(ruleForm) {
         for(var i = 0; i < this.bannerArr.length; i++){
-          this.bannerArr[i].status = this.bannerArr[i].status ? 0 : 1
+          if(!this.bannerArr[i].bannerPath){
+            this.$message.error('您还有banner没有配置')
+            return
+          }
+          this.bannerArr[i].status = this.bannerArr[i].status ? 1 : 0
           if(!this.bannerArr[i].sort){
             this.bannerArr[i].sort = i+1
           }
