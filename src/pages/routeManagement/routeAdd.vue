@@ -465,7 +465,7 @@
             agentId: ag.split('#')[0],
             agentName: ag.split('#')[1],
             name: this.airlineAgent[q].name,
-            otherFees: this.airlineAgent[q].otherFees,
+            otherFees: JSON.stringify(this.airlineAgent[q].otherFees),
             dows: this.airlineAgent[q].dows.toString(),
             ratesList: []
           }
