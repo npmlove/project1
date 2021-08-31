@@ -57,7 +57,10 @@ const serviceApi = {
   //二字代码查询分页
   companySearchByPage: pulicWeb+'/t-air-company/word-code/searchByPage',
   //新增航线
-  airlineSave: pulicWeb+'/t-airline/save'
+  airlineSave: pulicWeb+'/t-airline/save',
+  //航司线管理列表
+  airlineSearchByPage: pulicWeb+'/t-airline/searchByPage'
+  
 
 
 

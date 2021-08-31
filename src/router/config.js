@@ -142,7 +142,7 @@ const routeManagementCenter = [{
       name: 'routeManage',
       meta: {
         title: '航线列表',
-        keepAlive:true,
+        keepAlive:false,
         needLogin: true
       }
     },

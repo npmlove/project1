@@ -140,7 +140,7 @@ body{
   padding: 0;
 }
 .el-table .cell {
-  padding-left: 30px;
+  /* padding-left: 30px; */
   text-overflow: inherit;
   padding-right: 0;
 }

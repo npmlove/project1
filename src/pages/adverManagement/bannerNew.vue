@@ -90,7 +90,8 @@
         }
         this.$http.post(this.$service.changeBanner, this.bannerArr).then(data => {
           if (data.code == 200) {
-
+            this.$message.success('保存成功')
+            this.initBannerList()
           } else {
             this.$message.error(data.message)
           }
