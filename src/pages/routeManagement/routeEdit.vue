@@ -451,7 +451,7 @@
       submitData() {
         var newFullLeg = []
         for(var i = 0; i < this.fullLeg.length; i++){
-          newFullLeg.push(this.fullLeg[i].feesName)
+          newFullLeg.push(this.fullLeg[i].airportName)
         }
         var newAgent = []
         for(var q = 0; q < this.airlineAgent.length; q++){
@@ -486,9 +486,12 @@
           }
           newAgent.push(newJson)
         }
+        var pod = JSON.parse(JSON.stringify(this.ruleForm.pod))
         var data = {
           pol: this.ruleForm.pol,
-          pod: this.ruleForm.pod,
+          pod: pod.split('#')[0],
+          continent: pod.split('#')[1],
+          planeType: this.airportTableArr[0].childerTable[0].vehicleType,
           airCompanyCode: this.ruleForm.airCompanyCode,
           shortestPrescription: this.ruleForm.shortestPrescription,
           longestPrescription: this.ruleForm.longestPrescription,
@@ -496,11 +499,14 @@
           fullLeg: newFullLeg.toString(),
           legCount: this.airportTableArr.length,
           legDetail: JSON.stringify(this.airportTableArr),
-          airlineAgentInsertDTOS: newAgent
+          airlineAgentInsertDTOS: newAgent,
+          remark: this.ruleForm.remark
         }
         this.$http.post(this.$service.airlineSave,data).then((data) => {
           if(data.code == 200){
-
+            this.$router.push('/routeManagement/routeManage')
+          }else{
+            this.$message.error(data.message)
           }
         })
       },
@@ -706,7 +712,7 @@
           otherFeesArr: [],
           ratesList: [
             {
-              cargoType: ['散货价'],
+              cargoType: ['0'],
               vw: '',
               tableData: []
             }
@@ -756,7 +762,7 @@
       //添加代理报价
       addCargoType(index,listIndex){
         var json = {
-          cargoType: [],
+          cargoType: ['0'],
           vw: '',
           tableData: []
         }

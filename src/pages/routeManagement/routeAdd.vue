@@ -185,7 +185,7 @@
                   v-for="item in dowsOpt"
                   :key="item.day"
                   :label="item.day"
-                  :value="item.day">
+                  :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -392,25 +392,32 @@
         ],
         dowsOpt: [
           {
-            day: 'D1'
+            day: 'D1',
+            value: '1'
           },
           {
-            day: 'D2'
+            day: 'D2',
+            value: '2'
           },
           {
-            day: 'D3'
+            day: 'D3',
+            value: '3'
           },
           {
-            day: 'D4'
+            day: 'D4',
+            value: '4'
           },
           {
-            day: 'D5'
+            day: 'D5',
+            value: '5'
           },
           {
-            day: 'D6'
+            day: 'D6',
+            value: '6'
           },
           {
-            day: 'D7'
+            day: 'D7',
+            value: '7'
           }
         ],
         airlineAgent: [
@@ -509,7 +516,7 @@
         }
         this.$http.post(this.$service.airlineSave,data).then((data) => {
           if(data.code == 200){
-
+            this.$router.push('/routeManagement/routeManage')
           }else{
             this.$message.error(data.message)
           }
@@ -767,7 +774,7 @@
       //添加代理报价
       addCargoType(index,listIndex){
         var json = {
-          cargoType: [],
+          cargoType: ['0'],
           vw: '',
           tableData: []
         }
