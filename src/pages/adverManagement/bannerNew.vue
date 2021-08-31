@@ -20,7 +20,7 @@
             <el-input v-model="item.bannerUrl" style="width: 85%;" clearable placeholder="请输入代理简称" :maxlength="inputMax"></el-input>
           </el-form-item>
           <el-form-item label="状态">
-            <el-switch v-model="item.status" active-text="禁用" inactive-text="启用"></el-switch>
+            <el-switch v-model="item.status" active-text="启用" inactive-text="禁用" ></el-switch>
           </el-form-item>
         </div>
       </el-form>
@@ -103,12 +103,19 @@
           if (data.code == 200) {
             var leg = 5 - data.data.length
             this.bannerArr = data.data
+            for(var q = 0; q < this.bannerArr.length; q++){
+              if(this.bannerArr[q].status == '1'){
+                this.bannerArr[q].status = true
+              }else{
+                this.bannerArr[q].status = false
+              }
+            }
             for(var i = 0; i < leg; i++){
               var json = {
                 bannerImgName: '',
                 bannerPath: '',
                 bannerUrl: '',
-                status: '',
+                status: false,
                 id: '',
                 sort: ''
               }
