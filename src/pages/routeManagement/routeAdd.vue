@@ -28,7 +28,8 @@
                 v-for="item in podOpt"
                 :disabled="ruleForm.pol == item.threeLetterCode"
                 :key="item.threeLetterCode"
-                :value="item.threeLetterCode">
+                :label="item.threeLetterCode"
+                :value="item.threeLetterCode+'#'+item.continent">
                   <span>{{item.threeLetterCode}}</span>
                   <span style="margin-left: 5px;">{{item.name}}</span>
               </el-option>
@@ -455,7 +456,7 @@
       submitData() {
         var newFullLeg = []
         for(var i = 0; i < this.fullLeg.length; i++){
-          newFullLeg.push(this.fullLeg[i].feesName)
+          newFullLeg.push(this.fullLeg[i].airportName)
         }
         var newAgent = []
         for(var q = 0; q < this.airlineAgent.length; q++){
@@ -464,7 +465,7 @@
             agentId: ag.split('#')[0],
             agentName: ag.split('#')[1],
             name: this.airlineAgent[q].name,
-            otherFees: JSON.stringify(this.airlineAgent[q].otherFees),
+            otherFees: this.airlineAgent[q].otherFees,
             dows: this.airlineAgent[q].dows.toString(),
             ratesList: []
           }
@@ -490,9 +491,12 @@
           }
           newAgent.push(newJson)
         }
+        var pod = JSON.parse(JSON.stringify(this.ruleForm.pod))
         var data = {
           pol: this.ruleForm.pol,
-          pod: this.ruleForm.pod,
+          pod: pod.split('#')[0],
+          continent: pod.split('#')[1],
+          planeType: this.airportTableArr[0].childerTable[0].vehicleType,
           airCompanyCode: this.ruleForm.airCompanyCode,
           shortestPrescription: this.ruleForm.shortestPrescription,
           longestPrescription: this.ruleForm.longestPrescription,
@@ -500,11 +504,13 @@
           fullLeg: newFullLeg.toString(),
           legCount: this.airportTableArr.length,
           legDetail: JSON.stringify(this.airportTableArr),
-          airlineAgentInsertDTOS: newAgent
+          airlineAgentInsertDTOS: JSON.stringify(newAgent)
         }
         this.$http.post(this.$service.airlineSave,data).then((data) => {
           if(data.code == 200){
-
+            
+          }else{
+            this.$message.error(data.message)
           }
         })
       },

@@ -88,16 +88,21 @@
       },
       //下载模块
       downTemplate() {
-        axios.get(this.$service.downloadTemplate, {responseType: 'arraybuffer' }).then((res) => {
-          const aLink = document.createElement("a");
-          let blob = new Blob([res], {
-            type: "application/vnd.ms-excel"
-          })
-          aLink.href = URL.createObjectURL(blob)
-          aLink.setAttribute('download', '价格导入模板' + '.xlsx') // 设置下载文件名称
-          aLink.click()
-          document.body.appendChild(aLink)
-        })
+        // axios.get(this.$service.downloadTemplate, {responseType: 'arraybuffer' }).then((res) => {
+        //   const aLink = document.createElement("a");
+        //   let blob = new Blob([res], {
+        //     type: "application/vnd.ms-excel"
+        //   })
+        //   aLink.href = URL.createObjectURL(blob)
+        //   aLink.setAttribute('download', '价格导入模板' + '.xlsx') // 设置下载文件名称
+        //   aLink.click()
+        //   document.body.appendChild(aLink)
+        // })
+        const aLink = document.createElement("a");
+        // let blob = new Blob([res], {
+        //   type: "application/vnd.ms-excel"
+        // })
+        aLink.href = this.imgUrl+'/image/template/航线价格导入模板.xlsx'
       },
       //导出
       handleExport() {
