@@ -82,7 +82,13 @@
       },
       //保存
       dialogComfirm(ruleForm) {
-        this.$http.post(this.$service.changeBanner, JSON.stringify(this.bannerArr)).then(data => {
+        for(var i = 0; i < this.bannerArr.length; i++){
+          this.bannerArr[i].status = this.bannerArr[i].status ? 0 : 1
+          if(!this.bannerArr[i].sort){
+            this.bannerArr[i].sort = i+1
+          }
+        }
+        this.$http.post(this.$service.changeBanner, this.bannerArr).then(data => {
           if (data.code == 200) {
 
           } else {
@@ -103,9 +109,7 @@
                 bannerUrl: '',
                 status: '',
                 id: '',
-                sort: '',
-                createTime: '',
-                updateTime: ''
+                sort: ''
               }
               this.bannerArr.push(json)
             }

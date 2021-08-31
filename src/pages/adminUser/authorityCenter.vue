@@ -165,15 +165,13 @@
       },
       closeDialog() {
         this.dialogFormVisible = false
-        this.ruleForm= {
-          loginName: '',
-          name: '',
-          tel: ''
-        }
       },
       newAdd() {
         this.dialogFormVisible = true
         this.dialogTitle = '新增权限'
+        this.ruleForm.name = ''
+        this.ruleForm.path = ''
+        this.ruleForm.title = ''
       },
       //操作
       handleClick(scope) {

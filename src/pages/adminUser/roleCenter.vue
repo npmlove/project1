@@ -10,8 +10,17 @@
       </div>
     </el-form>
     <div class="content">
-      <Table ref="multipleTable1" :checkbox="false" :tableData='tableData' :columns='columns'
-        :operation='operation' :total='total' :currentPage='pageNum' :pageSize='pageSize' @handleClick='handleClick'>
+      <Table
+        ref="multipleTable1"
+        :checkbox="false"
+        :tableData='tableData'
+        :columns='columns'
+        :operation='operation'
+        :total='total'
+        :currentPage='pageNum'
+        :pageSize='pageSize'
+        @handleClick='handleClick'
+        >
       </Table>
     </div>
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' class="aaa">
@@ -32,15 +41,25 @@
         </div>
       </div>
     </el-dialog>
+    <el-drawer :title="drawerTitle" :visible.sync="drawer" :direction="direction" :before-close="handleClose">
+      <!-- <el-checkbox-group>
+        <el-checkbox v-for="(item,index) in moduleArr" :label="item.name" :key="index">{{item.name}}</el-checkbox>
+      </el-checkbox-group> -->
+      <el-checkbox-group v-model="cargoType">
+        <div v-for="(optItem,optIndex) in moduleArr" :key="optIndex" style="padding-left: 20px;margin-bottom: 10px;">
+          <el-checkbox :disabled="true" checked :label="optItem.value">{{optItem.name}}</el-checkbox>
+        </div>
+      </el-checkbox-group>
+    </el-drawer>
   </div>
 </template>
 
 <script>
   import Table from '@/components/Table'
-  import qs from 'qs'
   export default {
     data() {
       return {
+        cargoType: '',
         //table
         tableData: [],
         pageSize: 1000,
@@ -84,13 +103,34 @@
         dialogTitle: '',
         roleName: '',
         roleId: '',
-        dialogFormVisible: false
+        dialogFormVisible: false,
+        drawer: false,
+        direction: 'rtl',
+        moduleArr: [],
+        drawerTitle: ''
       }
     },
     activated() {
       this.initRoleSearch()
+      this.initAuthoritySearch()
     },
     methods: {
+      //关闭抽屉
+      handleClose() {
+        this.drawer = false
+      },
+      //获取权限
+      initAuthoritySearch() {
+        const vm = this
+        vm.$http.get(vm.$service.moduleSearch).then(data => {
+          if (data.code == 200) {
+            this.moduleArr = data.data
+            console.log(this.moduleArr)
+          }
+        }).catch((e) => {
+          console.log(e)
+        })
+      },
       //新增角色
       newAdd() {
         this.dialogTitle = '新增角色'
@@ -147,7 +187,6 @@
       },
       //操作
       handleClick(scope) {
-
         if (scope.method == 'edit') {
           this.dialogTitle = '编辑角色'
           this.dialogFormVisible = true
@@ -162,6 +201,9 @@
               this.$message.error(data.message)
             }
           })
+        }else if(scope.method == 'setting'){
+          this.drawer = true
+          this.drawerTitle =  scope.row.roleName
         }
       }
     },

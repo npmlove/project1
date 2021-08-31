@@ -233,7 +233,7 @@ const adverManagementCenter = [{
       name: 'bannerNew',
       meta: {
         title: 'banner广告位',
-        keepAlive:true,
+        keepAlive:false,
         needLogin: true
       }
     },
