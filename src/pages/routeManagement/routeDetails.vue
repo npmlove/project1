@@ -152,7 +152,7 @@
                   </div>
                   <div v-for="(childerItem,childerIndex) in listItem.tableData" :key="childerIndex" class="flight-template-ul-content">
                     <div class="flight-template-li" style="flex: 0 0 10%;">
-                      <el-input :value="'1:'+childerItem.vw" :disabled="true" size="small" style="width: 80%;"></el-input>
+                      <el-input :value="'1:'+childerItem.vwr" :disabled="true" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
                       <el-input v-model="childerItem.ratesN" :disabled="true" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>

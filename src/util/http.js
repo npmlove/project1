@@ -29,14 +29,14 @@ const checkCode = (response) => {
   }
   if (response.data.code) {
     let resCode = response.data.code
-    if (resCode == -1) {
+    if (resCode == 500) {
       showError(response.data.data)
     }
   }
   return response
 }
 const showError = (errorMsg, alwaysDisplay) => {
-  errorMsg = errorMsg || '服务调用出错'
+  errorMsg = errorMsg || '服务调用出错，请联系管理员'
   if (alwaysDisplay === true) {
     Message({
       message: errorMsg,

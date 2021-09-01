@@ -104,9 +104,20 @@
         this.$refs[ruleForm].validate((valid,object) => {
           if (valid) {
             var roleStr = JSON.parse(JSON.stringify(this.ruleForm.roleId))
-            this.ruleForm.roleId = roleStr.split("#")[0]
-            this.ruleForm.roleName = roleStr.split("#")[1]
-            this.$http.post(this.$service.userAdd,this.ruleForm).then(data => {
+            var data = {
+              checkPassword: this.ruleForm.checkPassword,
+              delFlag: 0,
+              idcard: "",
+              loginName: this.ruleForm.loginName,
+              name: this.ruleForm.name,
+              password: this.ruleForm.password,
+              roleId:  roleStr.split("#")[0],
+              roleName:  roleStr.split("#")[1],
+              status: 0,
+              tel: this.ruleForm.tel,
+            }
+
+            this.$http.post(this.$service.userAdd,data).then(data => {
               if(data.code == 200){
                 this.$router.push('/adminUser/userCenter')
               }else{

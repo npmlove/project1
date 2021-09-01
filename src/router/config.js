@@ -306,7 +306,7 @@ const routes = [
   ...routeManagementCenter,
   ...adverManagementCenter,
   ...agentManagement,
-  ...newsManagementCenter,
+  // ...newsManagementCenter,
   ...userManagementCenter,
   ...adminUserCenter
 

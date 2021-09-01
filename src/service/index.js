@@ -69,7 +69,9 @@ const serviceApi = {
   //航线报价信息详情
   airlineRatesDetail: pulicWeb+'/t-airline/airlineRatesDetail',
   //清空航线代理关系及价格
-  airlineDeleteCascade: pulicWeb+'/t-airline-agent/deleteCascade'
+  airlineDeleteCascade: pulicWeb+'/t-airline-agent/deleteCascade',
+  //保存航线代理关系及价格
+  airlineSaveCascade: pulicWeb+'/t-airline-agent/saveCascade',
 
 
 

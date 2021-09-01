@@ -57,21 +57,18 @@
         }
         data = toData(data)
         vm.$http.get(this.$service.login + '?' + data).then(data => {
-          console.log(data.code)
           if (data.code == 200) {
             sessionStorage.setItem('userInfo', JSON.stringify(data.data.tsysUser))
             sessionStorage.setItem('userId', data.data.tsysUser.id)
             sessionStorage.setItem('tokenId', data.data.tokenId)
             var url = vm.$route.query.redirect
-            // console.log(url)
             if (url) {
               vm.$router.push(url)
             } else {
               vm.$router.push('/adminUser/homePage')
             }
           } else {
-            vm.errorTitle = data.Message
-            vm.flag = false
+            this.$message.error(data.message)
           }
         })
       }

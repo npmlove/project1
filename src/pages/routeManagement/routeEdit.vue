@@ -157,7 +157,7 @@
         <el-tab-pane label="航线报价">
           <el-form :label-position="labelPosition" :inline="true" label-width="120px" size="medium" class="demo-form-inline">
             <div v-for="(item,index) in airlineAgent" :key="index" class="route-module" style="width: 95%;margin: 0 auto;margin-bottom: 20px;">
-              <img @click="delTableClick1(index,item.id)" class="close-img" src="../../assets/gaungbi.png" />
+              <img @click="delTableClick1(index,item.id)" v-if="airlineAgent.length > 1" class="close-img" src="../../assets/gaungbi.png" />
               <div>
                 <el-form-item prop="name" label="航线名称">
                   <el-input placeholder="请输入航线名称" v-model="item.name" style="width: 220px;"></el-input>
@@ -502,6 +502,9 @@
                 childerJson.vw = ''
                 var cargoType = data[q].rates[e].cargoType.toString()
                 childerJson.cargoType = cargoType.split(',')
+                for(var z = 0; z < data[q].rates[e].ratesInsertDTOS.length; z++){
+                  data[q].rates[e].ratesInsertDTOS[z].vw = data[q].rates[e].ratesInsertDTOS[z].vwr
+                }
                 childerJson.tableData = data[q].rates[e].ratesInsertDTOS
                 json.ratesList.push(childerJson)
               }
@@ -513,66 +516,49 @@
       },
       //保存
       submitData(index) {
-        var newFullLeg = []
-        for(var i = 0; i < this.fullLeg.length; i++){
-          newFullLeg.push(this.fullLeg[i].airportName)
-        }
-        var newAgent = []
-        for(var q = 0; q < this.airlineAgent.length; q++){
-          var ag = JSON.parse(JSON.stringify(this.airlineAgent[q].agentId))
-          var newJson = {
-            agentId: ag.split('#')[0],
-            agentName: ag.split('#')[1],
-            name: this.airlineAgent[q].name,
-            otherFees: JSON.stringify(this.airlineAgent[q].otherFees),
-            dows: this.airlineAgent[q].dows.toString(),
-            ratesList: []
-          }
-          for(var a = 0; a < this.airlineAgent[q].ratesList.length; a++){
-            var list = {}
-            list.cargoType = this.airlineAgent[q].ratesList[a].cargoType.toString()
-            list.ratesInsertDTOS = []
-            for(var z = 0; z < this.airlineAgent[q].ratesList[a].tableData.length; z++){
-              var childer = {
-                vw: this.airlineAgent[q].ratesList[a].tableData[z].vw,
-                ratesN: this.airlineAgent[q].ratesList[a].tableData[z].ratesN,
-                dows: this.airlineAgent[q].dows.toString(),
-                ratesLevel0: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel0,
-                ratesLevel1: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel1,
-                ratesLevel2: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel2,
-                ratesLevel3: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel3,
-                ratesLevel4: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel4,
-                ratesLevel5: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel5,
-              }
-              list.ratesInsertDTOS.push(childer)
-            }
-            newJson.ratesList.push(list)
-          }
-          newAgent.push(newJson)
-        }
-        var pod = JSON.parse(JSON.stringify(this.ruleForm.pod))
-        var data = {
-          pol: this.ruleForm.pol,
-          pod: pod.split('#')[0],
-          continent: pod.split('#')[1],
-          planeType: this.airportTableArr[0].childerTable[0].vehicleType,
-          airCompanyCode: this.ruleForm.airCompanyCode,
-          shortestPrescription: this.ruleForm.shortestPrescription,
-          longestPrescription: this.ruleForm.longestPrescription,
-          status: this.ruleForm.status ? 0 : 1,
-          fullLeg: newFullLeg.toString(),
-          legCount: this.airportTableArr.length,
-          legDetail: JSON.stringify(this.airportTableArr),
-          airlineAgentInsertDTOS: newAgent,
-          remark: this.ruleForm.remark
-        }
-        this.$http.post(this.$service.airlineSave,data).then((data) => {
-          if(data.code == 200){
-            this.$router.push('/routeManagement/routeManage')
-          }else{
-            this.$message.error(data.message)
-          }
-        })
+        var newDataLine = JSON.parse(JSON.stringify(this.airlineAgent[index]))
+        var newAgent = {}
+        var ag = JSON.parse(JSON.stringify(newDataLine.agentId))
+        newAgent.agentId = ag.split('#')[0]
+        newAgent.agentName = ag.split('#')[1]
+        newAgent.dows = newDataLine.dows.toString()
+        newAgent.id = newDataLine.id
+        newAgent.name = newDataLine.name
+        newAgent.otherFees = JSON.stringify(newDataLine.otherFees)
+        newAgent.ratesList = []
+        
+        // for(var a = 0; a < this.airlineAgent[q].ratesList.length; a++){
+        //   var list = {}
+        //   list.cargoType = this.airlineAgent[q].ratesList[a].cargoType.toString()
+        //   list.ratesInsertDTOS = []
+        //   for(var z = 0; z < this.airlineAgent[q].ratesList[a].tableData.length; z++){
+        //     var childer = {
+        //       vw: this.airlineAgent[q].ratesList[a].tableData[z].vw,
+        //       ratesN: this.airlineAgent[q].ratesList[a].tableData[z].ratesN,
+        //       dows: this.airlineAgent[q].dows.toString(),
+        //       ratesLevel0: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel0,
+        //       ratesLevel1: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel1,
+        //       ratesLevel2: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel2,
+        //       ratesLevel3: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel3,
+        //       ratesLevel4: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel4,
+        //       ratesLevel5: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel5,
+        //     }
+        //     list.ratesInsertDTOS.push(childer)
+        //   }
+        //   newJson.ratesList.push(list)
+        // }
+        // newAgent.push(newJson)
+        // var data = {
+        //   isBatch: 'false',
+        //   airlineAgentInsertDTO: {}
+        // }
+        // this.$http.post(this.$service.airlineSaveCascade,data).then((data) => {
+        //   if(data.code == 200){
+        //     this.$router.push('/routeManagement/routeManage')
+        //   }else{
+        //     this.$message.error(data.message)
+        //   }
+        // })
       },
       //起始港三字码
       initAirportSearchByPage(keyWord,type) {
@@ -689,13 +675,21 @@
       },
       delTableClick1(index,id) {
         if(id){
-          this.$http.delete(this.$service.airlineDeleteCascade+'?airlineId='+this.id+'&relationId='+id).then((data) => {
-            if(data.code == 200){
-              this.airlineAgent.splice(index,1)
-              this.$message.success('删除航线报价成功')
-            }else{
-              this.$message.error('删除航线报价失败')
-            }
+          this.$confirm("确定删除这条代理报价?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+            this.$http.delete(this.$service.airlineDeleteCascade+'?airlineId='+this.id+'&relationId='+id).then((data) => {
+              if(data.code == 200){
+                this.airlineAgent.splice(index,1)
+                this.$message.success('删除航线报价成功')
+              }else{
+                this.$message.error('删除航线报价失败')
+              }
+            })
+          }).catch(() => {
+            console.log('取消')
           })
         }else{
           this.airlineAgent.splice(index,1)

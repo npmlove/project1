@@ -92,11 +92,19 @@
         this.$refs[ruleForm].validate((valid,object) => {
           if (valid) {
             var roleStr = JSON.parse(JSON.stringify(this.ruleForm.roleId))
-			    console.log( roleStr)
-            this.ruleForm.roleId = roleStr.split("#")[0]
-            console.log(roleStr.split("#"))
-            this.ruleForm.roleName = roleStr.split("#")[1]
-            this.$http.post(this.$service.userUpdate,this.ruleForm).then(data => {
+            var data = {
+              delFlag: this.ruleForm.delFlag,
+              id: this.ruleForm.id,
+              idcard: this.ruleForm.idcard,
+              loginName: this.ruleForm.loginName,
+              name: this.ruleForm.name,
+              password: this.ruleForm.password,
+              roleId: roleStr.split("#")[0],
+              roleName: roleStr.split("#")[1],
+              status: this.ruleForm.status,
+              tel: this.ruleForm.tel
+            }
+            this.$http.post(this.$service.userUpdate,data).then(data => {
               if(data.code == 200){
                 this.$router.push('/adminUser/userCenter')
               }else{

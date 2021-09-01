@@ -179,7 +179,7 @@
               </el-select>
             </el-form-item>
             <el-form-item prop="dows" label="班期">
-              <el-select v-model="item.dows" multiple placeholder="请选择班期" clearable style="width: 220px;">
+              <el-select v-model="item.dows" multiple placeholder="请选择班期" clearable style="min-width: 220px;width:100%;max-width: 500px;">
                 <el-option
                   v-for="item in dowsOpt"
                   :key="item.day"
@@ -482,7 +482,7 @@
             list.ratesInsertDTOS = []
             for(var z = 0; z < this.airlineAgent[q].ratesList[a].tableData.length; z++){
               var childer = {
-                vw: this.airlineAgent[q].ratesList[a].tableData[z].vw,
+                vwr: this.airlineAgent[q].ratesList[a].tableData[z].vw,
                 ratesN: this.airlineAgent[q].ratesList[a].tableData[z].ratesN,
                 dows: this.airlineAgent[q].dows.toString(),
                 ratesLevel0: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel0,
@@ -808,6 +808,7 @@
     }
     /deep/ .el-form--inline .el-form-item{
       margin-bottom: 20px;
+      vertical-align: top;
     }
 
     /deep/ .textArea {
