@@ -120,7 +120,7 @@
         dialogFormVisible: false,
       }
     },
-    activated() {
+    mounted() {
       this.initAgentSearch()
     },
     methods: {

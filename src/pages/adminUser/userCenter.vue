@@ -181,7 +181,7 @@
         newRoleId: ''
       }
     },
-    activated() {
+    mounted() {
       this.initRoleSearch()
       this.initUserSearch()
       this.newRoleId = JSON.parse(sessionStorage.getItem('userInfo')).roleId

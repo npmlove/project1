@@ -110,7 +110,7 @@
         drawerTitle: ''
       }
     },
-    activated() {
+    mounted() {
       this.initRoleSearch()
       this.initAuthoritySearch()
     },

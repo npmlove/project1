@@ -519,6 +519,7 @@
         var newDataLine = JSON.parse(JSON.stringify(this.airlineAgent[index]))
         var newAgent = {}
         var ag = JSON.parse(JSON.stringify(newDataLine.agentId))
+        newAgent.airlineId = this.id
         newAgent.agentId = ag.split('#')[0]
         newAgent.agentName = ag.split('#')[1]
         newAgent.dows = newDataLine.dows.toString()
@@ -526,39 +527,39 @@
         newAgent.name = newDataLine.name
         newAgent.otherFees = JSON.stringify(newDataLine.otherFees)
         newAgent.ratesList = []
-        
-        // for(var a = 0; a < this.airlineAgent[q].ratesList.length; a++){
-        //   var list = {}
-        //   list.cargoType = this.airlineAgent[q].ratesList[a].cargoType.toString()
-        //   list.ratesInsertDTOS = []
-        //   for(var z = 0; z < this.airlineAgent[q].ratesList[a].tableData.length; z++){
-        //     var childer = {
-        //       vw: this.airlineAgent[q].ratesList[a].tableData[z].vw,
-        //       ratesN: this.airlineAgent[q].ratesList[a].tableData[z].ratesN,
-        //       dows: this.airlineAgent[q].dows.toString(),
-        //       ratesLevel0: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel0,
-        //       ratesLevel1: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel1,
-        //       ratesLevel2: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel2,
-        //       ratesLevel3: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel3,
-        //       ratesLevel4: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel4,
-        //       ratesLevel5: this.airlineAgent[q].ratesList[a].tableData[z].ratesLevel5,
-        //     }
-        //     list.ratesInsertDTOS.push(childer)
-        //   }
-        //   newJson.ratesList.push(list)
-        // }
-        // newAgent.push(newJson)
-        // var data = {
-        //   isBatch: 'false',
-        //   airlineAgentInsertDTO: {}
-        // }
-        // this.$http.post(this.$service.airlineSaveCascade,data).then((data) => {
-        //   if(data.code == 200){
-        //     this.$router.push('/routeManagement/routeManage')
-        //   }else{
-        //     this.$message.error(data.message)
-        //   }
-        // })
+        for(var a = 0; a < newDataLine.ratesList.length; a++){
+          var list = {}
+          list.cargoType = newDataLine.ratesList[a].cargoType.toString()
+          list.ratesInsertDTOS = []
+          for(var z = 0; z < newDataLine.ratesList[a].tableData.length; z++){
+            var childer = {
+              vwr: newDataLine.ratesList[a].tableData[z].vw,
+              ratesN: newDataLine.ratesList[a].tableData[z].ratesN,
+              dows: newDataLine.dows.toString(),
+              ratesLevel0: newDataLine.ratesList[a].tableData[z].ratesLevel0,
+              ratesLevel1: newDataLine.ratesList[a].tableData[z].ratesLevel1,
+              ratesLevel2: newDataLine.ratesList[a].tableData[z].ratesLevel2,
+              ratesLevel3: newDataLine.ratesList[a].tableData[z].ratesLevel3,
+              ratesLevel4: newDataLine.ratesList[a].tableData[z].ratesLevel4,
+              ratesLevel5: newDataLine.ratesList[a].tableData[z].ratesLevel5,
+            }
+            list.ratesInsertDTOS.push(childer)
+          }
+          newAgent.ratesList.push(list)
+        }
+        console.log(newAgent)
+        var data = {
+          isBatch: 'false',
+          airlineAgentInsertDTO: newAgent
+        }
+        this.$http.post(this.$service.airlineSaveCascade,data).then((data) => {
+          if(data.code == 200){
+            this.$message.success('航线报价保存成功')
+            // this.$router.push('/routeManagement/routeManage')
+          }else{
+            this.$message.error(data.message)
+          }
+        })
       },
       //起始港三字码
       initAirportSearchByPage(keyWord,type) {

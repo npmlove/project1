@@ -47,21 +47,27 @@
         labelPosition: 'right',
         file: '',
         index: '',
-        bannerArr: []
+        bannerArr: [],
+        loading: false
       }
     },
-    mounted() {
+    created() {
       this.initBannerList()
     },
     methods: {
       //图片上传
       beforeAvatarUpload(file) {
         const isJPG = file.type;
-        const isLt500K = file.size / 1024 / 1024 / 1024 < 500;
+        const isLt300K = 300;
         if (isJPG == 'image/jpeg' || isJPG == 'image/png') {
           this.$message.success('上传图片成功');
         } else {
           this.$message.error('上传图片只能是 JPG 格式或 PNG 格式!');
+          return
+        }
+        if(file.size > (isLt300K*1024)){
+          this.$message.error('图片文件大小不能大于300KB!');
+          return
         }
         this.file = file;
         let reader = new FileReader();
@@ -86,20 +92,23 @@
       },
       //保存
       dialogComfirm(ruleForm) {
-        for(var i = 0; i < this.bannerArr.length; i++){
-          if(!this.bannerArr[i].bannerPath){
+        // this.loading = true
+        var newBanner = JSON.parse(JSON.stringify(this.bannerArr))
+        for(var i = 0; i < newBanner.length; i++){
+          if(!newBanner[i].bannerPath){
             this.$message.error('您还有banner没有配置')
             return
           }
-          this.bannerArr[i].status = this.bannerArr[i].status ? 0 : 1
-          if(!this.bannerArr[i].sort){
-            this.bannerArr[i].sort = i+1
+          newBanner[i].status = newBanner[i].status ? 0 : 1
+          if(!newBanner[i].sort){
+            newBanner[i].sort = i+1
           }
         }
-        this.$http.post(this.$service.changeBanner, this.bannerArr).then(data => {
+        this.$http.post(this.$service.changeBanner, newBanner).then(data => {
           if (data.code == 200) {
+            // this.loading = false
             this.$message.success('保存成功')
-            this.initBannerList()
+            // this.initBannerList()
           } else {
             this.$message.error(data.message)
           }
@@ -129,6 +138,7 @@
               }
               this.bannerArr.push(json)
             }
+            this.loading = false
           }
         }).catch((e) => {
           console.log(e)

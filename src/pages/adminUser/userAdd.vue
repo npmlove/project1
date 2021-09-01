@@ -6,10 +6,10 @@
           <el-input style="width: 280px;" size="medium" v-model="ruleForm.loginName" clearable placeholder="请输入账号"></el-input>
         </el-form-item>
         <el-form-item prop="name" label="姓名">
-          <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.name" clearable placeholder="请输入账号"></el-input>
+          <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.name" clearable placeholder="请输入姓名"></el-input>
         </el-form-item>
         <el-form-item prop="tel" label="手机号">
-          <el-input style="width: 280px;" size="medium" v-model="ruleForm.tel" clearable placeholder="请输入账号"></el-input>
+          <el-input style="width: 280px;" size="medium" v-model="ruleForm.tel" clearable placeholder="请输入手机号"></el-input>
         </el-form-item>
         <el-form-item prop="roleId" label="角色">
           <el-select placeholder="请选择角色" size="medium" v-model="ruleForm.roleId" clearable style="width: 280px;">
@@ -22,10 +22,10 @@
           </el-select>
         </el-form-item>
         <el-form-item prop="password" label="密码">
-          <el-input style="width: 280px;" size="medium" v-model="ruleForm.password" clearable placeholder="请输入账号"></el-input>
+          <el-input style="width: 280px;" type="password" size="medium" v-model="ruleForm.password" clearable placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-form-item prop="checkPassword" label="校验密码">
-          <el-input style="width: 280px;" size="medium" v-model="ruleForm.checkPassword" clearable placeholder="请输入账号"></el-input>
+          <el-input style="width: 280px;" type="password" size="medium" v-model="ruleForm.checkPassword" clearable placeholder="请输入校验密码"></el-input>
         </el-form-item>
         <div class="rest-style">
           <el-form-item label=" " style="padding-top: 50px;padding-bottom: 30px;">
@@ -87,7 +87,7 @@
           tel: [{required: true, validator: telPhone, trigger: 'blur' }],
           roleId: [{required: true, message: '请选择角色', trigger: 'change'}],
           password: [
-            {required: true, message: '请输入账号', trigger: 'blur'},
+            {required: true, message: '请输入密码', trigger: 'blur'},
             { min: 1, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur'}
           ],
           checkPassword: [{required: true, validator: validatePass2, trigger: 'blur' }]

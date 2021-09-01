@@ -63,7 +63,7 @@ const adminUserCenter = [{
       name: 'userCenter',
       meta: {
         title: '账号管理',
-        keepAlive:true,
+        keepAlive: false,
         needLogin: true
       },
     },
@@ -73,7 +73,7 @@ const adminUserCenter = [{
       name: 'roleCenter',
       meta: {
         title: '角色管理',
-        keepAlive:true,
+        keepAlive: false,
         needLogin: true
       },
     },
@@ -83,7 +83,7 @@ const adminUserCenter = [{
       name: 'authorityCenter',
       meta: {
         title: '权限管理',
-        keepAlive:true,
+        keepAlive: false,
         needLogin: true
       },
     },
@@ -94,7 +94,7 @@ const adminUserCenter = [{
       hidden: true,
       meta: {
         title: '新增用户',
-        keepAlive:true,
+        keepAlive: false,
         needLogin: true
       },
     },
@@ -105,7 +105,7 @@ const adminUserCenter = [{
       hidden: true,
       meta: {
         title: '编辑用户',
-        keepAlive:false,
+        keepAlive: false,
         needLogin: true
       },
     },
@@ -116,7 +116,7 @@ const adminUserCenter = [{
       hidden: true,
       meta: {
         title: '首页',
-        keepAlive:false,
+        keepAlive: false,
         needLogin: true
       }
     }
@@ -142,7 +142,7 @@ const routeManagementCenter = [{
       name: 'routeManage',
       meta: {
         title: '航线列表',
-        keepAlive:false,
+        keepAlive: false,
         needLogin: true
       }
     },
@@ -153,7 +153,7 @@ const routeManagementCenter = [{
       hidden: true,
       meta: {
         title: '新增航线',
-        keepAlive:true,
+        keepAlive: false,
         needLogin: true
       }
     },
@@ -164,7 +164,7 @@ const routeManagementCenter = [{
       hidden: true,
       meta: {
         title: '航线详情',
-        keepAlive:false,
+        keepAlive: false,
         needLogin: true
       }
     },
@@ -175,7 +175,7 @@ const routeManagementCenter = [{
       hidden: true,
       meta: {
         title: '编辑航线',
-        keepAlive:false,
+        keepAlive: false,
         needLogin: true
       }
     },
@@ -186,7 +186,7 @@ const routeManagementCenter = [{
       hidden: false,
       meta: {
         title: ' 航线导入',
-        keepAlive:false,
+        keepAlive: false,
         needLogin: true
       }
     }
@@ -212,7 +212,7 @@ const adverManagementCenter = [{
       name: 'adverCenter',
       meta: {
         title: '广告列表',
-        keepAlive:true,
+        keepAlive: false,
         needLogin: true
       }
     },
@@ -223,7 +223,7 @@ const adverManagementCenter = [{
       hidden: true,
       meta: {
         title: '新增广告',
-        keepAlive:false,
+        keepAlive: false,
         needLogin: true
       }
     },
@@ -233,46 +233,10 @@ const adverManagementCenter = [{
       name: 'bannerNew',
       meta: {
         title: 'banner广告位',
-        keepAlive:false,
+        keepAlive: false,
         needLogin: true
       }
     },
-  ]
-}]
-
-// 新闻管理
-const newsManagementCenter = [{
-  path: '/newsManagement',
-  component: Layout,
-  name: 'newsManagement',
-  redirect: 'noredirect',
-  alwaysShow: true,
-  meta: {
-    title: '新闻管理',
-    icon: 'icon iconfont icon-shezhi',
-    breadcrumb: false
-  },
-  children: [
-    {
-      path: 'newsCenter',
-      component: () => import('@/pages/newsManagement/newsCenter.vue'),
-      name: 'newsCenter',
-      meta: {
-        title: '综合新闻',
-        keepAlive:true,
-        needLogin: true
-      }
-    },
-    {
-      path: 'companyCenter',
-      component: () => import('@/pages/newsManagement/companyCenter.vue'),
-      name: 'companyCenter',
-      meta: {
-        title: '公司动态',
-        keepAlive:false,
-        needLogin: true
-      }
-    }
   ]
 }]
 
@@ -294,7 +258,7 @@ const userManagementCenter = [{
       name: 'userCenter',
       meta: {
         title: '用户列表',
-        keepAlive:false,
+        keepAlive: false,
         needLogin: true
       }
     }
@@ -306,7 +270,6 @@ const routes = [
   ...routeManagementCenter,
   ...adverManagementCenter,
   ...agentManagement,
-  // ...newsManagementCenter,
   ...userManagementCenter,
   ...adminUserCenter
 

@@ -6,10 +6,10 @@
           <el-input style="width: 280px;" size="medium" v-model="ruleForm.loginName" clearable placeholder="请输入账号"></el-input>
         </el-form-item>
         <el-form-item prop="name" label="姓名">
-          <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.name" clearable placeholder="请输入账号"></el-input>
+          <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.name" clearable placeholder="请输入姓名"></el-input>
         </el-form-item>
         <el-form-item prop="tel" label="手机号">
-          <el-input style="width: 280px;" size="medium" v-model="ruleForm.tel" clearable placeholder="请输入账号"></el-input>
+          <el-input style="width: 280px;" size="medium" v-model="ruleForm.tel" clearable placeholder="请输入手机号"></el-input>
         </el-form-item>
         <el-form-item prop="roleId" label="角色">
           <el-select placeholder="请选择角色" size="medium" v-model="ruleForm.roleId" clearable style="width: 280px;">

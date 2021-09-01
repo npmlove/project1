@@ -109,7 +109,7 @@
         moduleId: ''
       }
     },
-    activated() {
+    mounted() {
       this.initAuthoritySearch()
     },
 
