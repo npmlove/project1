@@ -29,7 +29,7 @@
             </el-row>
           </el-form-item>
 
-          <el-form-item style="float: right;margin-right: 0">
+          <el-form-item v-if="newRoleId == '-1'" style="float: right;margin-right: 0">
             <el-row>
               <el-button @click="newAdd" size="medium">新增用户</el-button>
             </el-row>
@@ -56,12 +56,11 @@
       <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px"
         size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
         <el-form-item prop="newPassword" label="新密码">
-          <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.newPassword" clearable placeholder="请输入新密码">
+          <el-input style="width: 280px;" type="password" size="medium" :maxlength="inputMax" v-model="ruleForm.newPassword" clearable placeholder="请输入新密码">
           </el-input>
         </el-form-item>
         <el-form-item prop="checknewPassword" label="校验密码">
-          <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.checknewPassword" clearable
-            placeholder="请再次输入新密码"></el-input>
+          <el-input style="width: 280px;" type="password" size="medium" :maxlength="inputMax" v-model="ruleForm.checknewPassword" clearable placeholder="请再次输入新密码"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部按钮 -->
@@ -179,11 +178,18 @@
           id: '',
           checknewPassword: ''
         },
+        newRoleId: ''
       }
     },
     activated() {
       this.initRoleSearch()
       this.initUserSearch()
+      this.newRoleId = JSON.parse(sessionStorage.getItem('userInfo')).roleId
+      if(this.newRoleId == '-1'){
+        this.operation.show = true
+      }else{
+        this.operation.show = false
+      }
     },
     methods: {
       //获取用户列表
@@ -274,6 +280,10 @@
         }
       },
       switchChangeUser(scope) {
+        if(this.newRoleId != '-1'){
+          this.$message.error('您没有权限操作')
+          return
+        }
         var json = {
           status: scope.row.status == 0 ? 1 : 0,
           id: scope.row.id

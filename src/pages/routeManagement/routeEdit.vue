@@ -141,8 +141,7 @@
                   </div>
                   <div class="flight-template-li" size="small" style="flex: 0 0 10%;">
                     <a @click="addChilder(index)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
-                    <a @click="delChilder(index,childerIndex)" style="font-size: 18px;"
-                      :style="{visibility: childerIndex == 0 ? 'hidden' : 'visible'}"><i class="el-icon-delete"></i></a>
+                    <a @click="delChilder(index,childerIndex)" style="font-size: 18px;" :style="{visibility: childerIndex == 0 && parentItem.childerTable.length == 1 ? 'hidden' : 'visible'}"><i class="el-icon-delete"></i></a>
                   </div>
                 </div>
               </div>
@@ -154,10 +153,11 @@
             </div>
           </el-form>
         </el-tab-pane>
+
         <el-tab-pane label="航线报价">
           <el-form :label-position="labelPosition" :inline="true" label-width="120px" size="medium" class="demo-form-inline">
-            <div v-for="(item,index) in airlineAgent" :key="index" class="route-module" style="width: 95%;margin: 0 auto;">
-              <img @click="delTableClick(index)" v-if="index != 0" class="close-img" src="../../assets/gaungbi.png" />
+            <div v-for="(item,index) in airlineAgent" :key="index" class="route-module" style="width: 95%;margin: 0 auto;margin-bottom: 20px;">
+              <img @click="delTableClick1(index,item.id)" class="close-img" src="../../assets/gaungbi.png" />
               <div>
                 <el-form-item prop="name" label="航线名称">
                   <el-input placeholder="请输入航线名称" v-model="item.name" style="width: 220px;"></el-input>
@@ -180,7 +180,7 @@
                       v-for="item in dowsOpt"
                       :key="item.day"
                       :label="item.day"
-                      :value="item.day">
+                      :value="item.value">
                     </el-option>
                   </el-select>
                 </el-form-item>
@@ -245,7 +245,7 @@
                   </div>
                   <div v-for="(childerItem,childerIndex) in listItem.tableData" :key="childerIndex" class="flight-template-ul-content">
                     <div class="flight-template-li" style="flex: 0 0 10%;">
-                      <el-input v-model="childerItem.vwPro" :disabled="true" size="small" style="width: 80%;"></el-input>
+                      <el-input :value="'1:'+childerItem.vw" :disabled="true" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
                       <el-input v-model="childerItem.ratesN" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
@@ -276,7 +276,7 @@
                 <div v-if="(item.ratesList.length != 2)" class="rest-style" style="margin-top: 20px;">
                   <el-form-item label=" ">
                     <el-button @click="addCargoType(index,listIndex)" style="height: 36px;line-height: 36px;padding: 0;" type="primary">添加代理报价</el-button>
-                    <el-button @click="submitData" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
+                    <el-button @click="submitData(index)" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
                   </el-form-item>
                 </div>
               </div>
@@ -297,6 +297,7 @@
   export default {
     data() {
       return {
+        id: '',
         labelPosition: 'right',
         //航线信息
         ruleForm: {
@@ -323,13 +324,7 @@
         airportEcheckArr: [],
         agentOpt: [],
         //航线进程
-        fullLeg: [{
-            airportName: '',
-          },
-          {
-            airportName: '',
-          }
-        ],
+        fullLeg: [],
         airportTableArr: [
           {
             voyage_no: '',
@@ -361,11 +356,11 @@
         cargoTypeOpt: [
           {
             name: '散货价',
-            value: '0'
+            value: '1'
           },
           {
             name: '托盘价',
-            value: '1'
+            value: '2'
           }
         ],
         otherFeesOpt: [
@@ -387,29 +382,37 @@
         ],
         dowsOpt: [
           {
-            day: 'D1'
+            day: 'D1',
+            value: '1'
           },
           {
-            day: 'D2'
+            day: 'D2',
+            value: '2'
           },
           {
-            day: 'D3'
+            day: 'D3',
+            value: '3'
           },
           {
-            day: 'D4'
+            day: 'D4',
+            value: '4'
           },
           {
-            day: 'D5'
+            day: 'D5',
+            value: '5'
           },
           {
-            day: 'D6'
+            day: 'D6',
+            value: '6'
           },
           {
-            day: 'D7'
+            day: 'D7',
+            value: '7'
           }
         ],
         airlineAgent: [
           {
+            name: '',
             agentId: '',
             agentName: '',
             dows: [],
@@ -419,7 +422,7 @@
             otherFeesArr: [],
             ratesList: [
               {
-                cargoType: ['0'],
+                cargoType: ['1'],
                 vw: '',
                 tableData: [
                   // {
@@ -442,13 +445,74 @@
       }
     },
     mounted() {
+      this.id = this.$route.query.id
       this.initAirportSearchByPage()
       this.initCompanySearchByPage()
       this.initAgentList()
+      this.initAirlineDetail()
+      this.initAirlineRatesDetail()
     },
     methods: {
+      //获取航线信息详情
+      initAirlineDetail() {
+        this.$http.get(this.$service.airlineDetail+'?id='+this.id).then((data) => {
+          if(data.code == 200){
+            var data = data.data
+            this.ruleForm.pol = data.pol
+            this.ruleForm.pod = data.pod
+            this.ruleForm.airCompanyCode = data.airCompanyCode
+            this.ruleForm.shortestPrescription = data.shortestPrescription
+            this.ruleForm.longestPrescription = data.longestPrescription
+            this.ruleForm.status = data.status == 0 ? true : false
+            this.ruleForm.remark = data.remark
+            var newFulleg = data.fullLeg.split(',')
+            for(var i = 0; i < newFulleg.length; i++){
+              var json = {
+                airportName: newFulleg[i]
+              }
+              this.fullLeg.push(json)
+            }
+            this.airportTableArr = JSON.parse(data.legDetail)
+          }
+        })
+      },
+      //航线报价信息详情
+      initAirlineRatesDetail() {
+        this.$http.get(this.$service.airlineRatesDetail+'?id='+this.id).then((data) => {
+          if(data.code == 200){
+            var data = data.data
+            this.airlineAgent = []
+            for(var q = 0; q < data.length; q++){
+              var json = {
+                name: data[q].name,
+                agentId: data[q].agentId+'#'+data[q].agentName,
+                incidentalName: '',
+                incidentalPrice: '',
+                id: data[q].id
+              }
+              json.dows = data[q].dows.split(',')
+              json.otherFees = JSON.parse(data[q].otherFees)
+              json.otherFeesArr = []
+              for(var w = 0; w < json.otherFees.length; w++){
+                json.otherFeesArr.push(json.otherFees[w].feesName)
+              }
+              json.ratesList = []
+              for(var e = 0; e < data[q].rates.length; e++){
+                var childerJson = {}
+                childerJson.vw = ''
+                var cargoType = data[q].rates[e].cargoType.toString()
+                childerJson.cargoType = cargoType.split(',')
+                childerJson.tableData = data[q].rates[e].ratesInsertDTOS
+                json.ratesList.push(childerJson)
+              }
+              this.airlineAgent.push(json)
+            }
+            console.log(this.airlineAgent)
+          }
+        })
+      },
       //保存
-      submitData() {
+      submitData(index) {
         var newFullLeg = []
         for(var i = 0; i < this.fullLeg.length; i++){
           newFullLeg.push(this.fullLeg[i].airportName)
@@ -623,6 +687,20 @@
         this.airportTableArr.splice(index,1)
         this.fullLeg.splice(index,1)
       },
+      delTableClick1(index,id) {
+        if(id){
+          this.$http.delete(this.$service.airlineDeleteCascade+'?airlineId='+this.id+'&relationId='+id).then((data) => {
+            if(data.code == 200){
+              this.airlineAgent.splice(index,1)
+              this.$message.success('删除航线报价成功')
+            }else{
+              this.$message.error('删除航线报价失败')
+            }
+          })
+        }else{
+          this.airlineAgent.splice(index,1)
+        }
+      },
       remoteMethod(query) {
         console.log(query)
       },
@@ -682,7 +760,34 @@
                 }
               }
             }
-            this.active = 2
+            var newFullLeg = []
+            for(var i = 0; i < this.fullLeg.length; i++){
+              newFullLeg.push(this.fullLeg[i].airportName)
+            }
+            var pod = JSON.parse(JSON.stringify(this.ruleForm.pod))
+            var data = {
+              id: this.id,
+              pol: this.ruleForm.pol,
+              pod: pod.split('#')[0],
+              continent: pod.split('#')[1],
+              planeType: this.airportTableArr[0].childerTable[0].vehicleType,
+              airCompanyCode: this.ruleForm.airCompanyCode,
+              shortestPrescription: this.ruleForm.shortestPrescription,
+              longestPrescription: this.ruleForm.longestPrescription,
+              status: this.ruleForm.status ? 0 : 1,
+              fullLeg: newFullLeg.toString(),
+              legCount: this.airportTableArr.length,
+              legDetail: JSON.stringify(this.airportTableArr),
+              remark: this.ruleForm.remark
+            }
+            this.$http.post(this.$service.airlineUpdate,data).then(data => {
+              if (data.code == 200) {
+                this.$router.push('/routeManagement/routeManage')
+                this.$message.success('航线信息保存成功')
+              }else{
+                this.$message.error('航线信息保存失败')
+              }
+            })
           } else {
             setTimeout(()=>{
               var isError= document.getElementsByClassName("is-error");
@@ -703,6 +808,8 @@
       //添加代理
       addAirlineAgent() {
         var json = {
+          id: '',
+          name: '',
           agentId: '',
           agentName: '',
           dows: [],
@@ -712,7 +819,7 @@
           otherFeesArr: [],
           ratesList: [
             {
-              cargoType: ['0'],
+              cargoType: ['1'],
               vw: '',
               tableData: []
             }
@@ -762,7 +869,7 @@
       //添加代理报价
       addCargoType(index,listIndex){
         var json = {
-          cargoType: ['0'],
+          cargoType: ['1'],
           vw: '',
           tableData: []
         }

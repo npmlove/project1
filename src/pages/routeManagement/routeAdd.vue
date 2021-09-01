@@ -146,8 +146,7 @@
               </div>
               <div class="flight-template-li" size="small" style="flex: 0 0 10%;">
                 <a @click="addChilder(index)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
-                <a @click="delChilder(index,childerIndex)" style="font-size: 18px;"
-                  :style="{visibility: childerIndex == 0 ? 'hidden' : 'visible'}"><i class="el-icon-delete"></i></a>
+                <a @click="delChilder(index,childerIndex)" style="font-size: 18px;" :style="{visibility: childerIndex == 0 && parentItem.childerTable.length == 1 ? 'hidden' : 'visible'}"><i class="el-icon-delete"></i></a>
               </div>
             </div>
           </div>
@@ -162,7 +161,7 @@
       <!-- 航线价格 -->
       <el-form v-show="active == 2" :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
         <div v-for="(item,index) in airlineAgent" :key="index" class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
-          <img @click="delTableClick(index)" v-if="index != 0" class="close-img" src="../../assets/gaungbi.png" />
+          <img @click="delTableClick1(index)" v-if="index != 0" class="close-img" src="../../assets/gaungbi.png" />
           <div>
             <el-form-item prop="name" label="航线名称">
               <el-input placeholder="请输入航线名称" v-model="item.name" style="width: 220px;"></el-input>
@@ -366,11 +365,11 @@
         cargoTypeOpt: [
           {
             name: '散货价',
-            value: '0'
+            value: '1'
           },
           {
             name: '托盘价',
-            value: '1'
+            value: '2'
           }
         ],
         otherFeesOpt: [
@@ -422,6 +421,7 @@
         ],
         airlineAgent: [
           {
+            name: '',
             agentId: '',
             agentName: '',
             dows: [],
@@ -431,7 +431,7 @@
             otherFeesArr: [],
             ratesList: [
               {
-                cargoType: ['0'],
+                cargoType: ['1'],
                 vw: '',
                 tableData: [
                   // {
@@ -635,6 +635,9 @@
         this.airportTableArr.splice(index,1)
         this.fullLeg.splice(index,1)
       },
+      delTableClick1(index) {
+        this.airlineAgent.splice(index,1)
+      },
       remoteMethod(query) {
         console.log(query)
       },
@@ -715,6 +718,7 @@
       //添加代理
       addAirlineAgent() {
         var json = {
+          name: '',
           agentId: '',
           agentName: '',
           dows: [],
@@ -724,7 +728,7 @@
           otherFeesArr: [],
           ratesList: [
             {
-              cargoType: ['0'],
+              cargoType: ['1'],
               vw: '',
               tableData: []
             }
@@ -774,7 +778,7 @@
       //添加代理报价
       addCargoType(index,listIndex){
         var json = {
-          cargoType: ['0'],
+          cargoType: ['1'],
           vw: '',
           tableData: []
         }

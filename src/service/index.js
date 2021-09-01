@@ -1,4 +1,4 @@
-//正式环境
+//开发环境
 var pulicWeb = '/dcErp/faw'
 
 //测试环境
@@ -63,7 +63,13 @@ const serviceApi = {
   //航线信息修改/上架下架按钮
   airlineUpdate: pulicWeb+'/t-airline/update',
   //航线删除
-  airlineDelete: pulicWeb+'/t-airline/delete'
+  airlineDelete: pulicWeb+'/t-airline/delete',
+  //航线信息详情
+  airlineDetail: pulicWeb+'/t-airline/airlineDetail',
+  //航线报价信息详情
+  airlineRatesDetail: pulicWeb+'/t-airline/airlineRatesDetail',
+  //清空航线代理关系及价格
+  airlineDeleteCascade: pulicWeb+'/t-airline-agent/deleteCascade'
 
 
 
