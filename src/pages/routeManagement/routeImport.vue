@@ -62,6 +62,15 @@
         const formdate = new FormData();
         formdate.append("excel", this.excelInfo);
         axios.post(this.$service.airlineExcelImport, formdate, {responseType: 'arraybuffer'}).then(res => {
+          let resBlob = new Blob([res])
+          let reader = new FileReader()
+          reader.readAsText(resBlob, "utf-8")
+          reader.onload = () => {
+            let res = JSON.parse(reader.result)
+            console.log(JSON.parse(reader.result))
+          }
+
+
           if (res.byteLength == 0) {
             this.$message.success('导入成功')
             return;
@@ -98,6 +107,14 @@
           }, {
             responseType: 'arraybuffer'
           }).then((res) => {
+            let resBlob = new Blob([res])
+            let reader = new FileReader()
+            reader.readAsText(resBlob, "utf-8")
+            reader.onload = () => {
+              let res = JSON.parse(reader.result)
+            }
+
+
             // if(res.status == "200") {
             const aLink = document.createElement("a");
             let blob = new Blob([res], {
