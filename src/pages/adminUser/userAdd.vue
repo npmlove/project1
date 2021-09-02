@@ -41,7 +41,17 @@
   import qs from 'qs'
   export default {
     data() {
-
+      var validatePass1 = (rule, value, callback) => {
+        var reg = /^[0-9A-Za-z]{6,20}$/
+        if(value == ''){
+          callback(new Error('请输入密码'));
+        }if (!reg.test(value)) {
+          callback(new Error('请输入6到20位密码，包含数字或字母'));
+        } else {
+          callback();
+        }
+      }
+      
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
@@ -86,10 +96,7 @@
           { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}],
           tel: [{required: true, validator: telPhone, trigger: 'blur' }],
           roleId: [{required: true, message: '请选择角色', trigger: 'change'}],
-          password: [
-            {required: true, message: '请输入密码', trigger: 'blur'},
-            { min: 1, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur'}
-          ],
+          password: [{required: true, validator: validatePass1, trigger: 'blur'}],
           checkPassword: [{required: true, validator: validatePass2, trigger: 'blur' }]
         },
         roleOpt: []

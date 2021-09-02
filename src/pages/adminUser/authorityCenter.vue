@@ -184,6 +184,11 @@
           this.ruleForm.title = scope.row.title
           this.moduleId = scope.row.id
         } else if (scope.method == 'del') {
+          this.$confirm("确定删除这条数据?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
             this.$http.get(this.$service.moduleDelete+'?id='+scope.row.id).then(data => {
               if(data.code == 200){
                  this.initAuthoritySearch()
@@ -192,6 +197,9 @@
                 this.$message.error(data.message)
               }
             })
+          }).catch(() => {
+            console.log('取消')
+          })
         }
       },
 

@@ -88,6 +88,10 @@
       },
       //导出
       handleExport() {
+        if(!this.ids){
+          this.$message.error('请输入航线ID')
+          return
+        }
         this.$confirm("是否导出航线价格?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",

@@ -17,7 +17,7 @@
                 <img v-if="item.bannerPath" :src="imgUrl+item.bannerPath" style="width: 100%;height: 100%;">
                 <i v-else class="el-icon-plus avatar-uploader-icon "></i>
               </el-upload>
-              <div style="font-size: 14px;color: #999;">建议尺寸1920*600</div>
+              <div style="font-size: 14px;color: #999;">建议尺寸1920*380</div>
             </div>
           </el-form-item>
           <el-form-item label="链接地址" style="padding-top: 20px;">
@@ -59,14 +59,14 @@
       beforeAvatarUpload(file) {
         const isJPG = file.type;
         const isLt300K = 300;
+        if(file.size > (isLt300K*1024)){
+          this.$message.error('图片文件大小不能大于300KB!');
+          return
+        }
         if (isJPG == 'image/jpeg' || isJPG == 'image/png') {
           this.$message.success('上传图片成功');
         } else {
           this.$message.error('上传图片只能是 JPG 格式或 PNG 格式!');
-          return
-        }
-        if(file.size > (isLt300K*1024)){
-          this.$message.error('图片文件大小不能大于300KB!');
           return
         }
         this.file = file;

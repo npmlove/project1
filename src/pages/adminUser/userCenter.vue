@@ -53,14 +53,13 @@
       </Table>
     </div>
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' width="150px">
-      <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px"
-        size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
+      <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px" size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
         <el-form-item prop="newPassword" label="新密码">
-          <el-input style="width: 280px;" type="password" size="medium" :maxlength="inputMax" v-model="ruleForm.newPassword" clearable placeholder="请输入新密码">
+          <el-input style="width: 280px;" type="password" size="medium" maxlength="20" v-model="ruleForm.newPassword" clearable placeholder="请输入新密码">
           </el-input>
         </el-form-item>
         <el-form-item prop="checknewPassword" label="校验密码">
-          <el-input style="width: 280px;" type="password" size="medium" :maxlength="inputMax" v-model="ruleForm.checknewPassword" clearable placeholder="请再次输入新密码"></el-input>
+          <el-input style="width: 280px;" type="password" size="medium" maxlength="20" v-model="ruleForm.checknewPassword" clearable placeholder="请再次输入新密码"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部按钮 -->
@@ -81,6 +80,16 @@
   } from '@/util/assist'
   export default {
     data() {
+      var validatePass1 = (rule, value, callback) => {
+        var reg = /^[0-9A-Za-z]{6,20}$/ 
+        if(value == ''){
+          callback(new Error('请输入密码'));
+        }if (!reg.test(value)) {
+          callback(new Error('请输入6到20位密码，包含数字或字母'));
+        } else {
+          callback();
+        }
+      }
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
@@ -156,7 +165,7 @@
         rules: {
           newPassword: [{
             required: true,
-            message: '请输入新密码',
+            validator: validatePass1,
             trigger: 'blur'
           }],
           checknewPassword: [{
@@ -262,17 +271,25 @@
             }
           })
         } else if (scope.method == 'del') {
-          var json = {
-            status: -1,
-            id: scope.row.id
-          }
-          this.$http.post(this.$service.userUpdate, json).then(data => {
-            if (data.code == 200) {
-              this.initUserSearch()
-              this.$message.success('删除成功')
-            } else {
-              this.$message.error(data.message)
+          this.$confirm("确定删除这条数据?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+            var json = {
+              status: -1,
+              id: scope.row.id
             }
+            this.$http.post(this.$service.userUpdate, json).then(data => {
+              if (data.code == 200) {
+                this.initUserSearch()
+                this.$message.success('删除成功')
+              } else {
+                this.$message.error(data.message)
+              }
+            })
+          }).catch(() => {
+            console.log('取消')
           })
         } else if (scope.method == 'revise') {
           this.dialogFormVisible = true

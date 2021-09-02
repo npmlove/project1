@@ -193,14 +193,23 @@
           this.roleId = scope.row.id
           this.roleName = scope.row.roleName
         } else if (scope.method == 'del') {
-          this.$http.get(this.$service.roleDelete + '?id=' + scope.row.id).then(data => {
-            if (data.code == 200) {
-              this.initRoleSearch()
-              this.$message.success('删除成功')
-            } else {
-              this.$message.error(data.message)
-            }
+          this.$confirm("确定删除这条数据?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+            this.$http.get(this.$service.roleDelete + '?id=' + scope.row.id).then(data => {
+              if (data.code == 200) {
+                this.initRoleSearch()
+                this.$message.success('删除成功')
+              } else {
+                this.$message.error(data.message)
+              }
+            })
+          }).catch(() => {
+            console.log('取消')
           })
+          
         }else if(scope.method == 'setting'){
           this.drawer = true
           this.drawerTitle =  scope.row.roleName

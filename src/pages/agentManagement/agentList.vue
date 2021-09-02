@@ -214,13 +214,21 @@
           this.ruleForm.agentCode = scope.row.agentCode
           this.agentId = scope.row.id
         } else if (scope.method == 'del') {
-          this.$http.put(this.$service.agentDelete + '?id=' + scope.row.id).then(data => {
-            if (data.code == 200) {
-              this.initAgentSearch()
-              this.$message.success('删除成功')
-            } else {
-              this.$message.error(data.message)
-            }
+          this.$confirm("确定删除这条数据?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+            this.$http.put(this.$service.agentDelete + '?id=' + scope.row.id).then(data => {
+              if (data.code == 200) {
+                this.initAgentSearch()
+                this.$message.success('删除成功')
+              } else {
+                this.$message.error(data.message)
+              }
+            })
+          }).catch(() => {
+            console.log('取消')
           })
         }
       },
