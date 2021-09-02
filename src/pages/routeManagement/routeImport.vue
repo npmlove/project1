@@ -62,20 +62,23 @@
         const formdate = new FormData();
         formdate.append("excel", this.excelInfo);
         axios.post(this.$service.airlineExcelImport, formdate, {responseType: 'arraybuffer'}).then(res => {
-          let resBlob = new Blob([res])
-          let reader = new FileReader()
-          reader.readAsText(resBlob, "utf-8")
-          reader.onload = () => {
-            let res = JSON.parse(reader.result)
-            console.log(JSON.parse(reader.result))
-          }
-
-
+          try {
+            let resBlob = new Blob([res])
+            let reader = new FileReader()
+            reader.readAsText(resBlob, "utf-8")
+            reader.onload = () => {
+              let res = JSON.parse(reader.result)
+              if (res.code === -1) {
+                this.$message.error(res.message)
+                return;
+              }
+            }
+          }catch (e){}
           if (res.byteLength == 0) {
             this.$message.success('导入成功')
             return;
           } else {
-            this.$message.success('导入失败,请查看失败文件')
+            this.$message.error('导入失败,请查看失败文件')
           }
           const aLink = document.createElement("a");
           let blob = new Blob([res], {
@@ -111,21 +114,27 @@
           }, {
             responseType: 'arraybuffer'
           }).then((res) => {
-            let resBlob = new Blob([res])
-            let reader = new FileReader()
-            reader.readAsText(resBlob, "utf-8")
-            reader.onload = () => {
-              let res = JSON.parse(reader.result)
-            }
-
-
+            try {
+              let resBlob = new Blob([res])
+              let reader = new FileReader()
+              reader.readAsText(resBlob, "utf-8")
+              reader.onload = () => {
+                let res = JSON.parse(reader.result)
+                if (res.code == -1) {
+                  this.$message.error(res.message)
+                  return;
+                }
+                console.log(JSON.parse(reader.result))
+              }
+            }catch (e){}
             // if(res.status == "200") {
             const aLink = document.createElement("a");
             let blob = new Blob([res], {
               type: "application/vnd.ms-excel"
             })
             aLink.href = URL.createObjectURL(blob)
-            if (this.ids.length > 1) {
+            console.log(this.ids.split(",").length);
+            if (this.ids.split(",").length> 1) {
               aLink.setAttribute('download', '航线价格表' + '.zip') // 设置下载文件名称
             } else {
               aLink.setAttribute('download', '航线价格表' + '.xlsx') // 设置下载文件名称
