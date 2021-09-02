@@ -229,7 +229,9 @@
         this.$http.get(this.$service.roleSearch).then(data => {
           if (data.code == 200) {
             this.roleOpt = data.data
-          }
+          }else{
+			  this.$message.error(data.message)
+		  }
         })
       },
       //查询

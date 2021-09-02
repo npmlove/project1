@@ -15,25 +15,31 @@
       </Table>
 
       <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' width="150px">
-       <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px" size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
+        <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px"
+          size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
 
-         <el-form-item prop="name" label="权限名称">
-           <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.name"  clearable placeholder="请输入权限名称"></el-input>
-         </el-form-item>
+          <el-form-item prop="name" label="权限名称">
+            <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.name" clearable
+              placeholder="请输入权限名称"></el-input>
+          </el-form-item>
 
-         <el-form-item prop="path" label="权限路径">
-           <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.path"  clearable placeholder="请输入权限路径"></el-input>
-         </el-form-item>
+          <el-form-item prop="path" label="权限路径">
+            <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.path" clearable
+              placeholder="请输入权限路径"></el-input>
+          </el-form-item>
 
-         <el-form-item prop="title" label="权限标签">
-           <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.title"  clearable placeholder="请输入权限标签"></el-input>
-         </el-form-item>
-       </el-form>
+          <el-form-item prop="title" label="权限标签">
+            <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.title" clearable
+              placeholder="请输入权限标签"></el-input>
+          </el-form-item>
+        </el-form>
         <!-- 底部按钮 -->
         <div slot="footer" class="dialog-footer">
           <div style="text-align: center;padding-top:20px;">
-            <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary" @click="dialogComfirm('ruleForm')">确 定</el-button>
-            <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" @click="closeDialog">取 消</el-button>
+            <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+              @click="dialogComfirm('ruleForm')">确 定</el-button>
+            <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" @click="closeDialog">取 消
+            </el-button>
           </div>
         </div>
       </el-dialog>
@@ -43,7 +49,9 @@
 </template>
 <script>
   import Table from '@/components/Table'
-  import {toData} from '@/util/assist'
+  import {
+    toData
+  } from '@/util/assist'
   export default {
     data() {
       return {
@@ -100,9 +108,21 @@
         },
 
         rules: {
-          name: [{required: true, message: '请输入权限名称',trigger: 'blur' }],
-          path: [{required: true, message: '请输入权限路径', trigger: 'blur'}],
-          title: [{required: true, message: '请输入权限标签', trigger: 'blur' }]
+          name: [{
+            required: true,
+            message: '请输入权限名称',
+            trigger: 'blur'
+          }],
+          path: [{
+            required: true,
+            message: '请输入权限路径',
+            trigger: 'blur'
+          }],
+          title: [{
+            required: true,
+            message: '请输入权限标签',
+            trigger: 'blur'
+          }]
         },
         dialogTitle: '新增模块',
         dialogFormVisible: false,
@@ -128,36 +148,38 @@
         })
       },
       dialogComfirm(ruleForm) {
-        this.$refs[ruleForm].validate((valid,object) => {
+        this.$refs[ruleForm].validate((valid, object) => {
           if (valid) {
 
-            if(this.dialogTitle == '编辑权限'){
+            if (this.dialogTitle == '编辑权限') {
               this.ruleForm.id = this.moduleId
-              this.$http.post(this.$service.moduleUpdate,this.ruleForm).then(data => {
-                if(data.code == 200){
-                 this.initAuthoritySearch()
-                 this.dialogFormVisible = false
-                }
-              })
-            }else if (this.dialogTitle == '新增权限'){
-              this.$http.post(this.$service.moduleAdd,this.ruleForm).then(data => {
-                if(data.code == 200){
+              this.$http.post(this.$service.moduleUpdate, this.ruleForm).then(data => {
+                if (data.code == 200) {
                   this.initAuthoritySearch()
                   this.dialogFormVisible = false
-                }else{
+                } else {
+                  this.$message.error(data.message)
+                }
+              })
+            } else if (this.dialogTitle == '新增权限') {
+              this.$http.post(this.$service.moduleAdd, this.ruleForm).then(data => {
+                if (data.code == 200) {
+                  this.initAuthoritySearch()
+                  this.dialogFormVisible = false
+                } else {
                   this.$message.error(data.message)
                 }
               })
             }
           } else {
-            setTimeout(()=>{
-              var isError= document.getElementsByClassName("is-error");
-              if(isError[0].querySelector('input')){
+            setTimeout(() => {
+              var isError = document.getElementsByClassName("is-error");
+              if (isError[0].querySelector('input')) {
                 isError[0].querySelector('input').focus()
-              }else if(isError[0].querySelector('textarea')){
+              } else if (isError[0].querySelector('textarea')) {
                 isError[0].querySelector('textarea').focus()
               }
-            },100);
+            }, 100);
             return false;
           }
         })
@@ -175,7 +197,7 @@
       },
       //操作
       handleClick(scope) {
-       // console.log(scope)
+        // console.log(scope)
         if (scope.method == 'edit') {
           this.dialogTitle = '编辑权限'
           this.dialogFormVisible = true
@@ -189,11 +211,11 @@
             cancelButtonText: "取消",
             type: "warning"
           }).then(() => {
-            this.$http.get(this.$service.moduleDelete+'?id='+scope.row.id).then(data => {
-              if(data.code == 200){
-                 this.initAuthoritySearch()
+            this.$http.get(this.$service.moduleDelete + '?id=' + scope.row.id).then(data => {
+              if (data.code == 200) {
+                this.initAuthoritySearch()
                 this.$message.success('删除成功')
-              }else{
+              } else {
                 this.$message.error(data.message)
               }
             })
@@ -254,7 +276,8 @@
     padding: 20px 0 20px 30px;
     background: #fff;
   }
-  .el-dialog{
+
+  .el-dialog {
     width: 300px;
     min-width: 500px;
   }

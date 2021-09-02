@@ -4,10 +4,12 @@
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
           <el-form-item label="代理名称">
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="agentName" clearable  placeholder="请输入代理名称"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="agentName" clearable
+              placeholder="请输入代理名称"></el-input>
           </el-form-item>
           <el-form-item label="代理简称">
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="agentCode" clearable placeholder="请输入代理简称"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="agentCode" clearable
+              placeholder="请输入代理简称"></el-input>
           </el-form-item>
           <el-form-item>
             <el-row>
@@ -22,33 +24,29 @@
           </el-form-item>
         </div>
       </el-form>
-      <Table
-        :checkbox="false"
-        :tableData='tableData'
-        :columns='columns'
-        :operation='operation'
-        :total='total'
-        :currentPage='pageNum'
-        :pageSize='pageSize'
-        @sizeChange='handleSizeChange'
-        @currentChange='handleCurrentChange'
+      <Table :checkbox="false" :tableData='tableData' :columns='columns' :operation='operation' :total='total'
+        :currentPage='pageNum' :pageSize='pageSize' @sizeChange='handleSizeChange' @currentChange='handleCurrentChange'
         @handleClick='handleClick'>
       </Table>
     </div>
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' width="200px">
-      <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px" size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
+      <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px"
+        size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
         <el-form-item prop="agentName" label="代理名称">
-          <el-input style="width: 280px;" v-model="ruleForm.agentName" clearable placeholder="请输入代理名称" :maxlength="inputMax"></el-input>
+          <el-input style="width: 280px;" v-model="ruleForm.agentName" clearable placeholder="请输入代理名称"
+            :maxlength="inputMax"></el-input>
         </el-form-item>
         <el-form-item prop="agentCode" label="代理简称">
-          <el-input style="width: 280px;" v-model="ruleForm.agentCode" clearable placeholder="请输入代理简称" :maxlength="inputMax"></el-input>
+          <el-input style="width: 280px;" v-model="ruleForm.agentCode" clearable placeholder="请输入代理简称"
+            :maxlength="inputMax"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部按钮 -->
       <div slot="footer" class="dialog-footer">
         <div style="text-align: center;padding-top:20px;">
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary" @click="dialogComfirm('ruleForm')">确定</el-button>
+          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+            @click="dialogComfirm('ruleForm')">确定</el-button>
         </div>
       </div>
     </el-dialog>
@@ -110,8 +108,16 @@
           agentCode: ''
         },
         rules: {
-          agentName: [{ required: true, message: '请输入代理名称', trigger: 'blur'}],
-          agentCode: [{required: true, message: '请输入代理简称', trigger: 'blur'}]
+          agentName: [{
+            required: true,
+            message: '请输入代理名称',
+            trigger: 'blur'
+          }],
+          agentCode: [{
+            required: true,
+            message: '请输入代理简称',
+            trigger: 'blur'
+          }]
         },
         labelPosition: 'right',
         agentName: '',
@@ -136,6 +142,8 @@
           if (data.code == 200) {
             this.total = data.data.total
             this.tableData = data.data.records
+          } else {
+            this.$message.error(data.message)
           }
         })
       },
@@ -173,6 +181,8 @@
                   this.$message.success('新增成功')
                   this.initAgentSearch()
                   this.dialogFormVisible = false
+                } else {
+                  this.$message.error(data.message)
                 }
               })
             } else if (this.dialogTitle == '编辑代理') {

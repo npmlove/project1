@@ -2,7 +2,8 @@
   <div class="content-wrapper">
     <el-form :inline="true" size="medium" class="demo-form-inline">
       <div class="content-search-normal">
-        <el-form-item :style="{visibility: newRoleId == '-1' ? 'visible' : 'hidden'}" style="float: right;margin-right: 20px">
+        <el-form-item :style="{visibility: newRoleId == '-1' ? 'visible' : 'hidden'}"
+          style="float: right;margin-right: 20px">
           <el-row>
             <el-button @click="newAdd" size="medium">新增角色</el-button>
           </el-row>
@@ -10,24 +11,16 @@
       </div>
     </el-form>
     <div class="content">
-      <Table
-        ref="multipleTable1"
-        :checkbox="false"
-        :tableData='tableData'
-        :columns='columns'
-        :operation='operation'
-        :total='total'
-        :currentPage='pageNum'
-        :pageSize='pageSize'
-        @handleClick='handleClick'
-        >
+      <Table ref="multipleTable1" :checkbox="false" :tableData='tableData' :columns='columns' :operation='operation'
+        :total='total' :currentPage='pageNum' :pageSize='pageSize' @handleClick='handleClick'>
       </Table>
     </div>
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' class="aaa">
       <el-form :label-position="labelPosition" :inline="true" size="medium" class="dialog-demo">
         <div class="rest-style" style="margin-top: 20px;">
           <el-form-item label="角色名称" label-width="120px" required>
-            <el-input size="medium" :maxlength="inputMax" v-model="roleName" placeholder="请输入角色名称" maxlength="10"></el-input>
+            <el-input size="medium" :maxlength="inputMax" v-model="roleName" placeholder="请输入角色名称" maxlength="10">
+            </el-input>
           </el-form-item>
         </div>
       </el-form>
@@ -115,9 +108,9 @@
       this.initRoleSearch()
       this.initAuthoritySearch()
       this.newRoleId = JSON.parse(sessionStorage.getItem('userInfo')).roleId
-      if(this.newRoleId == '-1'){
+      if (this.newRoleId == '-1') {
         this.operation.show = true
-      }else{
+      } else {
         this.operation.show = false
       }
     },
@@ -159,6 +152,8 @@
               this.roleId = ''
               this.roleName = ''
               this.initRoleSearch()
+            } else {
+              this.$message.error(data.message)
             }
           })
         } else if (this.dialogTitle == '编辑角色') {
@@ -173,6 +168,8 @@
               this.roleId = ''
               this.roleName = ''
               this.initRoleSearch()
+            } else {
+              this.$message.error(data.message)
             }
           })
         }
@@ -189,6 +186,8 @@
         this.$http.get(this.$service.roleSearch).then(data => {
           if (data.code == 200) {
             this.tableData = data.data
+          } else {
+            this.$message.error(data.message)
           }
         })
       },
@@ -217,9 +216,9 @@
             console.log('取消')
           })
 
-        }else if(scope.method == 'setting'){
+        } else if (scope.method == 'setting') {
           this.drawer = true
-          this.drawerTitle =  scope.row.roleName
+          this.drawerTitle = scope.row.roleName
         }
       }
     },

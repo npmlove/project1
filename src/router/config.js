@@ -210,6 +210,7 @@ const adverManagementCenter = [{
       path: 'adverCenter',
       component: () => import('@/pages/adverManagement/adverCenter.vue'),
       name: 'adverCenter',
+      hidden: true,
       meta: {
         title: '广告列表',
         keepAlive: false,
@@ -270,7 +271,7 @@ const routes = [
   ...routeManagementCenter,
   ...adverManagementCenter,
   ...agentManagement,
-  ...userManagementCenter,
+  // ...userManagementCenter,
   ...adminUserCenter
 
 ]

@@ -269,7 +269,7 @@
                       <el-input v-model="childerItem.ratesLevel5" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" size="small" style="flex: 0 0 6%;">
-                      <a @click="delChilder(index,childerIndex)" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
+                      <a @click="delChilder1(index,listIndex,childerIndex)" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
                     </div>
                   </div>
                 </div>
@@ -667,6 +667,10 @@
       //删除航班信息
       delChilder(index, childerIndex) {
         this.airportTableArr[index].childerTable.splice(childerIndex, 1)
+      },
+      //删除代理报价
+      delChilder1(index, listIndex ,childerIndex) {
+        this.airlineAgent[index].ratesList[listIndex].tableData.splice(childerIndex, 1)
       },
       delTableClick(index) {
         this.airportTableArr.splice(index,1)

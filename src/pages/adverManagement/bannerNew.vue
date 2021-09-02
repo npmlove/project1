@@ -4,15 +4,12 @@
       <el-form :label-position="labelPosition" label-width="80px" size="medium" class="demo-form-inline">
         <div class="banner-list" v-for="(item,index) in bannerArr" :key="index">
           <el-form-item label="轮播名称">
-            <el-input :value="'广告轮播'+(index+1)" style="width: 85%;" clearable placeholder="请输入链接地址" :maxlength="inputMax" :disabled="true"></el-input>
+            <el-input :value="'广告轮播'+(index+1)" style="width: 85%;" clearable placeholder="请输入链接地址"
+              :maxlength="inputMax" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item @click="aaa(index)" class="up-input" label="图片">
             <div @click="getImageTypeIndex(index)">
-              <el-upload
-                class="avatar-uploader"
-                :show-file-list="false"
-                :before-upload="beforeAvatarUpload"
-                action="#"
+              <el-upload class="avatar-uploader" :show-file-list="false" :before-upload="beforeAvatarUpload" action="#"
                 :limit="1">
                 <img v-if="item.bannerPath" :src="imgUrl+item.bannerPath" style="width: 100%;height: 100%;">
                 <i v-else class="el-icon-plus avatar-uploader-icon "></i>
@@ -21,16 +18,19 @@
             </div>
           </el-form-item>
           <el-form-item label="链接地址" style="padding-top: 20px;">
-            <el-input v-model="item.bannerUrl" style="width: 85%;" clearable placeholder="请输入链接地址" :maxlength="inputMax"></el-input>
+            <el-input v-model="item.bannerUrl" style="width: 85%;" clearable placeholder="请输入链接地址"
+              :maxlength="inputMax"></el-input>
           </el-form-item>
           <el-form-item label="状态">
-            <el-switch v-model="item.status" active-text="禁用" active-color="#C0CCDA" inactive-color="#409EFF" inactive-text="启用" ></el-switch>
+            <el-switch v-model="item.status" active-text="禁用" active-color="#C0CCDA" inactive-color="#409EFF"
+              inactive-text="启用"></el-switch>
           </el-form-item>
         </div>
       </el-form>
       <div class="baocun">
         <div style="text-align: center;padding-top:20px;">
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary" @click="dialogComfirm">保存</el-button>
+          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+            @click="dialogComfirm">保存</el-button>
         </div>
       </div>
     </div>
@@ -59,7 +59,7 @@
       beforeAvatarUpload(file) {
         const isJPG = file.type;
         const isLt300K = 300;
-        if(file.size > (isLt300K*1024)){
+        if (file.size > (isLt300K * 1024)) {
           this.$message.error('图片文件大小不能大于300KB!');
           return
         }
@@ -94,14 +94,14 @@
       dialogComfirm(ruleForm) {
         // this.loading = true
         var newBanner = JSON.parse(JSON.stringify(this.bannerArr))
-        for(var i = 0; i < newBanner.length; i++){
-          if(!newBanner[i].bannerPath){
+        for (var i = 0; i < newBanner.length; i++) {
+          if (!newBanner[i].bannerPath) {
             this.$message.error('您还有banner没有配置')
             return
           }
           newBanner[i].status = newBanner[i].status ? 0 : 1
-          if(!newBanner[i].sort){
-            newBanner[i].sort = i+1
+          if (!newBanner[i].sort) {
+            newBanner[i].sort = i + 1
           }
         }
         this.$http.post(this.$service.changeBanner, newBanner).then(data => {
@@ -120,14 +120,14 @@
           if (data.code == 200) {
             var leg = 5 - data.data.length
             this.bannerArr = data.data
-            for(var q = 0; q < this.bannerArr.length; q++){
-              if(this.bannerArr[q].status == '1'){
+            for (var q = 0; q < this.bannerArr.length; q++) {
+              if (this.bannerArr[q].status == '1') {
                 this.bannerArr[q].status = false
-              }else{
+              } else {
                 this.bannerArr[q].status = true
               }
             }
-            for(var i = 0; i < leg; i++){
+            for (var i = 0; i < leg; i++) {
               var json = {
                 bannerImgName: '',
                 bannerPath: '',
@@ -139,6 +139,8 @@
               this.bannerArr.push(json)
             }
             this.loading = false
+          } else {
+            this.$message.error(data.message)
           }
         }).catch((e) => {
           console.log(e)
@@ -160,33 +162,39 @@
     overflow: hidden;
     background-color: #f3f6f9 !important;
   }
+
   .content {
     background-color: #FFF;
     padding: 20px;
     box-sizing: border-box;
   }
-  .demo-form-inline{
+
+  .demo-form-inline {
     display: flex;
     flex-wrap: wrap;
     box-sizing: border-box;
     width: 100%;
   }
-  .banner-list{
+
+  .banner-list {
     flex: 0 0 32%;
     border: 1px solid #E5E5E5;
     margin-right: 2%;
     margin-bottom: 20px;
     box-sizing: border-box;
     padding: 20px;
-    /deep/ .up-input{
-      .el-form-item__content{
+
+    /deep/ .up-input {
+      .el-form-item__content {
         height: 150px;
-        .el-upload--text{
+
+        .el-upload--text {
           height: 150px;
           width: 150px;
           line-height: 150px;
           border-radius: 5px;
-          .el-icon-plus{
+
+          .el-icon-plus {
             font-size: 28px;
             color: #8c939d;
           }
@@ -194,10 +202,12 @@
       }
     }
   }
-  .banner-list:nth-of-type(3n){
+
+  .banner-list:nth-of-type(3n) {
     margin-right: 0;
   }
-  .avatar-uploader{
+
+  .avatar-uploader {
     height: 150px;
     width: 150px;
     border: 1px dashed #c0ccda;

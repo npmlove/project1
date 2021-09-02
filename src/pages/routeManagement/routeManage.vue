@@ -4,57 +4,49 @@
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
           <el-form-item>
-            <el-select v-model="pol" placeholder="起运港三字码" :remote-method="polMethod" :loading="loading" clearable filterable remote reserve-keyword>
-              <el-option
-                v-for="(item,index) in polOpt"
-                :disabled="pod == item.threeLetterCode"
-                :key="item.threeLetterCode"
+            <el-select v-model="pol" placeholder="起运港三字码" :remote-method="polMethod" :loading="loading" clearable
+              filterable remote reserve-keyword>
+              <el-option v-for="(item,index) in polOpt" :disabled="pod == item.threeLetterCode"
+                :key="item.threeLetterCode" :value="item.threeLetterCode">
+                <span>{{item.threeLetterCode}}</span>
+                <span style="margin-left: 5px;">{{item.name}}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item>
+            <el-select v-model="pod" placeholder="目的港三字码" :remote-method="podMethod" :loading="loading" clearable
+              filterable remote reserve-keyword>
+              <el-option v-for="item in podOpt" :disabled="pol == item.threeLetterCode" :key="item.threeLetterCode"
                 :value="item.threeLetterCode">
-                  <span>{{item.threeLetterCode}}</span>
-                  <span style="margin-left: 5px;">{{item.name}}</span>
+                <span>{{item.threeLetterCode}}</span>
+                <span style="margin-left: 5px;">{{item.name}}</span>
               </el-option>
             </el-select>
           </el-form-item>
 
           <el-form-item>
-            <el-select v-model="pod" placeholder="目的港三字码" :remote-method="podMethod" :loading="loading" clearable filterable remote reserve-keyword>
-              <el-option
-                v-for="item in podOpt"
-                :disabled="pol == item.threeLetterCode"
-                :key="item.threeLetterCode"
-                :value="item.threeLetterCode">
-                  <span>{{item.threeLetterCode}}</span>
-                  <span style="margin-left: 5px;">{{item.name}}</span>
+            <el-select v-model="agentName" placeholder="代理公司名称" :remote-method="agentMethod" :loading="loading"
+              filterable remote reserve-keyword style="width: 220px;">
+              <el-option v-for="item in agentOpt" :key="item.value" :label="item.agentName" :value="item.agentName">
               </el-option>
             </el-select>
           </el-form-item>
 
           <el-form-item>
-            <el-select v-model="agentName" placeholder="代理公司名称" :remote-method="agentMethod" :loading="loading" filterable remote reserve-keyword style="width: 220px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.value"
-                :label="item.agentName"
-                :value="item.agentName">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="airCompanyCode" placeholder="航司代码" :remote-method="companyMethod" :loading="loading" clearable filterable remote reserve-keyword>
-              <el-option
-                v-for="item in airCompanyCodeOpt"
-                :key="item.twoLetterCode"
-                :value="item.twoLetterCode">
-                  <span>{{item.twoLetterCode}}</span>
-                  <span style="margin-left: 5px;">{{item.name}}</span>
+            <el-select v-model="airCompanyCode" placeholder="航司代码" :remote-method="companyMethod" :loading="loading"
+              clearable filterable remote reserve-keyword>
+              <el-option v-for="item in airCompanyCodeOpt" :key="item.twoLetterCode" :value="item.twoLetterCode">
+                <span>{{item.twoLetterCode}}</span>
+                <span style="margin-left: 5px;">{{item.name}}</span>
               </el-option>
             </el-select>
           </el-form-item>
 
           <el-form-item>
             <el-select placeholder="中转/直飞" size="medium" v-model="legCount" clearable style="width: 130px;">
-              <el-option v-for="item in legCountOpt" :key="item.value" :label="item.name" :value="item.value"></el-option>
+              <el-option v-for="item in legCountOpt" :key="item.value" :label="item.name" :value="item.value">
+              </el-option>
             </el-select>
           </el-form-item>
 
@@ -79,20 +71,9 @@
           </el-form-item>
         </div>
       </el-form>
-      <Table
-        ref="multipleTable1"
-        :checkbox="false"
-        :tableData='tableData'
-        :columns='columns'
-        :operation='operation'
-        :total='total'
-        :currentPage='pageNum'
-        :pageSize='pageSize'
-        @sizeChange='handleSizeChange'
-        @currentChange='handleCurrentChange'
-        @handleClick='handleClick'
-        @switchChangeUser="switchChangeUser"
-        >
+      <Table ref="multipleTable1" :checkbox="false" :tableData='tableData' :columns='columns' :operation='operation'
+        :total='total' :currentPage='pageNum' :pageSize='pageSize' @sizeChange='handleSizeChange'
+        @currentChange='handleCurrentChange' @handleClick='handleClick' @switchChangeUser="switchChangeUser">
       </Table>
     </div>
     <!-- <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' width="150px">
@@ -103,7 +84,9 @@
 
 <script>
   import Table from '@/components/Table'
-  import { toData } from '@/util/assist'
+  import {
+    toData
+  } from '@/util/assist'
   export default {
     data() {
       return {
@@ -113,29 +96,96 @@
         pageNum: 1,
         total: 0,
         // 列
-        columns: [
-          {label: '航线ID', prop: 'id', show: true, width: '120'},
-          {label: '航班代码', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '起运港', prop: 'pol', show: true, width: '100'},
-          {label: '目的港', prop: 'pod', show: true, width: '100'},
-          {label: '航线区域', prop: 'continent', show: true, width: '150'},
-          {label: '中转/直飞', prop: 'nonStop', show: true, width: '100'},
-          {label: '航程', prop: 'legCount', show: true, width: '100'},
-          {label: '飞机型号', prop: 'planeType', show: true, width: '150'},
-          {label: '托盘', prop: 'tray', show: true, width: '100'},
-          {label: '散货', prop: 'bulkCargo', show: true, width: '100'},
-          {label: '状态', prop: 'status', show: true, width: '100'},
-          {label: '更新时间',prop: 'updateTime', show: true, width: '180'}
+        columns: [{
+            label: '航线ID',
+            prop: 'id',
+            show: true,
+            width: '120'
+          },
+          {
+            label: '航班代码',
+            prop: 'airCompanyCode',
+            show: true,
+            width: '100'
+          },
+          {
+            label: '起运港',
+            prop: 'pol',
+            show: true,
+            width: '100'
+          },
+          {
+            label: '目的港',
+            prop: 'pod',
+            show: true,
+            width: '100'
+          },
+          {
+            label: '航线区域',
+            prop: 'continent',
+            show: true,
+            width: '150'
+          },
+          {
+            label: '中转/直飞',
+            prop: 'nonStop',
+            show: true,
+            width: '100'
+          },
+          {
+            label: '航程',
+            prop: 'legCount',
+            show: true,
+            width: '100'
+          },
+          {
+            label: '飞机型号',
+            prop: 'planeType',
+            show: true,
+            width: '150'
+          },
+          {
+            label: '托盘',
+            prop: 'tray',
+            show: true,
+            width: '100'
+          },
+          {
+            label: '散货',
+            prop: 'bulkCargo',
+            show: true,
+            width: '100'
+          },
+          {
+            label: '状态',
+            prop: 'status',
+            show: true,
+            width: '100'
+          },
+          {
+            label: '更新时间',
+            prop: 'updateTime',
+            show: true,
+            width: '180'
+          }
         ],
         // 操作
         operation: {
           show: true,
           label: '操作',
           width: '180',
-          options: [
-            {label: '编辑', method: 'routeEdit'},
-            {label: '删除', method: 'routeDel'},
-            {label: '查看', method: 'routeView'}
+          options: [{
+              label: '编辑',
+              method: 'routeEdit'
+            },
+            {
+              label: '删除',
+              method: 'routeDel'
+            },
+            {
+              label: '查看',
+              method: 'routeView'
+            }
           ]
         },
         pol: '',
@@ -143,16 +193,32 @@
         agentName: '',
         airCompanyCode: '',
         legCount: '',
-        legCountOpt: [
-          {name: '全部', value: '2'},
-          {name: '直飞', value: '1'},
-          {name: '中转', value: '0'},
+        legCountOpt: [{
+            name: '全部',
+            value: '2'
+          },
+          {
+            name: '直飞',
+            value: '1'
+          },
+          {
+            name: '中转',
+            value: '0'
+          },
         ],
         status: '',
-        statusOpt: [
-          {name: '全部', value: '2'},
-          {name: '下架', value: '1'},
-          {name: '上架', value: '0'},
+        statusOpt: [{
+            name: '全部',
+            value: '2'
+          },
+          {
+            name: '下架',
+            value: '1'
+          },
+          {
+            name: '上架',
+            value: '0'
+          },
         ],
         loading: false,
         polOpt: [],
@@ -169,41 +235,45 @@
     },
     methods: {
       //起始港三字码
-      initAirportSearchByPage(keyWord,type) {
-        if(!keyWord){
+      initAirportSearchByPage(keyWord, type) {
+        if (!keyWord) {
           keyWord = ''
         }
-        this.$http.get(this.$service.airportSearchByPage+'?keyWord='+keyWord).then((data) => {
+        this.$http.get(this.$service.airportSearchByPage + '?keyWord=' + keyWord).then((data) => {
           this.loading = false
-          if(data.code == 200){
-            if(type == '起始港'){
+          if (data.code == 200) {
+            if (type == '起始港') {
               this.polOpt = data.data.records
-            }else if(type == '目的港') {
+            } else if (type == '目的港') {
               this.podOpt = data.data.records
-            }else{
+            } else {
               this.polOpt = data.data.records
               this.podOpt = data.data.records
             }
+          } else {
+            this.$message.error(data.message)
           }
         })
       },
       polMethod(keyWord) {
         this.loading = true
-        this.initAirportSearchByPage(keyWord,'起始港')
+        this.initAirportSearchByPage(keyWord, '起始港')
       },
       podMethod(keyWord) {
         this.loading = true
-        this.initAirportSearchByPage(keyWord,'目的港')
+        this.initAirportSearchByPage(keyWord, '目的港')
       },
       //航司公司
       initCompanySearchByPage(keyWord) {
-        if(!keyWord){
+        if (!keyWord) {
           keyWord = ''
         }
-        this.$http.get(this.$service.companySearchByPage+'?keyWord='+keyWord).then((data) => {
+        this.$http.get(this.$service.companySearchByPage + '?keyWord=' + keyWord).then((data) => {
           this.loading = false
-          if(data.code == 200){
+          if (data.code == 200) {
             this.airCompanyCodeOpt = data.data.records
+          } else {
+            this.$message.error(data.message)
           }
         })
       },
@@ -212,16 +282,18 @@
       },
       //代理公司
       initAgentList(agentName) {
-        if(!agentName){
+        if (!agentName) {
           agentName = ''
         }
         var data = {
           agentName: agentName
         }
-        this.$http.post(this.$service.agentList,data).then((data) => {
+        this.$http.post(this.$service.agentList, data).then((data) => {
           this.loading = false
-          if(data.code == 200){
+          if (data.code == 200) {
             this.agentOpt = data.data.records
+          } else {
+            this.$message.error(data.message)
           }
         })
       },
@@ -233,11 +305,11 @@
           id: item.row.id,
           status: item.row.status ? 0 : 1
         }
-        this.$http.post(this.$service.airlineUpdate,data).then(data => {
+        this.$http.post(this.$service.airlineUpdate, data).then(data => {
           if (data.code == 200) {
             this.$message.success('状态更新成功')
             this.initAirlineSearchByPage()
-          }else{
+          } else {
             this.$message.error('状态更新失败')
           }
         }).catch((e) => {
@@ -257,7 +329,7 @@
           airCompanyCode: this.airCompanyCode,
           agentName: this.agentName
         }
-        vm.$http.post(vm.$service.airlineSearchByPage,data).then(data => {
+        vm.$http.post(vm.$service.airlineSearchByPage, data).then(data => {
           if (data.code == 200) {
             this.total = data.data.total
             this.tableData = data.data.records
@@ -307,11 +379,11 @@
             cancelButtonText: "取消",
             type: "warning"
           }).then(() => {
-            vm.$http.delete(vm.$service.airlineDelete+'?id='+scope.row.id).then(data => {
+            vm.$http.delete(vm.$service.airlineDelete + '?id=' + scope.row.id).then(data => {
               if (data.code == 200) {
                 vm.$message.success('删除成功')
                 this.initAirlineSearchByPage()
-              }else{
+              } else {
                 vm.$message.error('删除失败')
               }
             })
