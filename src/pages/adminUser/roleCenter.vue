@@ -2,7 +2,7 @@
   <div class="content-wrapper">
     <el-form :inline="true" size="medium" class="demo-form-inline">
       <div class="content-search-normal">
-        <el-form-item style="float: right;margin-right: 20px">
+        <el-form-item :style="{visibility: newRoleId == '-1' ? 'visible' : 'hidden'}" style="float: right;margin-right: 20px">
           <el-row>
             <el-button @click="newAdd" size="medium">新增角色</el-button>
           </el-row>
@@ -107,12 +107,19 @@
         drawer: false,
         direction: 'rtl',
         moduleArr: [],
-        drawerTitle: ''
+        drawerTitle: '',
+        newRoleId: ''
       }
     },
     mounted() {
       this.initRoleSearch()
       this.initAuthoritySearch()
+      this.newRoleId = JSON.parse(sessionStorage.getItem('userInfo')).roleId
+      if(this.newRoleId == '-1'){
+        this.operation.show = true
+      }else{
+        this.operation.show = false
+      }
     },
     methods: {
       //关闭抽屉
@@ -209,7 +216,7 @@
           }).catch(() => {
             console.log('取消')
           })
-          
+
         }else if(scope.method == 'setting'){
           this.drawer = true
           this.drawerTitle =  scope.row.roleName
