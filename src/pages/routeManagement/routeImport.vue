@@ -21,8 +21,11 @@
       <div style="font-size: 16px;font-weight: 100;margin-bottom: 10px;">下载航线价格表</div>
       <div style="font-size: 14px;color: #999;">请输入需要下载的航线id，多条航线用逗号分隔，最多可支持20条</div>
       <div style="margin-top: 20px;">
-        <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ids" clearable placeholder="例: 1,2,3,4"></el-input>
-        <el-button type="success" size="medium" plain icon="el-icon-download" @click="handleExport" style="margin-left: 10px;">导出</el-button>
+        <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ids" clearable
+                  placeholder="例: 1,2,3,4"></el-input>
+        <el-button type="success" size="medium" plain icon="el-icon-download" @click="handleExport"
+                   style="margin-left: 10px;">导出
+        </el-button>
       </div>
     </div>
   </div>
@@ -40,7 +43,7 @@
       }
     },
     mounted() {
-      this.href = this.imgUrl+'/image/template/excelTemplate.xlsx'
+      this.href = this.imgUrl + '/image/template/excelTemplate.xlsx'
     },
     methods: {
       // 导入文件的上传
@@ -62,18 +65,14 @@
         const formdate = new FormData();
         formdate.append("excel", this.excelInfo);
         axios.post(this.$service.airlineExcelImport, formdate, {responseType: 'arraybuffer'}).then(res => {
-          try {
-            let resBlob = new Blob([res])
-            let reader = new FileReader()
-            reader.readAsText(resBlob, "utf-8")
-            reader.onload = () => {
-              let res = JSON.parse(reader.result)
-              if (res.code === -1) {
-                this.$message.error(res.message)
-                return;
-              }
-            }
-          }catch (e){}
+          let enc = new TextDecoder("utf-8");
+          let uint8_msg = new Uint8Array(res);
+          let str=enc.decode(uint8_msg);
+          if (str.indexOf("code") !== -1) {
+            let data = JSON.parse(enc.decode(uint8_msg));
+            this.$message.error(data.message)
+            return;
+          }
           if (res.byteLength == 0) {
             this.$message.success('导入成功')
             return;
@@ -100,7 +99,7 @@
       },
       //导出
       handleExport() {
-        if(!this.ids){
+        if (!this.ids) {
           this.$message.error('请输入航线ID')
           return
         }
@@ -114,19 +113,14 @@
           }, {
             responseType: 'arraybuffer'
           }).then((res) => {
-            try {
-              let resBlob = new Blob([res])
-              let reader = new FileReader()
-              reader.readAsText(resBlob, "utf-8")
-              reader.onload = () => {
-                let res = JSON.parse(reader.result)
-                if (res.code == -1) {
-                  this.$message.error(res.message)
-                  return;
-                }
-                console.log(JSON.parse(reader.result))
-              }
-            }catch (e){}
+            let enc = new TextDecoder("utf-8");
+            let uint8_msg = new Uint8Array(res);
+            let str=enc.decode(uint8_msg);
+            if (str.indexOf("code") !== -1) {
+              let data = JSON.parse(enc.decode(uint8_msg));
+              this.$message.error(data.message)
+              return;
+            }
             // if(res.status == "200") {
             const aLink = document.createElement("a");
             let blob = new Blob([res], {
@@ -134,7 +128,7 @@
             })
             aLink.href = URL.createObjectURL(blob)
             console.log(this.ids.split(",").length);
-            if (this.ids.split(",").length> 1) {
+            if (this.ids.split(",").length > 1) {
               aLink.setAttribute('download', '航线价格表' + '.zip') // 设置下载文件名称
             } else {
               aLink.setAttribute('download', '航线价格表' + '.xlsx') // 设置下载文件名称
@@ -151,6 +145,7 @@
 
 <style scoped lang="less">
   @import url("../../assets/icon/iconfont.css");
+
   .content-wrapper {
     width: 100%;
     box-sizing: border-box;
@@ -159,6 +154,7 @@
     overflow: hidden;
     background-color: #f3f6f9 !important;
   }
+
   .content {
     background-color: #FFF;
     padding: 20px;

@@ -549,11 +549,8 @@
           newAgent.ratesList.push(list)
         }
         console.log(newAgent)
-        var data = {
-          isBatch: 'false',
-          airlineAgentInsertDTO: newAgent
-        }
-        this.$http.post(this.$service.airlineSaveCascade,data).then((data) => {
+
+        this.$http.post(this.$service.airlineSaveCascade,newAgent).then((data) => {
           if(data.code == 200){
             this.$message.success('航线报价保存成功')
             // this.$router.push('/routeManagement/routeManage')
