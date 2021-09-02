@@ -103,7 +103,7 @@
             width: '120'
           },
           {
-            label: '航班代码',
+            label: '航司代码',
             prop: 'airCompanyCode',
             show: true,
             width: '100'

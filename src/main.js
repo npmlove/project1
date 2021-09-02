@@ -25,7 +25,7 @@ import { Col, Row, Button, Switch,
   Breadcrumb, BreadcrumbItem, Tree,
   CheckboxGroup, Steps, Step, Scrollbar, Tabs, tabPane, Popover, Collapse, CollapseItem,
   Timeline, TimelineItem, Image, Message, Divider, TimePicker, Tag, Cascader, Carousel, CarouselItem, InputNumber, Card,
-  MessageBox, Autocomplete, Drawer, Loading
+  MessageBox, Autocomplete, Drawer, Loading, Tooltip
 } from 'element-ui'
 Vue.use(Timeline)
 Vue.use(TimelineItem)
@@ -63,6 +63,7 @@ Vue.use(Tabs)
 Vue.use(tabPane)
 Vue.use(Loading)
 Vue.use(TimePicker)
+Vue.use(Tooltip)
 
 
 Vue.config.productionTip = false

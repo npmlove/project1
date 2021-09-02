@@ -46,6 +46,9 @@ export default {
   },
   methods: {
     guanbiClick(item,index) {
+      if(this.$route.path == '/routeManagement/routeAdd'){
+        sessionStorage.setItem('routeAdd','hide')
+      }
       if(item.path == this.isUrl && item.path != '/adminUser/homePage'){
         this.urlArr.splice(this.urlArr.indexOf(item),1)
         this.urlArrName.splice(this.urlArrName.indexOf(item.name),1)

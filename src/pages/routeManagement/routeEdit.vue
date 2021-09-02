@@ -32,7 +32,7 @@
               </el-form-item>
             </div>
             <div>
-              <el-form-item prop="airCompanyCode" label="航司公司">
+              <el-form-item prop="airCompanyCode" label="航司代码">
                 <el-select v-model="ruleForm.airCompanyCode" placeholder="请输入航司二字码" :remote-method="companyMethod" :loading="loading" clearable filterable remote reserve-keyword>
                   <el-option
                     v-for="item in airCompanyCodeOpt"
@@ -66,7 +66,7 @@
             </div>
             <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;padding-left: 20px;">航线进程</div>
             <div>
-              <el-form-item label="航线路径">
+              <el-form-item required label="航线路径">
                 <div style="display: flex;">
                   <div v-for="(item,index) in fullLeg" :key="index">
                     <el-col style="width: 102px;">
@@ -91,7 +91,7 @@
             <div v-for="(parentItem,index) in airportTableArr" :key="index" class="route-module">
               <img @click="delTableClick(index)" v-if="index != 0" class="close-img" src="../../assets/gaungbi.png" />
               <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="small" class="demo-form-inline">
-                <el-form-item required :label="'航线'+(index+1)">
+                <el-form-item required :label="'航程'+(index+1)">
                   <el-col style="width: 102px;">
                     <el-input v-model="parentItem.startRouteName" :disabled="true"></el-input>
                   </el-col>
@@ -106,7 +106,7 @@
                 <div class="flight-template-ul-header">
                   <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">航班信息</div>
                   <div class="flight-template-li" style="flex: 0 0 20%;text-align: center;"><span style="color: #f56c6c;">*</span>运载方式</div>
-                  <div class="flight-template-li" style="flex: 0 0 20%;text-align: center;"><span style="color: #f56c6c;">*</span>航班号/卡车号</div>
+                  <div class="flight-template-li" style="flex: 0 0 20%;text-align: center;"><span v-if="index == 0" style="color: #f56c6c;">*</span>航班号/卡车号</div>
                   <div class="flight-template-li" style="flex: 0 0 20%;text-align: center;">起飞时间(ETD)</div>
                   <div class="flight-template-li" style="flex: 0 0 20%;text-align: center;">到达时间(ETA)</div>
                   <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
@@ -211,11 +211,12 @@
                 </el-form-item>
               </div>
               <div v-for="(listItem,listIndex) in item.ratesList" :key="listIndex" style="padding-bottom: 20px;">
-                <div>
+                <div style="position: relative;">
                   <el-form-item prop="cargoType" label="代理报价">
                     <el-checkbox-group v-model="listItem.cargoType">
-                      <el-checkbox v-for="(optItem,optIndex) in cargoTypeOpt" :key="optIndex" :label="optItem.value">{{optItem.name}}</el-checkbox>
+                      <el-checkbox :disabled="!(item.ratesList.length != 2) && (listItem.cargoType.length != 2)" v-for="(optItem,optIndex) in cargoTypeOpt" :key="optIndex" :label="optItem.value">{{optItem.name}}</el-checkbox>
                     </el-checkbox-group>
+                    <img v-if="!(item.ratesList.length != 2) && (listItem.cargoType.length != 2)" @click="delTableClickImg(index,listIndex)" class="close-img" src="../../assets/gaungbi.png" style="position: absolute;top: 0;right: -50px;" />
                   </el-form-item>
                 </div>
                 <div>
@@ -273,7 +274,7 @@
                 </div>
                 <div class="rest-style" style="margin-top: 20px;">
                   <el-form-item label=" ">
-                    <el-button v-if="(item.ratesList.length != 2) && (listItem.cargoType.length != 2)" @click="addCargoType(index,listIndex)" style="height: 36px;line-height: 36px;padding: 0;" type="primary">添加代理报价</el-button>
+                    <el-button v-if="(item.ratesList.length != 2) && (listItem.cargoType.length != 2)" @click="addCargoType(index,listIndex)" style="height: 36px;line-height: 36px;padding: 0;" type="primary">设置{{listItem.cargoType.toString() == '2' ? '散货价' : '托盘价'}}</el-button>
                     <el-button v-if="listIndex == (item.ratesList.length-1)" @click="submitData(index)" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
                   </el-form-item>
 
@@ -557,6 +558,7 @@
           if(data.code == 200){
             this.$message.success('航线报价保存成功')
             // this.$router.push('/routeManagement/routeManage')
+            this.initAirlineRatesDetail()
           }else{
             this.$message.error(data.message)
           }
@@ -754,21 +756,34 @@
       submitForm(ruleForm) {
         this.$refs[ruleForm].validate((valid,object) => {
           if (valid) {
+            var newFullLeg = []
+            for(var i = 0; i < this.fullLeg.length; i++){
+              if(!this.fullLeg[i].airportName){
+                this.$message.error('请填写完整的航线路径')
+                return
+              }
+              newFullLeg.push(this.fullLeg[i].airportName)
+            }
+            var tt = JSON.parse(JSON.stringify(this.ruleForm.pod))
+            if(this.fullLeg[this.fullLeg.length-1].airportName != tt.split('#')[0]){
+              this.$message.error('航线路径错误，目的港信息不匹配')
+              return
+            }
             for(var i = 0; i < this.airportTableArr.length; i++){
               for(var q = 0; q < this.airportTableArr[i].childerTable.length; q++){
                 if(!this.airportTableArr[i].childerTable[q].vehicleType){
                   this.$message.error('请选择运载方式')
                   return
-                }else if(!this.airportTableArr[i].childerTable[q].vehicleId){
-                  this.$message.error('请输入航班号/卡车号')
-                  return
+                }
+                if(i == 0){
+                  if(!this.airportTableArr[i].childerTable[q].vehicleId){
+                    this.$message.error('请输入航班号/卡车号')
+                    return
+                  }
                 }
               }
             }
-            var newFullLeg = []
-            for(var i = 0; i < this.fullLeg.length; i++){
-              newFullLeg.push(this.fullLeg[i].airportName)
-            }
+
             var pod = JSON.parse(JSON.stringify(this.ruleForm.pod))
             var data = {
               id: this.id,
@@ -871,10 +886,20 @@
         const res = new Map();
         return arr.filter((a) => !res.has(a.vw) && res.set(a.vw, 1))
       },
+      //删除代理报价
+      delTableClickImg(index,listIndex) {
+        this.airlineAgent[index].ratesList.splice(listIndex,1)
+      },
       //添加代理报价
       addCargoType(index,listIndex){
+        var num = ''
+        if(this.airlineAgent[index].ratesList[0].cargoType[0] == '1'){
+          num = '2'
+        }else{
+          num = '1'
+        }
         var json = {
-          cargoType: ['1'],
+          cargoType: [num],
           vw: '',
           tableData: []
         }

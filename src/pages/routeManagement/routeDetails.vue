@@ -14,7 +14,7 @@
               </el-form-item>
             </div>
             <div>
-              <el-form-item prop="airCompanyCode" label="航司公司">
+              <el-form-item prop="airCompanyCode" label="航司代码">
                 <el-input v-model="ruleForm.airCompanyCode" :disabled="true" style="width: 217px;"></el-input>
               </el-form-item>
               <el-form-item prop="shortestPrescription" label="时效">
@@ -112,8 +112,10 @@
                 <el-form-item prop="agentId" label="代理公司">
                   <el-input :disabled="true" v-model="item.agentId" style="width: 220px;"></el-input>
                 </el-form-item>
+              </div>
+              <div>
                 <el-form-item prop="dows" label="班期">
-                  <el-select :disabled="true" v-model="item.dows" multiple placeholder="请选择班期" clearable style="width: 220px;">
+                  <el-select :disabled="true" v-model="item.dows" multiple placeholder="请选择班期" clearable style="width: 468px;">
                     <el-option
                       v-for="item in dowsOpt"
                       :key="item.day"
