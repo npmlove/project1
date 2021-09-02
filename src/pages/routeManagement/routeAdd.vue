@@ -88,8 +88,7 @@
                 </el-col>
                 <el-col v-if="index != (fullLeg.length-1)" style="text-align: center;width: 20px;">-</el-col>
               </div>
-              <el-button @click="airportClick" style="height: 36px;line-height: 36px;padding: 0;margin-left: 10px;"
-                type="primary">添加路径</el-button>
+              <el-button v-if="fullLeg.length != 10" @click="airportClick" style="height: 36px;line-height: 36px;padding: 0;margin-left: 10px;" type="primary">添加路径</el-button>
             </div>
           </el-form-item>
         </div>
@@ -131,21 +130,16 @@
                 </el-select>
               </div>
               <div class="flight-template-li" style="flex: 0 0 20%;">
-                <el-input v-model="childerItem.vehicleId" clearable placeholder="请输入" size="small" style="width: 80%;">
-                </el-input>
+                <el-input v-model="childerItem.vehicleId" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 20%;">
-                <el-date-picker v-model="childerItem.etd" type="datetime" size="small"
-                  value-format="yyyy-MM-dd HH:mm:ss" style="width: 80%;" placeholder="选择日期时间">
-                </el-date-picker>
+                <el-time-picker v-model="childerItem.etd" value-format="HH:mm" format="HH:mm" size="small" clearable style="width: 80%;" placeholder="选择时间"></el-time-picker>
               </div>
               <div class="flight-template-li" style="flex: 0 0 20%;">
-                <el-date-picker v-model="childerItem.eta" type="datetime" size="small"
-                  value-format="yyyy-MM-dd HH:mm:ss" style="width: 80%;" placeholder="选择日期时间">
-                </el-date-picker>
+                <el-time-picker v-model="childerItem.eta" value-format="HH:mm" format="HH:mm" size="small" clearable style="width: 80%;" placeholder="选择时间"></el-time-picker>
               </div>
               <div class="flight-template-li" size="small" style="flex: 0 0 10%;">
-                <a @click="addChilder(index)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
+                <a :style="{visibility: parentItem.childerTable.length > 9 ? 'hidden' : 'visible'}" @click="addChilder(index)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
                 <a @click="delChilder(index,childerIndex)" style="font-size: 18px;" :style="{visibility: childerIndex == 0 && parentItem.childerTable.length == 1 ? 'hidden' : 'visible'}"><i class="el-icon-delete"></i></a>
               </div>
             </div>
@@ -178,8 +172,10 @@
                 </el-option>
               </el-select>
             </el-form-item>
+          </div>
+          <div>
             <el-form-item prop="dows" label="班期">
-              <el-select v-model="item.dows" multiple placeholder="请选择班期" clearable style="min-width: 220px;width:100%;max-width: 500px;">
+              <el-select @change="dowsChange(index)" v-model="item.dows" multiple placeholder="请选择班期" clearable style="width: 468px;">
                 <el-option
                   v-for="item in dowsOpt"
                   :key="item.day"
@@ -235,7 +231,7 @@
               </el-form-item>
             </div>
             <!-- 航班信息 -->
-            <div class="flight-template">
+            <div class="flight-template" style="margin-left: 0;width: 100%;">
               <div class="flight-template-ul-header">
                 <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">比重(体积:重量)</div>
                 <div class="flight-template-li" style="flex: 0 0 12%;text-align: center;">M(最低收费)</div>
@@ -286,7 +282,7 @@
         </div>
         <div class="rest-style" style="padding-left: 20px;">
           <el-form-item label=" " label-width="150px">
-            <el-button @click="addAirlineAgent" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >加添代理</el-button>
+            <el-button @click="addAirlineAgent" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >添加代理</el-button>
             <el-button @click="activeClick" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >上一步</el-button>
             <el-button @click="submitData" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
           </el-form-item>
@@ -459,6 +455,10 @@
       this.initAgentList()
     },
     methods: {
+      //班期排序
+      dowsChange(index) {
+        this.airlineAgent[index].dows.sort()
+      },
       //保存
       submitData() {
         var newFullLeg = []
@@ -647,11 +647,15 @@
       },
       //添加杂费
       addFeesClick(index) {
+        var reg = /(^[1-9][0-9]{0,5}$)|(^[0-9]{0,5}[\.][0-9]{1,2}$)/
         if(!this.airlineAgent[index].incidentalName){
           this.$message.error('请选择杂费名称')
           return
         }else if(!this.airlineAgent[index].incidentalPrice){
           this.$message.error('请输入杂费金额')
+          return
+        }else if(!reg.test(this.airlineAgent[index].incidentalPrice)){
+          this.$message.error('金额范围是整数最大六位数，小数保留两位')
           return
         }
         var json = {
@@ -701,7 +705,27 @@
                 }
               }
             }
-            this.active = 2
+            var tt = JSON.parse(JSON.stringify(this.ruleForm.pod))
+            if(this.fullLeg[this.fullLeg.length-1].airportName != tt.split('#')[0]){
+              this.$message.error('航线路径错误，与航线信息不匹配')
+              return
+            }
+            
+            var newFullLeg = []
+            for(var i = 0; i < this.fullLeg.length; i++){
+              newFullLeg.push(this.fullLeg[i].airportName)
+            }
+            var data = {
+              fullLeg: newFullLeg.toString(),
+              airCompanyCode: this.ruleForm.airCompanyCode
+            }
+            this.$http.post(this.$service.airlineCheckAirlineInfo,data).then((data) => {
+              if(data.code == 200){
+                this.active = 2
+              }else{
+                
+              }
+            })
           } else {
             setTimeout(()=>{
               var isError= document.getElementsByClassName("is-error");

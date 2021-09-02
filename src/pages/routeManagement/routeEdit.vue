@@ -130,17 +130,13 @@
                     </el-input>
                   </div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
-                    <el-date-picker v-model="childerItem.etd" type="datetime" size="small"
-                      value-format="yyyy-MM-dd HH:mm:ss" style="width: 80%;" placeholder="选择日期时间">
-                    </el-date-picker>
+                    <el-time-picker v-model="childerItem.etd" value-format="HH:mm" format="HH:mm" size="small" clearable style="width: 80%;" placeholder="选择时间"></el-time-picker>
                   </div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
-                    <el-date-picker v-model="childerItem.eta" type="datetime" size="small"
-                      value-format="yyyy-MM-dd HH:mm:ss" style="width: 80%;" placeholder="选择日期时间">
-                    </el-date-picker>
+                    <el-time-picker v-model="childerItem.eta" value-format="HH:mm" format="HH:mm" size="small" clearable style="width: 80%;" placeholder="选择时间"></el-time-picker>
                   </div>
                   <div class="flight-template-li" size="small" style="flex: 0 0 10%;">
-                    <a @click="addChilder(index)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
+                    <a v-if="parentItem.childerTable.length != 10" @click="addChilder(index)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
                     <a @click="delChilder(index,childerIndex)" style="font-size: 18px;" :style="{visibility: childerIndex == 0 && parentItem.childerTable.length == 1 ? 'hidden' : 'visible'}"><i class="el-icon-delete"></i></a>
                   </div>
                 </div>
@@ -174,8 +170,10 @@
                     </el-option>
                   </el-select>
                 </el-form-item>
+              </div>
+              <div>
                 <el-form-item prop="dows" label="班期">
-                  <el-select v-model="item.dows" multiple placeholder="请选择班期" clearable style="width: 220px;">
+                  <el-select @change="dowsChange(index)" v-model="item.dows" multiple placeholder="请选择班期" clearable style="width: 468px;">
                     <el-option
                       v-for="item in dowsOpt"
                       :key="item.day"
@@ -231,7 +229,7 @@
                   </el-form-item>
                 </div>
                 <!-- 航班信息 -->
-                <div class="flight-template" style="margin-left: 120px;width: 88%;">
+                <div class="flight-template" style="margin-left: 0;width: 100%;">
                   <div class="flight-template-ul-header">
                     <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">比重(体积:重量)</div>
                     <div class="flight-template-li" style="flex: 0 0 12%;text-align: center;">M(最低收费)</div>
@@ -284,7 +282,7 @@
             </div>
             <div class="rest-style" style="padding-left: 20px;margin-top: 20px;">
               <el-form-item label=" ">
-                <el-button @click="addAirlineAgent" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >加添代理</el-button>
+                <el-button @click="addAirlineAgent" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >添加代理</el-button>
               </el-form-item>
             </div>
           </el-form>
@@ -454,6 +452,11 @@
       this.initAirlineRatesDetail()
     },
     methods: {
+      //班期排序
+      dowsChange(index) {
+        this.airlineAgent[index].dows.sort()
+      },
+
       //获取航线信息详情
       initAirlineDetail() {
         this.$http.get(this.$service.airlineDetail+'?id='+this.id).then((data) => {
@@ -703,13 +706,18 @@
       },
       //添加杂费
       addFeesClick(index) {
+        var reg = /(^[1-9][0-9]{0,5}$)|(^[0-9]{0,5}[\.][0-9]{1,2}$)/
         if(!this.airlineAgent[index].incidentalName){
           this.$message.error('请选择杂费名称')
           return
         }else if(!this.airlineAgent[index].incidentalPrice){
           this.$message.error('请输入杂费金额')
           return
+        }else if(!reg.test(this.airlineAgent[index].incidentalPrice)){
+          this.$message.error('金额范围是整数最大六位数，小数保留两位')
+          return
         }
+
         var json = {
           feesName: this.airlineAgent[index].incidentalName,
           fees: this.airlineAgent[index].incidentalPrice

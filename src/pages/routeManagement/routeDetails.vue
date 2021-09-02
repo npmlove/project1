@@ -90,12 +90,10 @@
                     </el-input>
                   </div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
-                    <el-date-picker :disabled="true" v-model="childerItem.etd" type="datetime" size="small" value-format="yyyy-MM-dd HH:mm:ss" style="width: 80%;" placeholder="选择日期时间">
-                    </el-date-picker>
+                    <el-time-picker :disabled="true" v-model="childerItem.etd" value-format="HH:mm" format="HH:mm" size="small" clearable style="width: 80%;" placeholder="选择时间"></el-time-picker>
                   </div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
-                    <el-date-picker :disabled="true" v-model="childerItem.eta" type="datetime" size="small" value-format="yyyy-MM-dd HH:mm:ss" style="width: 80%;" placeholder="选择日期时间">
-                    </el-date-picker>
+                    <el-time-picker :disabled="true" v-model="childerItem.eta" value-format="HH:mm" format="HH:mm" size="small" clearable style="width: 80%;" placeholder="选择时间"></el-time-picker>
                   </div>
                 </div>
               </div>
@@ -139,7 +137,7 @@
                   </el-form-item>
                 </div>
                 <!-- 航班信息 -->
-                <div class="flight-template" style="margin-left: 120px;width: 88%;">
+                <div class="flight-template" style="margin-left: 0;width: 100%;">
                   <div class="flight-template-ul-header">
                     <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">比重(体积:重量)</div>
                     <div class="flight-template-li" style="flex: 0 0 12%;text-align: center;">M(最低收费)</div>

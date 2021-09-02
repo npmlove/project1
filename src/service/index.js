@@ -72,6 +72,8 @@ const serviceApi = {
   airlineDeleteCascade: pulicWeb+'/t-airline-agent/deleteCascade',
   //保存航线代理关系及价格
   airlineSaveCascade: pulicWeb+'/t-airline-agent/saveCascade',
+  //航线唯一性校验
+  airlineCheckAirlineInfo: pulicWeb+'/t-airline/checkAirlineInfo',
 
 
 

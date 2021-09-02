@@ -62,7 +62,7 @@ Vue.use(Drawer)
 Vue.use(Tabs)
 Vue.use(tabPane)
 Vue.use(Loading)
-
+Vue.use(TimePicker)
 
 
 Vue.config.productionTip = false
