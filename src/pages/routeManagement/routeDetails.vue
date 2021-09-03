@@ -103,18 +103,18 @@
         <el-tab-pane label="航线报价">
           <el-form :label-position="labelPosition" :inline="true" label-width="120px" size="medium" class="demo-form-inline">
             <div v-for="(item,index) in airlineAgent" :key="index" class="route-module" style="width: 95%;margin: 0 auto;margin-bottom: 20px;">
-              <div>
+              <!-- <div>
                 <el-form-item prop="name" label="航线名称">
                   <el-input :disabled="true" v-model="item.name" style="width: 220px;"></el-input>
                 </el-form-item>
-              </div>
+              </div> -->
               <div>
-                <el-form-item prop="agentId" label="代理公司">
+                <el-form-item required prop="agentId" label="代理公司">
                   <el-input :disabled="true" v-model="item.agentId" style="width: 220px;"></el-input>
                 </el-form-item>
               </div>
               <div>
-                <el-form-item prop="dows" label="班期">
+                <el-form-item required prop="dows" label="班期">
                   <el-select :disabled="true" v-model="item.dows" multiple placeholder="请选择班期" clearable style="width: 468px;">
                     <el-option
                       v-for="item in dowsOpt"
@@ -132,7 +132,7 @@
               </div>
               <div v-for="(listItem,listIndex) in item.ratesList" :key="listIndex" style="padding-bottom: 20px;">
                 <div>
-                  <el-form-item prop="cargoType" label="代理报价">
+                  <el-form-item required label="代理报价">
                     <el-checkbox-group v-model="listItem.cargoType">
                       <el-checkbox :disabled="true" v-for="(optItem,optIndex) in cargoTypeOpt" :key="optIndex" :label="optItem.value">{{optItem.name}}</el-checkbox>
                     </el-checkbox-group>

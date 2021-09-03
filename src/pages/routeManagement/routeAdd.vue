@@ -130,7 +130,7 @@
                 </el-select>
               </div>
               <div class="flight-template-li" style="flex: 0 0 20%;">
-                <el-input v-model="childerItem.vehicleId" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                <el-input v-model="childerItem.vehicleId" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 20%;">
                 <el-time-picker v-model="childerItem.etd" value-format="HH:mm" format="HH:mm" size="small" clearable style="width: 80%;" placeholder="选择时间"></el-time-picker>
@@ -156,13 +156,13 @@
       <el-form v-show="active == 2" :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
         <div v-for="(item,index) in airlineAgent" :key="index" class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
           <img @click="delTableClick1(index)" v-if="index != 0" class="close-img" src="../../assets/gaungbi.png" />
-          <div>
+          <!-- <div>
             <el-form-item prop="name" label="航线名称">
               <el-input placeholder="请输入航线名称" v-model="item.name" style="width: 220px;"></el-input>
             </el-form-item>
-          </div>
+          </div> -->
           <div>
-            <el-form-item prop="agentId" label="代理公司">
+            <el-form-item required label="代理公司">
               <el-select v-model="item.agentId" placeholder="请输入代理公司" :remote-method="agentMethod" :loading="loading" filterable remote reserve-keyword style="width: 220px;">
                 <el-option
                   v-for="item in agentOpt"
@@ -174,7 +174,7 @@
             </el-form-item>
           </div>
           <div>
-            <el-form-item prop="dows" label="班期">
+            <el-form-item required label="班期">
               <el-select @change="dowsChange(index)" v-model="item.dows" multiple placeholder="请选择班期" clearable style="width: 468px;">
                 <el-option
                   v-for="item in dowsOpt"
@@ -214,7 +214,7 @@
           </div>
           <div v-for="(listItem,listIndex) in item.ratesList" :key="listIndex" style="padding-bottom: 20px;">
             <div style="position: relative;">
-              <el-form-item prop="cargoType" label="代理报价">
+              <el-form-item required label="代理报价">
                 <el-checkbox-group v-model="listItem.cargoType">
                   <el-checkbox :disabled="!(item.ratesList.length != 2) && (listItem.cargoType.length != 2)" v-for="(optItem,optIndex) in cargoTypeOpt" :key="optIndex" :label="optItem.value">{{optItem.name}}</el-checkbox>
                 </el-checkbox-group>
@@ -276,7 +276,7 @@
             </div>
             <div v-if="(item.ratesList.length != 2) && (listItem.cargoType.length != 2)" class="rest-style" style="margin-top: 20px;">
               <el-form-item label=" " label-width="150px">
-                <el-button @click="addCargoType(index,listIndex)" style="height: 36px;line-height: 36px;padding: 0;" type="primary">添加代理报价</el-button>
+                <el-button @click="addCargoType(index,listIndex)" style="height: 36px;line-height: 36px;padding: 0;" type="primary">设置{{listItem.cargoType.toString() == '2' ? '散货价' : '托盘价'}}</el-button>
               </el-form-item>
             </div>
           </div>
@@ -546,14 +546,25 @@
           var newJson = {
             agentId: ag.split('#')[0],
             agentName: ag.split('#')[1],
-            name: this.airlineAgent[q].name,
             otherFees: JSON.stringify(this.airlineAgent[q].otherFees),
             dows: this.airlineAgent[q].dows.toString(),
             ratesList: []
           }
+          if(!newJson.agentId){
+            this.$message.error('航线报价模块'+(q+1)+'代理公司未填写')
+            return
+          }
+          if(!newJson.dows){
+            this.$message.error('航线报价模块'+(q+1)+'班期未填写')
+            return
+          }
           for(var a = 0; a < this.airlineAgent[q].ratesList.length; a++){
             var list = {}
             list.cargoType = this.airlineAgent[q].ratesList[a].cargoType.toString()
+            if(!list.cargoType){
+              this.$message.error('当前代理报价必选')
+              return
+            }
             list.ratesInsertDTOS = []
             for(var z = 0; z < this.airlineAgent[q].ratesList[a].tableData.length; z++){
               var childer = {

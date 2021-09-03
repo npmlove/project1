@@ -126,7 +126,7 @@
                     </el-select>
                   </div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
-                    <el-input v-model="childerItem.vehicleId" clearable placeholder="请输入" size="small" style="width: 80%;">
+                    <el-input v-model="childerItem.vehicleId" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" clearable placeholder="请输入" size="small" style="width: 80%;">
                     </el-input>
                   </div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
@@ -154,13 +154,13 @@
           <el-form :label-position="labelPosition" :inline="true" label-width="120px" size="medium" class="demo-form-inline">
             <div v-for="(item,index) in airlineAgent" :key="index" class="route-module" style="width: 95%;margin: 0 auto;margin-bottom: 20px;">
               <img @click="delTableClick1(index,item.id)" v-if="airlineAgent.length > 1" class="close-img" src="../../assets/gaungbi.png" />
-              <div>
+              <!-- <div>
                 <el-form-item prop="name" label="航线名称">
                   <el-input placeholder="请输入航线名称" v-model="item.name" style="width: 220px;"></el-input>
                 </el-form-item>
-              </div>
+              </div> -->
               <div>
-                <el-form-item prop="agentId" label="代理公司">
+                <el-form-item required label="代理公司">
                   <el-select v-model="item.agentId" placeholder="请输入代理公司" :remote-method="agentMethod" :loading="loading" filterable remote reserve-keyword style="width: 220px;">
                     <el-option
                       v-for="item in agentOpt"
@@ -172,7 +172,7 @@
                 </el-form-item>
               </div>
               <div>
-                <el-form-item prop="dows" label="班期">
+                <el-form-item required label="班期">
                   <el-select @change="dowsChange(index)" v-model="item.dows" multiple placeholder="请选择班期" clearable style="width: 468px;">
                     <el-option
                       v-for="item in dowsOpt"
@@ -212,7 +212,7 @@
               </div>
               <div v-for="(listItem,listIndex) in item.ratesList" :key="listIndex" style="padding-bottom: 20px;">
                 <div style="position: relative;">
-                  <el-form-item prop="cargoType" label="代理报价">
+                  <el-form-item required label="代理报价">
                     <el-checkbox-group v-model="listItem.cargoType">
                       <el-checkbox :disabled="!(item.ratesList.length != 2) && (listItem.cargoType.length != 2)" v-for="(optItem,optIndex) in cargoTypeOpt" :key="optIndex" :label="optItem.value">{{optItem.name}}</el-checkbox>
                     </el-checkbox-group>
@@ -529,12 +529,16 @@
         newAgent.agentName = ag.split('#')[1]
         newAgent.dows = newDataLine.dows.toString()
         newAgent.id = newDataLine.id
-        newAgent.name = newDataLine.name
+        // newAgent.name = newDataLine.name
         newAgent.otherFees = JSON.stringify(newDataLine.otherFees)
         newAgent.ratesList = []
         for(var a = 0; a < newDataLine.ratesList.length; a++){
           var list = {}
           list.cargoType = newDataLine.ratesList[a].cargoType.toString()
+          if(!list.cargoType){
+            this.$message.error('当前代理报价必选')
+            return
+          }
           list.ratesInsertDTOS = []
           for(var z = 0; z < newDataLine.ratesList[a].tableData.length; z++){
             var childer = {
@@ -552,7 +556,6 @@
           }
           newAgent.ratesList.push(list)
         }
-        console.log(newAgent)
 
         this.$http.post(this.$service.airlineSaveCascade,newAgent).then((data) => {
           if(data.code == 200){
