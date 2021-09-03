@@ -7,7 +7,7 @@
             <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;padding-left: 20px;">航线信息</div>
             <div>
               <el-form-item prop="pol" label="起运港">
-                <el-select v-model="ruleForm.pol" @change="polChange" placeholder="请输入机场三字码" :remote-method="polMethod" :loading="loading" clearable filterable remote reserve-keyword>
+                <!-- <el-select v-model="ruleForm.pol" @change="polChange" placeholder="请输入机场三字码" :remote-method="polMethod" :loading="loading" clearable filterable remote reserve-keyword>
                   <el-option
                     v-for="(item,index) in polOpt"
                     :disabled="ruleForm.pod == item.threeLetterCode"
@@ -16,10 +16,24 @@
                       <span>{{item.threeLetterCode}}</span>
                       <span style="margin-left: 5px;">{{item.name}}</span>
                   </el-option>
-                </el-select>
+                </el-select> -->
+                <el-input v-model="ruleForm.pol" @input="polMethod" @focus="polClick(1,true)" @blur="polClick(1,false)" size="medium" placeholder="请输入机场三字码" style="width: 216px;"></el-input>
+                <div v-show="isPol" class="el-select-dropdown el-popper" style="min-width: 216px;">
+                  <div class="el-scrollbar" style="">
+                    <div class="el-select-dropdown__wrap el-scrollbar__wrap" style="margin-bottom: -5px; margin-right: -5px;">
+                      <ul class="el-scrollbar__view el-select-dropdown__list">
+                        <li v-if="polOpt.length > 0" :class="{'is-disabled': ruleForm.pod == item.threeLetterCode}" @mousedown="polChange(item)" v-for="(item,index) in polOpt" :key="index" class="el-select-dropdown__item">
+                          <span>{{item.threeLetterCode}}</span>
+                          <span style="margin-left: 5px;">{{item.name}}</span>
+                        </li>
+                        <li v-if="polOpt.length == 0" class="el-select-dropdown__item" style="color: #c0c4cc;">暂无数据</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </el-form-item>
               <el-form-item prop="pod" label="目的港">
-                <el-select v-model="ruleForm.pod" placeholder="请输入机场三字码" :remote-method="podMethod" :loading="loading" clearable filterable remote reserve-keyword>
+                <!-- <el-select v-model="ruleForm.pod" placeholder="请输入机场三字码" :remote-method="podMethod" :loading="loading" clearable filterable remote reserve-keyword>
                   <el-option
                     v-for="item in podOpt"
                     :disabled="ruleForm.pol == item.threeLetterCode"
@@ -28,12 +42,26 @@
                       <span>{{item.threeLetterCode}}</span>
                       <span style="margin-left: 5px;">{{item.name}}</span>
                   </el-option>
-                </el-select>
+                </el-select> -->
+                <el-input v-model="ruleForm.pod" @input="podMethod" @focus="polClick(2,true)" @blur="polClick(2,false)" size="medium" placeholder="请输入机场三字码" style="width: 216px;"></el-input>
+                <div v-show="isPod" class="el-select-dropdown el-popper" style="min-width: 216px;">
+                  <div class="el-scrollbar" style="">
+                    <div class="el-select-dropdown__wrap el-scrollbar__wrap" style="margin-bottom: -5px; margin-right: -5px;">
+                      <ul class="el-scrollbar__view el-select-dropdown__list">
+                        <li v-if="podOpt.length > 0" :class="{'is-disabled': ruleForm.pol == item.threeLetterCode}" @mousedown="polChange1(item)" v-for="(item,index) in podOpt" :key="index" class="el-select-dropdown__item">
+                          <span>{{item.threeLetterCode}}</span>
+                          <span style="margin-left: 5px;">{{item.name}}</span>
+                        </li>
+                        <li v-if="podOpt.length == 0" class="el-select-dropdown__item" style="color: #c0c4cc;">暂无数据</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </el-form-item>
             </div>
             <div>
               <el-form-item prop="airCompanyCode" label="航司代码">
-                <el-select v-model="ruleForm.airCompanyCode" placeholder="请输入航司二字码" :remote-method="companyMethod" :loading="loading" clearable filterable remote reserve-keyword>
+                <!-- <el-select v-model="ruleForm.airCompanyCode" placeholder="请输入航司二字码" :remote-method="companyMethod" :loading="loading" clearable filterable remote reserve-keyword>
                   <el-option
                     v-for="item in airCompanyCodeOpt"
                     :key="item.twoLetterCode"
@@ -41,7 +69,21 @@
                       <span>{{item.twoLetterCode}}</span>
                       <span style="margin-left: 5px;">{{item.name}}</span>
                   </el-option>
-                </el-select>
+                </el-select> -->
+                <el-input v-model="ruleForm.airCompanyCode" @input="companyMethod" @focus="polClick(3,true)" @blur="polClick(3,false)" size="medium" placeholder="请输入航司二字码" style="width: 216px;"></el-input>
+                <div v-show="isAirCompanyCode" class="el-select-dropdown el-popper" style="min-width: 216px;">
+                  <div class="el-scrollbar" style="">
+                    <div class="el-select-dropdown__wrap el-scrollbar__wrap" style="margin-bottom: -5px; margin-right: -5px;">
+                      <ul class="el-scrollbar__view el-select-dropdown__list">
+                        <li v-if="airCompanyCodeOpt.length > 0" @mousedown="polChange2(item)" v-for="(item,index) in airCompanyCodeOpt" :key="index" class="el-select-dropdown__item">
+                          <span>{{item.twoLetterCode}}</span>
+                          <span style="margin-left: 5px;">{{item.name}}</span>
+                        </li>
+                        <li v-if="airCompanyCodeOpt.length == 0" class="el-select-dropdown__item" style="color: #c0c4cc;">暂无数据</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </el-form-item>
               <el-form-item prop="shortestPrescription" label="时效">
                 <el-col style="width: 98px;">
@@ -70,7 +112,7 @@
                 <div style="display: flex;">
                   <div v-for="(item,index) in fullLeg" :key="index">
                     <el-col style="width: 102px;">
-                      <el-select :disabled="index == 0 ? true : false" @change="airportChange" @focus="airportEcheckClick" v-model="item.airportName" placeholder="三字码" :remote-method="airportMethod" :loading="loading" filterable remote reserve-keyword>
+                      <!-- <el-select :disabled="index == 0 ? true : false" @change="airportChange" @focus="airportEcheckClick" v-model="item.airportName" placeholder="三字码" :remote-method="airportMethod" :loading="loading" filterable remote reserve-keyword>
                         <el-option
                           v-for="item in airportOpt"
                           :key="item.threeLetterCode"
@@ -79,7 +121,21 @@
                             <span>{{item.threeLetterCode}}</span>
                             <span style="margin-left: 5px;">{{item.name}}</span>
                         </el-option>
-                      </el-select>
+                      </el-select> -->
+                      <el-input :disabled="index == 0 ? true : false" v-model="item.airportName" @input="airportMethod" @focus="airportEcheckClick(true,index,item.airportName)" @blur="airportEcheckClick(false,index)" size="medium" placeholder="三字码"></el-input>
+                      <div v-if="index != 0 && index == airportNameIndex" class="el-select-dropdown el-popper" style="min-width: 216px;">
+                        <div class="el-scrollbar" style="">
+                          <div class="el-select-dropdown__wrap el-scrollbar__wrap" style="margin-bottom: -5px; margin-right: -5px;">
+                            <ul class="el-scrollbar__view el-select-dropdown__list">
+                              <li v-if="airportOpt.length > 0" :class="{'is-disabled': airportEcheckArr.indexOf(item.threeLetterCode) > -1}" @mousedown="polChange3(item,index)" v-for="(item,chidlerIndex) in airportOpt" :key="chidlerIndex" class="el-select-dropdown__item">
+                                <span>{{item.threeLetterCode}}</span>
+                                <span style="margin-left: 5px;">{{item.name}}</span>
+                              </li>
+                              <li v-if="airportOpt.length == 0" class="el-select-dropdown__item" style="color: #c0c4cc;">暂无数据</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
                     </el-col>
                     <el-col v-if="index != (fullLeg.length-1)" style="text-align: center;width: 20px;">-</el-col>
                   </div>
@@ -225,7 +281,7 @@
                       <el-input v-model="listItem.vw" placeholder="请输入比重值" style="width: 220px;"></el-input>
                     </el-col>
                     <el-col style="text-align: center;width: 120px;margin-left: 20px;">
-                      <el-button @click="addAirlineVw(index,listIndex)" type="primary" size="medium">添加</el-button>
+                      <el-button v-if="listItem.tableData.length != 10" @click="addAirlineVw(index,listIndex)" type="primary" size="medium">添加</el-button>
                     </el-col>
                   </el-form-item>
                 </div>
@@ -247,25 +303,25 @@
                       <el-input :value="'1:'+childerItem.vw" :disabled="true" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesN" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesN" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesLevel0" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesLevel0" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesLevel1" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesLevel1" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesLevel2" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesLevel2" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesLevel3" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesLevel3" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesLevel4" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesLevel4" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesLevel5" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesLevel5" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" size="small" style="flex: 0 0 6%;">
                       <a @click="delChilder1(index,listIndex,childerIndex)" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
@@ -300,6 +356,7 @@
         id: '',
         labelPosition: 'right',
         //航线信息
+        continent: '',
         ruleForm: {
           pol: '',
           pod: '',
@@ -309,6 +366,10 @@
           status: true,
           remark: ''
         },
+        isPol: false,
+        isPod: false,
+        isAirCompanyCode: false,
+        airportNameIndex: 0,
         rules: {
           pol: [{required: true, message: '请输入起运港机场三字码', trigger: 'change'}],
           pod: [{ required: true, message: '请输入目的港机场三字码', trigger: 'change'}],
@@ -593,9 +654,42 @@
         this.loading = true
         this.initAirportSearchByPage(keyWord,'起始港')
       },
-      polChange(e) {
-        this.fullLeg[0].airportName = e
-        this.airportTableArr[0].startRouteName = e
+      polChange(item) {
+        if(item.threeLetterCode == this.ruleForm.pod){
+          return
+        }
+        this.ruleForm.pol = item.threeLetterCode
+        this.fullLeg[0].airportName = item.threeLetterCode
+        this.airportTableArr[0].startRouteName = item.threeLetterCode
+      },
+      polChange1(item) {
+        if(item.threeLetterCode == this.ruleForm.pol){
+          return
+        }
+        this.continent = item.continent
+        this.ruleForm.pod = item.threeLetterCode
+      },
+      polChange2(item) {
+        this.ruleForm.airCompanyCode = item.twoLetterCode
+      },
+      polChange3(item,index){
+        this.fullLeg[index].airportName = item.threeLetterCode
+        this.airportNameIndex = 0
+        for(var i = 0; i < this.fullLeg.length; i++){
+          if(i < (this.fullLeg.length - 1)){
+            this.airportTableArr[i].startRouteName = this.fullLeg[i].airportName
+            this.airportTableArr[i].endRouteName = this.fullLeg[i+1].airportName
+          }
+        }
+      },
+      polClick(type,is) {
+        if(type == '1'){
+          this.isPol = is
+        }else if(type == '2'){
+          this.isPod = is
+        }else if(type == '3'){
+          this.isAirCompanyCode = is
+        }
       },
       podMethod(keyWord) {
         this.loading = true
@@ -606,10 +700,16 @@
         this.loading = true
         this.initAirportSearchByPage(keyWord,'航线')
       },
-      airportEcheckClick() {
-        this.airportEcheckArr = []
-        for(var i = 0; i < this.fullLeg.length; i++){
-          this.airportEcheckArr.push(this.fullLeg[i].airportName)
+      airportEcheckClick(is,index,item) {
+        if(is){
+          this.initAirportSearchByPage(item,'航线')
+          this.airportNameIndex = index
+          this.airportEcheckArr = []
+          for(var i = 0; i < this.fullLeg.length; i++){
+            this.airportEcheckArr.push(this.fullLeg[i].airportName)
+          }
+        }else{
+          this.airportNameIndex = 0
         }
       },
       airportChange(e) {
@@ -791,8 +891,8 @@
             var data = {
               id: this.id,
               pol: this.ruleForm.pol,
-              pod: pod.split('#')[0],
-              continent: pod.split('#')[1],
+              pod: this.ruleForm.pod,
+              continent: this.continent,
               planeType: this.airportTableArr[0].childerTable[0].vehicleType,
               airCompanyCode: this.ruleForm.airCompanyCode,
               shortestPrescription: this.ruleForm.shortestPrescription,
@@ -815,7 +915,7 @@
             setTimeout(()=>{
               var isError= document.getElementsByClassName("is-error");
               if(isError[0].querySelector('input')){
-                isError[0].querySelector('input').focus()
+                isError[0].querySelector('input')
               }else if(isError[0].querySelector('textarea')){
                 isError[0].querySelector('textarea').focus()
               }
