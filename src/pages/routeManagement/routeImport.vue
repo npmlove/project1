@@ -127,7 +127,7 @@
               type: "application/vnd.ms-excel"
             })
             aLink.href = URL.createObjectURL(blob)
-            if ([...new Set(this.ids.split(","))].length > 1) {
+            if ([...new Set(this.ids.split(","))].filter((x)=>x!=='').length > 1) {
               aLink.setAttribute('download', '航线价格表' + '.zip') // 设置下载文件名称
             } else {
               aLink.setAttribute('download', '航线价格表' + '.xlsx') // 设置下载文件名称
