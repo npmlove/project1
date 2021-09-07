@@ -21,7 +21,7 @@
       <div style="font-size: 16px;font-weight: 100;margin-bottom: 10px;">下载航线价格表</div>
       <div style="font-size: 14px;color: #999;">请输入需要下载的航线id，多条航线用逗号分隔，最多可支持20条</div>
       <div style="margin-top: 20px;">
-        <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ids" clearable
+        <el-input style="width: 280px;" size="medium"  v-model="ids" clearable
                   placeholder="例: 1,2,3,4"></el-input>
         <el-button type="success" size="medium" plain icon="el-icon-download" @click="handleExport"
                    style="margin-left: 10px;">导出
@@ -127,8 +127,7 @@
               type: "application/vnd.ms-excel"
             })
             aLink.href = URL.createObjectURL(blob)
-            console.log(this.ids.split(",").length);
-            if (this.ids.split(",").length > 1) {
+            if ([...new Set(this.ids.split(","))].length > 1) {
               aLink.setAttribute('download', '航线价格表' + '.zip') // 设置下载文件名称
             } else {
               aLink.setAttribute('download', '航线价格表' + '.xlsx') // 设置下载文件名称
