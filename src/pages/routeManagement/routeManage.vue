@@ -100,7 +100,7 @@
             label: '航线ID',
             prop: 'id',
             show: true,
-            width: '120'
+            width: '90'
           },
           {
             label: '航司代码',
@@ -124,7 +124,7 @@
             label: '航线区域',
             prop: 'continent',
             show: true,
-            width: '150'
+            width: '100'
           },
           {
             label: '中转/直飞',
@@ -136,25 +136,25 @@
             label: '航程',
             prop: 'legCount',
             show: true,
-            width: '100'
+            width: '50'
           },
-          {
-            label: '飞机型号',
-            prop: 'planeType',
-            show: true,
-            width: '150'
-          },
+          // {
+          //   label: '飞机型号',
+          //   prop: 'planeType',
+          //   show: true,
+          //   width: '150'
+          // },
           {
             label: '托盘',
             prop: 'tray',
             show: true,
-            width: '100'
+            width: '50'
           },
           {
             label: '散货',
             prop: 'bulkCargo',
             show: true,
-            width: '100'
+            width: '50'
           },
           {
             label: '状态',
