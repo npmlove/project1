@@ -132,7 +132,11 @@
                     <div class="el-scrollbar" style="">
                       <div class="el-select-dropdown__wrap el-scrollbar__wrap" style="margin-bottom: -5px; margin-right: -5px;">
                         <ul class="el-scrollbar__view el-select-dropdown__list">
-                          <li v-if="airportOpt.length > 0" :class="{'is-disabled': airportEcheckArr.indexOf(item.threeLetterCode) > -1}" @mousedown="polChange3(item,index)" v-for="(item,chidlerIndex) in airportOpt" :key="chidlerIndex" class="el-select-dropdown__item">
+                          <li v-if="airportOpt.length > 0"
+                            :class="{'is-disabled': airportEcheckArr.indexOf(item.threeLetterCode) > -1}"
+                            @mousedown="polChange3(item,index)" v-for="(item,chidlerIndex) in airportOpt"
+                            :key="chidlerIndex"
+                            class="el-select-dropdown__item">
                             <span>{{item.threeLetterCode}}</span>
                             <span style="margin-left: 5px;">{{item.name}}</span>
                           </li>
@@ -180,7 +184,6 @@
                     v-for="item in airportOptions"
                     :key="item.name"
                     :label="item.name"
-                    :disabled="parentItem.checkBox.indexOf(item.name) > -1"
                     :value="item.name">
                   </el-option>
                 </el-select>
@@ -211,7 +214,7 @@
       <!-- 航线价格 -->
       <el-form v-show="active == 2" :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
         <div v-for="(item,index) in airlineAgent" :key="index" class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
-          <img @click="delTableClick1(index)" v-if="index != 0" class="close-img" src="../../assets/gaungbi.png" />
+          <img @click="delTableClick1(index)"  v-if="airlineAgent.length > 1" class="close-img" src="../../assets/gaungbi.png" />
           <!-- <div>
             <el-form-item prop="name" label="航线名称">
               <el-input placeholder="请输入航线名称" v-model="item.name" style="width: 220px;"></el-input>
@@ -219,11 +222,12 @@
           </div> -->
           <div>
             <el-form-item required label="代理公司">
-              <el-select v-model="item.agentId" placeholder="请输入代理公司" :remote-method="agentMethod" :loading="loading" filterable remote reserve-keyword style="width: 220px;">
+              <el-select v-model="item.agentId" @change="agentChang" clearable placeholder="请输入代理公司" :remote-method="agentMethod" :loading="loading" filterable remote reserve-keyword style="width: 220px;">
                 <el-option
                   v-for="item in agentOpt"
                   :key="item.value"
                   :label="item.agentName"
+                  :disabled="checkDaili.indexOf(item.id) > -1 ? true : false"
                   :value="item.id + '#' + item.agentName">
                 </el-option>
               </el-select>
@@ -256,7 +260,7 @@
               </el-col>
               <el-col style="text-align: center;width: 30px;">-</el-col>
               <el-col style="width: 220px;">
-                <el-input v-model="item.incidentalPrice" placeholder="请输入杂费金额" style="width: 220px;"></el-input>
+                <el-input v-model="item.incidentalPrice" onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" placeholder="请输入杂费金额" style="width: 220px;"></el-input>
               </el-col>
               <el-col style="text-align: center;width: 120px;margin-left: 20px;">
                 <el-button @click="addFeesClick(index)" type="primary" size="medium">添加</el-button>
@@ -508,7 +512,8 @@
               }
             ]
           }
-        ]
+        ],
+        checkDaili: []
       }
     },
     activated() {
@@ -715,6 +720,9 @@
         this.ruleForm.airCompanyCode = item.twoLetterCode
       },
       polChange3(item,index){
+        if(this.airportEcheckArr.indexOf(item.threeLetterCode) > -1){
+          return
+        }
         this.fullLeg[index].airportName = item.threeLetterCode
         this.airportNameIndex = 0
         for(var i = 0; i < this.fullLeg.length; i++){
@@ -741,6 +749,10 @@
       airportMethod(keyWord) {
         this.loading = true
         this.initAirportSearchByPage(keyWord,'航线')
+        this.airportEcheckArr = []
+        for(var i = 0; i < this.fullLeg.length; i++){
+          this.airportEcheckArr.push(this.fullLeg[i].airportName)
+        }
       },
       airportEcheckClick(is,index,item) {
         if(is){
@@ -883,6 +895,15 @@
       agentMethod(agentName) {
         this.initAgentList(agentName)
       },
+      agentChang() {
+        this.checkDaili = []
+        for(var i = 0; i < this.airlineAgent.length; i++){
+          var qa = JSON.parse(JSON.stringify(this.airlineAgent[i].agentId))
+          if(qa.split('#')[0]){
+            this.checkDaili.push(Number(qa.split('#')[0]))
+          }
+        }
+      },
       //下一步
       submitForm(ruleForm) {
         this.$refs[ruleForm].validate((valid,object) => {
@@ -971,6 +992,12 @@
         }else if(!(/(^[1-9]\d*$)/.test(this.airlineAgent[index].ratesList[listIndex].vw))){
           this.$message.error('只能输入正整数')
           return
+        }
+        for(var i = 0; i < this.airlineAgent[index].ratesList[listIndex].tableData.length; i++){
+          if(this.airlineAgent[index].ratesList[listIndex].tableData[i].vw == this.airlineAgent[index].ratesList[listIndex].vw){
+            this.$message.error('比重已存在，请重新输入')
+            return
+          }
         }
         var json = {
           vw: this.airlineAgent[index].ratesList[listIndex].vw,

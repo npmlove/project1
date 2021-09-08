@@ -3,74 +3,21 @@ const Vue = require("vue")
 
 import App from './App'
 import router from './router'
-// import store from './store'
 import http from '@/util/http'
 import serviceAPI from '@/service/index'
-
-// import Blob from '@/vendor/Blob'
-// import Export2Excel from '@/vendor/Export2Excel.js'
 import '@/vendor/directives3'
 
 
 import '@/assets/icon/iconfont.css'
 import '@/assets/custom.css'
 import '@/assets/reset.css'
-import { Col, Row, Button, Switch,
-  Table, DatePicker, Menu, MenuItem,
-  Submenu, Form, FormItem, Input,
-  TableColumn, Pagination, Checkbox,
-  Radio, RadioGroup, Select, Option,
-  Dialog, Badge, Upload,
-  Breadcrumb, BreadcrumbItem, Tree,
-  CheckboxGroup, Steps, Step, Scrollbar, Tabs, tabPane, Popover, Collapse, CollapseItem,
-  Timeline, TimelineItem, Image, Message, Divider, TimePicker, Tag, Cascader, Carousel, CarouselItem, InputNumber, Card,
-  MessageBox, Autocomplete, Drawer, Loading, Tooltip
-} from 'element-ui'
-Vue.use(Timeline)
-Vue.use(TimelineItem)
-Vue.use(Col)
-Vue.use(Row)
-Vue.use(Button)
-Vue.use(Table)
-Vue.use(DatePicker)
-Vue.use(Menu)
-Vue.use(MenuItem)
-Vue.use(Submenu)
-Vue.use(Switch)
-Vue.use(Form)
-Vue.use(FormItem)
-Vue.use(Input)
-Vue.use(TableColumn)
-Vue.use(Pagination)
-Vue.use(Checkbox)
-Vue.use(Radio)
-Vue.use(RadioGroup)
-Vue.use(Select)
-Vue.use(Option)
-Vue.use(Dialog)
-Vue.use(Badge)
-Vue.use(Upload)
-Vue.use(InputNumber)
-Vue.use(Scrollbar)
-Vue.use(Step)
-Vue.use(Steps)
-Vue.use(Autocomplete)
-Vue.use(Tag)
-Vue.use(CheckboxGroup)
-Vue.use(Drawer)
-Vue.use(Tabs)
-Vue.use(tabPane)
-Vue.use(Loading)
-Vue.use(TimePicker)
-Vue.use(Tooltip)
-
 
 Vue.config.productionTip = false
-Vue.prototype.$message = Message
+// Vue.prototype.$message = Message
 Vue.prototype.$service = serviceAPI
 Vue.prototype.inputMax = 50
 Vue.prototype.imgUrl = 'https://17dc.shenghuoq.com/'
-Vue.prototype.$confirm = MessageBox.confirm
+// Vue.prototype.$confirm = MessageBox.confirm
 //判断是否登录
 router.beforeEach(function (to, from, next) {
   if (to.meta.needLogin) {

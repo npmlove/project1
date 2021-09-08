@@ -33,8 +33,6 @@
 </template>
 
 <script>
-  import qs from 'qs'
-  import echarts from 'echarts'
   export default {
     data() {
       return {

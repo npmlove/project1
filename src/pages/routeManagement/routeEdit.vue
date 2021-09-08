@@ -176,7 +176,6 @@
                         v-for="item in airportOptions"
                         :key="item.name"
                         :label="item.name"
-                        :disabled="parentItem.checkBox.indexOf(item.name) > -1"
                         :value="item.name">
                       </el-option>
                     </el-select>
@@ -217,10 +216,11 @@
               </div> -->
               <div>
                 <el-form-item required label="代理公司">
-                  <el-select v-model="item.agentId" placeholder="请输入代理公司" :remote-method="agentMethod" :loading="loading" filterable remote reserve-keyword style="width: 220px;">
+                  <el-select v-model="item.agentId" @change="agentChang" clearable placeholder="请输入代理公司" :remote-method="agentMethod" :loading="loading" filterable remote reserve-keyword style="width: 220px;">
                     <el-option
                       v-for="item in agentOpt"
                       :key="item.value"
+                      :disabled="checkDaili.indexOf(item.id) > -1 ? true : false"
                       :label="item.agentName"
                       :value="item.id + '#' + item.agentName">
                     </el-option>
@@ -254,7 +254,7 @@
                   </el-col>
                   <el-col style="text-align: center;width: 30px;">-</el-col>
                   <el-col style="width: 220px;">
-                    <el-input v-model="item.incidentalPrice" placeholder="请输入杂费金额" style="width: 220px;"></el-input>
+                    <el-input v-model="item.incidentalPrice" onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" placeholder="请输入杂费金额" style="width: 220px;"></el-input>
                   </el-col>
                   <el-col style="text-align: center;width: 120px;margin-left: 20px;">
                     <el-button @click="addFeesClick(index)" type="primary" size="medium">添加</el-button>
@@ -502,7 +502,8 @@
               }
             ]
           }
-        ]
+        ],
+        checkDaili: []
       }
     },
     mounted() {
@@ -548,6 +549,7 @@
         this.$http.get(this.$service.airlineRatesDetail+'?id='+this.id).then((data) => {
           if(data.code == 200){
             var data = data.data
+            this.checkDaili = []
             this.airlineAgent = []
             for(var q = 0; q < data.length; q++){
               var json = {
@@ -557,25 +559,37 @@
                 incidentalPrice: '',
                 id: data[q].id
               }
+              this.checkDaili.push(data[q].agentId)
               json.dows = data[q].dows.split(',')
               json.otherFees = JSON.parse(data[q].otherFees)
               json.otherFeesArr = []
               for(var w = 0; w < json.otherFees.length; w++){
                 json.otherFeesArr.push(json.otherFees[w].feesName)
               }
-              json.ratesList = []
-              for(var e = 0; e < data[q].rates.length; e++){
-                var childerJson = {}
-                childerJson.vw = ''
-                var cargoType = data[q].rates[e].cargoType.toString()
-                childerJson.cargoType = cargoType.split(',')
-                for(var z = 0; z < data[q].rates[e].ratesInsertDTOS.length; z++){
-                  data[q].rates[e].ratesInsertDTOS[z].vw = data[q].rates[e].ratesInsertDTOS[z].vwr
+              if(data[q].rates){
+                json.ratesList = []
+                for(var e = 0; e < data[q].rates.length; e++){
+                  var childerJson = {}
+                  childerJson.vw = ''
+                  var cargoType = data[q].rates[e].cargoType.toString()
+                  childerJson.cargoType = cargoType.split(',')
+                  for(var z = 0; z < data[q].rates[e].ratesInsertDTOS.length; z++){
+                    data[q].rates[e].ratesInsertDTOS[z].vw = data[q].rates[e].ratesInsertDTOS[z].vwr
+                  }
+                  childerJson.tableData = data[q].rates[e].ratesInsertDTOS
+                  json.ratesList.push(childerJson)
                 }
-                childerJson.tableData = data[q].rates[e].ratesInsertDTOS
-                json.ratesList.push(childerJson)
+                this.airlineAgent.push(json)
+              }else{
+                json.ratesList = [
+                  {
+                    cargoType: ["1"],
+                    vw: '',
+                    tableData: []
+                  }
+                ]
+                this.airlineAgent.push(json)
               }
-              this.airlineAgent.push(json)
             }
             console.log(this.airlineAgent)
           }
@@ -674,6 +688,9 @@
         this.ruleForm.airCompanyCode = item.twoLetterCode
       },
       polChange3(item,index){
+        if(this.airportEcheckArr.indexOf(item.threeLetterCode) > -1){
+          return
+        }
         this.fullLeg[index].airportName = item.threeLetterCode
         this.airportNameIndex = 0
         for(var i = 0; i < this.fullLeg.length; i++){
@@ -700,6 +717,10 @@
       airportMethod(keyWord) {
         this.loading = true
         this.initAirportSearchByPage(keyWord,'航线')
+        this.airportEcheckArr = []
+        for(var i = 0; i < this.fullLeg.length; i++){
+          this.airportEcheckArr.push(this.fullLeg[i].airportName)
+        }
       },
       airportEcheckClick(is,index,item) {
         if(is){
@@ -862,6 +883,15 @@
       agentMethod(agentName) {
         this.initAgentList(agentName)
       },
+      agentChang() {
+        this.checkDaili = []
+        for(var i = 0; i < this.airlineAgent.length; i++){
+          var qa = JSON.parse(JSON.stringify(this.airlineAgent[i].agentId))
+          if(qa.split('#')[0]){
+            this.checkDaili.push(Number(qa.split('#')[0]))
+          }
+        }
+      },
       //下一步
       submitForm(ruleForm) {
         this.$refs[ruleForm].validate((valid,object) => {
@@ -966,6 +996,13 @@
           this.$message.error('只能输入正整数')
           return
         }
+        for(var i = 0; i < this.airlineAgent[index].ratesList[listIndex].tableData.length; i++){
+          if(this.airlineAgent[index].ratesList[listIndex].tableData[i].vw == this.airlineAgent[index].ratesList[listIndex].vw){
+            this.$message.error('比重已存在，请重新输入')
+            return
+          }
+        }
+
         var json = {
           vw: Number(this.airlineAgent[index].ratesList[listIndex].vw),
           vwPro: '1:'+this.airlineAgent[index].ratesList[listIndex].vw,
@@ -981,7 +1018,6 @@
         this.airlineAgent[index].ratesList[listIndex].tableData.push(json)
         this.airlineAgent[index].ratesList[listIndex].vw = ''
         this.sortByKey(this.airlineAgent[index].ratesList[listIndex].tableData,'vw')
-        console.log(this.airlineAgent[index].ratesList[listIndex].tableData)
         this.airlineAgent[index].ratesList[listIndex].tableData = this.unique(this.airlineAgent[index].ratesList[listIndex].tableData)
       },
       //数组对象排序

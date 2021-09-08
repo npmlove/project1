@@ -32,7 +32,6 @@
 </template>
 
 <script>
-  import qs from 'qs'
   export default {
     data() {
       var telPhone = (rule, value, callback) => {

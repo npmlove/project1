@@ -332,16 +332,19 @@
               for(var w = 0; w < json.otherFees.length; w++){
                 json.otherFeesArr.push(json.otherFees[w].feesName)
               }
-              json.ratesList = []
-              for(var e = 0; e < data[q].rates.length; e++){
-                var childerJson = {}
-                childerJson.vw = ''
-                var cargoType = data[q].rates[e].cargoType.toString()
-                childerJson.cargoType = cargoType.split(',')
-                childerJson.tableData = data[q].rates[e].ratesInsertDTOS
-                json.ratesList.push(childerJson)
+              if(data[q].rates){
+                json.ratesList = []
+                for(var e = 0; e < data[q].rates.length; e++){
+                  var childerJson = {}
+                  childerJson.vw = ''
+                  var cargoType = data[q].rates[e].cargoType.toString()
+                  childerJson.cargoType = cargoType.split(',')
+                  childerJson.tableData = data[q].rates[e].ratesInsertDTOS
+                  json.ratesList.push(childerJson)
+                }
+               
               }
-              this.airlineAgent.push(json)
+               this.airlineAgent.push(json)
             }
           }
         })
