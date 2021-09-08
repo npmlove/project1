@@ -305,10 +305,10 @@
                   <el-input v-model="childerItem.vwPro" :disabled="true" size="small" style="width: 80%;"></el-input>
                 </div>
                 <div class="flight-template-li" style="flex: 0 0 12%;">
-                  <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesN" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                  <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesLevel0" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                 </div>
                 <div class="flight-template-li" style="flex: 0 0 12%;">
-                  <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesLevel0" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                  <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesN" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                 </div>
                 <div class="flight-template-li" style="flex: 0 0 12%;">
                   <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesLevel1" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
@@ -514,7 +514,8 @@
     activated() {
       window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
       var routeAdd = sessionStorage.getItem('routeAdd')
-      if(routeAdd == 'hide'){
+      console.log(routeAdd)
+      if(routeAdd == 'hide' || routeAdd == null){
         this.active = 1
         this.ruleForm.pol = ''
         this.ruleForm.pod = ''
@@ -580,7 +581,6 @@
     methods: {
       //监听浏览器刷新
       beforeunloadHandler (e) {
-        console.log(e)
         e = e || window.event
         if (e) {
           e.returnValue = '关闭提示'
@@ -825,6 +825,12 @@
       delTableClick(index) {
         this.airportTableArr.splice(index,1)
         this.fullLeg.splice(index,1)
+        for(var i = 0; i < this.fullLeg.length; i++){
+          if(i < (this.fullLeg.length - 1)){
+            this.airportTableArr[i].startRouteName = this.fullLeg[i].airportName
+            this.airportTableArr[i].endRouteName = this.fullLeg[i+1].airportName
+          }
+        }
       },
       delTableClick1(index) {
         this.airlineAgent.splice(index,1)

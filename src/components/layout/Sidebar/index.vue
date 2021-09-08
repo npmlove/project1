@@ -18,7 +18,6 @@
 
 <script>
 import SidebarItem from './SidebarItem'
-import qs from 'qs'
 
 export default {
   components: { SidebarItem },

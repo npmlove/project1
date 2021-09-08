@@ -11,7 +11,7 @@
       </div>
     </el-form>
     <div class="content">
-      <Table ref="multipleTable1" :checkbox="false" :tableData='tableData' :columns='columns' :operation='operation'
+      <Table ref="multipleTable1" :tableData='tableData' :columns='columns' :operation='operation'
         :total='total' :currentPage='pageNum' :pageSize='pageSize' @handleClick='handleClick'>
       </Table>
     </div>

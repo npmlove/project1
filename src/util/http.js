@@ -1,4 +1,5 @@
-import axios from 'axios'
+// import axios from 'axios'
+const axios = require("axios")
 import axiosConfig from '@/service/http-config'
 import { Message } from 'element-ui'
 import store from '@/store'

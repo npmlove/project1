@@ -45,7 +45,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     },
     disableHostCheck: true,
     allowedHosts: [
-     	'http://oscargw.dev.k8s02.ecloud.virtueit.net:81'
+     	'https://17dc.shenghuoq.com/'
   	]
   },
   plugins: [

@@ -69,7 +69,10 @@ module.exports = {
     ]
   },
   externals: {
-    JSEncrypt: 'JSEncrypt'
+    vue: 'Vue',
+    axios: 'axios',
+    'vue-router': 'VueRouter'
+    // 'element-ui': 'Element'
   },
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue

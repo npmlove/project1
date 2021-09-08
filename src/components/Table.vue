@@ -13,11 +13,11 @@
         <p>暂无数据</p>
       </template>
       >
-      <el-table-column
+      <!-- <el-table-column
         v-if="checkbox"
         type="selection"
         width="55">
-      </el-table-column>
+      </el-table-column> -->
       <!--列-->
       <el-table-column
         v-for="(column, index) in columns"
@@ -81,11 +81,6 @@ export default {
     xuanzhong: {
       type: Array,
       default: () => []
-    },
-    // 复选框
-    checkbox: {
-      type: Boolean,
-      default: () => false
     },
     // 表格的字段展示
     columns: {

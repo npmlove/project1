@@ -5,10 +5,10 @@
 // var pulicWeb = '/back/dcErpTest/faw'
 
 //开发环境
-// var pulicWeb = '/dcErp/faw'
+var pulicWeb = '/dcErp/faw'
 
 //测试环境
-var pulicWeb = '/dcErpTest/faw'
+// var pulicWeb = '/dcErpTest/faw'
 
 
 const serviceApi = {
@@ -80,8 +80,7 @@ const serviceApi = {
   airlineSaveCascade: pulicWeb+'/t-airline-agent/saveCascade',
   //航线唯一性校验
   airlineCheckAirlineInfo: pulicWeb+'/t-airline/checkAirlineInfo',
-
-
-
+  //banner刷新html
+  dcReptileReplace: '/back/dcReptile/pageStatic/replace',
 }
 export default serviceApi

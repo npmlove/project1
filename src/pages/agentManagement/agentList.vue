@@ -24,7 +24,7 @@
           </el-form-item>
         </div>
       </el-form>
-      <Table :checkbox="false" :tableData='tableData' :columns='columns' :operation='operation' :total='total'
+      <Table :tableData='tableData' :columns='columns' :operation='operation' :total='total'
         :currentPage='pageNum' :pageSize='pageSize' @sizeChange='handleSizeChange' @currentChange='handleCurrentChange'
         @handleClick='handleClick'>
       </Table>

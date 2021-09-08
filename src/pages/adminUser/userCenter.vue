@@ -38,7 +38,6 @@
       </el-form>
       <Table
         ref="multipleTable1"
-        :checkbox="false"
         :tableData='tableData'
         :columns='columns'
         :operation='operation'

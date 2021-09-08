@@ -71,7 +71,7 @@
           </el-form-item>
         </div>
       </el-form>
-      <Table ref="multipleTable1" :checkbox="false" :tableData='tableData' :columns='columns' :operation='operation'
+      <Table ref="multipleTable1" :tableData='tableData' :columns='columns' :operation='operation'
         :total='total' :currentPage='pageNum' :pageSize='pageSize' @sizeChange='handleSizeChange'
         @currentChange='handleCurrentChange' @handleClick='handleClick' @switchChangeUser="switchChangeUser">
       </Table>

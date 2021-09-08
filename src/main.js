@@ -1,15 +1,14 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
+// import Vue from 'vue'
+const Vue = require("vue")
 
 import App from './App'
 import router from './router'
-import store from './store'
+// import store from './store'
 import http from '@/util/http'
 import serviceAPI from '@/service/index'
 
-import Blob from '@/vendor/Blob'
-import Export2Excel from '@/vendor/Export2Excel.js'
+// import Blob from '@/vendor/Blob'
+// import Export2Excel from '@/vendor/Export2Excel.js'
 import '@/vendor/directives3'
 
 
@@ -102,7 +101,6 @@ Vue.use(http)
 new Vue({
   el: '#app',
   router,
-  store,
   components: { App },
   template: '<App/>'
 })

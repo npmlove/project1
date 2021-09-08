@@ -71,8 +71,7 @@
                   <div class="flight-template-li" style="flex: 0 0 20%;text-align: center;">起飞时间(ETD)</div>
                   <div class="flight-template-li" style="flex: 0 0 20%;text-align: center;">到达时间(ETA)</div>
                 </div>
-                <div v-for="(childerItem,childerIndex) in parentItem.childerTable" :key="childerIndex"
-                  class="flight-template-ul-content">
+                <div v-for="(childerItem,childerIndex) in parentItem.childerTable" :key="childerIndex" class="flight-template-ul-content">
                   <div class="flight-template-li" style="flex: 0 0 10%;"></div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
                     <el-select :disabled="true" v-model="childerItem.vehicleType" @focus="vehicleFocus(index,childerIndex)" size="small" clearable placeholder="请选择" style="width: 80%;">
@@ -86,8 +85,7 @@
                     </el-select>
                   </div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
-                    <el-input :disabled="true" v-model="childerItem.vehicleId" clearable placeholder="请输入" size="small" style="width: 80%;">
-                    </el-input>
+                    <el-input :disabled="true" v-model="childerItem.vehicleId" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                   </div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
                     <el-time-picker :disabled="true" v-model="childerItem.etd" value-format="HH:mm" format="HH:mm" size="small" clearable style="width: 80%;" placeholder="选择时间"></el-time-picker>
@@ -155,10 +153,10 @@
                       <el-input :value="'1:'+childerItem.vwr" :disabled="true" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesN" :disabled="true" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input v-model="childerItem.ratesLevel0" :disabled="true" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesLevel0" :disabled="true" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input v-model="childerItem.ratesN" :disabled="true" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
                       <el-input v-model="childerItem.ratesLevel1" :disabled="true" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>

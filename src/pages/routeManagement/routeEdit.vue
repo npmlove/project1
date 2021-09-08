@@ -303,10 +303,10 @@
                       <el-input :value="'1:'+childerItem.vw" :disabled="true" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesN" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesLevel0" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesLevel0" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesN" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
                       <el-input onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="childerItem.ratesLevel1" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
@@ -526,6 +526,7 @@
             var data = data.data
             this.ruleForm.pol = data.pol
             this.ruleForm.pod = data.pod
+            this.continent = data.continent
             this.ruleForm.airCompanyCode = data.airCompanyCode
             this.ruleForm.shortestPrescription = data.shortestPrescription
             this.ruleForm.longestPrescription = data.longestPrescription
@@ -783,6 +784,12 @@
       delTableClick(index) {
         this.airportTableArr.splice(index,1)
         this.fullLeg.splice(index,1)
+        for(var i = 0; i < this.fullLeg.length; i++){
+          if(i < (this.fullLeg.length - 1)){
+            this.airportTableArr[i].startRouteName = this.fullLeg[i].airportName
+            this.airportTableArr[i].endRouteName = this.fullLeg[i+1].airportName
+          }
+        }
       },
       delTableClick1(index,id) {
         if(id){
@@ -960,7 +967,7 @@
           return
         }
         var json = {
-          vw: this.airlineAgent[index].ratesList[listIndex].vw,
+          vw: Number(this.airlineAgent[index].ratesList[listIndex].vw),
           vwPro: '1:'+this.airlineAgent[index].ratesList[listIndex].vw,
           cargoType: '',
           ratesN: 0,
@@ -974,6 +981,7 @@
         this.airlineAgent[index].ratesList[listIndex].tableData.push(json)
         this.airlineAgent[index].ratesList[listIndex].vw = ''
         this.sortByKey(this.airlineAgent[index].ratesList[listIndex].tableData,'vw')
+        console.log(this.airlineAgent[index].ratesList[listIndex].tableData)
         this.airlineAgent[index].ratesList[listIndex].tableData = this.unique(this.airlineAgent[index].ratesList[listIndex].tableData)
       },
       //数组对象排序

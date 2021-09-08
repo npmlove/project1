@@ -43,7 +43,7 @@
       }
     },
     mounted() {
-      this.href = this.imgUrl + '/image/template/excelTemplate.xlsx'
+      this.href = '/image/template/excelTemplate.xlsx'
     },
     methods: {
       // 导入文件的上传
