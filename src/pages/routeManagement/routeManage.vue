@@ -26,7 +26,7 @@
           </el-form-item>
 
           <el-form-item>
-            <el-select v-model="agentName" placeholder="代理公司名称" :remote-method="agentMethod" :loading="loading"
+            <el-select v-model="agentName" placeholder="代理公司名称" :remote-method="agentMethod" :loading="loading" clearable
               filterable remote reserve-keyword style="width: 220px;">
               <el-option v-for="item in agentOpt" :key="item.value" :label="item.agentName" :value="item.agentName">
               </el-option>
