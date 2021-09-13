@@ -426,16 +426,13 @@
         ],
         otherFeesOpt: [
           {
-            feesName: '报关费'
-          },
-          {
             feesName: '制单费'
           },
           {
             feesName: '信息费'
           },
           {
-            feesName: '分单费'
+            feesName: '运抵费'
           },
           {
             feesName: '其他费用'
