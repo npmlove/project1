@@ -18,7 +18,30 @@ const autoRoutes = [{
 ]
 
 
+//字典管理
+const dictManagement=[{
+  path:'/dict',
+  component:Layout,
+  name:'dict',
+  redirect:'noredirect',
+  alwaysShow:true,
+  meta:{
+    title:'字典管理',
+    icon: 'icon iconfont icon-diannao',
+    breadcrumb: true
+  },
+  children:[{
+    path: 'dict',
+    component: () => import('@/pages/dict/dict.vue'),
+    name: 'dict',
+    meta: {
+      title: '业务字典',
+      keepAlive:true,
+      needLogin: true
+    },},]
 
+},
+]
 //代理管理
 const agentManagement=[{
   path:'/agentManagement',
@@ -271,6 +294,7 @@ const routes = [
   ...routeManagementCenter,
   ...adverManagementCenter,
   ...agentManagement,
+  ...dictManagement,
   // ...userManagementCenter,
   ...adminUserCenter
 
