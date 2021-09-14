@@ -2,7 +2,8 @@
   <div class="login_bg">
     <div class="land_logo">
       <div style="margin-left: 30px;">
-        <img src="../../assets/logo.png" style="width: 157px;height: 28px;"/>
+        <!-- <img src="../../assets/logo.png" style="width: 157px;height: 28px;"/> -->
+        <div class="land-logo-img" style="width: 157px;height: 28px;"></div>
       </div>
     </div>
     <div class="login_content">
@@ -101,6 +102,13 @@
     background-color: #FFF;
     right: 12%;
     // border-radius: 10px;
+  }
+
+  .land-logo-img{
+    background-image: url(../../assets/logo.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
   }
 
   .el-login {

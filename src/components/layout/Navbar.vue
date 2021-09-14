@@ -1,7 +1,8 @@
 <template>
   <div class="header-container" style="background: #2273CE">
     <div class="logo">
-      <img src="../../assets/logo.png" style="width: 157px;height: 28px;" />
+      <!-- <img src="../../assets/logo.png" style="width: 157px;height: 28px;" /> -->
+      <div class="img-url"></div>
       <!-- <div class="hongying">logo</div> -->
     </div>
     <div class="user-info">
@@ -151,17 +152,13 @@ export default {
     width: 94px;
     height: 32px;
   }
-  .logo .hongying{
-    font-size:18px;
-    font-weight:500;
-    color:rgba(246,246,246,1);
-    margin-left: 20px;
-    /* background-image: url(../../assets/MES@2x.png); */
-    background-size: contain;
+  .logo .img-url{
+    background-image: url(../../assets/logo.svg);
+    width: 157px;
+    height: 28px;
     background-repeat: no-repeat;
-    width: 106px;
+    background-size: 100% 100%;
     background-position: center;
-    height: 32px;
   }
   .user-info{
     font-size: 14px;

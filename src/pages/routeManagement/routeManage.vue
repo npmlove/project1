@@ -437,7 +437,7 @@
   }
 
   .el-form--inline .el-form-item {
-    margin-bottom: 0;
+    margin-bottom: 20px;
     vertical-align: bottom;
   }
 
@@ -486,7 +486,7 @@
   }
 
   .content-search-normal {
-    padding: 20px;
+    padding: 20px 20px 0 20px;
     background: #fff;
   }
 
