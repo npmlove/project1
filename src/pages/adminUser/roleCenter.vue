@@ -1,6 +1,6 @@
 <template>
   <div class="content-wrapper">
-    <el-form :inline="true" size="medium" class="demo-form-inline">
+    <el-form v-if="newRoleId == '-1'" :inline="true" size="medium" class="demo-form-inline">
       <div class="content-search-normal">
         <el-form-item :style="{visibility: newRoleId == '-1' ? 'visible' : 'hidden'}"
           style="float: right;margin-right: 20px">

@@ -26,7 +26,7 @@ export default {
         //   meta: {title: "首页"}
         // }
       ],
-      urlArrName: ['homePage'],
+      urlArrName: [],
       isUrl: '',
       isClick: 0
     }
