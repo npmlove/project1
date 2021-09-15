@@ -308,6 +308,6 @@
 
   .aaa .el-dialog {
     width: 300px;
-    min-width: 500px;
+    min-width: 500px !important;
   }
 </style>
