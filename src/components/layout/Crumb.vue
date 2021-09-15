@@ -20,11 +20,11 @@ export default {
       tabList: null,
       urlIndex: 0,
       urlArr: [
-        {
-          path: "/adminUser/homePage",
-          name: "homePage",
-          meta: {title: "首页"}
-        }
+        // {
+        //   path: "/adminUser/homePage",
+        //   name: "homePage",
+        //   meta: {title: "首页"}
+        // }
       ],
       urlArrName: ['homePage'],
       isUrl: '',

@@ -66,7 +66,7 @@
             if (url) {
               vm.$router.push(url)
             } else {
-              vm.$router.push('/adminUser/homePage')
+              vm.$router.push('/routeManagement/routeManage')
             }
           } else {
             this.$message.error(data.message)

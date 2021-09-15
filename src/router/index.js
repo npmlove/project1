@@ -1,7 +1,7 @@
 // import Vue from 'vue'
 const Vue = require("vue")
-// import Router from 'vue-router'
-const Router = require('vue-router')
+import Router from 'vue-router'
+// const Router = require('vue-router')
 import routes from './config'
 Vue.use(Router)
 // 解决报错

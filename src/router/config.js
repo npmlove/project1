@@ -294,7 +294,7 @@ const routes = [
   ...routeManagementCenter,
   ...adverManagementCenter,
   ...agentManagement,
-  ...dictManagement,
+  // ...dictManagement,
   // ...userManagementCenter,
   ...adminUserCenter
 

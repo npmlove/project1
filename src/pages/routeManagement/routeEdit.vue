@@ -85,13 +85,13 @@
                   </div>
                 </div>
               </el-form-item>
-              <el-form-item prop="shortestPrescription" label="时效">
+              <el-form-item prop="shortDuration" label="时效">
                 <el-col style="width: 98px;">
-                  <el-input v-model="ruleForm.shortestPrescription" size="medium" placeholder="起始天数"></el-input>
+                  <el-input v-model="ruleForm.shortDuration" size="medium" placeholder="起始天数"></el-input>
                 </el-col>
                 <el-col style="text-align: center;width: 20px;">-</el-col>
                 <el-col style="width: 98px;">
-                  <el-input v-model="ruleForm.longestPrescription" size="medium" placeholder="结束天数"></el-input>
+                  <el-input v-model="ruleForm.longDuration" size="medium" placeholder="结束天数"></el-input>
                 </el-col>
               </el-form-item>
             </div>
@@ -361,8 +361,8 @@
           pol: '',
           pod: '',
           airCompanyCode: '',
-          shortestPrescription: '',
-          longestPrescription: '',
+          shortDuration: '',
+          longDuration: '',
           status: true,
           remark: ''
         },
@@ -374,7 +374,7 @@
           pol: [{required: true, message: '请输入起运港机场三字码', trigger: 'change'}],
           pod: [{ required: true, message: '请输入目的港机场三字码', trigger: 'change'}],
           airCompanyCode: [{required: true, message: '请输入起航司二字码', trigger: 'change'}],
-          shortestPrescription: [{required: true, message: '起始天数', trigger: 'change'}],
+          shortDuration: [{required: true, message: '起始天数', trigger: 'change'}],
           status: [{required: true, message: '请选择航线', trigger: 'change'}]
         },
         loading: false,
@@ -526,8 +526,8 @@
             this.ruleForm.pod = data.pod
             this.continent = data.continent
             this.ruleForm.airCompanyCode = data.airCompanyCode
-            this.ruleForm.shortestPrescription = data.shortestPrescription
-            this.ruleForm.longestPrescription = data.longestPrescription
+            this.ruleForm.shortDuration = data.shortDuration
+            this.ruleForm.longDuration = data.longDuration
             this.ruleForm.status = data.status == 0 ? true : false
             this.ruleForm.remark = data.remark
             var newFulleg = data.fullLeg.split(',')
@@ -929,8 +929,8 @@
               continent: this.continent,
               planeType: this.airportTableArr[0].childerTable[0].vehicleType,
               airCompanyCode: this.ruleForm.airCompanyCode,
-              shortestPrescription: this.ruleForm.shortestPrescription,
-              longestPrescription: this.ruleForm.longestPrescription,
+              shortDuration: this.ruleForm.shortDuration,
+              longDuration: this.ruleForm.longDuration,
               status: this.ruleForm.status ? 0 : 1,
               fullLeg: newFullLeg.toString(),
               legCount: this.airportTableArr.length,

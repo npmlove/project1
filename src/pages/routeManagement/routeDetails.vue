@@ -298,8 +298,8 @@
             this.ruleForm.pol = data.pol
             this.ruleForm.pod = data.pod
             this.ruleForm.airCompanyCode = data.airCompanyCode
-            this.ruleForm.shortestPrescription = data.shortestPrescription
-            this.ruleForm.longestPrescription = data.longestPrescription
+            this.ruleForm.shortestPrescription = data.shortDuration
+            this.ruleForm.longestPrescription = data.longDuration
             this.ruleForm.status = data.status == 0 ? true : false
             this.ruleForm.remark = data.remark
             var newFulleg = data.fullLeg.split(',')

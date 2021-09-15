@@ -108,6 +108,11 @@
           type: "warning"
         }).then(() => {
           let value = this.ids.replace("，",",").replace(/\s*/g,"");
+          var flag = new RegExp("[`~!@#$^&*()=|{}':;'\\[\\].<>《》/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？ ]")
+          if(flag.test(value)){
+            this.$message.error('请用逗号分割')
+            return
+          }
           axios.post(this.$service.airlineExcelExport, {
             ids:    value
           }, {

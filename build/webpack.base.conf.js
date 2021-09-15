@@ -71,7 +71,7 @@ module.exports = {
   externals: {
     vue: 'Vue',
     axios: 'axios',
-    'vue-router': 'VueRouter',
+    // 'vue-router': 'VueRouter',
     'element-ui': 'Element'
   },
   node: {
