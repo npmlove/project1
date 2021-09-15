@@ -516,7 +516,7 @@
     activated() {
       window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
       var routeAdd = sessionStorage.getItem('routeAdd')
-      console.log(routeAdd)
+      // console.log(routeAdd)
       if(routeAdd == 'hide' || routeAdd == null){
         this.active = 1
         this.ruleForm.pol = ''
@@ -845,7 +845,7 @@
         this.airlineAgent.splice(index,1)
       },
       remoteMethod(query) {
-        console.log(query)
+        // console.log(query)
       },
       //添加杂费
       addFeesClick(index) {

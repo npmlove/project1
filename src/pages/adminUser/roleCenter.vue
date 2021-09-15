@@ -125,7 +125,7 @@
         vm.$http.get(vm.$service.moduleSearch).then(data => {
           if (data.code == 200) {
             this.moduleArr = data.data
-            console.log(this.moduleArr)
+            // console.log(this.moduleArr)
           }
         }).catch((e) => {
           console.log(e)

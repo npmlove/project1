@@ -287,8 +287,7 @@
     vertical-align: bottom;
   }
 
-  .wrapper,
-  .content {
+  .wrapper,.content {
     width: 100%;
     background-color: #fff;
   }

@@ -588,7 +588,7 @@
                 this.airlineAgent.push(json)
               }
             }
-            console.log(this.airlineAgent)
+            // console.log(this.airlineAgent)
           }
         })
       },
@@ -832,7 +832,7 @@
         }
       },
       remoteMethod(query) {
-        console.log(query)
+        // console.log(query)
       },
       //添加杂费
       addFeesClick(index) {
@@ -909,7 +909,7 @@
             for(var i = 0; i < this.airportTableArr.length; i++){
               for(var q = 0; q < this.airportTableArr[i].childerTable.length; q++){
                 if(!this.airportTableArr[i].childerTable[q].vehicleType){
-                  this.$message.error('请选择运载方式')
+                  this.$message.error('航程'+(i+1)+'航班信息第'+(q+1)+'行运载方式未填写')
                   return
                 }
                 if(i == 0){
