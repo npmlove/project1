@@ -16,7 +16,7 @@ Vue.config.productionTip = false
 // Vue.prototype.$message = Message
 Vue.prototype.$service = serviceAPI
 Vue.prototype.inputMax = 50
-Vue.prototype.imgUrl = 'https://17dc.shenghuoq.com/'
+Vue.prototype.imgUrl = ''
 // Vue.prototype.$confirm = MessageBox.confirm
 //判断是否登录
 router.beforeEach(function (to, from, next) {

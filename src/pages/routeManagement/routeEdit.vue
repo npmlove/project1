@@ -263,7 +263,7 @@
               </div>
               <div v-if="item.otherFees.length > 0">
                <el-form-item label=" ">
-                  <el-tag v-for="(tagItem,tagIndex) in item.otherFees" :key="tagIndex" @close="otherFeesClose(tagIndex)" type="success" closable style="margin-right: 5px;">{{tagItem.feesName}} ￥{{tagItem.fees}}</el-tag>
+                  <el-tag v-for="(tagItem,tagIndex) in item.otherFees" :key="tagIndex" @close="otherFeesClose(index,tagIndex)" type="success" closable style="margin-right: 5px;">{{tagItem.feesName}} ￥{{tagItem.fees}}</el-tag>
                 </el-form-item>
               </div>
               <div v-for="(listItem,listIndex) in item.ratesList" :key="listIndex" style="padding-bottom: 20px;">
@@ -588,7 +588,7 @@
                 this.airlineAgent.push(json)
               }
             }
-            console.log(this.airlineAgent)
+            // console.log(this.airlineAgent)
           }
         })
       },
@@ -832,7 +832,7 @@
         }
       },
       remoteMethod(query) {
-        console.log(query)
+        // console.log(query)
       },
       //添加杂费
       addFeesClick(index) {
@@ -858,9 +858,9 @@
         this.airlineAgent[index].incidentalPrice = ''
       },
       //删除杂费
-      otherFeesClose(index) {
-        this.airlineAgent[index].otherFees.splice(index,1)
-        this.airlineAgent[index].otherFeesArr.splice(index,1)
+      otherFeesClose(index,tagIndex) {
+        this.airlineAgent[index].otherFees.splice(tagIndex,1)
+        this.airlineAgent[index].otherFeesArr.splice(tagIndex,1)
       },
       //代理公司
       initAgentList(agentName) {
@@ -909,12 +909,12 @@
             for(var i = 0; i < this.airportTableArr.length; i++){
               for(var q = 0; q < this.airportTableArr[i].childerTable.length; q++){
                 if(!this.airportTableArr[i].childerTable[q].vehicleType){
-                  this.$message.error('请选择运载方式')
+                  this.$message.error('航程'+(i+1)+'航班信息第'+(q+1)+'行运载方式未填写')
                   return
                 }
                 if(i == 0){
-                  if(!this.airportTableArr[i].childerTable[q].vehicleId){
-                    this.$message.error('请输入航班号/卡车号')
+                  if(this.airportTableArr[i].childerTable[q].vehicleId == ''){
+                    this.$message.error('航程'+(i+1)+'航班信息第'+(q+1)+'航班号/卡车号未填写')
                     return
                   }
                 }

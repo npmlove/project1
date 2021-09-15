@@ -269,7 +269,7 @@
           </div>
           <div v-if="item.otherFees.length > 0">
            <el-form-item label=" ">
-              <el-tag v-for="(tagItem,tagIndex) in item.otherFees" :key="tagIndex" @close="otherFeesClose(tagIndex)" type="success" closable style="margin-right: 5px;">{{tagItem.feesName}} ￥{{tagItem.fees}}</el-tag>
+              <el-tag v-for="(tagItem,tagIndex) in item.otherFees" :key="tagIndex" @close="otherFeesClose(index,tagIndex)" type="success" closable style="margin-right: 5px;">{{tagItem.feesName}} ￥{{tagItem.fees}}</el-tag>
             </el-form-item>
           </div>
           <div v-for="(listItem,listIndex) in item.ratesList" :key="listIndex" style="padding-bottom: 20px;">
@@ -519,7 +519,7 @@
     activated() {
       window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
       var routeAdd = sessionStorage.getItem('routeAdd')
-      console.log(routeAdd)
+      // console.log(routeAdd)
       if(routeAdd == 'hide' || routeAdd == null){
         this.active = 1
         this.ruleForm.pol = ''
@@ -848,7 +848,7 @@
         this.airlineAgent.splice(index,1)
       },
       remoteMethod(query) {
-        console.log(query)
+        // console.log(query)
       },
       //添加杂费
       addFeesClick(index) {
@@ -873,9 +873,9 @@
         this.airlineAgent[index].incidentalPrice = ''
       },
       //删除杂费
-      otherFeesClose(index) {
-        this.airlineAgent[index].otherFees.splice(index,1)
-        this.airlineAgent[index].otherFeesArr.splice(index,1)
+      otherFeesClose(index,tagIndex) {
+        this.airlineAgent[index].otherFees.splice(tagIndex,1)
+        this.airlineAgent[index].otherFeesArr.splice(tagIndex,1)
       },
       //代理公司
       initAgentList(agentName) {
@@ -928,7 +928,7 @@
                   return
                 }
                 if(i == 0){
-                  if(!this.airportTableArr[i].childerTable[q].vehicleId){
+                  if(this.airportTableArr[i].childerTable[q].vehicleId == ''){
                     this.$message.error('航程'+(i+1)+'航班信息第'+(q+1)+'航班号/卡车号未填写')
                     return
                   }

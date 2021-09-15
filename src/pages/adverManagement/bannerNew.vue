@@ -109,9 +109,9 @@
             // this.loading = false
             this.$message.success('保存成功')
             // this.initBannerList()
-            this.$http.get(this.$service.dcReptileReplace).then((data) => {
-              console.log(data)
-            })
+            // this.$http.get(this.$service.dcReptileReplace).then((data) => {
+            //   console.log(data)
+            // })
           } else {
             this.$message.error(data.message)
           }
