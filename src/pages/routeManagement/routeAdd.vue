@@ -260,7 +260,7 @@
               </el-col>
               <el-col style="text-align: center;width: 30px;">-</el-col>
               <el-col style="width: 220px;">
-                <el-input v-model="item.incidentalPrice" onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" placeholder="请输入杂费金额" style="width: 220px;"></el-input>
+                <el-input v-model="item.incidentalPrice" placeholder="请输入杂费金额" style="width: 220px;"></el-input>
               </el-col>
               <el-col style="text-align: center;width: 120px;margin-left: 20px;">
                 <el-button @click="addFeesClick(index)" type="primary" size="medium">添加</el-button>
@@ -849,11 +849,12 @@
       },
       //添加杂费
       addFeesClick(index) {
+        console.log(this.airlineAgent)
         var reg = /(^[1-9][0-9]{0,5}$)|(^[0-9]{0,5}[\.][0-9]{1,2}$)/
         if(!this.airlineAgent[index].incidentalName){
           this.$message.error('请选择杂费名称')
           return
-        }else if(!this.airlineAgent[index].incidentalPrice){
+        }else if(this.airlineAgent[index].incidentalPrice == ''){
           this.$message.error('请输入杂费金额')
           return
         }else if(!reg.test(this.airlineAgent[index].incidentalPrice)){

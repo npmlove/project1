@@ -254,7 +254,7 @@
                   </el-col>
                   <el-col style="text-align: center;width: 30px;">-</el-col>
                   <el-col style="width: 220px;">
-                    <el-input v-model="item.incidentalPrice" onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" placeholder="请输入杂费金额" style="width: 220px;"></el-input>
+                    <el-input v-model="item.incidentalPrice" placeholder="请输入杂费金额" style="width: 220px;"></el-input>
                   </el-col>
                   <el-col style="text-align: center;width: 120px;margin-left: 20px;">
                     <el-button @click="addFeesClick(index)" type="primary" size="medium">添加</el-button>
