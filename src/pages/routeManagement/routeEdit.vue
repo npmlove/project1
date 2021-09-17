@@ -868,7 +868,8 @@
           agentName = ''
         }
         var data = {
-          agentName: agentName
+          agentName: agentName,
+          pageSize: 10000
         }
         this.$http.post(this.$service.agentList,data).then((data) => {
           this.loading = false

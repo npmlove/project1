@@ -4,16 +4,13 @@
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
           <el-form-item label="字典编号">
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="code" clearable
-              placeholder="请输入字典编号"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="code" clearable placeholder="请输入字典编号"></el-input>
           </el-form-item>
           <el-form-item label="字典名称">
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="dictValue" clearable
-              placeholder="请输入字典名称"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="dictValue" clearable placeholder="请输入字典名称"></el-input>
           </el-form-item>
           <el-form-item label="字典备注">
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="remark" clearable
-              placeholder="请输入字典备注"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="remark" clearable placeholder="请输入字典备注"></el-input>
           </el-form-item>
           <el-form-item>
             <el-row>

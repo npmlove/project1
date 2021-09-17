@@ -277,9 +277,9 @@ const userManagementCenter = [{
     breadcrumb: false
   },
   children: [{
-      path: 'userCenter',
-      component: () => import('@/pages/userManagement/userCenter.vue'),
-      name: 'userCenter',
+      path: 'userManage',
+      component: () => import('@/pages/userManagement/userManage.vue'),
+      name: 'userManage',
       meta: {
         title: '用户列表',
         keepAlive: false,
