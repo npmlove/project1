@@ -53,6 +53,7 @@ export default {
         this.urlArr.splice(this.urlArr.indexOf(item),1)
         this.urlArrName.splice(this.urlArrName.indexOf(item.name),1)
         this.isUrl = '/adminUser/homePage'
+        // this.handleLink(this.urlArr[index])
         this.handleLink(this.urlArr[index-1])
       }else if(item.path != '/adminUser/homePage'){
         this.urlArr.splice(this.urlArr.indexOf(item),1)
@@ -103,7 +104,11 @@ export default {
       return toPath(params)
     },
     handleLink(item,index) {
+      if(!item){
+        return
+      }
       this.isClick = index
+      console.log(item)
       var query = item.query
       var canshu = ''
       for(var key in query){
