@@ -518,6 +518,7 @@
       var routeAdd = sessionStorage.getItem('routeAdd')
       // console.log(routeAdd)
       if(routeAdd == 'hide' || routeAdd == null){
+        this.checkDaili = []
         this.active = 1
         this.ruleForm.pol = ''
         this.ruleForm.pod = ''
