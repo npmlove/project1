@@ -333,6 +333,8 @@
           if (data.code == 200) {
             this.total = data.data.total
             this.tableData = data.data.records
+          }else {
+            this.$message.error(data.message)
           }
         }).catch((e) => {
           console.log(e)

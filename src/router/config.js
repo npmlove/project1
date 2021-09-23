@@ -295,7 +295,7 @@ const routes = [
   ...adverManagementCenter,
   ...agentManagement,
   // ...dictManagement,
-  // ...userManagementCenter,
+  ...userManagementCenter,
   ...adminUserCenter
 
 ]

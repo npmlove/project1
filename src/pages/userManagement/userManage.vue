@@ -4,20 +4,24 @@
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="loginName" clearable placeholder="请输入手机号"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="tel" clearable placeholder="请输入手机号"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="name" clearable placeholder="请输入认证主体"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="pod" clearable placeholder="请输入认证主体"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="tel" clearable placeholder="请输入微信号"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="nickname" clearable placeholder="请输入微信号"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-select placeholder="请选择客服人员" size="medium" v-model="roleName" clearable style="width: 200px;">
-              <el-option v-for="item in roleOpt" :key="item.Value" :label="item.roleName" :value="item.roleName">
+            <el-select placeholder="请选择客服人员" size="medium" v-model="customerService" clearable style="width: 200px;">
+              <el-option
+                v-for="item in roleOpt"
+                :key="item.Value"
+                :label="item.name"
+                :value="item.name">
               </el-option>
             </el-select>
           </el-form-item>
@@ -40,18 +44,21 @@
         :pageSize='pageSize'
         @sizeChange='handleSizeChange'
         @currentChange='handleCurrentChange'
-        @handleClick='handleClick'
+        @bingdingKefu="bingdingKefu"
         >
       </Table>
     </div>
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' width="150px">
       <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px" size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
-        <el-form-item prop="newPassword" label="新密码">
-          <el-input style="width: 280px;" type="password" size="medium" maxlength="20" v-model="ruleForm.newPassword" clearable placeholder="请输入新密码">
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="checknewPassword" label="校验密码">
-          <el-input style="width: 280px;" type="password" size="medium" maxlength="20" v-model="ruleForm.checknewPassword" clearable placeholder="请再次输入新密码"></el-input>
+        <el-form-item prop="customerServiceId" label="售前客服">
+          <el-select placeholder="请选择客服人员" size="medium" v-model="ruleForm.customerServiceId" clearable style="width: 200px;">
+            <el-option
+              v-for="item in roleOpt"
+              :key="item.Value"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <!-- 底部按钮 -->
@@ -70,25 +77,6 @@
   import { toData } from '@/util/assist'
   export default {
     data() {
-      var validatePass1 = (rule, value, callback) => {
-        var reg = /^[0-9A-Za-z]{6,20}$/
-        if(value == ''){
-          callback(new Error('请输入密码'));
-        }if (!reg.test(value)) {
-          callback(new Error('请输入6到20位密码，包含数字或字母'));
-        } else {
-          callback();
-        }
-      }
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm.newPassword) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
-      }
       return {
         //table
         tableData: [],
@@ -96,58 +84,20 @@
         pageNum: 1,
         total: 0,
         // 列
-        columns: [{
-            label: '用户ID',
-            prop: 'loginName',
-            show: true,
-            width: '160'
-          },
-          {
-            label: '用户头像',
-            prop: 'name',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '用户名称',
-            prop: 'tel',
-            show: true,
-            width: '150'
-          },
-          {
-            label: '性别',
-            prop: 'roleName',
-            show: true,
-            width: '150'
-          },
-          {
-            label: '认证主体',
-            prop: 'status',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '手机号',
-            prop: 'status',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '注册时间',
-            prop: 'status',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '客服',
-            prop: 'status',
-            show: true,
-            width: '100'
-          }
+        columns: [
+          {label: '用户ID', prop: 'id', show: true, width: '80'},
+          {label: '用户头像', prop: 'headImgUrl', show: true, width: '80'},
+          {label: '微信名称', prop: 'nickname', show: true, width: '150'},
+          {label: '性别', prop: 'sex', show: true, width: '80'},
+          {label: '认证主体', prop: 'certificationBody', show: true, width: '150'},
+          {label: '结算方式', prop: 'settlementModes', show: true, width: '100'},
+          {label: '手机号', prop: 'tel', show: true, width: '100'},
+          {label: '注册时间', prop: 'createTime', show: true, width: '150'},
+          {label: '绑定售前客服', prop: 'customerService', show: true, width: '100'}
         ],
         // 操作
         operation: {
-          show: true,
+          show: false,
           label: '操作',
           width: '120',
           options: [{
@@ -156,32 +106,21 @@
             }
           ]
         },
-        rules: {
-          newPassword: [{
-            required: true,
-            validator: validatePass1,
-            trigger: 'blur'
-          }],
-          checknewPassword: [{
-            required: true,
-            validator: validatePass2,
-            trigger: 'blur'
-          }]
-        },
         labelPosition: 'right',
-        loginName: '',
-        name: '',
         tel: '',
-        roleName: '',
+        pod: '',
+        nickname: '',
+        customerService: '',
         roleOpt: [],
         dialogTitle: '密码修改',
         dialogFormVisible: false,
-        ruleForm: {
-          newPassword: '',
-          id: '',
-          checknewPassword: ''
+        rules: {
+          customerServiceId: [{required: true, message: '请选择售前客服', trigger: 'change'}]
         },
-        newRoleId: ''
+        ruleForm: {
+          customerServiceId: '',
+          id: ''
+        }
       }
     },
     mounted() {
@@ -195,14 +134,12 @@
         var params = {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          loginName: this.loginName,
-          name: this.name,
-          tel: this.tel,
-          roleName: this.roleName,
-          delFlag: 0
+          customerService: this.customerService,
+          nickname: this.nickname,
+          pod: this.pod,
+          tel: this.tel
         }
-        params = toData(params)
-        vm.$http.get(vm.$service.userSearch + '?' + params).then(data => {
+        vm.$http.post(vm.$service.userSearchByPage,params).then(data => {
           if (data.code == 200) {
             this.total = data.data.total
             this.tableData = data.data.records
@@ -212,14 +149,25 @@
         })
       },
 
-      //获取角色
+      //获取售前客服
       initRoleSearch() {
-        this.$http.get(this.$service.roleSearch).then(data => {
+        const vm = this
+        var params = {
+          pageNum: '',
+          pageSize: 10000,
+          loginName: '',
+          name: '',
+          tel: '',
+          roleName: '',
+          delFlag: 0
+        }
+        params = toData(params)
+        vm.$http.get(vm.$service.userSearch + '?' + params).then(data => {
           if (data.code == 200) {
-            this.roleOpt = data.data
-          }else{
-            this.$message.error(data.message)
+            this.roleOpt = data.data.records
           }
+        }).catch((e) => {
+          console.log(e)
         })
       },
       //查询
@@ -230,62 +178,36 @@
       },
       //重置
       restClick() {
-        this.loginName = ''
-        this.name = ''
         this.tel = ''
-        this.roleName = ''
+        this.pod = ''
+        this.nickname = ''
+        this.customerService = ''
         this.pageSize = 10
         this.pageNum = 1
         this.initUserSearch()
       },
-      //操作
-      handleClick(scope) {
-        if (scope.method == 'binding') {
-          this.$confirm("确定删除这条数据?", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-          }).then(() => {
-            var json = {
-              status: -1,
-              id: scope.row.id
-            }
-            this.$http.post(this.$service.userUpdate, json).then(data => {
-              if (data.code == 200) {
-                this.initUserSearch()
-                this.$message.success('删除成功')
-              } else {
-                this.$message.error(data.message)
-              }
-            })
-          }).catch(() => {
-            console.log('取消')
-          })
-        }
+      bingdingKefu(val) {
+        this.dialogFormVisible = true
+        this.dialogTitle = '绑定售前客服'
+        this.ruleForm.id = val.row.id
+        this.ruleForm.customerServiceId = val.row.customerService
       },
-      //修改密码确定
+      //绑定售前客服
       submitForm(ruleForm) {
         this.$refs[ruleForm].validate((valid, object) => {
           if (valid) {
             var params = {
               id: this.ruleForm.id,
-              newPassword: this.ruleForm.newPassword,
+              customerServiceId: this.ruleForm.customerServiceId,
             }
-            params = toData(params)
-            this.$http.get(this.$service.userUpdatePassword + '?' + params).then(data => {
+            this.$http.post(this.$service.userUpdateUserinfo, params).then(data => {
               if (data.code == 200) {
-                this.$message.success('密码重置成功')
                 this.dialogFormVisible = false
-                this.ruleForm = {
-                  newPassword: '',
-                  id: '',
-                  checknewPassword: ''
-                }
+                this.initUserSearch()
+                this.$message.success('绑定成功')
               } else {
                 this.$message.error(data.message)
               }
-            }).catch((e) => {
-              console.log(e)
             })
           } else {
             setTimeout(() => {
@@ -310,10 +232,6 @@
       },
       closeDialog() {
         this.dialogFormVisible = false
-        this.ruleForm = {
-          newPassword: '',
-          checknewPassword: '',
-        }
       },
     },
 

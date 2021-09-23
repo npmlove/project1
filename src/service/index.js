@@ -78,5 +78,9 @@ const serviceApi = {
   airlineCheckAirlineInfo: pulicWeb+'/t-airline/checkAirlineInfo',
   //banner刷新html
   dcReptileReplace: '/back/dcReptile/pageStatic/replace',
+  //用户列表
+  userSearchByPage:  pulicWeb+'/t-portal-user/searchByPage',
+  //修改用户
+  userUpdateUserinfo:  pulicWeb+'/t-portal-user/update',
 }
 export default serviceApi
