@@ -747,10 +747,10 @@
       airportMethod(keyWord) {
         this.loading = true
         this.initAirportSearchByPage(keyWord,'航线')
-        this.airportEcheckArr = []
-        for(var i = 0; i < this.fullLeg.length; i++){
-          this.airportEcheckArr.push(this.fullLeg[i].airportName)
-        }
+        // this.airportEcheckArr = []
+        // for(var i = 0; i < this.fullLeg.length; i++){
+        //   this.airportEcheckArr.push(this.fullLeg[i].airportName)
+        // }
       },
       airportEcheckClick(is,index,item) {
         if(is){
