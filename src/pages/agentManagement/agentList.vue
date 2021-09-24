@@ -24,8 +24,15 @@
           </el-form-item>
         </div>
       </el-form>
-      <Table :tableData='tableData' :columns='columns' :operation='operation' :total='total'
-        :currentPage='pageNum' :pageSize='pageSize' @sizeChange='handleSizeChange' @currentChange='handleCurrentChange'
+      <Table
+        :tableData='tableData'
+        :columns='columns'
+        :operation='operation'
+        :total='total'
+        :currentPage='pageNum'
+        :pageSize='pageSize'
+        @sizeChange='handleSizeChange'
+        @currentChange='handleCurrentChange'
         @handleClick='handleClick'>
       </Table>
     </div>
@@ -108,16 +115,8 @@
           agentCode: ''
         },
         rules: {
-          agentName: [{
-            required: true,
-            message: '请输入代理名称',
-            trigger: 'blur'
-          }],
-          agentCode: [{
-            required: true,
-            message: '请输入代理简称',
-            trigger: 'blur'
-          }]
+          agentName: [{required: true, message: '请输入代理名称', trigger: 'blur'}],
+          // agentCode: [{required: true, message: '请输入代理简称', trigger: 'blur'}]
         },
         labelPosition: 'right',
         agentName: '',

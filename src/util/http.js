@@ -32,6 +32,11 @@ const checkCode = (response) => {
     let resCode = response.data.code
     if (resCode == 500) {
       showError(response.data.data)
+    }else if(resCode == -200){
+      router.replace({
+        path: '/login',
+        query: {redirect: router.currentRoute.fullPath}
+      })
     }
   }
   return response
