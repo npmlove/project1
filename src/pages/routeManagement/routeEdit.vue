@@ -76,7 +76,7 @@
                     <div class="el-select-dropdown__wrap el-scrollbar__wrap" style="margin-bottom: -5px; margin-right: -5px;">
                       <ul class="el-scrollbar__view el-select-dropdown__list">
                         <li v-if="airCompanyCodeOpt.length > 0" @mousedown="polChange2(item)" v-for="(item,index) in airCompanyCodeOpt" :key="index" class="el-select-dropdown__item">
-                          <span>{{item.twoLetterCode}}</span>
+                          <span>{{item.airCompanyCode}}</span>
                           <span style="margin-left: 5px;">{{item.name}}</span>
                         </li>
                         <li v-if="airCompanyCodeOpt.length == 0" class="el-select-dropdown__item" style="color: #c0c4cc;">暂无数据</li>
@@ -682,7 +682,7 @@
         this.ruleForm.pod = item.threeLetterCode
       },
       polChange2(item) {
-        this.ruleForm.airCompanyCode = item.twoLetterCode
+        this.ruleForm.airCompanyCode = item.airCompanyCode
       },
       polChange3(item,index){
         if(this.airportEcheckArr.indexOf(item.threeLetterCode) > -1){
@@ -714,10 +714,10 @@
       airportMethod(keyWord) {
         this.loading = true
         this.initAirportSearchByPage(keyWord,'航线')
-        this.airportEcheckArr = []
-        for(var i = 0; i < this.fullLeg.length; i++){
-          this.airportEcheckArr.push(this.fullLeg[i].airportName)
-        }
+        // this.airportEcheckArr = []
+        // for(var i = 0; i < this.fullLeg.length; i++){
+        //   this.airportEcheckArr.push(this.fullLeg[i].airportName)
+        // }
       },
       airportEcheckClick(is,index,item) {
         if(is){

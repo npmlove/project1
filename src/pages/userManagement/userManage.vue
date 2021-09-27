@@ -12,7 +12,7 @@
           </el-form-item>
 
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="nickname" clearable placeholder="请输入微信号"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="nickname" clearable placeholder="请输入微信名称"></el-input>
           </el-form-item>
 
           <el-form-item>

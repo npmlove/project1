@@ -36,8 +36,10 @@
           <el-form-item>
             <el-select v-model="airCompanyCode" placeholder="航司代码" :remote-method="companyMethod" :loading="loading"
               clearable filterable remote reserve-keyword>
-              <el-option v-for="item in airCompanyCodeOpt" :key="item.twoLetterCode" :value="item.twoLetterCode">
-                <span>{{item.twoLetterCode}}</span>
+              <el-option v-for="item in airCompanyCodeOpt" 
+				:key="item.airCompanyCode" 
+				:value="item.airCompanyCode">
+                <span>{{item.airCompanyCode}}</span>
                 <span style="margin-left: 5px;">{{item.name}}</span>
               </el-option>
             </el-select>
