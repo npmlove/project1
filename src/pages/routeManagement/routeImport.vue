@@ -50,10 +50,10 @@
         this.excelInfo = file.raw;
         const isExcel = file.raw.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isExcel) {
-          this.$message.error('只能上传Excel文件!');
-          return
-        }
+        // if (!isExcel) {
+        //   this.$message.error('只能上传Excel文件!');
+        //   return
+        // }
         if (!isLt2M) {
           this.$message.error('上传Excel文件不能超过 2MB!');
           return
