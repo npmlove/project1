@@ -74,13 +74,13 @@
                 <div v-for="(childerItem,childerIndex) in parentItem.childerTable" :key="childerIndex" class="flight-template-ul-content">
                   <div class="flight-template-li" style="flex: 0 0 10%;"></div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
-                    <el-select :disabled="true" v-model="childerItem.vehicleType" @focus="vehicleFocus(index,childerIndex)" size="small" clearable placeholder="请选择" style="width: 80%;">
+                    <el-select :disabled="true" v-model="childerItem.vehicleType" size="small" style="width: 80%;">
                       <el-option
                         v-for="item in airportOptions"
                         :key="item.name"
                         :label="item.name"
                         :disabled="parentItem.checkBox.indexOf(item.name) > -1"
-                        :value="item.name">
+                        :value="item.value">
                       </el-option>
                     </el-select>
                   </div>
@@ -210,17 +210,22 @@
         //航线进程
         fullLeg: [],
         airportTableArr: [],
-        airportOptions: [{
-            name: '宽体飞机'
+        airportOptions: [
+          {
+            name: '宽体飞机',
+            value: '1'
           },
           {
-            name: '窄体飞机'
+            name: '窄体飞机',
+            value: '2'
           },
           {
-            name: '货车'
+            name: '货机',
+            value: '3'
           },
           {
-            name: '卡车'
+            name: '卡车',
+            value: '4'
           }
         ],
         //航线价格
@@ -342,7 +347,7 @@
                   childerJson.tableData = data[q].rates[e].ratesInsertDTOS
                   json.ratesList.push(childerJson)
                 }
-               
+
               }
                this.airlineAgent.push(json)
             }

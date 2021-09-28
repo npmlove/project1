@@ -184,7 +184,7 @@
                     v-for="item in airportOptions"
                     :key="item.name"
                     :label="item.name"
-                    :value="item.name">
+                    :value="item.value">
                   </el-option>
                 </el-select>
               </div>
@@ -410,17 +410,22 @@
             }]
           }
         ],
-        airportOptions: [{
-            name: '宽体飞机'
+        airportOptions: [
+          {
+            name: '宽体飞机',
+            value: '1'
           },
           {
-            name: '窄体飞机'
+            name: '窄体飞机',
+            value: '2'
           },
           {
-            name: '货车'
+            name: '货机',
+            value: '3'
           },
           {
-            name: '卡车'
+            name: '卡车',
+            value: '4'
           }
         ],
         //航线价格
