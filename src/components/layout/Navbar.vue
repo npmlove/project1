@@ -74,51 +74,7 @@ export default {
       this.dialogFormVisible = false
     },
     dialogComfirm() {
-      let reg = eval(JSON.parse(sessionStorage.getItem('userInfo')).pwdRegex)
-
-      if(!this.oldPass){
-      	this.errorItem = 1
-      	this.tips = '请输入原始密码'
-      }else if(!this.newPass){
-      	this.errorItem = 2
-      	this.tips = '请输入新密码'
-      }else if(this.newPass.length < 6 || this.newPass.length > 8){
-      	this.errorItem = 2
-      	this.tips = '请输入6-8位密码'
-      }else if(!reg.test(this.newPass)){
-      	this.errorItem = 2
-      	this.tips = '密码必须包含字母、数字'
-      }else if(!this.newPass2){
-      	this.errorItem = 3
-      	this.tips = '请确认新密码'
-      }else if(this.newPass != this.newPass2){
-      	this.errorItem = 3
-      	this.tips = '密码不一致'
-      }else{
-      	this.$http.post(this.$service.getUpdateUserPWD,qs.stringify({
-      	  CallType: '',
-      	  UserID: JSON.parse(sessionStorage.getItem('userInfo')).UserID,
-      	  OldPassword: this.oldPass,
-      	  Password: this.newPass2
-      	})).then(data => {
-      	  if(data.Status == 0){
-            this.dialogFormVisible = false
-      	    this.exportDio = true
-      	    this.iconTrue = true
-      	    this.exportTip = '密码修改成功'
-      	    setTimeout(() => {
-      	    	this.exportDio = false
-      	    }, 1500)
-      	  }else{
-            this.exportDio = true
-            this.iconTrue = true
-            this.exportTip = data.Message
-            setTimeout(() => {
-            	this.exportDio = false
-            }, 1500)
-          }
-      	})
-      }
+      
     }
   },
   mounted () {

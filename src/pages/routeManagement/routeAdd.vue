@@ -1025,7 +1025,7 @@
         return array.sort(function(a,b) {
           var x = Number(a[key]);
           var y = Number(b[key]);
-          return ((x>y) ? ((x<y) ? 1 : 0) : -1);
+          return x > y ? ((x < y) ? 1 : 0) : -1;
         })
       },
       //数组去重
