@@ -1034,9 +1034,10 @@
       //数组对象排序
       sortByKey(array,key) {
         return array.sort(function(a,b) {
-          var x = Number(a[key]);
-          var y = Number(b[key]);
-          return x > y ? ((x < y) ? 1 : 0) : -1;
+          var x = Number(a[key])
+          var y = Number(b[key])
+          var num = x < y ? 1 : 0
+          return x > y ? num : -1
         })
       },
       //数组去重

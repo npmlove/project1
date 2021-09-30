@@ -43,17 +43,10 @@ const checkCode = (response) => {
 }
 const showError = (errorMsg, alwaysDisplay) => {
   errorMsg = errorMsg || '服务调用出错，请联系管理员'
-  if(alwaysDisplay == true) {
-    Message({
-      message: errorMsg,
-      type: 'warning'
-    })
-  } else {
-    Message({
-      message: errorMsg,
-      type: 'warning'
-    })
-  }
+  Message({
+    message: errorMsg,
+    type: 'warning'
+  })
 }
 
 const dealError = (error) => {
