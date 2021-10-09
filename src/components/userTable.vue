@@ -34,13 +34,13 @@
             <span v-if="column.prop == 'headImgUrl' && column.label == '用户头像'">
               <img style="width: 35px;height: 35px;" :src="scope.row.headImgUrl" />
             </span>
-            <span v-else-if="column.prop == 'certificationBody' && column.label == '绑定售前客服'">
-              <a v-if="scope.row.certificationBody" @click="bingdingKefu(scope)" v-html="getDataName(scope.row, column)"></a>
-              <a v-else style="color: #f00;" @click="bingdingKefu(scope)">未认证</a>
+            <span v-else-if="column.prop == 'customerService' && column.label == '绑定售前客服'">
+              <span v-if="scope.row.customerService" @click="bingdingKefu(scope)" v-html="getDataName(scope.row, column)"></span>
+              <span v-else style="color: #f00;" @click="bingdingKefu(scope)">未设置</span>
             </span>
-            <span v-else-if="column.prop == 'customerService' && column.label == '认证主体'">
-              <a v-if="scope.row.customerService" v-html="getDataName(scope.row, column)"></a>
-              <a v-else style="color: #f00;">未设置</a>
+            <span v-else-if="column.prop == 'certificationBody' && column.label == '认证主体'">
+              <span v-if="scope.row.certificationBody" v-html="getDataName(scope.row, column)"></span>
+              <span v-else style="color: #f00;">未认证</span>
             </span>
             <span v-else v-html="getDataName(scope.row, column)"></span>
           </span>

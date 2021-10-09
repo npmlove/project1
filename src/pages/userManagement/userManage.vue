@@ -4,15 +4,18 @@
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="tel" clearable placeholder="请输入手机号"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="tel" clearable
+                      placeholder="请输入手机号"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="pod" clearable placeholder="请输入认证主体"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="pod" clearable
+                      placeholder="请输入认证主体"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="nickname" clearable placeholder="请输入微信名称"></el-input>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="nickname" clearable
+                      placeholder="请输入微信名称"></el-input>
           </el-form-item>
 
           <el-form-item>
@@ -44,12 +47,17 @@
         :pageSize='pageSize'
         @sizeChange='handleSizeChange'
         @currentChange='handleCurrentChange'
-        @bingdingKefu="bingdingKefu"
-        >
+        @handleClick="handleClick"
+      >
       </Table>
     </div>
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' width="150px">
-      <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px" size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
+      <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px"
+               size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
+        <el-form-item  prop="certificationBody" label="认证主体">
+          <el-input style="width: 280px;" v-model="ruleForm.certificationBody" clearable placeholder="请输入认证主体"
+                    :maxlength="inputMax"></el-input>
+        </el-form-item>
         <el-form-item prop="customerServiceId" label="售前客服">
           <el-select placeholder="请选择客服人员" size="medium" v-model="ruleForm.customerServiceId" clearable style="width: 200px;">
             <el-option
@@ -74,7 +82,8 @@
 
 <script>
   import Table from '@/components/userTable'
-  import { toData } from '@/util/assist'
+  import {toData} from '@/util/assist'
+
   export default {
     data() {
       return {
@@ -97,13 +106,13 @@
         ],
         // 操作
         operation: {
-          show: false,
+          show: true,
           label: '操作',
           width: '120',
           options: [{
-              label: '绑定客服',
-              method: 'binding'
-            }
+            label: '编辑',
+            method: 'binding'
+          }
           ]
         },
         labelPosition: 'right',
@@ -111,14 +120,17 @@
         pod: '',
         nickname: '',
         customerService: '',
+        customerServiceId: '',
         roleOpt: [],
         dialogTitle: '密码修改',
         dialogFormVisible: false,
         rules: {
-          customerServiceId: [{required: true, message: '请选择售前客服', trigger: 'change'}]
+          customerServiceId: [{required: true, message: '请选择售前客服', trigger: 'change'}],
+          certificationBody: [{required: true, message: '请输入认证主体', trigger: 'change'}]
         },
         ruleForm: {
           customerServiceId: '',
+          certificationBody: '',
           id: ''
         }
       }
@@ -139,7 +151,7 @@
           pod: this.pod,
           tel: this.tel
         }
-        vm.$http.post(vm.$service.userSearchByPage,params).then(data => {
+        vm.$http.post(vm.$service.userSearchByPage, params).then(data => {
           if (data.code == 200) {
             this.total = data.data.total
             this.tableData = data.data.records
@@ -153,18 +165,12 @@
       initRoleSearch() {
         const vm = this
         var params = {
-          pageNum: '',
-          pageSize: 10000,
-          loginName: '',
-          name: '',
-          tel: '',
-          roleName: '',
-          delFlag: 0
+          roleName: '售前客服'
         }
         params = toData(params)
-        vm.$http.get(vm.$service.userSearch + '?' + params).then(data => {
+        vm.$http.get(vm.$service.userRoleList + '?' + params).then(data => {
           if (data.code == 200) {
-            this.roleOpt = data.data.records
+            this.roleOpt = data.data
           }
         }).catch((e) => {
           console.log(e)
@@ -186,11 +192,13 @@
         this.pageNum = 1
         this.initUserSearch()
       },
-      bingdingKefu(val) {
+      handleClick(val) {
         this.dialogFormVisible = true
-        this.dialogTitle = '绑定售前客服'
+        this.dialogTitle = '编辑'
         this.ruleForm.id = val.row.id
+        this.customerServiceId=val.row.customerServiceId
         this.ruleForm.customerServiceId = val.row.customerService
+        this.ruleForm.certificationBody = val.row.certificationBody
       },
       //绑定售前客服
       submitForm(ruleForm) {
@@ -198,7 +206,8 @@
           if (valid) {
             var params = {
               id: this.ruleForm.id,
-              customerServiceId: this.ruleForm.customerServiceId,
+              customerServiceId:typeof this.ruleForm.customerServiceId=="string"?this.customerServiceId:this.ruleForm.customerServiceId ,
+              certificationBody: this.ruleForm.certificationBody,
             }
             this.$http.post(this.$service.userUpdateUserinfo, params).then(data => {
               if (data.code == 200) {
