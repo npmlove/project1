@@ -126,7 +126,7 @@
         dialogFormVisible: false,
         rules: {
           // customerServiceId: [{required: true, message: '请选择售前客服', trigger: 'change'}],
-          // certificationBody: [{required: true, message: '请输入认证主体', trigger: 'change'}]
+          certificationBody: [{max: 20, message: '认证主体最长20个字符', trigger: 'change'}]
         },
         ruleForm: {
           customerServiceId: '',
