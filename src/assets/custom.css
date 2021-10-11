@@ -660,3 +660,6 @@ textarea {
 .el-switch__label.is-active{
   color: #2273CE;
 }
+.order_table .el-table tr{
+  position: relative;
+}

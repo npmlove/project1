@@ -4,20 +4,38 @@
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
           <el-form-item>
-            <el-select v-model="pol" placeholder="起运港三字码" :remote-method="polMethod" :loading="loading" clearable
-              filterable remote reserve-keyword>
-              <el-option v-for="(item,index) in polOpt" :disabled="pod == item.threeLetterCode"
-                :key="item.threeLetterCode" :value="item.threeLetterCode">
-                <span>{{item.threeLetterCode}}</span>
-                <span style="margin-left: 5px;">{{item.name}}</span>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入订单号"></el-input>
+          </el-form-item>
+
+          <el-form-item>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入运单号"></el-input>
+          </el-form-item>
+
+          <el-form-item>
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入进仓编号"></el-input>
+          </el-form-item>
+
+          <el-form-item>
+            <el-select v-model="agentName" placeholder="代理公司名称" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 220px;">
+              <el-option
+                v-for="item in agentOpt"
+                :key="item.value"
+                :label="item.agentName"
+                :value="item.agentName">
               </el-option>
             </el-select>
           </el-form-item>
 
           <el-form-item>
-            <el-select v-model="pod" placeholder="目的港三字码" :remote-method="podMethod" :loading="loading" clearable
-              filterable remote reserve-keyword>
-              <el-option v-for="item in podOpt" :disabled="pol == item.threeLetterCode" :key="item.threeLetterCode"
+            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入客户"></el-input>
+          </el-form-item>
+
+          <el-form-item>
+            <el-select v-model="pol" placeholder="起运港三字码" :remote-method="polMethod" :loading="loading" clearable filterable remote reserve-keyword>
+              <el-option
+                v-for="(item,index) in polOpt"
+                :disabled="pod == item.threeLetterCode"
+                :key="item.threeLetterCode"
                 :value="item.threeLetterCode">
                 <span>{{item.threeLetterCode}}</span>
                 <span style="margin-left: 5px;">{{item.name}}</span>
@@ -26,35 +44,14 @@
           </el-form-item>
 
           <el-form-item>
-            <el-select v-model="agentName" placeholder="代理公司名称" :remote-method="agentMethod" :loading="loading" clearable
-              filterable remote reserve-keyword style="width: 220px;">
-              <el-option v-for="item in agentOpt" :key="item.value" :label="item.agentName" :value="item.agentName">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="airCompanyCode" placeholder="航司代码" :remote-method="companyMethod" :loading="loading"
-              clearable filterable remote reserve-keyword>
-              <el-option v-for="item in airCompanyCodeOpt" 
-				:key="item.airCompanyCode" 
-				:value="item.airCompanyCode">
-                <span>{{item.airCompanyCode}}</span>
+            <el-select v-model="pod" placeholder="目的港三字码" :remote-method="podMethod" :loading="loading" clearable filterable remote reserve-keyword>
+              <el-option
+                v-for="item in podOpt"
+                :disabled="pol == item.threeLetterCode"
+                :key="item.threeLetterCode"
+                :value="item.threeLetterCode">
+                <span>{{item.threeLetterCode}}</span>
                 <span style="margin-left: 5px;">{{item.name}}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select placeholder="中转/直飞" size="medium" v-model="legCount" clearable style="width: 130px;">
-              <el-option v-for="item in legCountOpt" :key="item.value" :label="item.name" :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select placeholder="状态" size="medium" v-model="status" clearable style="width: 130px;">
-              <el-option v-for="item in statusOpt" :key="item.value" :label="item.name" :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
@@ -65,30 +62,162 @@
               <el-button @click="restClick" size="medium" type="primary">清空</el-button>
             </el-row>
           </el-form-item>
-
-          <el-form-item style="float: right;margin-right: 0">
-            <el-row>
-              <el-button @click="newAdd" size="medium">新增航线</el-button>
-            </el-row>
-          </el-form-item>
         </div>
       </el-form>
-      <Table ref="multipleTable1" :tableData='tableData' :columns='columns' :operation='operation'
-        :total='total' :currentPage='pageNum' :pageSize='pageSize' @sizeChange='handleSizeChange'
-        @currentChange='handleCurrentChange' @handleClick='handleClick' @switchChangeUser="switchChangeUser">
-      </Table>
-    </div>
-    <!-- <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' width="150px">
+      <el-tabs type="border-card">
+        <el-tab-pane label="全部订单">
+          <Table
+            ref="multipleTable1"
+            :tableData='tableData'
+            :columns='columns'
+            :operation='operation'
+            :total='total'
+            :currentPage='pageNum'
+            :pageSize='pageSize'
+            @orderDetails="orderDetails"
+            @sizeChange='handleSizeChange'
+            @currentChange='handleCurrentChange'
+            @handleClick='handleClick'
+            @switchChangeUser="switchChangeUser">
+          </Table>
+        </el-tab-pane>
+        <el-tab-pane label="待平台审核">
+          <Table
+            ref="multipleTable1"
+            :tableData='tableData'
+            :columns='columns'
+            :operation='operation'
+            :total='total'
+            :currentPage='pageNum'
+            :pageSize='pageSize'
+            @orderDetails="orderDetails"
+            @sizeChange='handleSizeChange'
+            @currentChange='handleCurrentChange'
+            @handleClick='handleClick'
+            @switchChangeUser="switchChangeUser">
+          </Table>
+        </el-tab-pane>
+        <el-tab-pane label="待进仓">
+          <Table
+            ref="multipleTable1"
+            :tableData='tableData'
+            :columns='columns'
+            :operation='operation'
+            :total='total'
+            :currentPage='pageNum'
+            :pageSize='pageSize'
+            @orderDetails="orderDetails"
+            @sizeChange='handleSizeChange'
+            @currentChange='handleCurrentChange'
+            @handleClick='handleClick'
+            @switchChangeUser="switchChangeUser">
+          </Table>
+        </el-tab-pane>
+        <el-tab-pane label="操作中">
+          <Table
+            ref="multipleTable1"
+            :tableData='tableData'
+            :columns='columns'
+            :operation='operation'
+            :total='total'
+            :currentPage='pageNum'
+            :pageSize='pageSize'
+            @orderDetails="orderDetails"
+            @sizeChange='handleSizeChange'
+            @currentChange='handleCurrentChange'
+            @handleClick='handleClick'
+            @switchChangeUser="switchChangeUser">
+          </Table>
+        </el-tab-pane>
+        <el-tab-pane label="海关安检">
+          <Table
+            ref="multipleTable1"
+            :tableData='tableData'
+            :columns='columns'
+            :operation='operation'
+            :total='total'
+            :currentPage='pageNum'
+            :pageSize='pageSize'
+            @orderDetails="orderDetails"
+            @sizeChange='handleSizeChange'
+            @currentChange='handleCurrentChange'
+            @handleClick='handleClick'
+            @switchChangeUser="switchChangeUser">
+          </Table>
+        </el-tab-pane>
+        <el-tab-pane label="运输中">
+          <Table
+            ref="multipleTable1"
+            :tableData='tableData'
+            :columns='columns'
+            :operation='operation'
+            :total='total'
+            :currentPage='pageNum'
+            :pageSize='pageSize'
+            @orderDetails="orderDetails"
+            @sizeChange='handleSizeChange'
+            @currentChange='handleCurrentChange'
+            @handleClick='handleClick'
+            @switchChangeUser="switchChangeUser">
+          </Table>
+        </el-tab-pane>
+        <el-tab-pane label="完成">
+          <Table
+            ref="multipleTable1"
+            :tableData='tableData'
+            :columns='columns'
+            :operation='operation'
+            :total='total'
+            :currentPage='pageNum'
+            :pageSize='pageSize'
+            @orderDetails="orderDetails"
+            @sizeChange='handleSizeChange'
+            @currentChange='handleCurrentChange'
+            @handleClick='handleClick'
+            @switchChangeUser="switchChangeUser">
+          </Table>
+        </el-tab-pane>
+        <el-tab-pane label="已取消">
+          <Table
+            ref="multipleTable1"
+            :tableData='tableData'
+            :columns='columns'
+            :operation='operation'
+            :total='total'
+            :currentPage='pageNum'
+            :pageSize='pageSize'
+            @orderDetails="orderDetails"
+            @sizeChange='handleSizeChange'
+            @currentChange='handleCurrentChange'
+            @handleClick='handleClick'
+            @switchChangeUser="switchChangeUser">
+          </Table>
+        </el-tab-pane>
+        <el-tab-pane label="异常">
+          <Table
+            ref="multipleTable1"
+            :tableData='tableData'
+            :columns='columns'
+            :operation='operation'
+            :total='total'
+            :currentPage='pageNum'
+            :pageSize='pageSize'
+            @orderDetails="orderDetails"
+            @sizeChange='handleSizeChange'
+            @currentChange='handleCurrentChange'
+            @handleClick='handleClick'
+            @switchChangeUser="switchChangeUser">
+          </Table>
+        </el-tab-pane>
+      </el-tabs>
 
-    </el-dialog> -->
+    </div>
   </div>
 </template>
 
 <script>
-  import Table from '@/components/Table'
-  import {
-    toData
-  } from '@/util/assist'
+  import Table from '@/components/orderTable'
+  import { toData } from '@/util/assist'
   export default {
     data() {
       return {
@@ -98,96 +227,24 @@
         pageNum: 1,
         total: 0,
         // 列
-        columns: [{
-            label: '航线ID',
-            prop: 'id',
-            show: true,
-            width: '90'
-          },
-          {
-            label: '航司代码',
-            prop: 'airCompanyCode',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '起运港',
-            prop: 'pol',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '目的港',
-            prop: 'pod',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '航线区域',
-            prop: 'continent',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '中转/直飞',
-            prop: 'nonStop',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '航程',
-            prop: 'legCount',
-            show: true,
-            width: '50'
-          },
-          // {
-          //   label: '飞机型号',
-          //   prop: 'planeType',
-          //   show: true,
-          //   width: '150'
-          // },
-          {
-            label: '托盘',
-            prop: 'tray',
-            show: true,
-            width: '50'
-          },
-          {
-            label: '散货',
-            prop: 'bulkCargo',
-            show: true,
-            width: '50'
-          },
-          {
-            label: '状态',
-            prop: 'status',
-            show: true,
-            width: '100'
-          },
-          {
-            label: '更新时间',
-            prop: 'updateTime',
-            show: true,
-            width: '180'
-          }
+        columns: [
+          {label: '航线', prop: 'id', show: true, width: '200'},
+          {label: '货物信息', prop: 'airCompanyCode', show: true, width: '100'},
+          {label: '账单信息', prop: 'pol', show: true, width: '100'},
+          {label: '操作人员', prop: 'pod', show: true, width: '100'},
+          {label: '状态', prop: 'continent', show: true, width: '100'},
+          {label: '下单时间', prop: 'nonStop', show: true, width: '100'},
+          {label: '备注', prop: 'legCount', show: true, width: '50'}
         ],
         // 操作
         operation: {
-          show: true,
+          show: false,
           label: '操作',
           width: '180',
-          options: [{
-              label: '编辑',
-              method: 'routeEdit'
-            },
-            {
-              label: '删除',
-              method: 'routeDel'
-            },
-            {
-              label: '查看',
-              method: 'routeView'
-            }
+          options: [
+            {label: '编辑', method: 'routeEdit'},
+            {label: '删除', method: 'routeDel'},
+            {label: '查看', method: 'routeView'}
           ]
         },
         pol: '',
@@ -195,7 +252,8 @@
         agentName: '',
         airCompanyCode: '',
         legCount: '',
-        legCountOpt: [{
+        legCountOpt: [
+          {
             name: '全部',
             value: '2'
           },
@@ -206,10 +264,11 @@
           {
             name: '中转',
             value: '0'
-          },
+          }
         ],
         status: '',
-        statusOpt: [{
+        statusOpt: [
+          {
             name: '全部',
             value: '2'
           },
@@ -220,13 +279,13 @@
           {
             name: '上架',
             value: '0'
-          },
+          }
         ],
         loading: false,
         polOpt: [],
         podOpt: [],
         airCompanyCodeOpt: [],
-        agentOpt: [],
+        agentOpt: []
       }
     },
     mounted() {
@@ -236,6 +295,14 @@
       this.initAgentList()
     },
     methods: {
+      orderDetails(val) {
+        this.$router.push({
+          path: '/orderManagement/orderDetails',
+          query: {
+            id: val.row.id
+          }
+        })
+      },
       //起始港三字码
       initAirportSearchByPage(keyWord, type) {
         if (!keyWord) {
@@ -478,11 +545,8 @@
     margin-left: 10px;
   }
 
-  .wrapper,
-  .content {
+  .wrapper,.content {
     width: 100%;
-
-    /*background-color: #fff;*/
   }
 
   .el-table .sort-caret.ascending {

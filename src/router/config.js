@@ -216,6 +216,43 @@ const routeManagementCenter = [{
   ]
 }]
 
+// 订单管理
+const orderManagementCenter = [{
+  path: '/orderManagement',
+  component: Layout,
+  name: 'orderManagement',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title: '订单管理',
+    icon: 'icon iconfont icon-kucun',
+    breadcrumb: false
+  },
+  children: [
+    {
+      path: 'orderManage',
+      component: () => import('@/pages/orderManagement/orderManage.vue'),
+      name: 'orderManage',
+      meta: {
+        title: '订单列表',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'orderDetails',
+      component: () => import('@/pages/orderManagement/orderDetails.vue'),
+      name: 'orderDetails',
+      hidden: true,
+      meta: {
+        title: '订单详情',
+        keepAlive: false,
+        needLogin: true
+      }
+    }
+  ]
+}]
+
 // 广告模块
 const adverManagementCenter = [{
   path: '/adverManagement',
@@ -291,6 +328,7 @@ const userManagementCenter = [{
 
 const routes = [
   ...autoRoutes,
+  ...orderManagementCenter,
   ...routeManagementCenter,
   ...adverManagementCenter,
   ...agentManagement,
