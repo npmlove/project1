@@ -1,4 +1,5 @@
 //ng开发环境
+// var pulicWeb = '/faw'
 var pulicWeb = '/back/dcErp/faw'
 
 
@@ -12,6 +13,7 @@ const serviceApi = {
   login: pulicWeb+'/t-sys-user/login',
   //用户查询
   userSearch: pulicWeb+'/t-sys-user/search',
+  userRoleList: pulicWeb+'/t-sys-user/queryUserList',
   //用户新增
   userAdd: pulicWeb+'/t-sys-user/add',
   //用户编辑
@@ -82,5 +84,13 @@ const serviceApi = {
   userSearchByPage:  pulicWeb+'/t-portal-user/searchByPage',
   //修改用户
   userUpdateUserinfo:  pulicWeb+'/t-portal-user/update',
+  //费用查询
+  expenseList: pulicWeb+'/t-expense/searchByPage',
+  //费用列表新增
+  expenseSave:pulicWeb+'/t-expense/save',
+  //费用列表修改
+  expenseUpdate:pulicWeb+'/t-expense/update',
+  //费用列表删除
+  expenseDelete:pulicWeb+'/t-expense/delete'
 }
 export default serviceApi

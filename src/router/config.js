@@ -66,6 +66,30 @@ const agentManagement=[{
 
 },
 ]
+//费用管理
+const expenseManagement=[{
+  path:'/expenseManagement',
+  component:Layout,
+  name:'expenseManagement',
+  redirect:'noredirect',
+  alwaysShow:true,
+  meta:{
+    title:'费用管理',
+    icon: 'icon iconfont icon-diannao',
+    breadcrumb: true
+  },
+  children:[{
+    path: 'expenseManagement',
+    component: () => import('@/pages/expenseManagement/expenseManagement.vue'),
+    name: 'expenseManagement',
+    meta: {
+      title: '费用列表',
+      keepAlive:true,
+      needLogin: true
+  },},]
+
+},
+]
 
 //管理模块
 const adminUserCenter = [{
@@ -332,6 +356,7 @@ const routes = [
   ...routeManagementCenter,
   ...adverManagementCenter,
   ...agentManagement,
+  ...expenseManagement,
   // ...dictManagement,
   ...userManagementCenter,
   ...adminUserCenter
