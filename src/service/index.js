@@ -1,6 +1,6 @@
 //ng开发环境
-var pulicWeb = '/faw'
-// var pulicWeb = '/back/dcErp/faw'
+// var pulicWeb = '/faw'
+var pulicWeb = '/back/dcErp/faw'
 
 
 //ng测试环境
