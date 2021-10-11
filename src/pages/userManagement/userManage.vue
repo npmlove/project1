@@ -125,8 +125,8 @@
         dialogTitle: '密码修改',
         dialogFormVisible: false,
         rules: {
-          customerServiceId: [{required: true, message: '请选择售前客服', trigger: 'change'}],
-          certificationBody: [{required: true, message: '请输入认证主体', trigger: 'change'}]
+          // customerServiceId: [{required: true, message: '请选择售前客服', trigger: 'change'}],
+          // certificationBody: [{required: true, message: '请输入认证主体', trigger: 'change'}]
         },
         ruleForm: {
           customerServiceId: '',
@@ -206,14 +206,17 @@
           if (valid) {
             var params = {
               id: this.ruleForm.id,
-              customerServiceId:typeof this.ruleForm.customerServiceId=="string"?this.customerServiceId:this.ruleForm.customerServiceId ,
-              certificationBody: this.ruleForm.certificationBody,
+
+              customerServiceId:typeof this.ruleForm.customerServiceId=="string"&&this.ruleForm.customerServiceId!==""?this.customerServiceId:this.ruleForm.customerServiceId ,
+              certificationBody: this.ruleForm.certificationBody===""?null:this.ruleForm.certificationBody,
             }
+            console.log(this.ruleForm.customerServiceId);
+            console.log(typeof this.ruleForm.customerServiceId);
             this.$http.post(this.$service.userUpdateUserinfo, params).then(data => {
               if (data.code == 200) {
                 this.dialogFormVisible = false
                 this.initUserSearch()
-                this.$message.success('绑定成功')
+                this.$message.success('操作成功')
               } else {
                 this.$message.error(data.message)
               }

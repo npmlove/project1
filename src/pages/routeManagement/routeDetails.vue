@@ -3,7 +3,8 @@
     <div class="content">
       <el-tabs type="border-card">
         <el-tab-pane label="航线信息">
-          <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
+          <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" :inline="true"
+                   label-width="150px" size="medium" class="demo-form-inline">
             <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;padding-left: 20px;">航线信息</div>
             <div>
               <el-form-item prop="pol" label="起运港">
@@ -19,22 +20,36 @@
               </el-form-item>
               <el-form-item prop="shortestPrescription" label="时效">
                 <el-col style="width: 98px;">
-                  <el-input v-model="ruleForm.shortestPrescription" :disabled="true" size="medium" placeholder="起始天数"></el-input>
+                  <el-input v-model="ruleForm.shortestPrescription" :disabled="true" size="medium"
+                            placeholder="起始天数"></el-input>
                 </el-col>
                 <el-col style="text-align: center;width: 20px;">-</el-col>
                 <el-col style="width: 98px;">
-                  <el-input v-model="ruleForm.longestPrescription" :disabled="true" size="medium" placeholder="结束天数"></el-input>
+                  <el-input v-model="ruleForm.longestPrescription" :disabled="true" size="medium"
+                            placeholder="结束天数"></el-input>
                 </el-col>
               </el-form-item>
             </div>
             <div>
-              <el-form-item prop="status" label="航线状态">
-                <el-switch v-model="ruleForm.status" :disabled="true" active-text="上架" inactive-text="下架"></el-switch>
+              <el-form-item prop="status" label="航线状态" >
+                <el-switch v-model="ruleForm.status" :disabled="true" active-text="上架" inactive-text="下架" style="min-width: 216px;"></el-switch>
+              </el-form-item>
+              <el-form-item prop="principalId" label="航线负责人" >
+                <el-select placeholder="请选择航线负责人" size="medium" v-model="ruleForm.principalId " :disabled="true" clearable
+                           style="width: 216px; margin-right: -5px;">
+                  <el-option
+                    v-for="item in roleOpt"
+                    :key="item.Value"
+                    :label="item.name"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </div>
             <div>
               <el-form-item label="备注">
-                <el-input v-model="ruleForm.remark" :disabled="true" style="width: 596px;" placeholder="请输入备注(最多输入300字符)" type="textarea" maxlength="300" show-word-limit></el-input>
+                <el-input v-model="ruleForm.remark" :disabled="true" style="width: 596px;"
+                          placeholder="请输入备注(最多输入300字符)" type="textarea" maxlength="300" show-word-limit></el-input>
               </el-form-item>
             </div>
             <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;padding-left: 20px;">航线进程</div>
@@ -51,7 +66,8 @@
               </el-form-item>
             </div>
             <div v-for="(parentItem,index) in airportTableArr" :key="index" class="route-module">
-              <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="small" class="demo-form-inline">
+              <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="small"
+                       class="demo-form-inline">
                 <el-form-item required :label="'航线'+(index+1)">
                   <el-col style="width: 102px;">
                     <el-input v-model="parentItem.startRouteName" :disabled="true"></el-input>
@@ -66,12 +82,17 @@
               <div class="flight-template">
                 <div class="flight-template-ul-header">
                   <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">航班信息</div>
-                  <div class="flight-template-li" style="flex: 0 0 20%;text-align: center;"><span style="color: #f56c6c;">*</span>运载方式</div>
-                  <div class="flight-template-li" style="flex: 0 0 20%;text-align: center;"><span style="color: #f56c6c;">*</span>航班号/卡车号</div>
+                  <div class="flight-template-li" style="flex: 0 0 20%;text-align: center;"><span
+                    style="color: #f56c6c;">*</span>运载方式
+                  </div>
+                  <div class="flight-template-li" style="flex: 0 0 20%;text-align: center;"><span
+                    style="color: #f56c6c;">*</span>航班号/卡车号
+                  </div>
                   <div class="flight-template-li" style="flex: 0 0 20%;text-align: center;">起飞时间(ETD)</div>
                   <div class="flight-template-li" style="flex: 0 0 20%;text-align: center;">到达时间(ETA)</div>
                 </div>
-                <div v-for="(childerItem,childerIndex) in parentItem.childerTable" :key="childerIndex" class="flight-template-ul-content">
+                <div v-for="(childerItem,childerIndex) in parentItem.childerTable" :key="childerIndex"
+                     class="flight-template-ul-content">
                   <div class="flight-template-li" style="flex: 0 0 10%;"></div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
                     <el-select :disabled="true" v-model="childerItem.vehicleType" size="small" style="width: 80%;">
@@ -85,13 +106,16 @@
                     </el-select>
                   </div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
-                    <el-input :disabled="true" v-model="childerItem.vehicleId" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                    <el-input :disabled="true" v-model="childerItem.vehicleId" clearable placeholder="请输入" size="small"
+                              style="width: 80%;"></el-input>
                   </div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
-                    <el-time-picker :disabled="true" v-model="childerItem.etd" value-format="HH:mm" format="HH:mm" size="small" clearable style="width: 80%;" placeholder="选择时间"></el-time-picker>
+                    <el-time-picker :disabled="true" v-model="childerItem.etd" value-format="HH:mm" format="HH:mm"
+                                    size="small" clearable style="width: 80%;" placeholder="选择时间"></el-time-picker>
                   </div>
                   <div class="flight-template-li" style="flex: 0 0 20%;">
-                    <el-time-picker :disabled="true" v-model="childerItem.eta" value-format="HH:mm" format="HH:mm" size="small" clearable style="width: 80%;" placeholder="选择时间"></el-time-picker>
+                    <el-time-picker :disabled="true" v-model="childerItem.eta" value-format="HH:mm" format="HH:mm"
+                                    size="small" clearable style="width: 80%;" placeholder="选择时间"></el-time-picker>
                   </div>
                 </div>
               </div>
@@ -99,8 +123,10 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="航线报价">
-          <el-form :label-position="labelPosition" :inline="true" label-width="120px" size="medium" class="demo-form-inline">
-            <div v-for="(item,index) in airlineAgent" :key="index" class="route-module" style="width: 95%;margin: 0 auto;margin-bottom: 20px;">
+          <el-form :label-position="labelPosition" :inline="true" label-width="120px" size="medium"
+                   class="demo-form-inline">
+            <div v-for="(item,index) in airlineAgent" :key="index" class="route-module"
+                 style="width: 95%;margin: 0 auto;margin-bottom: 20px;">
               <!-- <div>
                 <el-form-item prop="name" label="航线名称">
                   <el-input :disabled="true" v-model="item.name" style="width: 220px;"></el-input>
@@ -113,7 +139,8 @@
               </div>
               <div>
                 <el-form-item required prop="dows" label="班期">
-                  <el-select :disabled="true" v-model="item.dows" multiple placeholder="请选择班期" clearable style="width: 468px;">
+                  <el-select :disabled="true" v-model="item.dows" multiple placeholder="请选择班期" clearable
+                             style="width: 468px;">
                     <el-option
                       v-for="item in dowsOpt"
                       :key="item.day"
@@ -125,14 +152,18 @@
               </div>
               <div v-if="item.otherFees.length > 0">
                 <el-form-item label="杂费">
-                  <el-tag v-for="(tagItem,tagIndex) in item.otherFees" :key="tagIndex" type="success" style="margin-right: 5px;">{{tagItem.feesName}} ￥{{tagItem.fees}}</el-tag>
+                  <el-tag v-for="(tagItem,tagIndex) in item.otherFees" :key="tagIndex" type="success"
+                          style="margin-right: 5px;">{{ tagItem.feesName }} ￥{{ tagItem.fees }}
+                  </el-tag>
                 </el-form-item>
               </div>
               <div v-for="(listItem,listIndex) in item.ratesList" :key="listIndex" style="padding-bottom: 20px;">
                 <div>
                   <el-form-item required label="代理报价">
                     <el-checkbox-group v-model="listItem.cargoType">
-                      <el-checkbox :disabled="true" v-for="(optItem,optIndex) in cargoTypeOpt" :key="optIndex" :label="optItem.value">{{optItem.name}}</el-checkbox>
+                      <el-checkbox :disabled="true" v-for="(optItem,optIndex) in cargoTypeOpt" :key="optIndex"
+                                   :label="optItem.value">{{ optItem.name }}
+                      </el-checkbox>
                     </el-checkbox-group>
                   </el-form-item>
                 </div>
@@ -148,30 +179,39 @@
                     <div class="flight-template-li" style="flex: 0 0 12%;text-align: center;">500KG+</div>
                     <div class="flight-template-li" style="flex: 0 0 12%;text-align: center;">1000KG+</div>
                   </div>
-                  <div v-for="(childerItem,childerIndex) in listItem.tableData" :key="childerIndex" class="flight-template-ul-content">
+                  <div v-for="(childerItem,childerIndex) in listItem.tableData" :key="childerIndex"
+                       class="flight-template-ul-content">
                     <div class="flight-template-li" style="flex: 0 0 10%;">
-                      <el-input :value="'1:'+childerItem.vwr" :disabled="true" size="small" style="width: 80%;"></el-input>
+                      <el-input :value="'1:'+childerItem.vwr" :disabled="true" size="small"
+                                style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesLevel0" :disabled="true" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input v-model="childerItem.ratesLevel0" :disabled="true" clearable placeholder="请输入"
+                                size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesN" :disabled="true" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input v-model="childerItem.ratesN" :disabled="true" clearable placeholder="请输入" size="small"
+                                style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesLevel1" :disabled="true" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input v-model="childerItem.ratesLevel1" :disabled="true" clearable placeholder="请输入"
+                                size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesLevel2" :disabled="true" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input v-model="childerItem.ratesLevel2" :disabled="true" clearable placeholder="请输入"
+                                size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesLevel3" :disabled="true" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input v-model="childerItem.ratesLevel3" :disabled="true" clearable placeholder="请输入"
+                                size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesLevel4" :disabled="true" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input v-model="childerItem.ratesLevel4" :disabled="true" clearable placeholder="请输入"
+                                size="small" style="width: 80%;"></el-input>
                     </div>
                     <div class="flight-template-li" style="flex: 0 0 12%;">
-                      <el-input v-model="childerItem.ratesLevel5" :disabled="true" clearable placeholder="请输入" size="small" style="width: 80%;"></el-input>
+                      <el-input v-model="childerItem.ratesLevel5" :disabled="true" clearable placeholder="请输入"
+                                size="small" style="width: 80%;"></el-input>
                     </div>
                   </div>
                 </div>
@@ -185,6 +225,7 @@
 </template>
 
 <script>
+  import {toData} from '@/util/assist'
   export default {
     data() {
       return {
@@ -198,12 +239,14 @@
           shortestPrescription: '',
           longestPrescription: '',
           status: true,
-          remark: ''
+          remark: '',
+          principalId: ''
         },
         rules: {
           pol: [{required: true, message: '请输入起运港机场三字码', trigger: 'change'}],
-          pod: [{ required: true, message: '请输入目的港机场三字码', trigger: 'change'}],
+          pod: [{required: true, message: '请输入目的港机场三字码', trigger: 'change'}],
           airCompanyCode: [{required: true, message: '请输入起航司二字码', trigger: 'change'}],
+          // principalId:[{required: true, message: '请选择航线负责人', trigger: 'change'}],
           shortestPrescription: [{required: true, message: '起始天数', trigger: 'change'}],
           status: [{required: true, message: '请选择航线', trigger: 'change'}]
         },
@@ -239,6 +282,7 @@
             value: '2'
           }
         ],
+        roleOpt:[],
         otherFeesOpt: [
           {
             feesName: '报关费'
@@ -293,12 +337,27 @@
       this.id = this.$route.query.id
       this.initAirlineDetail()
       this.initAirlineRatesDetail()
+      this.initRoleSearch()
     },
     methods: {
+      initRoleSearch() {
+        const vm = this
+        var params = {
+          roleName: '航线负责人'
+        }
+        params = toData(params)
+        vm.$http.get(vm.$service.userRoleList + '?' + params).then(data => {
+          if (data.code == 200) {
+            this.roleOpt = data.data
+          }
+        }).catch((e) => {
+          console.log(e)
+        })
+      },
       //获取航线信息详情
       initAirlineDetail() {
-        this.$http.get(this.$service.airlineDetail+'?id='+this.id).then((data) => {
-          if(data.code == 200){
+        this.$http.get(this.$service.airlineDetail + '?id=' + this.id).then((data) => {
+          if (data.code == 200) {
             var data = data.data
             this.ruleForm.pol = data.pol
             this.ruleForm.pod = data.pod
@@ -307,8 +366,9 @@
             this.ruleForm.longestPrescription = data.longDuration
             this.ruleForm.status = data.status == 0 ? true : false
             this.ruleForm.remark = data.remark
+            this.ruleForm.principalId = data.principalId
             var newFulleg = data.fullLeg.split(',')
-            for(var i = 0; i < newFulleg.length; i++){
+            for (var i = 0; i < newFulleg.length; i++) {
               var json = {
                 airportName: newFulleg[i]
               }
@@ -320,11 +380,11 @@
       },
       //航线报价信息详情
       initAirlineRatesDetail() {
-        this.$http.get(this.$service.airlineRatesDetail+'?id='+this.id).then((data) => {
-          if(data.code == 200){
+        this.$http.get(this.$service.airlineRatesDetail + '?id=' + this.id).then((data) => {
+          if (data.code == 200) {
             var data = data.data
             this.airlineAgent = []
-            for(var q = 0; q < data.length; q++){
+            for (var q = 0; q < data.length; q++) {
               var json = {
                 name: data[q].name,
                 agentId: data[q].agentName,
@@ -334,12 +394,12 @@
               json.dows = data[q].dows.split(',')
               json.otherFees = JSON.parse(data[q].otherFees)
               json.otherFeesArr = []
-              for(var w = 0; w < json.otherFees.length; w++){
+              for (var w = 0; w < json.otherFees.length; w++) {
                 json.otherFeesArr.push(json.otherFees[w].feesName)
               }
-              if(data[q].rates){
+              if (data[q].rates) {
                 json.ratesList = []
-                for(var e = 0; e < data[q].rates.length; e++){
+                for (var e = 0; e < data[q].rates.length; e++) {
                   var childerJson = {}
                   childerJson.vw = ''
                   var cargoType = data[q].rates[e].cargoType.toString()
@@ -349,7 +409,7 @@
                 }
 
               }
-               this.airlineAgent.push(json)
+              this.airlineAgent.push(json)
             }
           }
         })
@@ -373,10 +433,12 @@
     background-color: #FFF;
     padding: 20px;
     box-sizing: border-box;
-    /deep/ .el-form{
+
+    /deep/ .el-form {
       background-color: transparent;
     }
-    /deep/ .el-form--inline .el-form-item{
+
+    /deep/ .el-form--inline .el-form-item {
       margin-bottom: 20px;
     }
 
@@ -457,7 +519,8 @@
     width: 100%;
     height: 40px;
   }
-  .close-img{
+
+  .close-img {
     width: 40px;
     height: 40px;
     position: absolute;

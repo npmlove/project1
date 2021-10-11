@@ -97,7 +97,17 @@
             </div>
             <div>
               <el-form-item prop="status" label="航线状态">
-                <el-switch v-model="ruleForm.status" active-text="上架" inactive-text="下架"></el-switch>
+                <el-switch v-model="ruleForm.status" active-text="上架" inactive-text="下架" style="min-width: 216px;"></el-switch>
+              </el-form-item>
+              <el-form-item prop="principalId" label="航线负责人">
+                <el-select placeholder="请选择航线负责人" size="medium" v-model="ruleForm.principalId" clearable  style="width: 216px; margin-right: -5px;">
+                  <el-option
+                    v-for="item in roleOpt"
+                    :key="item.Value"
+                    :label="item.name"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </div>
             <div>
@@ -350,6 +360,7 @@
 </template>
 
 <script>
+  import {toData} from '@/util/assist'
   export default {
     data() {
       return {
@@ -364,7 +375,8 @@
           shortDuration: '',
           longDuration: '',
           status: true,
-          remark: ''
+          remark: '',
+          principalId: ''
         },
         isPol: false,
         isPod: false,
@@ -374,6 +386,7 @@
           pol: [{required: true, message: '请输入起运港机场三字码', trigger: 'change'}],
           pod: [{ required: true, message: '请输入目的港机场三字码', trigger: 'change'}],
           airCompanyCode: [{required: true, message: '请输入起航司二字码', trigger: 'change'}],
+          // principalId:[{required: true, message: '请选择航线负责人', trigger: 'change'}],
           shortDuration: [{required: true, message: '起始天数', trigger: 'change'}],
           status: [{required: true, message: '请选择航线', trigger: 'change'}]
         },
@@ -473,6 +486,7 @@
             value: '7'
           }
         ],
+        roleOpt: [],
         airlineAgent: [
           {
             name: '',
@@ -515,13 +529,27 @@
       this.initAgentList()
       this.initAirlineDetail()
       this.initAirlineRatesDetail()
+      this.initRoleSearch()
     },
     methods: {
       //班期排序
       dowsChange(index) {
         this.airlineAgent[index].dows.sort()
       },
-
+      initRoleSearch() {
+        const vm = this
+        var params = {
+          roleName: '航线负责人'
+        }
+        params = toData(params)
+        vm.$http.get(vm.$service.userRoleList + '?' + params).then(data => {
+          if (data.code == 200) {
+            this.roleOpt = data.data
+          }
+        }).catch((e) => {
+          console.log(e)
+        })
+      },
       //获取航线信息详情
       initAirlineDetail() {
         this.$http.get(this.$service.airlineDetail+'?id='+this.id).then((data) => {
@@ -535,6 +563,7 @@
             this.ruleForm.longDuration = data.longDuration
             this.ruleForm.status = data.status == 0 ? true : false
             this.ruleForm.remark = data.remark
+            this.ruleForm.principalId = data.principalId
             var newFulleg = data.fullLeg.split(',')
             for(var i = 0; i < newFulleg.length; i++){
               var json = {
@@ -949,7 +978,8 @@
               fullLeg: newFullLeg.toString(),
               legCount: this.airportTableArr.length,
               legDetail: JSON.stringify(this.airportTableArr),
-              remark: this.ruleForm.remark
+              remark: this.ruleForm.remark,
+              principalId: this.ruleForm.principalId
             }
             this.$http.post(this.$service.airlineUpdate,data).then(data => {
               if (data.code == 200) {

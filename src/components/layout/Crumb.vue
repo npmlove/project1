@@ -108,7 +108,7 @@ export default {
         return
       }
       this.isClick = index
-      console.log(item)
+      //console.log(item)
       var query = item.query
       var canshu = ''
       for(var key in query){
