@@ -598,11 +598,9 @@
         this.initAirportSearchByPage()
         this.initCompanySearchByPage()
         this.initAgentList()
+        this.initRoleSearch()
         sessionStorage.setItem('routeAdd','show')
       }
-    },
-    mounted() {
-      this.initRoleSearch()
     },
     methods: {
       //监听浏览器刷新
