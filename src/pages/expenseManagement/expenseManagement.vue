@@ -60,6 +60,10 @@
             <el-radio :label="1">国外段</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item  prop="sortNo" label="排序">
+          <el-input style="width: 280px;" onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="ruleForm.sortNo" clearable placeholder="请输入费用排序"
+                    :maxlength="inputMax"></el-input>
+        </el-form-item>
       </el-form>
       <!-- 底部按钮 -->
       <div slot="footer" class="dialog-footer">
@@ -109,6 +113,12 @@
             width: '160'
           },
           {
+            label: '排序',
+            prop: 'sortNo',
+            show: true,
+            width: '160'
+          },
+          {
             label: '添加时间',
             prop: 'createTime',
             show: true,
@@ -134,12 +144,14 @@
         ruleForm: {
           expenseName: '',
           expenseCode: '',
-          expenseType: ''
+          expenseType: '',
+          sortNo: ''
         },
         rules: {
           expenseName: [{required: true, message: '请输入费用名称', trigger: 'blur'}],
           expenseCode: [{required: true, message: '请输入费用编码', trigger: 'blur'}],
-          expenseType: [{required: true, message: '请输入费用类型', trigger: 'blur'}]
+          expenseType: [{required: true, message: '请输入费用类型', trigger: 'blur'}],
+          sortNo: [{ type:"number" , min:0,max:10000,message: '排序在0-10000之间', trigger: 'blur'}]
         },
         labelPosition: 'right',
         expenseDict: [{
@@ -222,6 +234,7 @@
                 expenseName: this.ruleForm.expenseName,
                 expenseType: this.ruleForm.expenseType,
                 expenseCode: this.ruleForm.expenseCode,
+                sortNo: this.ruleForm.sortNo,
                 id: this.expenseId
               }
               this.$http.put(this.$service.expenseUpdate, data).then(data => {
@@ -255,6 +268,7 @@
           this.ruleForm.expenseName = scope.row.expenseName
           this.ruleForm.expenseCode = scope.row.expenseCode
           this.ruleForm.expenseType = scope.row.expenseType
+          this.ruleForm.sortNo = scope.row.sortNo
           this.expenseId = scope.row.id
         } else if (scope.method == 'del') {
           this.$confirm("确定删除这条数据?", "提示", {
