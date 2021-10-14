@@ -86,6 +86,13 @@
 
   export default {
     data() {
+      var sortNo = (rule, value, callback) => {
+        if(value<0||value>10000){
+          callback(new Error('排序在0-10000之间'));
+        }else{
+          callback();
+        }
+      };
       return {
         //table
         tableData: [],
@@ -151,7 +158,7 @@
           expenseName: [{required: true, message: '请输入费用名称', trigger: 'blur'}],
           expenseCode: [{required: true, message: '请输入费用编码', trigger: 'blur'}],
           expenseType: [{required: true, message: '请输入费用类型', trigger: 'blur'}],
-          sortNo: [{ type:"number" , min:0,max:10000,message: '排序在0-10000之间', trigger: 'blur'}]
+          sortNo: [{required: true, message: '请输入费用排序', trigger: 'blur'},{validator:sortNo, trigger: 'blur'}]
         },
         labelPosition: 'right',
         expenseDict: [{
@@ -218,7 +225,9 @@
       },
       dialogComfirm(ruleForm) {
         this.$refs[ruleForm].validate((valid, object) => {
+          console.log(valid)
           if (valid) {
+            console.log("sagdujkashgduikh")
             if (this.dialogTitle == '新增费用') {
               this.$http.post(this.$service.expenseSave, this.ruleForm).then(data => {
                 if (data.code == 200) {
