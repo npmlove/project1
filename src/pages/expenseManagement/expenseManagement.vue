@@ -162,7 +162,7 @@
           expenseCode: [{required: true, message: '请输入费用编码', trigger: 'blur'},
             {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}],
           expenseType: [{required: true, message: '请输入费用类型', trigger: 'blur'}],
-          sortNo: [{required: true, message: '请输入费用排序', trigger: 'blur'}/*, {validator: sortNo, trigger: 'blur'}*/]
+          sortNo: [{required: true, message: '请输入费用排序', trigger: 'blur'}, {validator: sortNo, trigger: 'blur'}]
         },
         labelPosition: 'right',
         expenseDict: [{
