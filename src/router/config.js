@@ -264,12 +264,78 @@ const orderManagementCenter = [{
       }
     },
     {
-      path: 'orderDetails',
-      component: () => import('@/pages/orderManagement/orderDetails.vue'),
-      name: 'orderDetails',
+      path: 'orderDetails1',
+      component: () => import('@/pages/orderManagement/orderDetails1.vue'),
+      name: 'orderDetails1',
       hidden: true,
       meta: {
-        title: '订单详情',
+        title: '订单详情-平台审核',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'orderDetails2',
+      component: () => import('@/pages/orderManagement/orderDetails2.vue'),
+      name: 'orderDetails2',
+      hidden: true,
+      meta: {
+        title: '订单详情-待进仓',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'orderDetails3',
+      component: () => import('@/pages/orderManagement/orderDetails3.vue'),
+      name: 'orderDetails3',
+      hidden: true,
+      meta: {
+        title: '订单详情-操作中',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'orderDetails4',
+      component: () => import('@/pages/orderManagement/orderDetails4.vue'),
+      name: 'orderDetails4',
+      hidden: true,
+      meta: {
+        title: '订单详情-海关安检',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'orderDetails5',
+      component: () => import('@/pages/orderManagement/orderDetails5.vue'),
+      name: 'orderDetails5',
+      hidden: true,
+      meta: {
+        title: '订单详情-运输中',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'orderDetails6',
+      component: () => import('@/pages/orderManagement/orderDetails6.vue'),
+      name: 'orderDetails6',
+      hidden: true,
+      meta: {
+        title: '订单详情-完成',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'orderDetails7',
+      component: () => import('@/pages/orderManagement/orderDetails7.vue'),
+      name: 'orderDetails7',
+      hidden: true,
+      meta: {
+        title: '订单详情-已取消',
         keepAlive: false,
         needLogin: true
       }

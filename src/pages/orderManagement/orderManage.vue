@@ -4,30 +4,30 @@
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入订单号"></el-input>
+            <el-input v-model="orderNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入订单号"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入运单号"></el-input>
+            <el-input v-model="waybillNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入运单号"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入进仓编号"></el-input>
+            <el-input v-model="inboundNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入进仓编号"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-select v-model="agentName" placeholder="代理公司名称" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 220px;">
+            <el-select v-model="agentId" placeholder="代理公司名称" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 220px;">
               <el-option
                 v-for="item in agentOpt"
-                :key="item.value"
+                :key="item.id"
                 :label="item.agentName"
-                :value="item.agentName">
+                :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
 
           <el-form-item>
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入客户"></el-input>
+            <el-input v-model="customerName" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入客户"></el-input>
           </el-form-item>
 
           <el-form-item>
@@ -64,10 +64,9 @@
           </el-form-item>
         </div>
       </el-form>
-      <el-tabs type="border-card">
-        <el-tab-pane label="全部订单">
+      <el-tabs v-model="typeCode" type="border-card" @tab-click="tabClickData">
+        <el-tab-pane label="全部订单" name="全部订单">
           <Table
-            ref="multipleTable1"
             :tableData='tableData'
             :columns='columns'
             :operation='operation'
@@ -76,14 +75,11 @@
             :pageSize='pageSize'
             @orderDetails="orderDetails"
             @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'
-            @handleClick='handleClick'
-            @switchChangeUser="switchChangeUser">
+            @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="待平台审核">
+        <el-tab-pane label="待平台审核" name="1">
           <Table
-            ref="multipleTable1"
             :tableData='tableData'
             :columns='columns'
             :operation='operation'
@@ -92,14 +88,11 @@
             :pageSize='pageSize'
             @orderDetails="orderDetails"
             @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'
-            @handleClick='handleClick'
-            @switchChangeUser="switchChangeUser">
+            @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="待进仓">
+        <el-tab-pane label="待进仓" name="2">
           <Table
-            ref="multipleTable1"
             :tableData='tableData'
             :columns='columns'
             :operation='operation'
@@ -108,14 +101,11 @@
             :pageSize='pageSize'
             @orderDetails="orderDetails"
             @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'
-            @handleClick='handleClick'
-            @switchChangeUser="switchChangeUser">
+            @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="操作中">
+        <el-tab-pane label="操作中" name="3">
           <Table
-            ref="multipleTable1"
             :tableData='tableData'
             :columns='columns'
             :operation='operation'
@@ -124,14 +114,11 @@
             :pageSize='pageSize'
             @orderDetails="orderDetails"
             @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'
-            @handleClick='handleClick'
-            @switchChangeUser="switchChangeUser">
+            @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="海关安检">
+        <el-tab-pane label="海关安检" name="4">
           <Table
-            ref="multipleTable1"
             :tableData='tableData'
             :columns='columns'
             :operation='operation'
@@ -140,14 +127,11 @@
             :pageSize='pageSize'
             @orderDetails="orderDetails"
             @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'
-            @handleClick='handleClick'
-            @switchChangeUser="switchChangeUser">
+            @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="运输中">
+        <el-tab-pane label="运输中" name="5">
           <Table
-            ref="multipleTable1"
             :tableData='tableData'
             :columns='columns'
             :operation='operation'
@@ -156,14 +140,11 @@
             :pageSize='pageSize'
             @orderDetails="orderDetails"
             @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'
-            @handleClick='handleClick'
-            @switchChangeUser="switchChangeUser">
+            @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="完成">
+        <el-tab-pane label="完成" name="6">
           <Table
-            ref="multipleTable1"
             :tableData='tableData'
             :columns='columns'
             :operation='operation'
@@ -172,14 +153,11 @@
             :pageSize='pageSize'
             @orderDetails="orderDetails"
             @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'
-            @handleClick='handleClick'
-            @switchChangeUser="switchChangeUser">
+            @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="已取消">
+        <el-tab-pane label="已取消" name="7">
           <Table
-            ref="multipleTable1"
             :tableData='tableData'
             :columns='columns'
             :operation='operation'
@@ -188,14 +166,11 @@
             :pageSize='pageSize'
             @orderDetails="orderDetails"
             @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'
-            @handleClick='handleClick'
-            @switchChangeUser="switchChangeUser">
+            @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="异常">
+        <el-tab-pane :label="'异常'+orderCount" name="8">
           <Table
-            ref="multipleTable1"
             :tableData='tableData'
             :columns='columns'
             :operation='operation'
@@ -204,9 +179,7 @@
             :pageSize='pageSize'
             @orderDetails="orderDetails"
             @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'
-            @handleClick='handleClick'
-            @switchChangeUser="switchChangeUser">
+            @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
       </el-tabs>
@@ -228,9 +201,9 @@
         total: 0,
         // 列
         columns: [
-          {label: '航线', prop: 'id', show: true, width: '200'},
+          {label: '航线', prop: 'orderNo', show: true, width: '150'},
           {label: '货物信息', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '账单信息', prop: 'pol', show: true, width: '100'},
+          {label: '账单信息', prop: 'pol', show: true, width: '150'},
           {label: '操作人员', prop: 'pod', show: true, width: '100'},
           {label: '状态', prop: 'continent', show: true, width: '100'},
           {label: '下单时间', prop: 'nonStop', show: true, width: '100'},
@@ -242,66 +215,87 @@
           label: '操作',
           width: '180',
           options: [
-            {label: '编辑', method: 'routeEdit'},
-            {label: '删除', method: 'routeDel'},
-            {label: '查看', method: 'routeView'}
+            {label: '编辑', method: 'routeEdit'}
           ]
         },
+        orderNo: '',
+        waybillNo: '',
+        inboundNo: '',
+        agentId: '',
+        agentOpt: [],
+        customerName: '',
         pol: '',
-        pod: '',
-        agentName: '',
-        airCompanyCode: '',
-        legCount: '',
-        legCountOpt: [
-          {
-            name: '全部',
-            value: '2'
-          },
-          {
-            name: '直飞',
-            value: '1'
-          },
-          {
-            name: '中转',
-            value: '0'
-          }
-        ],
-        status: '',
-        statusOpt: [
-          {
-            name: '全部',
-            value: '2'
-          },
-          {
-            name: '下架',
-            value: '1'
-          },
-          {
-            name: '上架',
-            value: '0'
-          }
-        ],
-        loading: false,
         polOpt: [],
+        pod: '',
         podOpt: [],
-        airCompanyCodeOpt: [],
-        agentOpt: []
+        typeCode: '全部订单',
+        orderCount: 0
       }
     },
     mounted() {
-      this.initAirlineSearchByPage()
-      this.initAirportSearchByPage()
-      this.initCompanySearchByPage()
+      this.initData()
+      this.initOrderCountList()
       this.initAgentList()
+      this.initAirportSearchByPage()
     },
     methods: {
-      orderDetails(val) {
-        this.$router.push({
-          path: '/orderManagement/orderDetails',
-          query: {
-            id: val.row.id
-          }
-        })
+      //tab切换
+      tabClickData() {
+      	this.initData()
+      	this.initOrderCountList()
+      },
+      //详情
+      orderDetails(scope) {
+        if(scope.row.status == '3'){
+          this.$router.push({
+            path: '/orderManagement/orderDetails1',
+            query: {
+              id: scope.row.id
+            }
+          })
+        }else if(scope.row.status == '9'){
+          this.$router.push({
+            path: '/orderManagement/orderDetails2',
+            query: {
+              id: scope.row.id
+            }
+          })
+        }else if(scope.row.status == '13' || scope.row.status == '17' || scope.row.status == '21'){
+          this.$router.push({
+            path: '/orderManagement/orderDetails3',
+            query: {
+              id: scope.row.id
+            }
+          })
+        }else if(scope.row.status == '25' || scope.row.status == '27' || scope.row.status == '29' || scope.row.status == '31' || scope.row.status == '31'){
+          this.$router.push({
+            path: '/orderManagement/orderDetails4',
+            query: {
+              id: scope.row.id
+            }
+          })
+        }else if(scope.row.status == '37' || scope.row.status == '41'){
+          this.$router.push({
+            path: '/orderManagement/orderDetails5',
+            query: {
+              id: scope.row.id
+            }
+          })
+        }else if(scope.row.status == '43'){
+          this.$router.push({
+            path: '/orderManagement/orderDetails6',
+            query: {
+              id: scope.row.id
+            }
+          })
+        }else if(scope.row.status == '39'){
+          this.$router.push({
+            path: '/orderManagement/orderDetails7',
+            query: {
+              id: scope.row.id
+            }
+          })
+        }
       },
       //起始港三字码
       initAirportSearchByPage(keyWord, type) {
@@ -332,23 +326,6 @@
         this.loading = true
         this.initAirportSearchByPage(keyWord, '目的港')
       },
-      //航司公司
-      initCompanySearchByPage(keyWord) {
-        if (!keyWord) {
-          keyWord = ''
-        }
-        this.$http.get(this.$service.companySearchByPage + '?keyWord=' + keyWord).then((data) => {
-          this.loading = false
-          if (data.code == 200) {
-            this.airCompanyCodeOpt = data.data.records
-          } else {
-            this.$message.error(data.message)
-          }
-        })
-      },
-      companyMethod(keyWord) {
-        this.initCompanySearchByPage(keyWord)
-      },
       //代理公司
       initAgentList(agentName) {
         if (!agentName) {
@@ -369,36 +346,44 @@
       agentMethod(agentName) {
         this.initAgentList(agentName)
       },
-      switchChangeUser(item) {
-        var data = {
-          id: item.row.id,
-          status: item.row.status ? 0 : 1
+      initOrderCountList() {
+        var json = {
+        	orderNo: this.orderNo,
+        	waybillNo: this.waybillNo,
+        	inboundNo: this.inboundNo,
+        	pol: this.pol,
+        	pod: this.pod,
+        	agentId: this.agentId,
+          customerName: this.customerName,
+        	typeCode: 8
         }
-        this.$http.post(this.$service.airlineUpdate, data).then(data => {
+        json = toData(json)
+        this.$http.get(this.$service.orderCountList+'?'+json).then(data => {
           if (data.code == 200) {
-            this.$message.success('状态更新成功')
-            this.initAirlineSearchByPage()
-          } else {
-            this.$message.error('状态更新失败')
+            this.orderCount = data.data
+          }else {
+            this.$message.error(data.message)
           }
         }).catch((e) => {
           console.log(e)
         })
       },
       //航线列表
-      initAirlineSearchByPage() {
-        const vm = this
-        var data = {
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
-          pol: this.pol,
-          pod: this.pod,
-          status: this.status,
-          legCount: this.legCount,
-          airCompanyCode: this.airCompanyCode,
-          agentName: this.agentName
+      initData() {
+        var json = {
+        	orderNo: this.orderNo,
+        	waybillNo: this.waybillNo,
+        	inboundNo: this.inboundNo,
+        	pol: this.pol,
+        	pod: this.pod,
+        	agentId: this.agentId,
+          customerName: this.customerName,
+        	typeCode: this.typeCode == '全部订单' ? '' : this.typeCode,
+        	pageNum: this.pageNum,
+        	pageSize: this.pageSize
         }
-        vm.$http.post(vm.$service.airlineSearchByPage, data).then(data => {
+        json = toData(json)
+        this.$http.get(this.$service.orderSearchByPage+'?'+json).then(data => {
           if (data.code == 200) {
             this.total = data.data.total
             this.tableData = data.data.records
@@ -413,70 +398,30 @@
       searchClick() {
         this.pageSize = 10
         this.pageNum = 1
-        this.initAirlineSearchByPage()
+        this.initData()
+        this.initOrderCountList()
       },
       //重置
       restClick() {
+        this.orderNo = ''
+        this.waybillNo = ''
+        this.inboundNo = ''
         this.pol = ''
         this.pod = ''
-        this.agentName = ''
-        this.airCompanyCode = ''
-        this.legCount = ''
-        this.status = ''
-        this.pageSize = 10
+        this.agentId = ''
+        this.customerName = ''
         this.pageNum = 1
-        this.initAirlineSearchByPage()
-        this.initAirportSearchByPage()
-        this.initCompanySearchByPage()
-        this.initAgentList()
-      },
-      //新增
-      newAdd() {
-        this.$router.push('/routeManagement/routeAdd')
-      },
-      //操作
-      handleClick(scope) {
-        var vm = this
-        if (scope.method == 'routeEdit') {
-          this.$router.push({
-            path: '/routeManagement/routeEdit',
-            query: {
-              id: scope.row.id
-            }
-          })
-        } else if (scope.method == 'routeDel') {
-          this.$confirm("确定删除这条航线?", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-          }).then(() => {
-            vm.$http.delete(vm.$service.airlineDelete + '?id=' + scope.row.id).then(data => {
-              if (data.code == 200) {
-                vm.$message.success('删除成功')
-                this.initAirlineSearchByPage()
-              } else {
-                vm.$message.error('删除失败')
-              }
-            })
-          }).catch(() => {
-            console.log('取消')
-          })
-        } else if (scope.method == 'routeView') {
-          this.$router.push({
-            path: '/routeManagement/routeDetails',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }
+        this.pageSize = 10
+        this.initData()
+        this.initOrderCountList()
       },
       handleCurrentChange(e) {
         this.pageNum = e
-        this.initAirlineSearchByPage()
+        this.initData()
       },
       handleSizeChange(e) {
         this.pageSize = e
-        this.initAirlineSearchByPage()
+        this.initData()
       },
     },
     watch: {

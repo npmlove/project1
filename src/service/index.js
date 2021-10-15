@@ -62,7 +62,7 @@ const serviceApi = {
   companySearchByPage: pulicWeb+'/t-air-company/word-code/searchByPage',
   //新增航线
   airlineSave: pulicWeb+'/t-airline/save',
-  //航司线管理列表
+  //航线管理列表
   airlineSearchByPage: pulicWeb+'/t-airline/searchByPage',
   //航线信息修改/上架下架按钮
   airlineUpdate: pulicWeb+'/t-airline/update',
@@ -82,6 +82,8 @@ const serviceApi = {
   dcReptileReplace: '/back/dcReptile/pageStatic/replace',
   //用户列表
   userSearchByPage:  pulicWeb+'/t-portal-user/searchByPage',
+  //用户查询
+  userSearch:  pulicWeb+'/t-sys-user/search',
   //修改用户
   userUpdateUserinfo:  pulicWeb+'/t-portal-user/update',
   //费用查询
@@ -91,6 +93,19 @@ const serviceApi = {
   //费用列表修改
   expenseUpdate:pulicWeb+'/t-expense/update',
   //费用列表删除
-  expenseDelete:pulicWeb+'/t-expense/delete'
+  expenseDelete:pulicWeb+'/t-expense/delete',
+  //查询订单信息列表
+  orderSearchByPage:pulicWeb+'/t-order/searchByPage',
+  //统计分类的订单列表数目
+  orderCountList:pulicWeb+'/t-order/countList',
+  //查询订单详情
+  orderSearchDetail:pulicWeb+'/t-order/searchDetail',
+  //费用分页查询，排除了空运费
+  expenseSearchExcludeAirFee:pulicWeb+'/t-expense/searchExcludeAirFee',
+  //保存订单
+  orderSaveOrder:pulicWeb+'/t-order/saveOrder',
+  //执行订单
+  orderExecuteOrder:pulicWeb+'/t-order/executeOrder',
+
 }
 export default serviceApi

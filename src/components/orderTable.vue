@@ -19,55 +19,58 @@
         <template slot-scope="scope">
           <div v-if="column.label == '航线'" style="padding-top: 30px;">
             <div class="dingdan">
-              <div>订单号：16948476392</div>
-              <div>代理：上海罗新货运代理有限公司</div>
-              <div>客户：苏州乐尚代理有限公司</div>
-              <div>进仓编号：SJMDSGC21080557</div>
-              <div>运单号：074-47235871</div>
+              <div>订单号：{{scope.row.orderNo}}</div>
+              <div>代理：{{scope.row.agentName}}</div>
+              <div>客户：{{scope.row.customerName}}</div>
+              <div>进仓编号：{{scope.row.inboundNo || '暂无'}}</div>
+              <div>运单号：{{scope.row.waybillNo || '暂无'}}</div>
               <div @click="orderDetails(scope)" style="color: #2273ce;cursor: pointer;">订单详情</div>
             </div>
             <div class="hangxian-date">
-              <div>2021-09-12</div>
-              <div>汉莎航空 ML2376</div>
+              <div>{{scope.row.departureDate}}</div>
+              <div>{{scope.row.airCompanyName}}</div>
             </div>
             <div class="hangxian-route">
               <div class="hangxian-route-sanzima">
-                <div>PVG</div>
-                <div>上海浦东国际机场</div>
+                <div>{{scope.row.pol}}</div>
+                <div>{{scope.row.polName}}</div>
               </div>
-              <div class="hangxian-route-zhida">直达</div>
+              <div class="hangxian-route-zhida">{{scope.row.legCount == '1' ? '直达' : '中转'}}</div>
               <div class="hangxian-route-sanzima">
-                <div>LAX</div>
-                <div>洛杉矶国际机场</div>
+                <div>{{scope.row.pod}}</div>
+                <div>{{scope.row.podName}}</div>
               </div>
             </div>
           </div>
           <div v-else-if="column.label == '货物信息'" style="padding-top: 30px;">
-            <div>品名：呼吸机</div>
-            <div>3PCS</div>
-            <div>24.2CBM</div>
-            <div>200KGS</div>
-            <div>1:342</div>
+            <div>品名：{{scope.row.cargoName}}</div>
+            <div>{{scope.row.bookingPiece}}PCS</div>
+            <div>{{scope.row.bookingCbm}}CBM</div>
+            <div>{{scope.row.bookingWeight}}KG</div>
+            <div>1:{{scope.row.bookingVwr}}</div>
           </div>
           <div v-else-if="column.label == '账单信息'" style="padding-top: 30px;">
-            <div>月结买单—<span style="color: #F00;">未核销</span></div>
-            <div>单价：￥30/kg</div>
-            <div>应收账单：￥4325.5</div>
-            <div>应付账单：￥4325.5</div>
+            <div v-if="scope.row.settlementModes == '0'">付款买单<!-- —<span style="color: #F00;">未核销</span> --></div>
+            <div v-if="scope.row.settlementModes == '1'">月结买单<!-- —<span style="color: #F00;">未核销</span> --></div>
+            <div>单价：￥{{scope.row.bookingPrice || 0}}/kg</div>
+            <div>应收账单：{{priceType(scope.row.totalArOrgn) || 0}}</div>
+            <div>应付账单：{{priceType(scope.row.totalApOrgn) || 0}}</div>
+            <div>利润：￥{{scope.row.orderProfit || 0}}</div>
           </div>
           <div v-else-if="column.label == '操作人员'" style="padding-top: 30px;">
-            <div>航线：蒋雨欣</div>
-            <div>售前客服：汪珊珊</div>
-            <div>售中客服：孙源</div>
+            <div>航线：{{scope.row.principalName || '暂无'}}</div>
+            <div>售前客服：{{scope.row.pscsName || '暂无'}}</div>
+            <div>售中客服：{{scope.row.mscsName || '暂无'}}</div>
           </div>
           <div v-else-if="column.label == '状态'" style="padding-top: 30px;">
-            <div>待进仓</div>
+            <div v-if="scope.row.status == '5' || scope.row.status == '27' || scope.row.status == '29' || scope.row.status == '33'" style="color: #F00;">{{scope.row.statusDesc}}</div>
+            <div v-else>{{scope.row.statusDesc}}</div>
           </div>
           <div v-else-if="column.label == '下单时间'" style="padding-top: 30px;">
-            <div>2021-08-29 18：23：23</div>
+            <div>{{scope.row.orderTime}}</div>
           </div>
           <div v-else-if="column.label == '备注'" style="padding-top: 30px;">
-            <div>国内提货：DDP</div>
+            <div>{{scope.row.remark}}</div>
           </div>
         </template>
       </el-table-column>
@@ -182,6 +185,27 @@ export default {
     }
   },
   methods: {
+    priceType(json) {
+      if(json){
+        var arr = JSON.parse(json)
+        var price = ''
+        for(var i = 0; i < arr.length; i++){
+          if(arr[i].currency == '1'){
+            price += '￥'+arr[i].amount+'+'
+          }else if(arr[i].currency == '2'){
+            price += 'HK$'+arr[i].amount+'+'
+          }else if(arr[i].currency == '3'){
+            price += '$'+arr[i].amount+'+'
+          }else if(arr[i].currency == '4'){
+            price += '€'+arr[i].amount+'+'
+          }else if(arr[i].currency == '5'){
+            price += '￡'+arr[i].amount+'+'
+          }
+        }
+        price = price.substring(0, price.length - 1)
+        return price
+      }
+    },
     // 排序
     handleSort (column) {
       this.$emit('sortChange', column)
