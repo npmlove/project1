@@ -46,11 +46,11 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close='closeDialog' width="200px">
       <el-form :model="ruleForm" ref="ruleForm" :rules="rules" :label-position="labelPosition" label-width="80px"
                size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
-        <el-form-item  prop="expenseName" label="费用名称">
+        <el-form-item prop="expenseName" label="费用名称">
           <el-input style="width: 280px;" v-model="ruleForm.expenseName" clearable placeholder="请输入费用名称"
                     :maxlength="inputMax"></el-input>
         </el-form-item>
-        <el-form-item  prop="expenseCode" label="费用编码">
+        <el-form-item prop="expenseCode" label="费用编码">
           <el-input style="width: 280px;" v-model="ruleForm.expenseCode" clearable placeholder="请输入费用编码"
                     :maxlength="inputMax"></el-input>
         </el-form-item>
@@ -59,6 +59,11 @@
             <el-radio :label="0">国内段</el-radio>
             <el-radio :label="1">国外段</el-radio>
           </el-radio-group>
+        </el-form-item>
+        <el-form-item prop="sortNo" label="排序">
+          <el-input style="width: 280px;" onkeyup="value=value.replace(/[^\d\.\/]/ig,'')" v-model="ruleForm.sortNo"
+                    clearable placeholder="请输入费用排序"
+                    :maxlength="inputMax"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部按钮 -->
@@ -82,6 +87,13 @@
 
   export default {
     data() {
+      var sortNo = (rule, value, callback) => {
+        if (value < 0 || value > 10000) {
+          callback(new Error('排序在0-10000之间'));
+        } else {
+          callback();
+        }
+      };
       return {
         //table
         tableData: [],
@@ -105,6 +117,12 @@
           {
             label: '费用类型',
             prop: 'expenseType',
+            show: true,
+            width: '160'
+          },
+          {
+            label: '排序',
+            prop: 'sortNo',
             show: true,
             width: '160'
           },
@@ -134,12 +152,17 @@
         ruleForm: {
           expenseName: '',
           expenseCode: '',
-          expenseType: ''
+          expenseType: '',
+          sortNo: ''
         },
         rules: {
-          expenseName: [{required: true, message: '请输入费用名称', trigger: 'blur'}],
-          expenseCode: [{required: true, message: '请输入费用编码', trigger: 'blur'}],
-          expenseType: [{required: true, message: '请输入费用类型', trigger: 'blur'}]
+          expenseName: [{required: true, message: '请输入费用名称', trigger: 'blur'},
+            {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}
+          ],
+          expenseCode: [{required: true, message: '请输入费用编码', trigger: 'blur'},
+            {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}],
+          expenseType: [{required: true, message: '请输入费用类型', trigger: 'blur'}],
+          sortNo: [{required: true, message: '请输入费用排序', trigger: 'blur'}, {validator: sortNo, trigger: 'blur'}]
         },
         labelPosition: 'right',
         expenseDict: [{
@@ -168,7 +191,7 @@
     methods: {
       //获取代理列表
       initAgentSearch() {
-        this.$http.get(this.$service.expenseList + '?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize + '&expenseName=' + this.expenseName + '&expenseType=' + this.expenseType+'&expenseCode=' + this.expenseCode).then(data => {
+        this.$http.get(this.$service.expenseList + '?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize + '&expenseName=' + this.expenseName + '&expenseType=' + this.expenseType + '&expenseCode=' + this.expenseCode).then(data => {
           if (data.code == 200) {
             this.total = data.data.total
             this.tableData = data.data.records
@@ -202,6 +225,10 @@
           expenseName: '',
           expenseCode: '',
           expenseType: '',
+          sortNo:'',
+        }
+        if (this.$refs["ruleForm"]) {
+          this.$refs["ruleForm"].resetFields();
         }
       },
       dialogComfirm(ruleForm) {
@@ -222,6 +249,7 @@
                 expenseName: this.ruleForm.expenseName,
                 expenseType: this.ruleForm.expenseType,
                 expenseCode: this.ruleForm.expenseCode,
+                sortNo: this.ruleForm.sortNo,
                 id: this.expenseId
               }
               this.$http.put(this.$service.expenseUpdate, data).then(data => {
@@ -251,10 +279,14 @@
       handleClick(scope) {
         if (scope.method == 'edit') {
           this.dialogTitle = '编辑费用'
+          if (this.$refs["ruleForm"]) {
+            this.$refs["ruleForm"].resetFields();
+          }
           this.dialogFormVisible = true
           this.ruleForm.expenseName = scope.row.expenseName
           this.ruleForm.expenseCode = scope.row.expenseCode
           this.ruleForm.expenseType = scope.row.expenseType
+          this.ruleForm.sortNo = scope.row.sortNo
           this.expenseId = scope.row.id
         } else if (scope.method == 'del') {
           this.$confirm("确定删除这条数据?", "提示", {
