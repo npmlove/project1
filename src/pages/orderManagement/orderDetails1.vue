@@ -255,13 +255,13 @@
               <el-input v-model="item.bookingPrice" onkeyup="value=value.replace(/[^\d\.]/g, '')" placeholder="请输入订舱单价"  style="width: 216px;"></el-input>
             </el-form-item>
             <el-form-item label="航班号">
-              <el-input v-model="item.bookingPrice" placeholder="请输入航班号" style="width: 216px;"></el-input>
+              <el-input v-model="item.flightNo" placeholder="请输入航班号" style="width: 216px;"></el-input>
             </el-form-item>
           </div>
           <div>
             <el-form-item label="航线" required>
               <div v-if="item.flightNoOpt.length == 0" style="color: #2273ce;">选择起运港、目的港、航司、代理公司后才会有推荐航线</div>
-              <el-radio-group v-else v-model="item.flightNo">
+              <el-radio-group v-else v-model="item.fullLeg">
                 <el-radio v-for="(optItem,optIndex) in item.flightNoOpt" :key="optIndex" :label="optItem.fullLeg">{{optItem.fullLeg}}</el-radio>
               </el-radio-group>
             </el-form-item>
@@ -677,6 +677,7 @@
             dow: '',
             orderId: '',
             sortNo: '',
+            fullLeg: '',
             flightNoOpt: []
           }
         ],
@@ -800,6 +801,26 @@
         var orderPriceList = []
         orderPriceList = this.arOrderPriceList.concat(this.apOrderPriceList)
         if(this.showMake){
+          var orderOptionsList = []
+          for(var q = 0; q < this.orderOptionsList.length; q++){
+            var json = {
+              agentId: this.orderOptionsList[q].agentId.split('#')[0],
+              agentName: this.orderOptionsList[q].agentId.split('#')[1],
+              airCompanyCode: this.orderOptionsList[q].airCompanyCode.split('#')[0],
+              airCompanyName: this.orderOptionsList[q].airCompanyCode.split('#')[1],
+              bookingPrice: this.orderOptionsList[q].bookingPrice,
+              bubblePoint: this.orderOptionsList[q].bubblePoint,
+              departureDate: this.orderOptionsList[q].departureDate,
+              dow: new Date(this.orderOptionsList[q].departureDate).getDay() == 0 ? 7 : new Date(this.orderOptionsList[q].departureDate).getDay(),
+              flightNo: this.orderOptionsList[q].flightNo,
+              fullLeg: this.orderOptionsList[q].fullLeg,
+              pod: this.orderOptionsList[q].pod,
+              pol: this.orderOptionsList[q].pol,
+              sortNo: q+1,
+              id: this.id,
+              orderId: this.orderId
+            }
+          }
           var data = {
             order: order,
             orderOptionsList: orderOptionsList,
@@ -822,6 +843,17 @@
         }else if(type == '通过'){
           data.ctrlMap = {
             ctrlFlag: 1
+          }
+          this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
+            if(data.code == 200){
+              this.$router.push('/orderManagement/orderManage')
+            } else {
+              this.$message.error(data.message)
+            }
+          })
+        }else if(type == '失败'){
+          data.ctrlMap = {
+            ctrlFlag: 2
           }
           this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
             if(data.code == 200){
@@ -1028,6 +1060,7 @@
           dow: '',
           orderId: '',
           sortNo: '',
+          fullLeg: '',
           flightNoOpt: []
         }
         this.orderOptionsList.push(json)
