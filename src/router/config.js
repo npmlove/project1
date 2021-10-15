@@ -79,9 +79,9 @@ const expenseManagement=[{
     breadcrumb: true
   },
   children:[{
-    path: 'expenseManagement',
+    path: 'expenseList',
     component: () => import('@/pages/expenseManagement/expenseManagement.vue'),
-    name: 'expenseManagement',
+    name: 'expenseList',
     meta: {
       title: '费用列表',
       keepAlive:true,
