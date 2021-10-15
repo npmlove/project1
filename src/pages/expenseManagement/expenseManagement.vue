@@ -157,10 +157,10 @@
         },
         rules: {
           expenseName: [{required: true, message: '请输入费用名称', trigger: 'blur'},
-            { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
-            ],
+            {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}
+          ],
           expenseCode: [{required: true, message: '请输入费用编码', trigger: 'blur'},
-            { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }],
+            {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}],
           expenseType: [{required: true, message: '请输入费用类型', trigger: 'blur'}],
           sortNo: [{required: true, message: '请输入费用排序', trigger: 'blur'}, {validator: sortNo, trigger: 'blur'}]
         },
@@ -226,11 +226,12 @@
           expenseCode: '',
           expenseType: '',
         }
-        this.$refs["ruleForm"].resetFields();
+        if (this.$refs["ruleForm"]) {
+          this.$refs["ruleForm"].resetFields();
+        }
       },
       dialogComfirm(ruleForm) {
         this.$refs[ruleForm].validate((valid, object) => {
-          console.log(valid)
           if (valid) {
             if (this.dialogTitle == '新增费用') {
               this.$http.post(this.$service.expenseSave, this.ruleForm).then(data => {
@@ -277,13 +278,16 @@
       handleClick(scope) {
         if (scope.method == 'edit') {
           this.dialogTitle = '编辑费用'
-          this.$refs["ruleForm"].resetFields();
+
           this.dialogFormVisible = true
           this.ruleForm.expenseName = scope.row.expenseName
           this.ruleForm.expenseCode = scope.row.expenseCode
           this.ruleForm.expenseType = scope.row.expenseType
           this.ruleForm.sortNo = scope.row.sortNo
           this.expenseId = scope.row.id
+          if (this.$refs["ruleForm"]) {
+            this.$refs["ruleForm"].resetFields();
+          }
         } else if (scope.method == 'del') {
           this.$confirm("确定删除这条数据?", "提示", {
             confirmButtonText: "确定",
