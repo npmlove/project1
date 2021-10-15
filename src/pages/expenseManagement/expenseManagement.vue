@@ -278,16 +278,15 @@
       handleClick(scope) {
         if (scope.method == 'edit') {
           this.dialogTitle = '编辑费用'
-
+          if (this.$refs["ruleForm"]) {
+            this.$refs["ruleForm"].resetFields();
+          }
           this.dialogFormVisible = true
           this.ruleForm.expenseName = scope.row.expenseName
           this.ruleForm.expenseCode = scope.row.expenseCode
           this.ruleForm.expenseType = scope.row.expenseType
           this.ruleForm.sortNo = scope.row.sortNo
           this.expenseId = scope.row.id
-          if (this.$refs["ruleForm"]) {
-            this.$refs["ruleForm"].resetFields();
-          }
         } else if (scope.method == 'del') {
           this.$confirm("确定删除这条数据?", "提示", {
             confirmButtonText: "确定",
