@@ -7,10 +7,6 @@
             <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="expenseName" clearable
                       placeholder="请输入费用名称"></el-input>
           </el-form-item>
-          <el-form-item label="费用编码">
-            <el-input style="width: 200px;" size="medium" :maxlength="inputMax" v-model="expenseCode" clearable
-                      placeholder="请输入费用编码"></el-input>
-          </el-form-item>
           <el-form-item label="费用类型">
             <el-select placeholder="费用类型" size="medium" v-model="expenseType" clearable style="width: 130px;">
               <el-option v-for="item in expenseDict" :key="item.value" :label="item.name" :value="item.value">
@@ -48,10 +44,6 @@
                size="medium" class="demo-form-inline" style="padding-left: 20px;padding-top:20px;">
         <el-form-item prop="expenseName" label="费用名称">
           <el-input style="width: 280px;" v-model="ruleForm.expenseName" clearable placeholder="请输入费用名称"
-                    :maxlength="inputMax"></el-input>
-        </el-form-item>
-        <el-form-item prop="expenseCode" label="费用编码">
-          <el-input style="width: 280px;" v-model="ruleForm.expenseCode" clearable placeholder="请输入费用编码"
                     :maxlength="inputMax"></el-input>
         </el-form-item>
         <el-form-item prop="expenseType" label="费用类型">
@@ -109,12 +101,6 @@
             width: '160'
           },
           {
-            label: '费用编码',
-            prop: 'expenseCode',
-            show: true,
-            width: '160'
-          },
-          {
             label: '费用类型',
             prop: 'expenseType',
             show: true,
@@ -151,7 +137,6 @@
         expenseId: '',
         ruleForm: {
           expenseName: '',
-          expenseCode: '',
           expenseType: '',
           sortNo: ''
         },
@@ -159,8 +144,6 @@
           expenseName: [{required: true, message: '请输入费用名称', trigger: 'blur'},
             {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}
           ],
-          expenseCode: [{required: true, message: '请输入费用编码', trigger: 'blur'},
-            {min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur'}],
           expenseType: [{required: true, message: '请输入费用类型', trigger: 'blur'}],
           sortNo: [{required: true, message: '请输入费用排序', trigger: 'blur'}, {validator: sortNo, trigger: 'blur'}]
         },
@@ -179,7 +162,6 @@
           },
         ],
         expenseName: '',
-        expenseCode: '',
         expenseType: '',
         dialogTitle: '',
         dialogFormVisible: false,
@@ -191,7 +173,7 @@
     methods: {
       //获取代理列表
       initAgentSearch() {
-        this.$http.get(this.$service.expenseList + '?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize + '&expenseName=' + this.expenseName + '&expenseType=' + this.expenseType + '&expenseCode=' + this.expenseCode).then(data => {
+        this.$http.get(this.$service.expenseList + '?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize + '&expenseName=' + this.expenseName + '&expenseType=' + this.expenseType ).then(data => {
           if (data.code == 200) {
             this.total = data.data.total
             this.tableData = data.data.records
@@ -210,7 +192,6 @@
       //清空
       restClick() {
         this.expenseName = ''
-        this.expenseCode = ''
         this.expenseType = ''
         this.pageSize = 10
         this.pageNum = 1
@@ -223,7 +204,6 @@
         this.dialogTitle = '新增费用'
         this.ruleForm = {
           expenseName: '',
-          expenseCode: '',
           expenseType: '',
           sortNo:'',
         }
@@ -248,7 +228,6 @@
               var data = {
                 expenseName: this.ruleForm.expenseName,
                 expenseType: this.ruleForm.expenseType,
-                expenseCode: this.ruleForm.expenseCode,
                 sortNo: this.ruleForm.sortNo,
                 id: this.expenseId
               }
@@ -284,7 +263,6 @@
           }
           this.dialogFormVisible = true
           this.ruleForm.expenseName = scope.row.expenseName
-          this.ruleForm.expenseCode = scope.row.expenseCode
           this.ruleForm.expenseType = scope.row.expenseType
           this.ruleForm.sortNo = scope.row.sortNo
           this.expenseId = scope.row.id
