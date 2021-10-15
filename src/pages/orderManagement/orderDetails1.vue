@@ -122,7 +122,7 @@
         </div>
         <div>
           <el-form-item label="航司">
-            <el-input v-model="airCompanyCode" :disabled="true" placeholder="请输入航司" style="width: 216px;"></el-input>
+            <el-input v-model="airCompanyName" :disabled="true" placeholder="请输入航司" style="width: 216px;"></el-input>
           </el-form-item>
           <el-form-item label="订舱单价">
             <el-input v-model="bookingPrice" :disabled="true" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
@@ -167,7 +167,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="航班号">
-            <el-input v-model="flightNo" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
+            <el-input v-model="flightNo" maxlength="30" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
           </el-form-item>
         </div>
         <div class="rest-style">
@@ -252,10 +252,10 @@
           </div>
           <div>
             <el-form-item label="订舱单价" required>
-              <el-input v-model="item.bookingPrice" onkeyup="value=value.replace(/[^\d\.]/g, '')" placeholder="请输入订舱单价"  style="width: 216px;"></el-input>
+              <el-input v-model="item.bookingPrice" @blur="priceBlur(item.bookingPrice,index,'推荐','订舱')" onkeyup="value=value.replace(/[^\d\.]/g, '')" placeholder="请输入订舱单价"  style="width: 216px;"></el-input>
             </el-form-item>
             <el-form-item label="航班号">
-              <el-input v-model="item.flightNo" placeholder="请输入航班号" style="width: 216px;"></el-input>
+              <el-input v-model="item.flightNo" maxlength="30" placeholder="请输入航班号" style="width: 216px;"></el-input>
             </el-form-item>
           </div>
           <div>
@@ -504,8 +504,8 @@
         <div class="rest-style" style="padding-left: 20px;">
           <el-form-item label=" " label-width="150px">
             <el-button @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
-            <el-button v-if="showMake" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核失败</el-button>
-            <el-button v-if="!showMake" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核通过</el-button>
+            <el-button v-if="showMake && (status != '5')" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核失败</el-button>
+            <el-button v-if="!showMake && (status != '5')" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核通过</el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -576,6 +576,7 @@
         pol: '',
         pod: '',
         airCompanyCode: '',
+        airCompanyName: '',
         bookingPrice: '',
         fullLeg: '',
         bubblePoint: '',
@@ -820,6 +821,7 @@
               id: this.id,
               orderId: this.orderId
             }
+            orderOptionsList.push(json)
           }
           var data = {
             order: order,
@@ -1027,6 +1029,12 @@
               this.totalPriceType('应付')
             }
           }
+        }else if(type == '推荐'){
+          if(!reg1.test(num) && (num != '')){
+          	this.$message.error('单价最大输入四位正整数，小数保留四位')
+            this.orderOptionsList[index].bookingPrice = ''
+            return
+          }
         }
       },
       // 审核失败，制作推荐方案
@@ -1080,11 +1088,12 @@
         this.$http.post(this.$service.airlineSearchByPage,json).then((data) => {
           if(data.code == 200){
             this.orderOptionsList[index].flightNoOpt = data.data.records
-            // this.expenseCodeOpt = data.data.records
+            this.$forceUpdate()
           }else{
             this.$message.error(data.message)
           }
         })
+
       },
       //费用名称
       initExpenseCode() {
@@ -1299,6 +1308,7 @@
             this.dow = data.dow
             this.customsType = data.customsType
             this.airCompanyCode = data.airCompanyCode
+            this.airCompanyName = data.airCompanyName
             this.bookingPrice = data.bookingPrice
             this.fullLeg = data.fullLeg
             this.bubblePoint = data.bubblePoint.toString()
@@ -1341,6 +1351,17 @@
               }
             }
             this.arOrderPriceList = data.arOrderPriceList
+            if(data.orderOptionsList){
+              this.showMake = true
+              this.orderOptionsList = data.orderOptionsList
+              for(var q = 0; q < this.orderOptionsList.length; q++){
+                this.orderOptionsList[q].flightNoOpt = []
+                this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
+                this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
+                console.log(data.orderOptionsList[q])
+                this.initAirlineSearchByPage(q,data.orderOptionsList[q])
+              }
+            }
           }else{
             this.$message.error(data.message)
           }

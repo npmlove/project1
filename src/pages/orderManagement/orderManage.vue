@@ -246,7 +246,7 @@
       },
       //详情
       orderDetails(scope) {
-        if(scope.row.status == '3'){
+        if(scope.row.status == '3' || scope.row.status == '5'){
           this.$router.push({
             path: '/orderManagement/orderDetails1',
             query: {
