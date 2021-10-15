@@ -748,6 +748,11 @@
       this.companyMethod()
     },
     methods: {
+      //倒计时
+      countTime(totalTime) {
+
+      },
+      //保存
       submitClick(type) {
         var order = {
           agentId: this.agentId.split('#')[0],
@@ -818,7 +823,7 @@
               pod: this.orderOptionsList[q].pod,
               pol: this.orderOptionsList[q].pol,
               sortNo: q+1,
-              id: this.id,
+              id: this.orderOptionsList[q].id,
               orderId: this.orderId
             }
             orderOptionsList.push(json)
