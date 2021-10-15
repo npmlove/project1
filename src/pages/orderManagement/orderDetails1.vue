@@ -1351,7 +1351,10 @@
               }
             }
             this.arOrderPriceList = data.arOrderPriceList
-            if(data.orderOptionsList){
+            if(data.orderOptionsList != 'null'){
+              if(data.orderOptionsList.length == 0){
+                return
+              }
               this.showMake = true
               this.orderOptionsList = data.orderOptionsList
               for(var q = 0; q < this.orderOptionsList.length; q++){
