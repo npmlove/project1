@@ -510,6 +510,7 @@
         <div class="rest-style" style="padding-left: 20px;">
           <el-form-item label=" " label-width="150px">
             <el-button @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
+            <el-button v-if="(status != '5')" @click="submitClick('取消')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >取消订单</el-button>
             <el-button v-if="showMake && (status != '5')" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核失败</el-button>
             <el-button v-if="!showMake && (status != '5')" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核通过</el-button>
           </el-form-item>
@@ -773,10 +774,12 @@
         var leftTime = end-now;
 
         //定义变量 d,h,m,s保存倒计时的时间
-        if (leftTime>=0) {
+        if (leftTime > 0) {
           this.h = Math.floor(leftTime/1000/60/60%24);
           this.m = Math.floor(leftTime/1000/60%60);
           this.s = Math.floor(leftTime/1000%60);
+        }else{
+          this.submitClick('取消')
         }
         this.h = this.h > 9 ? this.h : '0'+this.h
         this.m = this.m > 9 ? this.m : '0'+this.m
@@ -895,6 +898,17 @@
         }else if(type == '失败'){
           data.ctrlMap = {
             ctrlFlag: 2
+          }
+          this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
+            if(data.code == 200){
+              this.$router.push('/orderManagement/orderManage')
+            } else {
+              this.$message.error(data.message)
+            }
+          })
+        }else if(type == '取消'){
+          data.ctrlMap = {
+            ctrlFlag: 3
           }
           this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
             if(data.code == 200){
