@@ -28,7 +28,7 @@
             </div>
             <div class="hangxian-date">
               <div>{{scope.row.departureDate}}</div>
-              <div>{{scope.row.airCompanyName}}</div>
+              <div>{{scope.row.airCompanyName}} {{scope.row.flightNo}}</div>
             </div>
             <div class="hangxian-route">
               <div class="hangxian-route-sanzima">

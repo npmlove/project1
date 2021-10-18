@@ -2,6 +2,12 @@
   <div class="content-wrapper">
     <div class="content">
       <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
+        <div v-if="status == '5'" style="display: flex;align-items: center;margin-bottom: 20px;">
+          <div style="font-size: 18px;font-weight: 100;color: #2273ce;">待客户确认备选方案</div>
+          <div style="margin: 0 20px;"><el-button style="width: auto;" size="medium" type="primary">取消订单</el-button></div>
+          <div style="font-size: 18px;font-weight: 100;color: #F00;">{{timeOut}}</div>
+        </div>
+
         <!-- 客户信息 -->
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">客户信息</div>
         <div>
@@ -312,10 +318,10 @@
         </div>
         <div>
           <el-form-item label="重量">
-            <el-input v-model="bookingWeight" :disabled="true" placeholder="请输入重量" style="width: 216px;"></el-input>
+            <el-input :value="bookingWeight" :disabled="true" placeholder="请输入重量" style="width: 216px;"></el-input>
           </el-form-item>
           <el-form-item label="比重">
-            <el-input v-model="bookingVwr" :disabled="true" placeholder="请输入比重" style="width: 216px;"></el-input>
+            <el-input :value="1+':'+bookingVwr" :disabled="true" placeholder="请输入比重" style="width: 216px;"></el-input>
           </el-form-item>
         </div>
         <div>
@@ -733,7 +739,12 @@
         mscsName: '',
         agentName: '',
         activityCodeDoing: '',
-        activityCodeDoing: ''
+        activityCodeDoing: '',
+        updateTime: '',
+        timeOut: '',
+        h: '',
+        m: '',
+        s: ''
       }
     },
     created() {
@@ -750,7 +761,30 @@
     methods: {
       //倒计时
       countTime(totalTime) {
+        //获取当前时间
+        var date = new Date();
+        var now = date.getTime();
 
+        //设置截止时间
+        var endDate = new Date(totalTime);
+        var end = endDate.getTime()+24*60*60*1000;
+
+        //时间差
+        var leftTime = end-now;
+
+        //定义变量 d,h,m,s保存倒计时的时间
+        if (leftTime>=0) {
+          this.h = Math.floor(leftTime/1000/60/60%24);
+          this.m = Math.floor(leftTime/1000/60%60);
+          this.s = Math.floor(leftTime/1000%60);
+        }
+        this.h = this.h > 9 ? this.h : '0'+this.h
+        this.m = this.m > 9 ? this.m : '0'+this.m
+        this.s = this.s > 9 ? this.s : '0'+this.s
+        this.timeOut = this.h +'时'+ this.m +'分'+ this.s +'秒'
+        setTimeout(() => {
+          this.countTime(this.updateTime)
+        },1000);
       },
       //保存
       submitClick(type) {
@@ -1356,7 +1390,8 @@
               }
             }
             this.arOrderPriceList = data.arOrderPriceList
-            if(data.orderOptionsList != 'null'){
+            console.log(data.orderOptionsList)
+            if(data.orderOptionsList != null){
               if(data.orderOptionsList.length == 0){
                 return
               }
@@ -1369,6 +1404,10 @@
                 console.log(data.orderOptionsList[q])
                 this.initAirlineSearchByPage(q,data.orderOptionsList[q])
               }
+            }
+            if(data.status == '5'){
+              this.updateTime = data.updateTime
+              this.countTime(data.updateTime)
             }
           }else{
             this.$message.error(data.message)

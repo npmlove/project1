@@ -2,6 +2,12 @@
   <div class="content-wrapper">
     <div class="content">
       <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
+        <div v-if="status == '5'" style="display: flex;align-items: center;margin-bottom: 20px;">
+          <div style="font-size: 18px;font-weight: 100;color: #2273ce;">待客户确认备选方案</div>
+          <div style="margin: 0 20px;"><el-button style="width: auto;" size="medium" type="primary">取消订单</el-button></div>
+          <div style="font-size: 18px;font-weight: 100;color: #F00;">{{timeOut}}</div>
+        </div>
+
         <!-- 客户信息 -->
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">客户信息</div>
         <div>
@@ -122,7 +128,7 @@
         </div>
         <div>
           <el-form-item label="航司">
-            <el-input v-model="airCompanyCode" :disabled="true" placeholder="请输入航司" style="width: 216px;"></el-input>
+            <el-input v-model="airCompanyName" :disabled="true" placeholder="请输入航司" style="width: 216px;"></el-input>
           </el-form-item>
           <el-form-item label="订舱单价">
             <el-input v-model="bookingPrice" :disabled="true" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
@@ -167,7 +173,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="航班号">
-            <el-input v-model="flightNo" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
+            <el-input v-model="flightNo" maxlength="30" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
           </el-form-item>
         </div>
 
@@ -210,10 +216,10 @@
         </div>
         <div>
           <el-form-item label="重量">
-            <el-input v-model="bookingWeight" :disabled="true" placeholder="请输入重量" style="width: 216px;"></el-input>
+            <el-input :value="bookingWeight" :disabled="true" placeholder="请输入重量" style="width: 216px;"></el-input>
           </el-form-item>
           <el-form-item label="比重">
-            <el-input v-model="bookingVwr" :disabled="true" placeholder="请输入比重" style="width: 216px;"></el-input>
+            <el-input :value="1+':'+bookingVwr" :disabled="true" placeholder="请输入比重" style="width: 216px;"></el-input>
           </el-form-item>
         </div>
         <div>
@@ -258,14 +264,14 @@
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.price" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.price"  onkeyup="value=value.replace(/[^\d\.]/g, '')"size="small" style="width: 90%;"></el-input>
+                <el-input v-else v-model="childerItem.price" @blur="priceBlur(childerItem.price,childerIndex,'应收','单价')" onkeyup="value=value.replace(/[^\d\.]/g, '')"size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.quantity" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.quantity"  onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input v-else v-model="childerItem.quantity" @blur="priceBlur(childerItem.quantity,childerIndex,'应收','数量')" maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
-                <el-select v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 90%;">
+                <el-select :disabled="childerItem.expenseName == '空运费' ? true : false" v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 90%;">
                   <el-option
                     v-for="item in currencyOpt"
                     :key="item.Name"
@@ -275,19 +281,17 @@
                 </el-select>
               </div>
               <div class="flight-template-li" style="flex: 0 0 10%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.totalCny" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.totalCny"  onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input v-model="childerItem.totalCny" :disabled="true" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 5%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.exchangeRate" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.exchangeRate"  onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input v-else v-model="childerItem.exchangeRate"  @blur="priceBlur(childerItem.exchangeRate,childerIndex,'应收','汇率')" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 10%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.totalOrgn" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.totalOrgn"  onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input v-model="childerItem.totalOrgn" :disabled="true" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
-                <el-input v-model="childerItem.remark" maxlength="50" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 80%;"></el-input>
+                <el-input v-model="childerItem.remark" maxlength="50" size="small" style="width: 80%;"></el-input>
               </div>
               <div class="flight-template-li" size="small" style="flex: 0 0 10%;">
                 <a :style="{visibility: arOrderPriceList.length > 9 ? 'hidden' : 'visible'}" @click="addArOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
@@ -303,7 +307,7 @@
               <div>{{totalArCny}}</div>
             </el-form-item>
             <el-form-item label="结算方式">
-              <el-select v-model="settlementModes" clearable placeholder="请选择结算方式">
+              <el-select :disabled="settlementModes == '0'" v-model="settlementModes" clearable placeholder="请选择结算方式">
                 <el-option
                   v-for="item in settlementModesOpt"
                   :key="item.Name"
@@ -346,19 +350,18 @@
                 </el-select>
               </div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.expenseUnitName" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="childerItem.expenseName == '空运费' ? true : false" v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.price" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.price"  onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input v-else v-model="childerItem.price" @blur="priceBlur(childerItem.price,childerIndex,'应付','单价')" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.quantity" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.quantity"  onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input v-else v-model="childerItem.quantity" @blur="priceBlur(childerItem.quantity,childerIndex,'应付','数量')" maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
-                <el-select v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 80%;">
+                <el-select :disabled="childerItem.expenseName == '空运费' ? true : false" v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 80%;">
                   <el-option
                     v-for="item in currencyOpt"
                     :key="item.Name"
@@ -368,16 +371,14 @@
                 </el-select>
               </div>
               <div class="flight-template-li" style="flex: 0 0 10%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.totalCny" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.totalCny"  onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input v-model="childerItem.totalCny" :disabled="true" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 5%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.exchangeRate" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.exchangeRate"  onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input v-else v-model="childerItem.exchangeRate" @blur="priceBlur(childerItem.exchangeRate,childerIndex,'应付','汇率')" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 10%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.totalOrgn" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.totalOrgn"  onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input v-model="childerItem.totalOrgn" :disabled="true" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
                 <el-input v-model="childerItem.remark" maxlength="50" size="small" style="width: 80%;"></el-input>
@@ -408,7 +409,7 @@
           <el-form-item label=" " label-width="150px">
             <el-button @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
             <el-button @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >取消订单</el-button>
-            <el-button @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >货物已进仓</el-button>
+            <el-button @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核通过</el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -479,6 +480,7 @@
         pol: '',
         pod: '',
         airCompanyCode: '',
+        airCompanyName: '',
         bookingPrice: '',
         fullLeg: '',
         bubblePoint: '',
@@ -580,6 +582,7 @@
             dow: '',
             orderId: '',
             sortNo: '',
+            fullLeg: '',
             flightNoOpt: []
           }
         ],
@@ -634,7 +637,12 @@
         mscsName: '',
         agentName: '',
         activityCodeDoing: '',
-        activityCodeDoing: ''
+        activityCodeDoing: '',
+        updateTime: '',
+        timeOut: '',
+        h: '',
+        m: '',
+        s: ''
       }
     },
     created() {
@@ -648,10 +656,35 @@
       this.initPolPod()
       this.companyMethod()
     },
-    mounted() {
-
-    },
     methods: {
+      //倒计时
+      countTime(totalTime) {
+        //获取当前时间
+        var date = new Date();
+        var now = date.getTime();
+
+        //设置截止时间
+        var endDate = new Date(totalTime);
+        var end = endDate.getTime()+24*60*60*1000;
+
+        //时间差
+        var leftTime = end-now;
+
+        //定义变量 d,h,m,s保存倒计时的时间
+        if (leftTime>=0) {
+          this.h = Math.floor(leftTime/1000/60/60%24);
+          this.m = Math.floor(leftTime/1000/60%60);
+          this.s = Math.floor(leftTime/1000%60);
+        }
+        this.h = this.h > 9 ? this.h : '0'+this.h
+        this.m = this.m > 9 ? this.m : '0'+this.m
+        this.s = this.s > 9 ? this.s : '0'+this.s
+        this.timeOut = this.h +'时'+ this.m +'分'+ this.s +'秒'
+        setTimeout(() => {
+          this.countTime(this.updateTime)
+        },1000);
+      },
+      //保存
       submitClick(type) {
         var order = {
           agentId: this.agentId.split('#')[0],
@@ -706,6 +739,27 @@
         var orderPriceList = []
         orderPriceList = this.arOrderPriceList.concat(this.apOrderPriceList)
         if(this.showMake){
+          var orderOptionsList = []
+          for(var q = 0; q < this.orderOptionsList.length; q++){
+            var json = {
+              agentId: this.orderOptionsList[q].agentId.split('#')[0],
+              agentName: this.orderOptionsList[q].agentId.split('#')[1],
+              airCompanyCode: this.orderOptionsList[q].airCompanyCode.split('#')[0],
+              airCompanyName: this.orderOptionsList[q].airCompanyCode.split('#')[1],
+              bookingPrice: this.orderOptionsList[q].bookingPrice,
+              bubblePoint: this.orderOptionsList[q].bubblePoint,
+              departureDate: this.orderOptionsList[q].departureDate,
+              dow: new Date(this.orderOptionsList[q].departureDate).getDay() == 0 ? 7 : new Date(this.orderOptionsList[q].departureDate).getDay(),
+              flightNo: this.orderOptionsList[q].flightNo,
+              fullLeg: this.orderOptionsList[q].fullLeg,
+              pod: this.orderOptionsList[q].pod,
+              pol: this.orderOptionsList[q].pol,
+              sortNo: q+1,
+              id: this.orderOptionsList[q].id,
+              orderId: this.orderId
+            }
+            orderOptionsList.push(json)
+          }
           var data = {
             order: order,
             orderOptionsList: orderOptionsList,
@@ -736,19 +790,208 @@
               this.$message.error(data.message)
             }
           })
+        }else if(type == '失败'){
+          this.$confirm('确定取消订单?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            data.ctrlMap = {
+              ctrlFlag: 2
+            }
+            this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
+              if(data.code == 200){
+                this.$router.push('/orderManagement/orderManage')
+              } else {
+                this.$message.error(data.message)
+              }
+            })
+          })
+        }
+      },
+      //账单合计、人名币合计
+      totalPriceType(type) {
+        if(type == '应收'){
+          var newArr = []
+          this.totalArCny = 0
+          var value1 = 0
+          var value2 = 0
+          var value3 = 0
+          var value4 = 0
+          var value5 = 0
+          // HK$ $ € ￡
+          for(var i = 0; i < this.arOrderPriceList.length; i++){
+            this.totalArCny += this.arOrderPriceList[i].totalOrgn
+            var json = {}
+            if(this.arOrderPriceList[i].currency == '1'){
+              value1 += this.arOrderPriceList[i].totalCny
+            }else if(this.arOrderPriceList[i].currency == '2'){
+              value2 += this.arOrderPriceList[i].totalCny
+            }else if(this.arOrderPriceList[i].currency == '3'){
+              value3 += this.arOrderPriceList[i].totalCny
+            }else if(this.arOrderPriceList[i].currency == '4'){
+              value4 += this.arOrderPriceList[i].totalCny
+            }else if(this.arOrderPriceList[i].currency == '5'){
+              value5 += this.arOrderPriceList[i].totalCny
+            }
+          }
+          this.totalArOrgn = ''
+          this.totalArOrgn += value1 ? '￥'+value1+'+' : ''
+          this.totalArOrgn += value2 ? 'HK$'+value2+'+' : ''
+          this.totalArOrgn += value3 ? '$'+value3+'+' : ''
+          this.totalArOrgn += value4 ? '€'+value4+'+' : ''
+          this.totalArOrgn += value5 ? '￡'+value5 : ''
+          this.totalArOrgn = this.totalArOrgn.substring(0, this.totalArOrgn.length - 1)
+        }else if(type == '应付'){
+          var newArr = []
+          this.totalApCny = 0
+          var value1 = 0
+          var value2 = 0
+          var value3 = 0
+          var value4 = 0
+          var value5 = 0
+          // HK$ $ € ￡
+          for(var i = 0; i < this.apOrderPriceList.length; i++){
+            this.totalApCny += this.apOrderPriceList[i].totalOrgn
+            var json = {}
+            if(this.apOrderPriceList[i].currency == '1'){
+              value1 += this.apOrderPriceList[i].totalCny
+            }else if(this.apOrderPriceList[i].currency == '2'){
+              value2 += this.apOrderPriceList[i].totalCny
+            }else if(this.apOrderPriceList[i].currency == '3'){
+              value3 += this.apOrderPriceList[i].totalCny
+            }else if(this.apOrderPriceList[i].currency == '4'){
+              value4 += this.apOrderPriceList[i].totalCny
+            }else if(this.apOrderPriceList[i].currency == '5'){
+              value5 += this.apOrderPriceList[i].totalCny
+            }
+          }
+          this.totalApOrgn = ''
+          this.totalApOrgn += value1 ? '￥'+value1+'+' : ''
+          this.totalApOrgn += value2 ? 'HK$'+value2+'+' : ''
+          this.totalApOrgn += value3 ? '$'+value3+'+' : ''
+          this.totalApOrgn += value4 ? '€'+value4+'+' : ''
+          this.totalApOrgn += value5 ? '￡'+value5 : ''
+          this.totalApOrgn = this.totalApOrgn.substring(0, this.totalApOrgn.length - 1)
+        }
+      },
+      //账单单价、数量、汇率计算
+      priceBlur(val,index,type,title) {
+        var reg = /(^[1-9][0-9]{0,5}$)|(^[0-9]{0,6}[\.][0-9]{1,4}$)/
+        var reg1 = /(^[1-9][0-9]{0,3}$)|(^[0-9]{0,4}[\.][0-9]{1,4}$)/
+        var num = Number(val)
+        if(title == '单价'){
+          if(!reg.test(num) && (num != '')){
+          	this.$message.error('单价最大输入六位正整数，小数保留四位')
+            if(type == '应收'){
+              this.arOrderPriceList[index].price = ''
+              this.arOrderPriceList[index].totalCny = ''
+              this.arOrderPriceList[index].totalOrgn = ''
+            }else if(type == '应付'){
+              this.apOrderPriceList[index].price = ''
+              this.apOrderPriceList[index].totalCny = ''
+              this.apOrderPriceList[index].totalOrgn = ''
+            }
+          }else if(num == ''){
+            if(type == '应收'){
+              this.arOrderPriceList[index].totalCny = ''
+              this.arOrderPriceList[index].totalOrgn = ''
+            }else if(type == '应付'){
+              this.apOrderPriceList[index].totalCny = ''
+              this.apOrderPriceList[index].totalOrgn = ''
+            }
+          }else{
+            if(type == '应收' && this.arOrderPriceList[index].price && this.arOrderPriceList[index].quantity){
+              this.arOrderPriceList[index].totalCny = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity)
+              if(this.arOrderPriceList[index].exchangeRate == ''){
+                this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*1)
+              }else{
+                this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*this.arOrderPriceList[index].exchangeRate)
+              }
+              this.totalPriceType('应收')
+            }else if(type == '应付' && this.apOrderPriceList[index].price && this.apOrderPriceList[index].quantity){
+              this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity)
+              if(this.apOrderPriceList[index].exchangeRate == ''){
+                this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*1)
+              }else{
+                this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*this.apOrderPriceList[index].exchangeRate)
+              }
+              this.totalPriceType('应付')
+            }
+          }
+        }else if(title == '汇率'){
+          if(!reg1.test(num) && (num != '')){
+          	this.$message.error('单价最大输入四位正整数，小数保留四位')
+            if(type == '应收'){
+              this.arOrderPriceList[index].exchangeRate = ''
+              this.arOrderPriceList[index].totalOrgn = ''
+            }else if(type == '应付'){
+              this.apOrderPriceList[index].exchangeRate = ''
+              this.apOrderPriceList[index].totalOrgn = ''
+            }
+          }else if(type == '应收' && this.arOrderPriceList[index].price && this.arOrderPriceList[index].quantity){
+            if(this.arOrderPriceList[index].exchangeRate == ''){
+              this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*1)
+            }else{
+              this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*this.arOrderPriceList[index].exchangeRate)
+            }
+            this.totalPriceType('应收')
+          }else if(type == '应付' && this.apOrderPriceList[index].price && this.apOrderPriceList[index].quantity){
+            if(this.apOrderPriceList[index].exchangeRate == ''){
+              this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*1)
+            }else{
+              this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*this.apOrderPriceList[index].exchangeRate)
+            }
+            this.totalPriceType('应付')
+          }
+        }else if(title == '数量'){
+          if(num == ''){
+            if(type == '应收'){
+              this.arOrderPriceList[index].totalCny = ''
+              this.arOrderPriceList[index].totalOrgn = ''
+            }else if(type == '应付'){
+              this.apOrderPriceList[index].totalCny = ''
+              this.apOrderPriceList[index].totalOrgn = ''
+            }
+          }else{
+            if(type == '应收' && this.arOrderPriceList[index].price && this.arOrderPriceList[index].quantity){
+              this.arOrderPriceList[index].totalCny = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity)
+              if(this.arOrderPriceList[index].exchangeRate == ''){
+                this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*1)
+              }else{
+                this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*this.arOrderPriceList[index].exchangeRate)
+              }
+              this.totalPriceType('应收')
+            }else if(type == '应付' && this.apOrderPriceList[index].price && this.apOrderPriceList[index].quantity){
+              this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity)
+              if(this.apOrderPriceList[index].exchangeRate == ''){
+                this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*1)
+              }else{
+                this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*this.apOrderPriceList[index].exchangeRate)
+              }
+              this.totalPriceType('应付')
+            }
+          }
+        }else if(type == '推荐'){
+          if(!reg1.test(num) && (num != '')){
+          	this.$message.error('单价最大输入四位正整数，小数保留四位')
+            this.orderOptionsList[index].bookingPrice = ''
+            return
+          }
         }
       },
       // 审核失败，制作推荐方案
       showMakeClick() {
-        this.$confirm('是否制作推荐方案?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.showMake = true
-        }).catch(() => {
-          this.showMake = false
-        })
+        this.showMake = !this.showMake
+        // this.$confirm('是否制作推荐方案?', '提示', {
+        //   confirmButtonText: '确定',
+        //   cancelButtonText: '取消',
+        //   type: 'warning'
+        // }).then(() => {
+        //   this.showMake = true
+        // }).catch(() => {
+        //   this.showMake = false
+        // })
       },
       delTableMack(index) {
         this.orderOptionsList.splice(index,1)
@@ -768,6 +1011,7 @@
           dow: '',
           orderId: '',
           sortNo: '',
+          fullLeg: '',
           flightNoOpt: []
         }
         this.orderOptionsList.push(json)
@@ -787,11 +1031,12 @@
         this.$http.post(this.$service.airlineSearchByPage,json).then((data) => {
           if(data.code == 200){
             this.orderOptionsList[index].flightNoOpt = data.data.records
-            // this.expenseCodeOpt = data.data.records
+            this.$forceUpdate()
           }else{
             this.$message.error(data.message)
           }
         })
+
       },
       //费用名称
       initExpenseCode() {
@@ -916,11 +1161,12 @@
       //账单添加与删除
       delApOrderPriceList(index) {
         this.apOrderPriceList.splice(index,1)
+        this.totalPriceType('应付')
       },
       addApOrderPriceList() {
         var json = {
-          currency: '',
-          exchangeRate: '',
+          currency: '1',
+          exchangeRate: 1,
           expenseName: '',
           expenseType: 2,
           expenseUnitId: '',
@@ -937,11 +1183,12 @@
       },
       delArOrderPriceList(index) {
         this.arOrderPriceList.splice(index,1)
+        this.totalPriceType('应收')
       },
       addArOrderPriceList() {
         var json = {
-          currency: '',
-          exchangeRate: '',
+          currency: '1',
+          exchangeRate: 1,
           expenseName: '',
           expenseType: 1,
           expenseUnitId: '',
@@ -1004,6 +1251,7 @@
             this.dow = data.dow
             this.customsType = data.customsType
             this.airCompanyCode = data.airCompanyCode
+            this.airCompanyName = data.airCompanyName
             this.bookingPrice = data.bookingPrice
             this.fullLeg = data.fullLeg
             this.bubblePoint = data.bubblePoint.toString()
@@ -1046,6 +1294,24 @@
               }
             }
             this.arOrderPriceList = data.arOrderPriceList
+            if(data.orderOptionsList != null){
+              if(data.orderOptionsList.length == 0){
+                return
+              }
+              this.showMake = true
+              this.orderOptionsList = data.orderOptionsList
+              for(var q = 0; q < this.orderOptionsList.length; q++){
+                this.orderOptionsList[q].flightNoOpt = []
+                this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
+                this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
+                console.log(data.orderOptionsList[q])
+                this.initAirlineSearchByPage(q,data.orderOptionsList[q])
+              }
+            }
+            if(data.status == '5'){
+              this.updateTime = data.updateTime
+              this.countTime(data.updateTime)
+            }
           }else{
             this.$message.error(data.message)
           }
