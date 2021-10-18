@@ -267,7 +267,7 @@
               id: scope.row.id
             }
           })
-        }else if(scope.row.status == '25' || scope.row.status == '27' || scope.row.status == '29' || scope.row.status == '31' || scope.row.status == '31'){
+        }else if(scope.row.status == '25' || scope.row.status == '27' || scope.row.status == '29' || scope.row.status == '31'){
           this.$router.push({
             path: '/orderManagement/orderDetails4',
             query: {

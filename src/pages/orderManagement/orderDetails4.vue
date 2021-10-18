@@ -20,15 +20,15 @@
             <el-input v-model="orderNo" :disabled="true" style="width: 216px;"></el-input>
           </el-form-item>
           <el-form-item label="进仓编号">
-            <el-input v-model="inboundNo" maxlength="30" placeholder="请输入进仓编号" clearable style="width: 216px;"></el-input>
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="inboundNo" maxlength="30" placeholder="请输入进仓编号" clearable style="width: 216px;"></el-input>
           </el-form-item>
         </div>
         <div>
           <el-form-item label="运单号">
-            <el-input v-model="waybillNo" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="11" placeholder="请输入运单号" clearable style="width: 216px;"></el-input>
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="waybillNo" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="11" placeholder="请输入运单号" clearable style="width: 216px;"></el-input>
           </el-form-item>
           <el-form-item label="航线人员">
-            <el-select v-model="principalId" placeholder="请输入航线人员" filterable clearable style="width: 216px;">
+            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="principalId" placeholder="请输入航线人员" filterable clearable style="width: 216px;">
               <el-option
                 v-for="item in principalIdOpt"
                 :key="item.id"
@@ -40,7 +40,7 @@
         </div>
         <div>
           <el-form-item label="售前客服">
-            <el-select v-model="pscsId" placeholder="请输入售前客服" filterable clearable style="width: 216px;">
+            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="pscsId" placeholder="请输入售前客服" filterable clearable style="width: 216px;">
               <el-option
                 v-for="item in pscsIdOpt"
                 :key="item.id"
@@ -50,7 +50,7 @@
             </el-select>
           </el-form-item>
           <el-form-item prop="pod" label="售中客服">
-            <el-select v-model="mscsId" placeholder="请输入售中客服" filterable clearable style="width: 216px;">
+            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="mscsId" placeholder="请输入售中客服" filterable clearable style="width: 216px;">
               <el-option
                 v-for="item in mscsIdOpt"
                 :key="item.id"
@@ -61,7 +61,7 @@
           </el-form-item>
           <div>
             <el-form-item label="订单备注">
-              <el-input v-model="remark" maxlength="200" placeholder="请输入订单备注" type="textarea" style="width: 596px;" show-word-limit></el-input>
+              <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="remark" maxlength="200" placeholder="请输入订单备注" type="textarea" style="width: 596px;" show-word-limit></el-input>
             </el-form-item>
           </div>
         </div>
@@ -71,23 +71,23 @@
         <div>
           <el-form-item label="国内提货">
             <el-radio-group v-model="isPickUp">
-              <el-radio v-for="(item,index) in isPickUpOpt" :key="index" :label="item.Value">{{item.Name}}</el-radio>
+              <el-radio :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-for="(item,index) in isPickUpOpt" :key="index" :label="item.Value">{{item.Name}}</el-radio>
             </el-radio-group>
           </el-form-item>
         </div>
         <div v-if="isPickUp == '2'">
           <el-form-item label="提货地址">
-            <el-input v-model="pickUpAddress" placeholder="请输入提货地址" maxlength="50" type="textarea" style="width: 596px;" show-word-limit></el-input>
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="pickUpAddress" placeholder="请输入提货地址" maxlength="50" type="textarea" style="width: 596px;" show-word-limit></el-input>
           </el-form-item>
         </div>
         <div v-if="isPickUp == '2'">
           <el-form-item label="提货联系人">
-            <el-input v-model="pickUpContacts" placeholder="请输入提货联系人" maxlength="15" style="width: 596px;"></el-input>
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="pickUpContacts" placeholder="请输入提货联系人" maxlength="15" style="width: 596px;"></el-input>
           </el-form-item>
         </div>
         <div v-if="isPickUp == '2'">
           <el-form-item label="联系电话">
-            <el-input v-model="pickUpTel" placeholder="请输入联系电话" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="11" style="width: 596px;"></el-input>
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="pickUpTel" placeholder="请输入联系电话" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="11" style="width: 596px;"></el-input>
           </el-form-item>
         </div>
 
@@ -96,23 +96,23 @@
         <div>
           <el-form-item label="清关服务">
             <el-radio-group v-model="cclType">
-              <el-radio v-for="(item,index) in cclTypeOpt" :key="index" :label="item.Value">{{item.Name}}</el-radio>
+              <el-radio :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-for="(item,index) in cclTypeOpt" :key="index" :label="item.Value">{{item.Name}}</el-radio>
             </el-radio-group>
           </el-form-item>
         </div>
         <div v-if="cclType != '1'">
           <el-form-item label="提货地址">
-            <el-input v-model="deliveryAddress" placeholder="请输入提货地址" maxlength="200" type="textarea" style="width: 596px;" show-word-limit></el-input>
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryAddress" placeholder="请输入提货地址" maxlength="200" type="textarea" style="width: 596px;" show-word-limit></el-input>
           </el-form-item>
         </div>
         <div v-if="cclType != '1'">
           <el-form-item label="提货联系人">
-            <el-input v-model="deliveryContacts" placeholder="请输入提货联系人" maxlength="50" style="width: 596px;"></el-input>
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryContacts" placeholder="请输入提货联系人" maxlength="50" style="width: 596px;"></el-input>
           </el-form-item>
         </div>
         <div v-if="cclType != '1'">
           <el-form-item label="联系电话">
-            <el-input v-model="deliveryTel" placeholder="请输入联系电话" maxlength="20" style="width: 596px;"></el-input>
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryTel" placeholder="请输入联系电话" maxlength="20" style="width: 596px;"></el-input>
           </el-form-item>
         </div>
 
@@ -163,7 +163,7 @@
         </div>
         <div>
           <el-form-item label="代理公司">
-            <el-select v-model="agentId" filterable clearable placeholder="请选代理公司" style="width: 216;">
+            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="agentId" filterable clearable placeholder="请选代理公司" style="width: 216;">
               <el-option
                 v-for="item in agentIdOpt"
                 :key="item.id"
@@ -173,7 +173,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="航班号">
-            <el-input v-model="flightNo" maxlength="30" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="flightNo" maxlength="30" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
           </el-form-item>
         </div>
 
@@ -181,12 +181,12 @@
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">货物信息</div>
         <div>
           <el-form-item label="货物品名">
-            <el-input v-model="cargoName" placeholder="请输入货物品名" style="width: 596px;"></el-input>
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="cargoName" placeholder="请输入货物品名" style="width: 596px;"></el-input>
           </el-form-item>
         </div>
         <div>
           <el-form-item label="货物品类">
-            <el-select v-model="cargoType" clearable placeholder="请选择货物品类" style="width: 216;">
+            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="cargoType" clearable placeholder="请选择货物品类" style="width: 216;">
               <el-option
                 v-for="item in cargoTypeOpt"
                 :key="item.Name"
@@ -196,7 +196,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="包装类型">
-            <el-select v-model="packageType" clearable placeholder="请选择包装类型" style="width: 216;">
+            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="packageType" clearable placeholder="请选择包装类型" style="width: 216;">
               <el-option
                 v-for="item in packageTypeOpt"
                 :key="item.Name"
@@ -232,19 +232,19 @@
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">进仓数据</div>
         <div>
           <el-form-item required label="件数">
-            <el-input v-model="inboundPiece" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="9" placeholder="请输入件数" style="width: 216px;">
+            <el-input :disabled="true" v-model="inboundPiece" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="9" placeholder="请输入件数" style="width: 216px;">
               <template slot="append">PCS</template>
             </el-input>
           </el-form-item>
           <el-form-item required label="体积">
-            <el-input v-model="inboundCbm" @blur="cbmBlur(inboundCbm,0,'体积1')" onkeyup="value=value.replace(/[^\d\.]/g, '')" maxlength="9" placeholder="请输入体积" style="width: 216px;">
+            <el-input :disabled="true" v-model="inboundCbm" @blur="cbmBlur(inboundCbm,0,'体积1')" onkeyup="value=value.replace(/[^\d\.]/g, '')" maxlength="9" placeholder="请输入体积" style="width: 216px;">
               <template slot="append">CBM</template>
             </el-input>
           </el-form-item>
         </div>
         <div>
           <el-form-item required label="重量">
-            <el-input v-model="inboundWeight" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="6" placeholder="请输入重量" style="width: 216px;">
+            <el-input :disabled="true" v-model="inboundWeight" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="6" placeholder="请输入重量" style="width: 216px;">
               <template slot="append">KGS</template>
             </el-input>
           </el-form-item>
@@ -268,23 +268,23 @@
               <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">货物尺寸 CM</div>
               <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">包装方式</div>
               <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">外箱情况</div>
-              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
+              <!-- <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div> -->
             </div>
             <div v-for="(childerItem,childerIndex) in orderCargoDetailList" :key="childerIndex" class="flight-template-ul-content">
               <div class="flight-template-li" style="flex: 0 0 15%;">
-                <el-input v-model="childerItem.piece" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="9" size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="true" v-model="childerItem.piece" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="9" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 15%;">
-                <el-input v-model="childerItem.cbm"  @blur="cbmBlur(childerItem.cbm,childerIndex,'体积2')" onkeyup="value=value.replace(/[^\d\.]/g, '')" maxlength="9" size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="true" v-model="childerItem.cbm"  @blur="cbmBlur(childerItem.cbm,childerIndex,'体积2')" onkeyup="value=value.replace(/[^\d\.]/g, '')" maxlength="9" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 15%;">
-                <el-input v-model="childerItem.weight" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="6" size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="true" v-model="childerItem.weight" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="6" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 15%;">
-                <el-input v-model="childerItem.cargoSize" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="3" size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="true" v-model="childerItem.cargoSize" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="3" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 15%;">
-                <el-select v-model="childerItem.packing" size="small" clearable placeholder="请选择" style="width: 90%;">
+                <el-select :disabled="true" v-model="childerItem.packing" size="small" clearable placeholder="请选择" style="width: 90%;">
                   <el-option
                     v-for="item in packingOpt"
                     :key="item.Value"
@@ -294,7 +294,7 @@
                 </el-select>
               </div>
               <div class="flight-template-li" style="flex: 0 0 15%;">
-                <el-select v-model="childerItem.outerBox" size="small" clearable placeholder="请选择" style="width: 90%;">
+                <el-select :disabled="true" v-model="childerItem.outerBox" size="small" clearable placeholder="请选择" style="width: 90%;">
                   <el-option
                     v-for="item in outerBoxOpt"
                     :key="item.Value"
@@ -303,10 +303,10 @@
                   </el-option>
                 </el-select>
               </div>
-              <div class="flight-template-li" size="small" style="flex: 0 0 10%;">
+              <!-- <div class="flight-template-li" size="small" style="flex: 0 0 10%;">
                 <a :style="{visibility: orderCargoDetailList.length > 9 ? 'hidden' : 'visible'}" @click="addOrderCargoDetailList(childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
                 <a @click="delOrderCargoDetailList(childerIndex)" style="font-size: 18px;" :style="{visibility: childerIndex == 0 ? 'hidden' : 'visible'}"><i class="el-icon-delete"></i></a>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -326,13 +326,13 @@
               <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">汇率</div>
               <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">人名币合计</div>
               <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">备注</div>
-              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
+              <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
             </div>
             <div v-for="(childerItem,childerIndex) in arOrderPriceList" :key="childerIndex" class="flight-template-ul-content">
               <div class="flight-template-li" style="flex: 0 0 5%;">{{childerIndex+1}}</div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" value="空运费" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-select v-else v-model="childerItem.expenseName" size="small" clearable placeholder="请选择" style="width: 90%;">
+                <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.expenseName" size="small" clearable placeholder="请选择" style="width: 90%;">
                   <el-option
                     v-for="item in expenseCodeOpt"
                     :key="item.expenseName"
@@ -343,18 +343,18 @@
               </div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.expenseUnitName" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.price" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.price" @blur="priceBlur(childerItem.price,childerIndex,'应收','单价')" onkeyup="value=value.replace(/[^\d\.]/g, '')"size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.price" @blur="priceBlur(childerItem.price,childerIndex,'应收','单价')" onkeyup="value=value.replace(/[^\d\.]/g, '')"size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.quantity" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.quantity" @blur="priceBlur(childerItem.quantity,childerIndex,'应收','数量')" maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.quantity" @blur="priceBlur(childerItem.quantity,childerIndex,'应收','数量')" maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
-                <el-select :disabled="childerItem.expenseName == '空运费' ? true : false" v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 90%;">
+                <el-select :disabled="(childerItem.expenseName == '空运费') || (orderStatus.indexOf(status) == -1) ? true : false" v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 90%;">
                   <el-option
                     v-for="item in currencyOpt"
                     :key="item.Name"
@@ -368,15 +368,15 @@
               </div>
               <div class="flight-template-li" style="flex: 0 0 5%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.exchangeRate" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.exchangeRate"  @blur="priceBlur(childerItem.exchangeRate,childerIndex,'应收','汇率')" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.exchangeRate"  @blur="priceBlur(childerItem.exchangeRate,childerIndex,'应收','汇率')" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 10%;">
                 <el-input v-model="childerItem.totalOrgn" :disabled="true" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
-                <el-input v-model="childerItem.remark" maxlength="50" size="small" style="width: 80%;"></el-input>
+                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="childerItem.remark" maxlength="50" size="small" style="width: 80%;"></el-input>
               </div>
-              <div class="flight-template-li" size="small" style="flex: 0 0 10%;">
+              <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" size="small" style="flex: 0 0 10%;">
                 <a :style="{visibility: arOrderPriceList.length > 9 ? 'hidden' : 'visible'}" @click="addArOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
                 <a @click="delArOrderPriceList(childerIndex)" style="font-size: 18px;" :style="{visibility: childerIndex == 0 ? 'hidden' : 'visible'}"><i class="el-icon-delete"></i></a>
               </div>
@@ -417,13 +417,13 @@
               <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">汇率</div>
               <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">人名币合计</div>
               <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">备注</div>
-              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
+              <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
             </div>
             <div v-for="(childerItem,childerIndex) in apOrderPriceList" :key="childerIndex" class="flight-template-ul-content">
               <div class="flight-template-li" style="flex: 0 0 5%;">{{childerIndex+1}}</div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" value="空运费" :disabled="true" size="small" style="width: 80%;"></el-input>
-                <el-select v-else v-model="childerItem.expenseName" size="small" clearable placeholder="请选择" style="width: 80%;">
+                <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.expenseName" size="small" clearable placeholder="请选择" style="width: 80%;">
                   <el-option
                     v-for="item in expenseCodeOpt"
                     :key="item.expenseName"
@@ -433,18 +433,18 @@
                 </el-select>
               </div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
-                <el-input :disabled="childerItem.expenseName == '空运费' ? true : false" v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="(childerItem.expenseName == '空运费') || (orderStatus.indexOf(status) == -1) ? true : false" v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.price" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.price" @blur="priceBlur(childerItem.price,childerIndex,'应付','单价')" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.price" @blur="priceBlur(childerItem.price,childerIndex,'应付','单价')" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.quantity" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.quantity" @blur="priceBlur(childerItem.quantity,childerIndex,'应付','数量')" maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.quantity" @blur="priceBlur(childerItem.quantity,childerIndex,'应付','数量')" maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
-                <el-select :disabled="childerItem.expenseName == '空运费' ? true : false" v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 80%;">
+                <el-select :disabled="(childerItem.expenseName == '空运费') || (orderStatus.indexOf(status) == -1) ? true : false" v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 80%;">
                   <el-option
                     v-for="item in currencyOpt"
                     :key="item.Name"
@@ -458,15 +458,15 @@
               </div>
               <div class="flight-template-li" style="flex: 0 0 5%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.exchangeRate" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else v-model="childerItem.exchangeRate" @blur="priceBlur(childerItem.exchangeRate,childerIndex,'应付','汇率')" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.exchangeRate" @blur="priceBlur(childerItem.exchangeRate,childerIndex,'应付','汇率')" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 10%;">
                 <el-input v-model="childerItem.totalOrgn" :disabled="true" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
-                <el-input v-model="childerItem.remark" maxlength="50" size="small" style="width: 80%;"></el-input>
+                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="childerItem.remark" maxlength="50" size="small" style="width: 80%;"></el-input>
               </div>
-              <div class="flight-template-li" size="small" style="flex: 0 0 10%;">
+              <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" size="small" style="flex: 0 0 10%;">
                 <a :style="{visibility: apOrderPriceList.length > 9 ? 'hidden' : 'visible'}" @click="addApOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
                 <a @click="delApOrderPriceList(childerIndex)" style="font-size: 18px;" :style="{visibility: childerIndex == 0 ? 'hidden' : 'visible'}"><i class="el-icon-delete"></i></a>
               </div>
@@ -487,12 +487,16 @@
       </el-form>
 
       <!-- 航线价格 -->
-      <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
+      <el-form v-if="orderStatus.indexOf(status) > -1" :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
         <div class="rest-style" style="padding-left: 20px;">
           <el-form-item label=" " label-width="150px">
-            <el-button @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
-            <el-button @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >海关查验</el-button>
-            <el-button @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0 20px;width: auto;" type="primary" >卡口放行</el-button>
+            <el-button @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary">保存</el-button>
+            <el-button v-if="status == '25'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >海关查验</el-button>
+            <el-button v-if="status == '27'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;padding: 0 20px;width: auto;" type="primary" >查验异常，取消订单</el-button>
+            <el-button v-if="status == '29'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;padding: 0 20px;width: auto;" type="primary" >安检异常，待处理</el-button>
+            <el-button v-if="status == '31'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;padding: 0 20px;width: auto;" type="primary" >处理失败，取消订单</el-button>
+            <el-button v-if="status == '25' || status == '27'" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0 20px;width: auto;" type="primary" >卡口放行</el-button>
+            <el-button v-if="status == '29' || status == '31'" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0 20px;width: auto;" type="primary" >安检通过</el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -505,6 +509,7 @@
   export default {
     data() {
       return {
+        orderStatus: [25,27,29,31],
         labelPosition: 'right',
         loading: false,
         id: '',
