@@ -590,6 +590,10 @@
         bubblePoint: '',
         bubblePointOpt: [
           {
+            Name: '不分泡',
+            Value: '10'
+          },
+          {
             Name: '1/9',
             Value: '1'
           },
@@ -624,10 +628,6 @@
           {
             Name: '9/1',
             Value: '9'
-          },
-          {
-            Name: '不分泡',
-            Value: '10'
           }
         ],
         departureDate: '',
