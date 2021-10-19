@@ -961,7 +961,12 @@
             orderPriceList: orderPriceList,
           }
         }
-        data.orderCargoDetailList = this.orderCargoDetailList
+        data.orderCargoDetailList = []
+        for(var j = 0; j < this.orderCargoDetailList.length; j++){
+          if(this.orderCargoDetailList[j].piece && this.orderCargoDetailList[j].cbm && this.orderCargoDetailList[j].weight && this.orderCargoDetailList[j].packing && this.orderCargoDetailList[j].outerBox && this.orderCargoDetailList[j].cargoSize){
+            data.orderCargoDetailList.push(this.orderCargoDetailList[j])
+          }
+        }
         if(type == '保存'){
           this.$http.post(this.$service.orderSaveOrder,data).then((data) => {
             if(data.code == 200){
