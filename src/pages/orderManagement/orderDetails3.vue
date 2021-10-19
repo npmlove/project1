@@ -313,8 +313,9 @@
         <div>
           <el-form-item class="up-input" label="进仓图片">
             <div v-if="imgArr.length > 0" style="width: 800px;display: flex;flex-wrap: wrap;">
-              <div v-for="(item,index) in imgArr" :key="index" style="margin-right: 10px;margin-bottom: 10px;font-size: 0;position: relative;">
+              <div v-for="(item,index) in imgArr" :key="index" style="margin-right: 20px;margin-bottom: 20px;font-size: 0;position: relative;">
                 <img :src="imgUrl+item.xpath" style="width: 150px;height: 150px;" />
+                <img v-if="status == '13'" @click="delImgClick(index)" src="../../assets/gaungbi.png" style="width: 30px;height: 30px;position: absolute;right: -15px;top: -15px;z-index: 999;cursor: pointer;" />
               </div>
             </div>
             <el-input v-else-if="imgArr.length == 0 && (status != '13')" value="暂无图片" :disabled="true"  style="width: 216px;"></el-input>
@@ -816,6 +817,9 @@
       }
     },
     methods: {
+      delImgClick(index) {
+        this.imgArr.splice(index,1)
+      },
       //图片上传
       beforeAvatarUpload(file) {
         const isJPG = file.type;
