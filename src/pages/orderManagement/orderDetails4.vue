@@ -1440,6 +1440,7 @@
           if(data.code == 200){
             this.detailsArr = data.data
             var data = data.data
+
             this.status = data.status
             this.pscsName = data.pscsName
             this.principalName = data.principalName
@@ -1504,17 +1505,16 @@
             }
             this.arOrderPriceList = data.arOrderPriceList
             if(data.orderOptionsList != null){
-              if(data.orderOptionsList.length == 0){
-                return
-              }
-              this.showMake = true
-              this.orderOptionsList = data.orderOptionsList
-              for(var q = 0; q < this.orderOptionsList.length; q++){
-                this.orderOptionsList[q].flightNoOpt = []
-                this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
-                this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
-                console.log(data.orderOptionsList[q])
-                this.initAirlineSearchByPage(q,data.orderOptionsList[q])
+              if(data.orderOptionsList.length != 0){
+                this.showMake = true
+                this.orderOptionsList = data.orderOptionsList
+                for(var q = 0; q < this.orderOptionsList.length; q++){
+                  this.orderOptionsList[q].flightNoOpt = []
+                  this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
+                  this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
+                  console.log(data.orderOptionsList[q])
+                  this.initAirlineSearchByPage(q,data.orderOptionsList[q])
+                }
               }
             }
             if(data.status == '5'){
@@ -1522,13 +1522,12 @@
               this.countTime(data.updateTime)
             }
             if(data.orderCargoDetailList != null){
-              if(data.orderCargoDetailList.length == 0){
-                return
-              }
-              this.orderCargoDetailList = data.orderCargoDetailList
-              for(var z = 0; z < this.orderCargoDetailList.length; z++) {
-                this.orderCargoDetailList[z].packing = this.orderCargoDetailList[z].packing.toString()
-                this.orderCargoDetailList[z].outerBox = this.orderCargoDetailList[z].outerBox.toString()
+              if(data.orderCargoDetailList.length != 0){
+                this.orderCargoDetailList = data.orderCargoDetailList
+                for(var z = 0; z < this.orderCargoDetailList.length; z++) {
+                  this.orderCargoDetailList[z].packing = this.orderCargoDetailList[z].packing.toString()
+                  this.orderCargoDetailList[z].outerBox = this.orderCargoDetailList[z].outerBox.toString()
+                }
               }
             }
             this.inboundCbm = data.inboundCbm

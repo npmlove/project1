@@ -1296,17 +1296,16 @@
             }
             this.arOrderPriceList = data.arOrderPriceList
             if(data.orderOptionsList != null){
-              if(data.orderOptionsList.length == 0){
-                return
-              }
-              this.showMake = true
-              this.orderOptionsList = data.orderOptionsList
-              for(var q = 0; q < this.orderOptionsList.length; q++){
-                this.orderOptionsList[q].flightNoOpt = []
-                this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
-                this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
-                console.log(data.orderOptionsList[q])
-                this.initAirlineSearchByPage(q,data.orderOptionsList[q])
+              if(data.orderOptionsList.length != 0){
+                this.showMake = true
+                this.orderOptionsList = data.orderOptionsList
+                for(var q = 0; q < this.orderOptionsList.length; q++){
+                  this.orderOptionsList[q].flightNoOpt = []
+                  this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
+                  this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
+                  console.log(data.orderOptionsList[q])
+                  this.initAirlineSearchByPage(q,data.orderOptionsList[q])
+                }
               }
             }
             if(data.status == '5'){
