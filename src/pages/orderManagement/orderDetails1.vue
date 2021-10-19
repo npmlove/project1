@@ -173,7 +173,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="航班号">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="flightNo" maxlength="30" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="flightNo" maxlength="30" placeholder="请输入航班号" style="width: 216px;"></el-input>
           </el-form-item>
         </div>
         <div v-if="orderStatus.indexOf(status) > -1 ? true : false" class="rest-style">
@@ -898,7 +898,7 @@
           })
         }else if(type == '失败'){
           data.ctrlMap = {
-            ctrlFlag: 2
+            ctrlFlag: 3
           }
           this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
             if(data.code == 200){
@@ -909,7 +909,7 @@
           })
         }else if(type == '取消'){
           data.ctrlMap = {
-            ctrlFlag: 3
+            ctrlFlag: 2
           }
           this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
             if(data.code == 200){
