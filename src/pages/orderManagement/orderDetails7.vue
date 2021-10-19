@@ -216,10 +216,10 @@
         </div>
         <div>
           <el-form-item label="重量">
-            <el-input :value="1+':'+bookingWeight" :disabled="true" placeholder="请输入重量" style="width: 216px;"></el-input>
+            <el-input :value="bookingWeight" :disabled="true" placeholder="请输入重量" style="width: 216px;"></el-input>
           </el-form-item>
           <el-form-item label="比重">
-            <el-input v-model="bookingVwr" :disabled="true" placeholder="请输入比重" style="width: 216px;"></el-input>
+            <el-input :value="1+':'+bookingVwr" :disabled="true" placeholder="请输入比重" style="width: 216px;"></el-input>
           </el-form-item>
         </div>
         <div>

@@ -106,6 +106,8 @@ const serviceApi = {
   orderSaveOrder:pulicWeb+'/t-order/saveOrder',
   //执行订单
   orderExecuteOrder:pulicWeb+'/t-order/executeOrder',
+  //上传附件
+  attachmentUpload:pulicWeb+'/t-order-attachment/upload',
 
 }
 export default serviceApi
