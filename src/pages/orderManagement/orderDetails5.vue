@@ -163,7 +163,7 @@
         </div>
         <div>
           <el-form-item label="代理公司">
-            <el-select v-model="agentId" filterable clearable placeholder="请选代理公司" style="width: 216;">
+            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="agentId" filterable clearable placeholder="请选代理公司" style="width: 216;">
               <el-option
                 v-for="item in agentIdOpt"
                 :key="item.id"
@@ -173,7 +173,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="航班号">
-            <el-input v-model="flightNo" maxlength="30" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="flightNo" maxlength="30" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
           </el-form-item>
         </div>
 
