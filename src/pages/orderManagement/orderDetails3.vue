@@ -392,7 +392,7 @@
               </div>
               <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" size="small" style="flex: 0 0 10%;">
                 <a :style="{visibility: arOrderPriceList.length > 9 ? 'hidden' : 'visible'}" @click="addArOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
-                <a @click="delArOrderPriceList(childerIndex)" style="font-size: 18px;" :style="{visibility: childerIndex == 0 ? 'hidden' : 'visible'}"><i class="el-icon-delete"></i></a>
+                <a @click="delArOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
               </div>
             </div>
           </div>
@@ -482,7 +482,7 @@
               </div>
               <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" size="small" style="flex: 0 0 10%;">
                 <a :style="{visibility: apOrderPriceList.length > 9 ? 'hidden' : 'visible'}" @click="addApOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
-                <a @click="delApOrderPriceList(childerIndex)" style="font-size: 18px;" :style="{visibility: childerIndex == 0 ? 'hidden' : 'visible'}"><i class="el-icon-delete"></i></a>
+                <a @click="delApOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
               </div>
             </div>
           </div>
@@ -1575,7 +1575,6 @@
             this.inboundVwr = data.inboundVwr
             this.inboundWeight = data.inboundWeight
             this.imgArr = data.orderAttachmentList
-            console.log(this.imgArr)
           }else{
             this.$message.error(data.message)
           }
