@@ -310,6 +310,16 @@
             </div>
           </div>
         </div>
+        <div>
+          <el-form-item class="up-input" label="进仓图片">
+            <div v-if="imgArr.length > 0" style="width: 800px;display: flex;flex-wrap: wrap;">
+              <div v-for="(item,index) in imgArr" :key="index" style="margin-right: 10px;margin-bottom: 10px;font-size: 0;position: relative;">
+                <img :src="imgUrl+item.xpath" style="width: 150px;height: 150px;" />
+              </div>
+            </div>
+            <el-input v-else value="暂无图片" :disabled="true"  style="width: 216px;"></el-input>
+          </el-form-item>
+        </div>
 
         <!-- 账单信息-应收账单 -->
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">账单信息-应收账单</div>
@@ -763,7 +773,8 @@
         inboundCbm: '',
         inboundWeight: '',
         inboundVwr: '',
-        inboundCw: ''
+        inboundCw: '',
+        imgArr: []
       }
     },
     created() {
@@ -1519,6 +1530,7 @@
             this.inboundPiece = data.inboundPiece
             this.inboundVwr = data.inboundVwr
             this.inboundWeight = data.inboundWeight
+            this.imgArr = data.orderAttachmentList
           }else{
             this.$message.error(data.message)
           }

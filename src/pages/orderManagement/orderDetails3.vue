@@ -310,6 +310,19 @@
             </div>
           </div>
         </div>
+        <div>
+          <el-form-item class="up-input" label="进仓图片">
+            <div v-if="imgArr.length > 0" style="width: 800px;display: flex;flex-wrap: wrap;">
+              <div v-for="(item,index) in imgArr" :key="index" style="margin-right: 10px;margin-bottom: 10px;font-size: 0;position: relative;">
+                <img :src="imgUrl+item.xpath" style="width: 150px;height: 150px;" />
+              </div>
+            </div>
+            <el-input v-else-if="imgArr.length == 0 && (status != '13')" value="暂无图片" :disabled="true"  style="width: 216px;"></el-input>
+            <el-upload v-if="status == '13'" class="avatar-uploader" :show-file-list="false" :before-upload="beforeAvatarUpload" action="#" :limit="1">
+              <i class="el-icon-plus avatar-uploader-icon "></i>
+            </el-upload>
+          </el-form-item>
+        </div>
 
         <!-- 账单信息-应收账单 -->
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">账单信息-应收账单</div>
@@ -767,7 +780,8 @@
         inboundCbm: '',
         inboundWeight: '',
         inboundVwr: '',
-        inboundCw: ''
+        inboundCw: '',
+        imgArr: []
       }
     },
     created() {
@@ -802,6 +816,39 @@
       }
     },
     methods: {
+      //图片上传
+      beforeAvatarUpload(file) {
+        const isJPG = file.type;
+        const isLt300K = 300;
+        if (file.size > (isLt300K * 1024)) {
+          this.$message.error('图片文件大小不能大于300KB!');
+          return
+        }
+        if (isJPG == 'image/jpeg' || isJPG == 'image/png') {
+          this.$message.success('上传图片成功');
+        } else {
+          this.$message.error('上传图片只能是 JPG 格式或 PNG 格式!');
+          return
+        }
+        this.file = file;
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        let that = this;
+        reader.onload = function() {
+          that.upLoadpdf()
+        };
+      },
+      upLoadpdf() {
+        let fileFormData = new FormData();
+        fileFormData.append('file', this.file)
+        fileFormData.append('orderId', this.orderId)
+        fileFormData.append('attachType', '1')
+        this.$http.post(this.$service.attachmentUpload, fileFormData).then(res => {
+          if (res.code == 200) {
+            this.imgArr.push(res.data)
+          }
+        })
+      },
       //进仓数据
       addOrderCargoDetailList(){
         var json = {
@@ -967,6 +1014,7 @@
             data.orderCargoDetailList.push(this.orderCargoDetailList[j])
           }
         }
+        data.orderAttachmentList = this.imgArr
         if(type == '保存'){
           this.$http.post(this.$service.orderSaveOrder,data).then((data) => {
             if(data.code == 200){
@@ -1523,6 +1571,7 @@
             this.inboundPiece = data.inboundPiece
             this.inboundVwr = data.inboundVwr
             this.inboundWeight = data.inboundWeight
+            this.imgArr = data.orderAttachmentList
           }else{
             this.$message.error(data.message)
           }
