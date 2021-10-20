@@ -1568,8 +1568,12 @@
               if(data.orderCargoDetailList.length != 0){
                 this.orderCargoDetailList = data.orderCargoDetailList
                 for(var z = 0; z < this.orderCargoDetailList.length; z++) {
-                  this.orderCargoDetailList[z].packing = this.orderCargoDetailList[z].packing.toString()
-                  this.orderCargoDetailList[z].outerBox = this.orderCargoDetailList[z].outerBox.toString()
+                  if(this.orderCargoDetailList[z].packing != null){
+                    this.orderCargoDetailList[z].packing = this.orderCargoDetailList[z].packing.toString()
+                  }
+                  if(this.orderCargoDetailList[z].outerBox != null){
+                    this.orderCargoDetailList[z].outerBox = this.orderCargoDetailList[z].outerBox.toString()
+                  }
                 }
               }
             }
