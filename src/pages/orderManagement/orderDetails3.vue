@@ -293,12 +293,12 @@
         <div class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
           <div class="flight-template" style="width: auto;margin-left: 0;">
             <div class="flight-template-ul-header">
-              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">件数 PCS</div>
-              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">体积 CBM</div>
-              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">重量 KGS</div>
-              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">货物尺寸 CM</div>
-              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">包装方式</div>
-              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">外箱情况</div>
+              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;"><span style="color: #F00;">*</span>件数 PCS</div>
+              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;"><span style="color: #F00;">*</span>体积 CBM</div>
+              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;"><span style="color: #F00;">*</span>重量 KGS</div>
+              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;"><span style="color: #F00;">*</span>货物尺寸 CM</div>
+              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;"><span style="color: #F00;">*</span>包装方式</div>
+              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;"><span style="color: #F00;">*</span>外箱情况</div>
               <div v-if="status == '13'" class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
             </div>
             <div v-for="(childerItem,childerIndex) in orderCargoDetailList" :key="childerIndex" class="flight-template-ul-content">
@@ -1068,7 +1068,7 @@
             if(this.orderCargoDetailList[j].piece && this.orderCargoDetailList[j].cbm && this.orderCargoDetailList[j].weight && this.orderCargoDetailList[j].packing && this.orderCargoDetailList[j].outerBox && this.orderCargoDetailList[j].cargoSize){
               data.orderCargoDetailList.push(this.orderCargoDetailList[j])
             }else{
-              this.$message.error('进仓数据不能为空')
+              this.$message.error('进仓数据必填项不能为空')
               return
             }
           }
