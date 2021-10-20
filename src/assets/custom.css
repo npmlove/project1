@@ -676,3 +676,6 @@ textarea {
   line-height: 150px;
   font-size: 22px;
 }
+.nth9_class .el-tabs__nav.is-top > div:nth-of-type(9){
+  color: #F00 !important;
+}

@@ -64,7 +64,7 @@
           </el-form-item>
         </div>
       </el-form>
-      <el-tabs v-model="typeCode" type="border-card" @tab-click="tabClickData">
+      <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData">
         <el-tab-pane label="全部订单" name="全部订单">
           <Table
             :tableData='tableData'
@@ -169,7 +169,7 @@
             @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane :label="'异常'+orderCount" name="8">
+        <el-tab-pane :label="'异常('+orderCount+')'" name="8">
           <Table
             :tableData='tableData'
             :columns='columns'
