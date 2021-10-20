@@ -1070,6 +1070,7 @@
         }
         data.orderAttachmentList = this.imgArr
         if(type == '保存'){
+          data.orderCargoDetailList = this.orderCargoDetailList
           this.$http.post(this.$service.orderSaveOrder,data).then((data) => {
             if(data.code == 200){
               this.$router.push('/orderManagement/orderManage')
