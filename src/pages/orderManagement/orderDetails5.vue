@@ -521,7 +521,7 @@
               <div>{{totalApCny}}</div>
             </el-form-item>
             <el-form-item label="利润">
-              <div>{{orderProfit}}</div>
+              <div>{{totalArCny - totalApCny}}</div>
             </el-form-item>
           </div>
         </div>
@@ -958,7 +958,7 @@
           mscsId: this.mscsId.split('#')[0],
           mscsName: this.mscsId.split('#')[1],
           orderNo: this.orderNo,
-          orderProfit: this.orderProfit,
+          orderProfit: this.totalArCny - this.totalApCny,
           packageType: this.packageType,
           pickUpAddress: this.pickUpAddress,
           pickUpContacts: this.pickUpContacts,
