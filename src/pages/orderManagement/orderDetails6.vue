@@ -404,14 +404,14 @@
                 </el-select>
               </div>
               <div class="flight-template-li" style="flex: 0 0 10%;">
-                <el-input v-model="childerItem.totalCny" :disabled="true" size="small" style="width: 90%;"></el-input>
+                <el-input v-model="childerItem.totalOrgn" :disabled="true" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 5%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.exchangeRate" :disabled="true" size="small" style="width: 90%;"></el-input>
                 <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.exchangeRate"  @blur="priceBlur(childerItem.exchangeRate,childerIndex,'应收','汇率')" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 10%;">
-                <el-input v-model="childerItem.totalOrgn" :disabled="true" size="small" style="width: 90%;"></el-input>
+                <el-input v-model="childerItem.totalCny" :disabled="true" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
                 <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="childerItem.remark" maxlength="50" size="small" style="width: 80%;"></el-input>
@@ -494,14 +494,14 @@
                 </el-select>
               </div>
               <div class="flight-template-li" style="flex: 0 0 10%;">
-                <el-input v-model="childerItem.totalCny" :disabled="true" size="small" style="width: 90%;"></el-input>
+                <el-input v-model="childerItem.totalOrgn" :disabled="true" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 5%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.exchangeRate" :disabled="true" size="small" style="width: 90%;"></el-input>
                 <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.exchangeRate" @blur="priceBlur(childerItem.exchangeRate,childerIndex,'应付','汇率')" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 10%;">
-                <el-input v-model="childerItem.totalOrgn" :disabled="true" size="small" style="width: 90%;"></el-input>
+                <el-input v-model="childerItem.totalCny" :disabled="true" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
                 <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="childerItem.remark" maxlength="50" size="small" style="width: 80%;"></el-input>
@@ -1154,19 +1154,19 @@
             }
           }else{
             if(type == '应收' && this.arOrderPriceList[index].price && this.arOrderPriceList[index].quantity){
-              this.arOrderPriceList[index].totalCny = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity)
+              this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity)
               if(this.arOrderPriceList[index].exchangeRate == ''){
-                this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*1)
+                this.arOrderPriceList[index].totalCny = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*1)
               }else{
-                this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*this.arOrderPriceList[index].exchangeRate)
+                this.arOrderPriceList[index].totalCny = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*this.arOrderPriceList[index].exchangeRate)
               }
               this.totalPriceType('应收')
             }else if(type == '应付' && this.apOrderPriceList[index].price && this.apOrderPriceList[index].quantity){
-              this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity)
+              this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity)
               if(this.apOrderPriceList[index].exchangeRate == ''){
-                this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*1)
+                this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*1)
               }else{
-                this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*this.apOrderPriceList[index].exchangeRate)
+                this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*this.apOrderPriceList[index].exchangeRate)
               }
               this.totalPriceType('应付')
             }
@@ -1183,16 +1183,16 @@
             }
           }else if(type == '应收' && this.arOrderPriceList[index].price && this.arOrderPriceList[index].quantity){
             if(this.arOrderPriceList[index].exchangeRate == ''){
-              this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*1)
+              this.arOrderPriceList[index].totalCny = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*1)
             }else{
-              this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*this.arOrderPriceList[index].exchangeRate)
+              this.arOrderPriceList[index].totalCny = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*this.arOrderPriceList[index].exchangeRate)
             }
             this.totalPriceType('应收')
           }else if(type == '应付' && this.apOrderPriceList[index].price && this.apOrderPriceList[index].quantity){
             if(this.apOrderPriceList[index].exchangeRate == ''){
-              this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*1)
+              this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*1)
             }else{
-              this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*this.apOrderPriceList[index].exchangeRate)
+              this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*this.apOrderPriceList[index].exchangeRate)
             }
             this.totalPriceType('应付')
           }
@@ -1207,19 +1207,19 @@
             }
           }else{
             if(type == '应收' && this.arOrderPriceList[index].price && this.arOrderPriceList[index].quantity){
-              this.arOrderPriceList[index].totalCny = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity)
+              this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity)
               if(this.arOrderPriceList[index].exchangeRate == ''){
-                this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*1)
+                this.arOrderPriceList[index].totalCny = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*1)
               }else{
-                this.arOrderPriceList[index].totalOrgn = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*this.arOrderPriceList[index].exchangeRate)
+                this.arOrderPriceList[index].totalCny = Math.ceil(this.arOrderPriceList[index].price*this.arOrderPriceList[index].quantity*this.arOrderPriceList[index].exchangeRate)
               }
               this.totalPriceType('应收')
             }else if(type == '应付' && this.apOrderPriceList[index].price && this.apOrderPriceList[index].quantity){
-              this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity)
+              this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity)
               if(this.apOrderPriceList[index].exchangeRate == ''){
-                this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*1)
+                this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*1)
               }else{
-                this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*this.apOrderPriceList[index].exchangeRate)
+                this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*this.apOrderPriceList[index].exchangeRate)
               }
               this.totalPriceType('应付')
             }
