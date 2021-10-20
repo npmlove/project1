@@ -172,7 +172,7 @@
         </div>
         <div>
           <el-form-item label="分泡比例">
-            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="bubblePoint"  filterable clearable placeholder="请选择分泡比例" style="width: 216;">
+            <el-select @change="bubblePointChang" :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="bubblePoint"  filterable clearable placeholder="请选择分泡比例" style="width: 216;">
               <el-option
                 v-for="item in bubblePointOpt"
                 :key="item.Name"
@@ -839,6 +839,25 @@
       }
     },
     methods: {
+      bubblePointChang() {
+        var shuliang = (this.bubblePoint/10)*this.bookingCw+(1-this.bubblePoint/10)*(this.bookingWeight)
+        for(var i = 0; i < this.apOrderPriceList.length; i++){
+          if(this.apOrderPriceList[i].expenseName == '空运费'){
+            this.apOrderPriceList[i].quantity = shuliang
+            this.apOrderPriceList[i].totalOrgn = Math.ceil(shuliang*this.apOrderPriceList[i].price)
+            this.apOrderPriceList[i].totalCny = Math.ceil(shuliang*this.apOrderPriceList[i].price)
+          }
+        }
+        for(var q = 0; q < this.arOrderPriceList.length; q++){
+          if(this.arOrderPriceList[q].expenseName == '空运费'){
+            this.arOrderPriceList[q].quantity = shuliang
+            this.arOrderPriceList[q].totalOrgn = Math.ceil(shuliang*this.arOrderPriceList[q].price)
+            this.arOrderPriceList[q].totalCny = Math.ceil(shuliang*this.arOrderPriceList[q].price)
+          }
+        }
+        this.totalPriceType('应收')
+        this.totalPriceType('应付')
+      },
       //进仓数据
       addOrderCargoDetailList(){
         var json = {
