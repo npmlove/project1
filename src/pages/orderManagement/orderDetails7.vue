@@ -419,7 +419,7 @@
               </div>
               <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" size="small" style="flex: 0 0 10%;">
                 <a :style="{visibility: arOrderPriceList.length > 9 ? 'hidden' : 'visible'}" @click="addArOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
-                <a @click="delArOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
+                <a @click="delArOrderPriceList(childerIndex)" :style="{visibility: arOrderPriceList.length == 1 ? 'hidden' : 'visible'}" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
               </div>
             </div>
           </div>
@@ -509,7 +509,7 @@
               </div>
               <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" size="small" style="flex: 0 0 10%;">
                 <a :style="{visibility: apOrderPriceList.length > 9 ? 'hidden' : 'visible'}" @click="addApOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
-                <a @click="delApOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
+                <a @click="delApOrderPriceList(childerIndex)" :style="{visibility: apOrderPriceList.length == 1 ? 'hidden' : 'visible'}" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
               </div>
             </div>
           </div>
@@ -528,7 +528,7 @@
       </el-form>
 
       <!-- 航线价格 -->
-      <el-form v-if="orderStatus.indexOf(status) > -1" :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
+      <el-form v-if="orderStatus.indexOf(status) > -1 && apOrderPriceList.length > 0 && arOrderPriceList.length > 0" :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
         <div class="rest-style" style="padding-left: 20px;">
           <el-form-item label=" " label-width="150px">
             <el-button @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
