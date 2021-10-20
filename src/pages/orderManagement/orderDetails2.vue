@@ -440,7 +440,7 @@
           <el-form-item label=" " label-width="150px">
             <el-button @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
             <el-button @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >取消订单</el-button>
-            <el-button @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核通过</el-button>
+            <el-button @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >货物已进仓</el-button>
           </el-form-item>
         </div>
       </el-form>
