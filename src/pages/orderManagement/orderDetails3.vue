@@ -1062,10 +1062,15 @@
             orderPriceList: orderPriceList,
           }
         }
-        data.orderCargoDetailList = []
-        for(var j = 0; j < this.orderCargoDetailList.length; j++){
-          if(this.orderCargoDetailList[j].piece && this.orderCargoDetailList[j].cbm && this.orderCargoDetailList[j].weight && this.orderCargoDetailList[j].packing && this.orderCargoDetailList[j].outerBox && this.orderCargoDetailList[j].cargoSize){
-            data.orderCargoDetailList.push(this.orderCargoDetailList[j])
+        if(type == '通过' || type == '失败'){
+          data.orderCargoDetailList = []
+          for(var j = 0; j < this.orderCargoDetailList.length; j++){
+            if(this.orderCargoDetailList[j].piece && this.orderCargoDetailList[j].cbm && this.orderCargoDetailList[j].weight && this.orderCargoDetailList[j].packing && this.orderCargoDetailList[j].outerBox && this.orderCargoDetailList[j].cargoSize){
+              data.orderCargoDetailList.push(this.orderCargoDetailList[j])
+            }else{
+              this.$message.error('进仓数据不能为空')
+              return
+            }
           }
         }
         data.orderAttachmentList = this.imgArr
