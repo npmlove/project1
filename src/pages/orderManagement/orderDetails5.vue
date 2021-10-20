@@ -120,28 +120,59 @@
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">航线信息</div>
         <div>
           <el-form-item label="起运港">
-            <el-input v-model="pol" :disabled="true" placeholder="请输入起运港"  style="width: 216px;"></el-input>
+            <el-select v-model="pol" :disabled="orderStatus.indexOf(status) > -1 ? false : true" :remote-method="polMethod" @change="initAirlineSearchByPage" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择起运港" style="width: 216;">
+              <el-option
+                v-for="item in polOpt"
+                :key="item.threeLetterCode"
+                :disabled="item.pod == item.threeLetterCode"
+                :label="item.threeLetterCode"
+                :value="item.threeLetterCode">
+                <span style="margin-right: 5px;">{{item.threeLetterCode}}</span>
+                <span>{{item.name}}</span>
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="目的港">
-            <el-input v-model="pod" :disabled="true" placeholder="请输入目的港" style="width: 216px;"></el-input>
+            <el-select v-model="pod" :disabled="orderStatus.indexOf(status) > -1 ? false : true" :remote-method="podMethod" @change="initAirlineSearchByPage" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择起运港" style="width: 216;">
+              <el-option
+                v-for="item in podOpt"
+                :key="item.threeLetterCode"
+                :disabled="item.pol == item.threeLetterCode"
+                :label="item.threeLetterCode"
+                :value="item.threeLetterCode">
+                <span style="margin-right: 5px;">{{item.threeLetterCode}}</span>
+                <span>{{item.name}}</span>
+              </el-option>
+            </el-select>
           </el-form-item>
         </div>
         <div>
           <el-form-item label="航司">
-            <el-input v-model="airCompanyName" :disabled="true" placeholder="请输入航司" style="width: 216px;"></el-input>
+            <el-select v-model="airCompanyName" :disabled="orderStatus.indexOf(status) > -1 ? false : true" @change="initAirlineSearchByPage" :remote-method="companyMethod" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择航司" style="width: 216;">
+              <el-option
+                v-for="item in airCompanyCodeOpt"
+                :key="item.airCompanyCode"
+                :label="item.name"
+                :value="item.airCompanyCode">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="订舱单价">
-            <el-input v-model="bookingPrice" :disabled="true" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
+            <el-input v-model="bookingPrice" :disabled="orderStatus.indexOf(status) > -1 ? false : true" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
           </el-form-item>
         </div>
         <div>
           <el-form-item label="航线路径">
-            <el-input v-model="fullLeg" :disabled="true" placeholder="请输入航线路径" style="width: 596px;"></el-input>
+            <!-- <el-input v-model="fullLeg" :disabled="true" placeholder="请输入航线路径" style="width: 596px;"></el-input> -->
+            <div v-if="flightNoOpt.length == 0" style="color: #2273ce;">选择起运港、目的港、航司、代理公司后才会有推荐航线</div>
+            <el-radio-group v-else v-model="fullLeg" :disabled="orderStatus.indexOf(status) > -1 ? false : true">
+              <el-radio v-for="(optItem,optIndex) in flightNoOpt" :key="optIndex" :label="optItem.fullLeg">{{optItem.fullLeg}}</el-radio>
+            </el-radio-group>
           </el-form-item>
         </div>
         <div>
           <el-form-item label="分泡比例">
-            <el-select  :disabled="true" v-model="bubblePoint"  filterable clearable placeholder="请选择分泡比例" style="width: 216;">
+            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="bubblePoint"  filterable clearable placeholder="请选择分泡比例" style="width: 216;">
               <el-option
                 v-for="item in bubblePointOpt"
                 :key="item.Name"
@@ -153,9 +184,9 @@
           <el-form-item label="出发日期">
             <el-date-picker
               v-model="departureDate"
-               :disabled="true"
               type="date"
               placeholder="选择日期"
+               :disabled="orderStatus.indexOf(status) > -1 ? false : true"
               style="width: 216px;"
               value-format="yyyy-MM-dd">
             </el-date-picker>
@@ -1224,25 +1255,24 @@
       },
       //航线
       initAirlineSearchByPage(index,item) {
-        if(!item.agentId || !item.pol || !item.pod || !item.airCompanyCode){
+        if(!this.agentId || !this.pol || !this.pod || !this.airCompanyCode){
           return
         }
         var json = {
-          airCompanyCode: item.airCompanyCode,
-          pol: item.pol,
-          pod: item.pod,
+          airCompanyCode: this.airCompanyCode,
+          pol: this.pol,
+          pod: this.pod,
           pageNum: 1,
-          agentName: item.agentId.split('#')[1]
+          agentName: this.agentId.split('#')[1]
         }
         this.$http.post(this.$service.airlineSearchByPage,json).then((data) => {
           if(data.code == 200){
-            this.orderOptionsList[index].flightNoOpt = data.data.records
+            this.flightNoOpt = data.data.records
             this.$forceUpdate()
           }else{
             this.$message.error(data.message)
           }
         })
-
       },
       //费用名称
       initExpenseCode() {
@@ -1509,8 +1539,8 @@
                   this.orderOptionsList[q].flightNoOpt = []
                   this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
                   this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
-                  console.log(data.orderOptionsList[q])
-                  this.initAirlineSearchByPage(q,data.orderOptionsList[q])
+                  // console.log(data.orderOptionsList[q])
+                  // this.initAirlineSearchByPage(q,data.orderOptionsList[q])
                 }
               }
             }
@@ -1533,6 +1563,7 @@
             this.inboundVwr = data.inboundVwr
             this.inboundWeight = data.inboundWeight
             this.imgArr = data.orderAttachmentList
+            this.initAirlineSearchByPage()
           }else{
             this.$message.error(data.message)
           }
