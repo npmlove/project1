@@ -1047,21 +1047,15 @@
             }
           })
         }else if(type == '失败'){
-          this.$confirm('确定取消订单?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            data.ctrlMap = {
-              ctrlFlag: 2
+          data.ctrlMap = {
+            ctrlFlag: 2
+          }
+          this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
+            if(data.code == 200){
+              this.$router.push('/orderManagement/orderManage')
+            } else {
+              this.$message.error(data.message)
             }
-            this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
-              if(data.code == 200){
-                this.$router.push('/orderManagement/orderManage')
-              } else {
-                this.$message.error(data.message)
-              }
-            })
           })
         }
       },

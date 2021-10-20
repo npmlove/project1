@@ -2,11 +2,6 @@
   <div class="content-wrapper">
     <div class="content">
       <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
-        <div v-if="status == '5'" style="display: flex;align-items: center;margin-bottom: 20px;">
-          <div style="font-size: 18px;font-weight: 100;color: #2273ce;">待客户确认备选方案</div>
-          <div style="margin: 0 20px;"><el-button style="width: auto;" size="medium" type="primary">取消订单</el-button></div>
-          <div style="font-size: 18px;font-weight: 100;color: #F00;">{{timeOut}}</div>
-        </div>
 
         <!-- 客户信息 -->
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">客户信息</div>
@@ -1051,21 +1046,15 @@
             }
           })
         }else if(type == '失败'){
-          this.$confirm('确定取消订单?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            data.ctrlMap = {
-              ctrlFlag: 2
+          data.ctrlMap = {
+            ctrlFlag: 2
+          }
+          this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
+            if(data.code == 200){
+              this.$router.push('/orderManagement/orderManage')
+            } else {
+              this.$message.error(data.message)
             }
-            this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
-              if(data.code == 200){
-                this.$router.push('/orderManagement/orderManage')
-              } else {
-                this.$message.error(data.message)
-              }
-            })
           })
         }
       },
