@@ -532,7 +532,7 @@
         <div class="rest-style" style="padding-left: 20px;">
           <el-form-item label=" " label-width="150px">
             <el-button @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
-            <el-button v-if="status == '37'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >起运异常</el-button>
+            <el-button v-if="status == '37'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >起运异常，订单取消</el-button>
             <el-button v-if="status == '37'" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0 20px;width: auto;" type="primary" >已起运</el-button>
             <el-button v-if="status == '41'" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0 20px;width: auto;" type="primary" >已到达</el-button>
           </el-form-item>

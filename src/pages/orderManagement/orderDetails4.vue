@@ -533,11 +533,12 @@
           <el-form-item label=" " label-width="150px">
             <el-button @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary">保存</el-button>
             <el-button v-if="status == '25'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >海关查验</el-button>
-            <el-button v-if="status == '27'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;padding: 0 20px;width: auto;" type="primary" >查验异常，取消订单</el-button>
-            <el-button v-if="status == '29'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;padding: 0 20px;width: auto;" type="primary" >安检异常，待处理</el-button>
-            <el-button v-if="status == '31'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;padding: 0 20px;width: auto;" type="primary" >处理失败，取消订单</el-button>
+            <el-button v-if="status == '27'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;padding: 0 20px;width: auto;" type="primary" >查验异常，待处理</el-button>
+            <el-button v-if="status == '29'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;padding: 0 20px;width: auto;" type="primary" >查验处理失败，订单取消</el-button>
+            <el-button v-if="status == '31'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;padding: 0 20px;width: auto;" type="primary" >安检异常，待处理</el-button>
+            <el-button v-if="status == '33'" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;padding: 0 20px;width: auto;" type="primary" >处理失败，取消订单</el-button>
             <el-button v-if="status == '25' || status == '27'" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0 20px;width: auto;" type="primary" >卡口放行</el-button>
-            <el-button v-if="status == '29' || status == '31'" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0 20px;width: auto;" type="primary" >安检通过</el-button>
+            <el-button v-if="status == '29' || status == '31' || status == '33'" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0 20px;width: auto;" type="primary" >安检通过</el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -550,7 +551,7 @@
   export default {
     data() {
       return {
-        orderStatus: [25,27,29,31],
+        orderStatus: [25,27,29,31,33],
         labelPosition: 'right',
         loading: false,
         id: '',
