@@ -274,7 +274,8 @@
           </div>
           <div class="rest-style">
             <el-form-item label=" " label-width="150px">
-              <el-button @click="addOrderOptionsList" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >添加方案</el-button>
+              <el-button v-if="status == 3" @click="addOrderOptionsList" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >添加方案</el-button>
+              <el-button v-if="status == 5" @click="querenClick(item)" style="height: 36px;line-height: 36px;padding: 0 20px;width: auto;" type="primary" >客户确认该方案</el-button>
             </el-form-item>
           </div>
         </div>
@@ -525,7 +526,7 @@
   export default {
     data() {
       return {
-        orderStatus: [3,5],
+        orderStatus: [3],
         labelPosition: 'right',
         loading: false,
         id: '',
@@ -761,6 +762,37 @@
       this.companyMethod()
     },
     methods: {
+      querenClick(item) {
+        var data = {}
+        var order = {
+          agentId: item.agentId.split('#')[0],
+          agentName: item.agentId.split('#')[1],
+          airCompanyCode: item.airCompanyCode,
+          bookingPrice: item.bookingPrice,
+          bubblePoint: item.bubblePoint,
+          departureDate: item.departureDate,
+          dow: item.dow,
+          flightNo: item.flightNo,
+          fullLeg: item.fullLeg,
+          orderId: item.orderId,
+          id: item.orderId,
+          pod: item.pod,
+          pol: item.pol,
+          activityCodeDoing: this.activityCodeDoing,
+          activityCodeDone: this.activityCodeDone
+        }
+        data.ctrlMap = {
+          ctrlFlag: 1
+        }
+        data.order = order
+        this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
+          if(data.code == 200){
+            this.$router.push('/orderManagement/orderManage')
+          } else {
+            this.$message.error(data.message)
+          }
+        })
+      },
       //倒计时
       countTime(totalTime) {
         //获取当前时间
