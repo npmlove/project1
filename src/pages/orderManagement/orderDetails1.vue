@@ -410,7 +410,7 @@
               <div>{{totalArCny}}</div>
             </el-form-item>
             <el-form-item label="结算方式">
-              <el-select :disabled="settlementModes == '0'" v-model="settlementModes" clearable placeholder="请选择结算方式">
+              <el-select :disabled="(settlementModes == '0') || (status == '5')" v-model="settlementModes" clearable placeholder="请选择结算方式">
                 <el-option
                   v-for="item in settlementModesOpt"
                   :key="item.Name"
@@ -1164,6 +1164,10 @@
         this.orderOptionsList.splice(index,1)
       },
       addOrderOptionsList() {
+        if(this.orderOptionsList.length >= 5){
+          this.$message.error('推荐方案最多只能添加五个')
+          return
+        }
         var json = {
           pol: '',
           pod: '',
