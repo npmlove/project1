@@ -343,7 +343,7 @@
               <div class="flight-template-li" style="flex: 0 0 7%;text-align: center;">币种</div>
               <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">原币合计</div>
               <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">汇率</div>
-              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">人名币合计</div>
+              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">人民币合计</div>
               <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">备注</div>
               <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
             </div>
@@ -434,7 +434,7 @@
               <div class="flight-template-li" style="flex: 0 0 7%;text-align: center;">币种</div>
               <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">原币合计</div>
               <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">汇率</div>
-              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">人名币合计</div>
+              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">人民币合计</div>
               <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">备注</div>
               <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
             </div>
@@ -847,6 +847,29 @@
         if(this.showMake){
           var orderOptionsList = []
           for(var q = 0; q < this.orderOptionsList.length; q++){
+            if(!this.orderOptionsList[q].pol){
+              this.$message.error('请选择起始港')
+              return
+            }else if(!this.orderOptionsList[q].pod){
+              this.$message.error('请选择目的港')
+              return
+            }else if(!this.orderOptionsList[q].airCompanyCode){
+              this.$message.error('请选择航司')
+              return
+            }else if(!this.orderOptionsList[q].agentId){
+              this.$message.error('请选择代理公司')
+              return
+            }else if(!this.orderOptionsList[q].departureDate){
+              this.$message.error('请选择出发日期')
+              return
+            }else if(!this.orderOptionsList[q].bookingPrice){
+              this.$message.error('请输入订舱单价')
+              return
+            }else if(!this.orderOptionsList[q].fullLeg){
+              this.$message.error('请选择航线')
+              return
+            }
+
             var json = {
               agentId: this.orderOptionsList[q].agentId.split('#')[0],
               agentName: this.orderOptionsList[q].agentId.split('#')[1],
@@ -920,7 +943,7 @@
           })
         }
       },
-      //账单合计、人名币合计
+      //账单合计、人民币合计
       totalPriceType(type) {
         if(type == '应收'){
           var newArr = []
