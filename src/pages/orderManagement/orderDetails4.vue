@@ -153,7 +153,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="订舱单价">
-            <el-input v-model="bookingPrice" :disabled="orderStatus.indexOf(status) > -1 ? false : true" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
+            <el-input v-model="bookingPrice" @blur="pirceBlurInput" :disabled="orderStatus.indexOf(status) > -1 ? false : true" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
           </el-form-item>
         </div>
         <div>
@@ -844,6 +844,30 @@
       }
     },
     methods: {
+      pirceBlurInput(){
+        var reg = /(^[1-9][0-9]{0,5}$)|(^[0-9]{0,6}[\.][0-9]{1,4}$)/
+        if(!reg.test(this.bookingPrice)){
+          this.bookingPrice = ''
+          this.$message.error('单价最大输入六位正整数，小数保留四位')
+        }else{
+          for(var i = 0; i < this.apOrderPriceList.length; i++){
+            if(this.apOrderPriceList[i].expenseName == '空运费'){
+              this.apOrderPriceList[i].price = this.bookingPrice
+              this.apOrderPriceList[i].totalOrgn = Math.ceil(this.arOrderPriceList[i].quantity*this.apOrderPriceList[i].price)
+              this.apOrderPriceList[i].totalCny = Math.ceil(this.arOrderPriceList[i].quantity*this.apOrderPriceList[i].price)
+            }
+          }
+          for(var q = 0; q < this.arOrderPriceList.length; q++){
+            if(this.arOrderPriceList[q].expenseName == '空运费'){
+              this.arOrderPriceList[q].price = this.bookingPrice
+              this.arOrderPriceList[q].totalOrgn = Math.ceil(this.arOrderPriceList[q].quantity*this.arOrderPriceList[q].price)
+              this.arOrderPriceList[q].totalCny = Math.ceil(this.arOrderPriceList[q].quantity*this.arOrderPriceList[q].price)
+            }
+          }
+          this.totalPriceType('应收')
+          this.totalPriceType('应付')
+        }
+      },
       bubblePointChang() {
         var shuliang = (this.bubblePoint/10)*this.bookingCw+(1-this.bubblePoint/10)*(this.bookingWeight)
         for(var i = 0; i < this.apOrderPriceList.length; i++){
