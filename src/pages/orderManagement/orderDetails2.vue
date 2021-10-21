@@ -813,6 +813,26 @@
         }
         var orderPriceList = []
         orderPriceList = this.arOrderPriceList.concat(this.apOrderPriceList)
+        if(orderPriceList.length > 0){
+          for(var m = 0; m < orderPriceList.length; m++){
+            if(!orderPriceList[m].expenseName){
+              this.$message.error('请选择账单费用名称')
+              return
+            }else if(!orderPriceList[m].price){
+              this.$message.error('请输入账单单价')
+              return
+            }else if(!orderPriceList[m].quantity){
+              this.$message.error('请输入账单数量')
+              return
+            }else if(!orderPriceList[m].currency){
+              this.$message.error('请选择账单币种')
+              return
+            }else if(!orderPriceList[m].exchangeRate){
+              this.$message.error('请输入账单汇率')
+              return
+            }
+          }
+        }
         if(this.showMake){
           var orderOptionsList = []
           for(var q = 0; q < this.orderOptionsList.length; q++){
