@@ -779,7 +779,8 @@
           pod: item.pod,
           pol: item.pol,
           activityCodeDoing: this.activityCodeDoing,
-          activityCodeDone: this.activityCodeDone
+          activityCodeDone: this.activityCodeDone,
+          status: this.status
         }
         data.ctrlMap = {
           ctrlFlag: 1
