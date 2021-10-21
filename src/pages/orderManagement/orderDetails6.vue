@@ -211,7 +211,7 @@
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">货物信息</div>
         <div>
           <el-form-item label="货物品名">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="cargoName" placeholder="请输入货物品名" style="width: 596px;"></el-input>
+            <el-input maxlength="30" :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="cargoName" placeholder="请输入货物品名" style="width: 596px;"></el-input>
           </el-form-item>
         </div>
         <div>
