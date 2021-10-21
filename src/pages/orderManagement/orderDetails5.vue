@@ -365,7 +365,7 @@
               <div class="flight-template-li" style="flex: 0 0 7%;text-align: center;">币种</div>
               <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">原币合计</div>
               <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">汇率</div>
-              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">人名币合计</div>
+              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">人民币合计</div>
               <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">备注</div>
               <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
             </div>
@@ -456,7 +456,7 @@
               <div class="flight-template-li" style="flex: 0 0 7%;text-align: center;">币种</div>
               <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">原币合计</div>
               <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">汇率</div>
-              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">人名币合计</div>
+              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">人民币合计</div>
               <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">备注</div>
               <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
             </div>
@@ -1083,7 +1083,7 @@
           })
         }
       },
-      //账单合计、人名币合计
+      //账单合计、人民币合计
       totalPriceType(type) {
         if(type == '应收'){
           var newArr = []
