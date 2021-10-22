@@ -2,6 +2,7 @@
   <div class="content-wrapper">
     <div class="content">
       <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
+        <div style="position: fixed;right: 40px;font-size: 22px;font-weight: 100;color: #2273CE;width: 150px;text-align: center;">{{statusDesc}}</div>
         <div v-if="status == '5'" style="display: flex;align-items: center;margin-bottom: 20px;">
           <div style="font-size: 18px;font-weight: 100;color: #2273ce;">待客户确认备选方案</div>
           <div style="margin: 0 20px;"><el-button style="width: auto;" size="medium" type="primary">取消订单</el-button></div>
@@ -808,7 +809,8 @@
         inboundWeight: '',
         inboundVwr: '',
         inboundCw: '',
-        imgArr: []
+        imgArr: [],
+        statusDesc: ''
       }
     },
     created() {
@@ -1525,6 +1527,7 @@
             this.detailsArr = data.data
             var data = data.data
 
+            this.statusDesc = data.statusDesc
             this.status = data.status
             this.pscsName = data.pscsName
             this.principalName = data.principalName

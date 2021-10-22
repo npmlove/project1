@@ -2,6 +2,7 @@
   <div class="content-wrapper">
     <div class="content">
       <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
+        <div style="position: fixed;right: 40px;font-size: 22px;font-weight: 100;color: #2273CE;width: 150px;text-align: center;">{{statusDesc}}</div>
 
         <!-- 客户信息 -->
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">客户信息</div>
@@ -809,7 +810,8 @@
         inboundWeight: '',
         inboundVwr: '',
         inboundCw: '',
-        imgArr: []
+        imgArr: [],
+        statusDesc: ''
       }
     },
     created() {
@@ -1526,6 +1528,7 @@
             this.detailsArr = data.data
             var data = data.data
 
+            this.statusDesc = data.statusDesc
             this.status = data.status
             this.pscsName = data.pscsName
             this.principalName = data.principalName
