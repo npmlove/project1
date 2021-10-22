@@ -43,11 +43,20 @@
             </div>
           </div>
           <div v-else-if="column.label == '货物信息'" style="padding-top: 30px;">
-            <div>品名：{{scope.row.cargoName}}</div>
-            <div>{{scope.row.bookingPiece}}PCS</div>
-            <div>{{scope.row.bookingCbm}}CBM</div>
-            <div>{{scope.row.bookingWeight}}KG</div>
-            <div>1:{{scope.row.bookingVwr}}</div>
+            <div v-if="scope.row.status > 17 && scope.row.inboundPiece">
+              <div>品名：{{scope.row.cargoName}}</div>
+              <div>{{scope.row.inboundPiece}}PCS</div>
+              <div>{{scope.row.inboundCbm}}CBM</div>
+              <div>{{scope.row.inboundWeight}}KGS</div>
+              <div>1:{{scope.row.inboundVwr}}</div>
+            </div>
+            <div v-else>
+              <div>品名：{{scope.row.cargoName}}</div>
+              <div>{{scope.row.bookingPiece}}PCS</div>
+              <div>{{scope.row.bookingCbm}}CBM</div>
+              <div>{{scope.row.bookingWeight}}KGS</div>
+              <div>1:{{scope.row.bookingVwr}}</div>
+            </div>
           </div>
           <div v-else-if="column.label == '账单信息'" style="padding-top: 30px;">
             <div v-if="scope.row.settlementModes == '0'">付款买单<!-- —<span style="color: #F00;">未核销</span> --></div>
