@@ -2,6 +2,8 @@
   <div class="content-wrapper">
     <div class="content">
       <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
+        <div style="position: fixed;right: 40px;font-size: 22px;font-weight: 100;color: #2273CE;width: 150px;text-align: center;">{{statusDesc}}</div>
+
         <div v-if="status == '5'" style="display: flex;align-items: center;margin-bottom: 20px;">
           <div style="font-size: 18px;font-weight: 100;color: #2273ce;">待客户确认备选方案</div>
           <div style="margin: 0 20px;"><el-button @click="submitClick('取消')" style="width: auto;" size="medium" type="primary">取消订单</el-button></div>
@@ -182,8 +184,8 @@
           </el-form-item>
         </div>
 
-       <!-- 审核失败，制作推荐方案 -->
-       <div v-if="showMake" v-for="(item,index) in orderOptionsList" :key="index" class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
+        <!-- 审核失败，制作推荐方案 -->
+        <div v-if="showMake" v-for="(item,index) in orderOptionsList" :key="index" class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
           <img @click="delTableMack(index)"  v-if="orderOptionsList.length > 1" class="close-img" src="../../assets/gaungbi.png" />
           <div>
             <el-form-item label="起运港" required>
@@ -747,7 +749,8 @@
         timeOut: '',
         h: '',
         m: '',
-        s: ''
+        s: '',
+        statusDesc: ''
       }
     },
     created() {
@@ -1422,6 +1425,7 @@
           if(data.code == 200){
             this.detailsArr = data.data
             var data = data.data
+            this.statusDesc = data.statusDesc
             this.status = data.status
             this.pscsName = data.pscsName
             this.principalName = data.principalName
