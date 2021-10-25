@@ -716,7 +716,7 @@
         }
       },
       bubblePointChang() {
-        var shuliang = (this.bubblePoint/10)*this.bookingCw+(1-this.bubblePoint/10)*(this.bookingWeight)
+        var shuliang = Math.ceil((this.bubblePoint/10)*this.bookingCw+(1-this.bubblePoint/10)*(this.bookingWeight))
         for(var i = 0; i < this.apOrderPriceList.length; i++){
           if(this.apOrderPriceList[i].expenseName == '空运费'){
             this.apOrderPriceList[i].quantity = shuliang

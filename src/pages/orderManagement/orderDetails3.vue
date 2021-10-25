@@ -313,7 +313,7 @@
                 <el-input :disabled="status != '13'" v-model="childerItem.weight" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="6" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 15%;">
-                <el-input :disabled="status != '13'" v-model="childerItem.cargoSize" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="3" size="small" style="width: 90%;"></el-input>
+                <el-input :disabled="status != '13'" v-model="childerItem.cargoSize" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 15%;">
                 <el-select :disabled="status != '13'" v-model="childerItem.packing" size="small" clearable placeholder="请选择" style="width: 90%;">
@@ -881,7 +881,7 @@
         }
       },
       bubblePointChang() {
-        var shuliang = (this.bubblePoint/10)*this.bookingCw+(1-this.bubblePoint/10)*(this.bookingWeight)
+        var shuliang = Math.ceil((this.bubblePoint/10)*this.bookingCw+(1-this.bubblePoint/10)*(this.bookingWeight))
         for(var i = 0; i < this.apOrderPriceList.length; i++){
           if(this.apOrderPriceList[i].expenseName == '空运费'){
             this.apOrderPriceList[i].quantity = shuliang
