@@ -529,7 +529,7 @@
       </el-form>
 
       <!-- 航线价格 -->
-      <el-form v-if="orderStatus.indexOf(status) > -1 && apOrderPriceList.length > 0 && arOrderPriceList.length > 0" :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
+      <el-form v-if="orderStatus.indexOf(status) > -1" :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
         <div class="rest-style" style="padding-left: 20px;">
           <el-form-item label=" " label-width="150px">
             <el-button @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
