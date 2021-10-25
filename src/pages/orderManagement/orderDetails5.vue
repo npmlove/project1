@@ -102,13 +102,13 @@
           </el-form-item>
         </div>
         <div v-if="cclType != '1'">
-          <el-form-item label="提货地址">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryAddress" placeholder="请输入提货地址" maxlength="200" type="textarea" style="width: 596px;" show-word-limit></el-input>
+          <el-form-item label="送货地址">
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryAddress" placeholder="请输入送货地址" maxlength="200" type="textarea" style="width: 596px;" show-word-limit></el-input>
           </el-form-item>
         </div>
         <div v-if="cclType != '1'">
-          <el-form-item label="提货联系人">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryContacts" placeholder="请输入提货联系人" maxlength="50" style="width: 596px;"></el-input>
+          <el-form-item label="送货联系人">
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryContacts" placeholder="请输入送货联系人" maxlength="50" style="width: 596px;"></el-input>
           </el-form-item>
         </div>
         <div v-if="cclType != '1'">
