@@ -102,13 +102,13 @@
           </el-form-item>
         </div>
         <div v-if="cclType != '1'">
-          <el-form-item label="提货地址">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryAddress" placeholder="请输入提货地址" maxlength="200" type="textarea" style="width: 596px;" show-word-limit></el-input>
+          <el-form-item label="送货地址">
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryAddress" placeholder="请输入送货地址" maxlength="200" type="textarea" style="width: 596px;" show-word-limit></el-input>
           </el-form-item>
         </div>
         <div v-if="cclType != '1'">
-          <el-form-item label="提货联系人">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryContacts" placeholder="请输入提货联系人" maxlength="50" style="width: 596px;"></el-input>
+          <el-form-item label="送货联系人">
+            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryContacts" placeholder="请输入送货联系人" maxlength="50" style="width: 596px;"></el-input>
           </el-form-item>
         </div>
         <div v-if="cclType != '1'">
@@ -832,6 +832,12 @@
     watch: {
       inboundWeight() {
         if(this.inboundWeight && this.inboundCbm){
+          var reg = /^[1-9][0-9]{0,6}$/
+          if(!reg.test(this.inboundWeight) && (this.inboundWeight != '')){
+          	this.$message.error('重量最大输入六位正整数')
+            this.inboundWeight = ''
+            return
+          }
           this.inboundVwr = Math.ceil(this.inboundWeight/this.inboundCbm)
           this.inboundCw = (this.inboundCbm*167) > this.inboundWeight ? Math.ceil(this.inboundCbm*167) : Math.ceil(this.inboundWeight)
         } else {
