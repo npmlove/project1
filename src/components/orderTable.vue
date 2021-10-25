@@ -43,7 +43,7 @@
             </div>
           </div>
           <div v-else-if="column.label == '货物信息'" style="padding-top: 30px;">
-            <div v-if="scope.row.status > 17 && scope.row.inboundPiece">
+            <div v-if="scope.row.status >= 13 && scope.row.inboundPiece">
               <div>品名：{{scope.row.cargoName}}</div>
               <div>{{scope.row.inboundPiece}}PCS</div>
               <div>{{scope.row.inboundCbm}}CBM</div>

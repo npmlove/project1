@@ -840,6 +840,23 @@
           }
           this.inboundVwr = Math.ceil(this.inboundWeight/this.inboundCbm)
           this.inboundCw = (this.inboundCbm*167) > this.inboundWeight ? Math.ceil(this.inboundCbm*167) : Math.ceil(this.inboundWeight)
+          var shuliang = Math.ceil(this.bubblePoint/10*this.inboundCw+(1-this.bubblePoint/10)*this.inboundWeight)
+          for(var i = 0; i < this.apOrderPriceList.length; i++){
+            if(this.apOrderPriceList[i].expenseName == '空运费'){
+              this.apOrderPriceList[i].quantity = shuliang
+              this.apOrderPriceList[i].totalOrgn = Math.ceil(shuliang*this.apOrderPriceList[i].price)
+              this.apOrderPriceList[i].totalCny = Math.ceil(shuliang*this.apOrderPriceList[i].price)
+            }
+          }
+          for(var q = 0; q < this.arOrderPriceList.length; q++){
+            if(this.arOrderPriceList[q].expenseName == '空运费'){
+              this.arOrderPriceList[q].quantity = shuliang
+              this.arOrderPriceList[q].totalOrgn = Math.ceil(shuliang*this.arOrderPriceList[q].price)
+              this.arOrderPriceList[q].totalCny = Math.ceil(shuliang*this.arOrderPriceList[q].price)
+            }
+          }
+          this.totalPriceType('应收')
+          this.totalPriceType('应付')
         } else {
           this.inboundVwr = ''
           this.inboundCw = ''
@@ -849,6 +866,23 @@
         if(this.inboundWeight && this.inboundCbm){
           this.inboundVwr = Math.ceil(this.inboundWeight/this.inboundCbm)
           this.inboundCw = (this.inboundCbm*167) > this.inboundWeight ? Math.ceil(this.inboundCbm*167) : Math.ceil(this.inboundWeight)
+          var shuliang = Math.ceil(this.bubblePoint/10*this.inboundCw+(1-this.bubblePoint/10)*this.inboundWeight)
+          for(var i = 0; i < this.apOrderPriceList.length; i++){
+            if(this.apOrderPriceList[i].expenseName == '空运费'){
+              this.apOrderPriceList[i].quantity = shuliang
+              this.apOrderPriceList[i].totalOrgn = Math.ceil(shuliang*this.apOrderPriceList[i].price)
+              this.apOrderPriceList[i].totalCny = Math.ceil(shuliang*this.apOrderPriceList[i].price)
+            }
+          }
+          for(var q = 0; q < this.arOrderPriceList.length; q++){
+            if(this.arOrderPriceList[q].expenseName == '空运费'){
+              this.arOrderPriceList[q].quantity = shuliang
+              this.arOrderPriceList[q].totalOrgn = Math.ceil(shuliang*this.arOrderPriceList[q].price)
+              this.arOrderPriceList[q].totalCny = Math.ceil(shuliang*this.arOrderPriceList[q].price)
+            }
+          }
+          this.totalPriceType('应收')
+          this.totalPriceType('应付')
         } else {
           this.inboundVwr = ''
           this.inboundCw = ''
