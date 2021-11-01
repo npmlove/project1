@@ -679,3 +679,10 @@ textarea {
 .nth9_class .el-tabs__nav.is-top > div:nth-of-type(9){
   color: #F00 !important;
 }
+.finance-talbe th > .cell, .finance-talbe td > .cell{
+  padding-left: 0;
+  text-align: center;
+}
+.finance-talbe td > .cell{
+  font-size: 12px;
+}

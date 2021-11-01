@@ -239,6 +239,31 @@ const routeManagementCenter = [{
     }
   ]
 }]
+// 财务管理
+const financeManagementCenter = [{
+  path: '/financeManagement',
+  component: Layout,
+  name: 'financeManagement',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title: '财务管理',
+    icon: 'icon iconfont icon-kucun',
+    breadcrumb: false
+  },
+  children: [
+    {
+      path: 'financeManage',
+      component: () => import('@/pages/financeManagement/financeManage.vue'),
+      name: 'financeManage',
+      meta: {
+        title: '财务列表',
+        keepAlive: false,
+        needLogin: true
+      }
+    }
+  ]
+}]
 
 // 订单管理
 const orderManagementCenter = [{
@@ -420,6 +445,7 @@ const routes = [
   ...autoRoutes,
   ...orderManagementCenter,
   ...routeManagementCenter,
+  ...financeManagementCenter,
   ...adverManagementCenter,
   ...agentManagement,
   ...expenseManagement,
