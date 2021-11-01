@@ -261,6 +261,76 @@ const financeManagementCenter = [{
         keepAlive: false,
         needLogin: true
       }
+    },
+    {
+      path: 'invoiceList',
+      component: () => import('@/pages/financeManagement/invoiceList.vue'),
+      name: 'invoiceList',
+      meta: {
+        title: '发票列表',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'orderWriteOff',
+      component: () => import('@/pages/financeManagement/orderWriteOff.vue'),
+      name: 'orderWriteOff',
+      meta: {
+        title: '订单核销',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'receivableStatistics',
+      component: () => import('@/pages/financeManagement/receivableStatistics.vue'),
+      name: 'receivableStatistics',
+      meta: {
+        title: '应收统计',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'receivableStatisticsDetails',
+      component: () => import('@/pages/financeManagement/receivableStatisticsDetails.vue'),
+      name: 'receivableStatisticsDetails',
+      meta: {
+        title: '应收核销明细',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'paysStatistics',
+      component: () => import('@/pages/financeManagement/paysStatistics.vue'),
+      name: 'paysStatistics',
+      meta: {
+        title: '应付统计',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'paysStatisticsDetails',
+      component: () => import('@/pages/financeManagement/paysStatisticsDetails.vue'),
+      name: 'paysStatisticsDetails',
+      meta: {
+        title: '应付核销明细',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'bankAccount',
+      component: () => import('@/pages/financeManagement/bankAccount.vue'),
+      name: 'bankAccount',
+      meta: {
+        title: '银行账号列表',
+        keepAlive: false,
+        needLogin: true
+      }
     }
   ]
 }]
