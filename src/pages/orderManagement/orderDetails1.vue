@@ -1484,12 +1484,11 @@
             }
             this.apOrderPriceList = data.apOrderPriceList
             if(data.arOrderPriceList){
-              for(var i = 0; i < data.arOrderPriceList.length; i++){
-                data.arOrderPriceList[i].currency = data.arOrderPriceList[i].currency.toString()
+              for(var i = 0; i < data.arOrderPriceList[0].list.length; i++){
+                data.arOrderPriceList[0].list[i].currency = data.arOrderPriceList[0].list[i].currency.toString()
               }
             }
-            this.arOrderPriceList = data.arOrderPriceList
-            console.log(data.orderOptionsList)
+            this.arOrderPriceList = data.arOrderPriceList[0].list
             if(data.orderOptionsList != null){
               if(data.orderOptionsList.length != 0){
                 this.showMake = true
@@ -1498,7 +1497,6 @@
                   this.orderOptionsList[q].flightNoOpt = []
                   this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
                   this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
-                  console.log(data.orderOptionsList[q])
                   this.initAirlineSearchByPage(q,data.orderOptionsList[q])
                 }
               }

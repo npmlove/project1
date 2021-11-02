@@ -445,6 +445,9 @@
                 </el-option>
               </el-select>
             </el-form-item>
+            <el-form-item v-if="inboundPiece && (status != '13')" label="">
+              <el-button @click="duiZhangClick" style="width: auto;" size="medium" type="primary">发起客户对账</el-button>
+            </el-form-item>
           </div>
         </div>
 
@@ -890,6 +893,29 @@
       }
     },
     methods: {
+      duiZhangClick() {
+        this.$confirm('该账单存在两个收款单位，已生成两张账单，请确认发送?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var data = {
+            departureDate: this.departureDate,
+            fullLeg: this.fullLeg,
+            orderId: this.orderId,
+            orderNo: this.orderNo,
+            waybillNo: this.waybillNo,
+            prices: this.arOrderPriceList
+          }
+          this.$http.post(this.$service.priceSendBill, data).then(res => {
+            if (res.code == 200) {
+
+            }
+          })
+        }).catch(() => {
+
+        })
+      },
       pirceBlurInput(){
         var reg = /(^[1-9][0-9]{0,5}$)|(^[0-9]{0,6}[\.][0-9]{1,4}$)/
         if(!reg.test(this.bookingPrice)){
@@ -1680,11 +1706,11 @@
             }
             this.apOrderPriceList = data.apOrderPriceList
             if(data.arOrderPriceList){
-              for(var i = 0; i < data.arOrderPriceList.length; i++){
-                data.arOrderPriceList[i].currency = data.arOrderPriceList[i].currency.toString()
+              for(var i = 0; i < data.arOrderPriceList[0].list.length; i++){
+                data.arOrderPriceList[0].list[i].currency = data.arOrderPriceList[0].list[i].currency.toString()
               }
             }
-            this.arOrderPriceList = data.arOrderPriceList
+            this.arOrderPriceList = data.arOrderPriceList[0].list
             if(data.orderOptionsList != null){
               if(data.orderOptionsList.length != 0){
                 this.showMake = true

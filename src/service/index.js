@@ -108,6 +108,8 @@ const serviceApi = {
   orderExecuteOrder:pulicWeb+'/t-order/executeOrder',
   //上传附件
   attachmentUpload:pulicWeb+'/t-order-attachment/upload',
+  //发起账单
+  priceSendBill:pulicWeb+'/t-order-price/sendBill',
 
 }
 export default serviceApi
