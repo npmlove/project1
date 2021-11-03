@@ -30,8 +30,8 @@
       >
         <template slot-scope="scope">
           <span @click="handleItemClick(column.handle, scope)">
-            <span v-if="column.prop == 'status' && column.label == '状态'">
-              <el-switch @change="switchChangeUser(scope)" v-model="scope.row.status == '0'"></el-switch>
+            <span v-if="column.prop == 'orderNo' && column.label == '订单号'">
+              <a >{{scope.row.orderNo}}</a>
             </span>
             <span v-else-if="column.prop == 'expenseType' && column.label == '费用类型'">
               {{scope.row.expenseType === 0 ? "国内段" : "国外段"}}

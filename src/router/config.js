@@ -90,7 +90,30 @@ const expenseManagement=[{
 
 },
 ]
+//费用管理
+const cargoTrackingManage=[{
+  path:'/cargoTrackingManage',
+  component:Layout,
+  name:'cargoTrackingManage',
+  redirect:'noredirect',
+  alwaysShow:true,
+  meta:{
+    title:'货物追踪',
+    icon: 'icon iconfont icon-diannao',
+    breadcrumb: true
+  },
+  children:[{
+    path: 'cargoTracking',
+    component: () => import('@/pages/cargoTrackingManage/cargoTracking.vue'),
+    name: 'cargoTracking',
+    meta: {
+      title: '货物追踪详情',
+      keepAlive:true,
+      needLogin: true
+    },},]
 
+},
+]
 //管理模块
 const adminUserCenter = [{
   path: '/adminUser',
@@ -521,7 +544,8 @@ const routes = [
   ...expenseManagement,
   // ...dictManagement,
   ...userManagementCenter,
-  ...adminUserCenter
+  ...adminUserCenter,
+  ...cargoTrackingManage
 
 ]
 

@@ -12,7 +12,6 @@ const serviceApi = {
   // 登录
   login: pulicWeb+'/t-sys-user/login',
   //用户查询
-  userSearch: pulicWeb+'/t-sys-user/search',
   userRoleList: pulicWeb+'/t-sys-user/queryUserList',
   //用户新增
   userAdd: pulicWeb+'/t-sys-user/add',
@@ -112,6 +111,11 @@ const serviceApi = {
   priceSendBill:pulicWeb+'/t-order-price/sendBill',
   //保存操作记录
   presentSavePresentLog:pulicWeb+'/t-order-present-log/savePresentLog',
+  //财务订单列表查询
+  financeOrderList:pulicWeb+'/t-order/financeOrderList',
+
+  trackList :pulicWeb+'/track/monitorQuery/airCompanyInfo',
+  trackDetail :pulicWeb+'/track/monitorQuery/getData',
 
 }
 export default serviceApi
