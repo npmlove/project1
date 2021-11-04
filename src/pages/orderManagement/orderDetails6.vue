@@ -1734,6 +1734,7 @@
             this.imgArr = data.orderAttachmentList
             this.financeStatus = data.financeStatus
             this.initAirlineSearchByPage()
+            this.totalPriceType('应收')
 
           }else{
             this.$message.error(data.message)
