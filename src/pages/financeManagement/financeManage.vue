@@ -1,6 +1,6 @@
 <template>
   <div class="content-wrapper">
-    <div class="content">
+    <div class="content" style="position: relative;">
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
           <el-form-item>
@@ -126,17 +126,6 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <!--          <el-form-item>-->
-          <!--            <el-select v-model="agentId" placeholder="请输入操作" :remote-method="agentMethod" :loading="loading" clearable-->
-          <!--                       filterable remote reserve-keyword style="width: 200px;">-->
-          <!--              <el-option-->
-          <!--                v-for="item in agentOpt"-->
-          <!--                :key="item.id"-->
-          <!--                :label="item.agentName"-->
-          <!--                :value="item.id">-->
-          <!--              </el-option>-->
-          <!--            </el-select>-->
-          <!--          </el-form-item>-->
 
 
           <el-form-item>
@@ -163,14 +152,14 @@
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column label="订单号" min-width="120">
               <template slot-scope="scope">
-                <a  @click="showFeesDetail=true">{{ scope.row.orderNo }}</a>
+                <a @click="showFees(scope.row.id,scope.row.payWay,scope.row.financeStatus)">{{ scope.row.orderNo }}</a>
               </template>
             </el-table-column>
             <el-table-column prop="waybillNo" label="运单号" min-width="80"></el-table-column>
             <el-table-column prop="departureDate" label="航班日期" min-width="80"></el-table-column>
             <el-table-column prop="presentationTime" label="交单时间" min-width="80"></el-table-column>
             <el-table-column prop="customerName" label="订舱客户" min-width="80"></el-table-column>
-            <el-table-column prop="agentName" label="代理上家" min-width="80"></el-table-column>
+            <el-table-column prop="agentName" label="代理上家" min-width="200"></el-table-column>
             <el-table-column prop="airCompanyCode" label="航司" width="50"></el-table-column>
             <el-table-column prop="pol" label="起运港" width="60"></el-table-column>
             <el-table-column prop="pod" label="目的港" width="60"></el-table-column>
@@ -193,17 +182,51 @@
             </el-table-column>
             <el-table-column label="应收金额">
               <el-table-column prop="totalArCny" label="人民币" min-width="80"></el-table-column>
-              <el-table-column prop="totalArOrgn" label="原币" min-width="80"></el-table-column>
+              <el-table-column prop="totalArOrgn" label="原币" min-width="80">
+                <template slot-scope="scope">
+                  {{ getOrgn(scope.row.totalArOrgn) }}
+                </template>
+              </el-table-column>
             </el-table-column>
             <el-table-column label="应付金额">
               <el-table-column prop="totalApCny" label="人民币" min-width="80"></el-table-column>
-              <el-table-column prop="totalApOrgn" label="原币" min-width="80"></el-table-column>
+              <el-table-column label="原币" min-width="80">
+                <template slot-scope="scope">
+                  {{ getOrgn(scope.row.totalApOrgn) }}
+                </template>
+
+              </el-table-column>
             </el-table-column>
-            <el-table-column prop="orderProfit" label="利润" min-width="150"></el-table-column>
-            <el-table-column prop="operator" label="汇率" width="50"></el-table-column>
-            <el-table-column prop="invoicingStatus" label="开票进度" min-width="80"></el-table-column>
+            <el-table-column prop="orderProfit" label="利润" min-width="100"></el-table-column>
+            <el-table-column label="汇率" width="50">
+              <template slot-scope="scope">
+                {{ getExchangeRate(scope.row.exchangeRate) }}
+              </template>
+            </el-table-column>
+            <el-table-column label="开票进度" min-width="80">
+              <template slot-scope="scope">
+                {{
+                  scope.row.invoicingStatus == 0 ?
+                    '未开票' : scope.row.invoicingStatus == 1 ?
+                    '已开票' : scope.row.invoicingStatus == 2 ? '部分开票' : ''
+                }}
+              </template>
+            </el-table-column>
             <el-table-column prop="invoicedAmount" label="开票金额" min-width="80"></el-table-column>
-            <el-table-column prop="financeStatus" label="订单状态" min-width="80"></el-table-column>
+            <el-table-column label="订单状态" min-width="80">
+
+              <template slot-scope="scope">
+                {{
+                  scope.row.financeStatus == 0 ?
+                    '未交单' : scope.row.financeStatus == 1 ?
+                    '已交单' : scope.row.financeStatus == 2 ?
+                      '申请解锁' : scope.row.financeStatus == 3 ?
+                        '交单待审核' : scope.row.financeStatus == 4 ?
+                          '异常' : scope.row.financeStatus == 5 ?
+                            '修改中' : ''
+                }}
+              </template>
+            </el-table-column>
           </el-table>
         </el-tab-pane>
         <el-tab-pane label="已交单" name="1">
@@ -214,7 +237,7 @@
             :total='total'
             :currentPage='pageNum'
             :pageSize='pageSize'
-            @orderDetails="orderDetails"
+            @showFees="showFees"
             @sizeChange='handleSizeChange'
             @currentChange='handleCurrentChange'>
           </Table>
@@ -285,16 +308,18 @@
           </Table>
         </el-tab-pane>
       </el-tabs>
+      <el-button size='medium' type="primary" style='position: absolute;right:0px;top:135px;'>导出列表</el-button>
+      <el-button size='medium' type="primary" style='position: absolute;right:110px;top:135px;'>修改</el-button>
     </div>
-    <el-dialog title="订单" :visible.sync="dialogFormVisible" width="80%">
+    <el-dialog :visible.sync="dialogFormVisible" width="80%">
       <el-tabs style="margin: 20px 0;" v-model="financeStatus" type="border-card" @tab-click="tabClickData">
         <el-tab-pane label="全部" name="全部">
           <div style="font-size: 18px;font-weight: 100;color: #333;padding: 0 20px 10px 20px;">应收账单</div>
           <Table
-            :tableData='tableData'
+            :tableData='arData'
             :columns='columns1'
             :operation='operation'
-            :total='total'
+            :total='total1'
             :currentPage='pageNum'
             :pageSize='pageSize'
             @orderDetails="orderDetails"
@@ -302,16 +327,16 @@
             @currentChange='handleCurrentChange'>
           </Table>
           <div class="finance-table-price">
-            <div>账单合计：￥7000+$600</div>
-            <div>人民币合计：￥8625.5</div>
-            <div>结算方式：付款买单</div>
+            <div>账单合计：{{ getOrgn(this.totalArOrgn) }}</div>
+            <div>人民币合计：￥{{ this.totalArCny }}</div>
+            <div>结算方式：{{ this.payWay==0?"付款买单":"月结买单" }}</div>
           </div>
           <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">应付账单</div>
           <Table
-            :tableData='tableData'
+            :tableData='apData'
             :columns='columns2'
             :operation='operation'
-            :total='total'
+            :total='total1'
             :currentPage='pageNum'
             :pageSize='pageSize'
             @orderDetails="orderDetails"
@@ -319,50 +344,57 @@
             @currentChange='handleCurrentChange'>
           </Table>
           <div class="finance-table-price">
-            <div>账单合计：￥7000+$600</div>
-            <div>人民币合计：￥8625.5</div>
-            <div>订单利润：100</div>
+            <div>账单合计：{{ getOrgn(this.totalApOrgn) }}</div>
+            <div>人民币合计：￥{{ this.totalApCny }}</div>
+            <div>订单利润：{{ this.orderProfit }}</div>
           </div>
           <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">修改记录</div>
           <Table
-            :tableData='tableData'
+            :tableData='logData'
             :columns='columns3'
             :operation='operation'
-            :total='total'
+            :total='total1'
             :currentPage='pageNum'
             :pageSize='pageSize'
             @orderDetails="orderDetails"
             @sizeChange='handleSizeChange'
             @currentChange='handleCurrentChange'>
           </Table>
-          <div
-            style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;border-bottom: 1px dashed #999;">
-            操作说明
+          <div v-show="financeStatus==2||financeStatus==3||orderFinanceStatus==3||orderFinanceStatus==2">
+            <div
+              style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;border-bottom: 1px dashed #999;">
+              操作说明
+            </div>
+            <el-input
+              type="textarea"
+              rows="2"
+              placeholder="请输入操作说明"
+              v-model="info">
+            </el-input>
           </div>
-          <el-input
-            type="textarea"
-            rows="2"
-            placeholder="请输入操作说明"
-            v-model="textarea2">
-          </el-input>
+
         </el-tab-pane>
-        <el-tab-pane label="已交单" name="1">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
+        <!--        <el-tab-pane label="已交单" name="1">
+                  <Table
+                    :tableData='tableData'
+                    :columns='columns'
+                    :operation='operation'
+                    :total='total'
+                    :currentPage='pageNum'
+                    :pageSize='pageSize'
+                    @orderDetails="orderDetails"
+                    @sizeChange='handleSizeChange'
+                    @currentChange='handleCurrentChange'>
+                  </Table>
+                </el-tab-pane>-->
       </el-tabs>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">返 回</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确认解锁</el-button>
+      <div slot="footer" class="dialog-footer" v-show="financeStatus==2||orderFinanceStatus==2">
+        <el-button @click="savePresentLog(3)">驳回</el-button>
+        <el-button type="primary" @click="savePresentLog(2)">确认解锁</el-button>
+      </div>
+      <div slot="footer" class="dialog-footer" v-show="financeStatus==3||orderFinanceStatus==3">
+        <el-button @click="savePresentLog(5)">驳回</el-button>
+        <el-button type="primary" @click="savePresentLog(3)">审核通过</el-button>
       </div>
     </el-dialog>
   </div>
@@ -379,63 +411,65 @@
         showFeesDetail: false,
         //table
         tableData: [],
+        arData: [],
+        apData: [],
+        logData: [],
         pageSize: 10,
         pageNum: 1,
         total: 0,
         // 列
-        /*        columns: [
-                  {label: '订单号', prop: 'orderNo', show: true, width: '150'},
-                  {label: '运单号', prop: 'waybillNo', show: true, width: '150'},
-                  {label: '航班日期', prop: 'departureDate', show: true, width: '150'},
-                  {label: '交单时间', prop: 'presentationTime', show: true, width: '150'},
-                  {label: '订舱客户', prop: 'customerName', show: true, width: '150'},
-                  {label: '代理上家', prop: 'agentName', show: true, width: '150'},
-                  {label: '航司', prop: 'airCompanyCode', show: true, width: '150'},
-                  {label: '起运港', prop: 'pol', show: true, width: '150'},
-                  {label: '目的港', prop: 'pod', show: true, width: '150'},
-                  {label: '货物信息', prop: 'cargoInfo', show: true, width: '150'},
-                  {label: '操作人员', prop: 'operator', show: true, width: '150'},
-                  {label: '应收费用总计', prop: 'totalArCny', show: true, width: '150'},
-                  {label: '应付账单总计', prop: 'totalApCny', show: true, width: '150'},
-                  {label: '应收费用总计', prop: 'totalArOrgn', show: true, width: '150'},
-                  {label: '应付费用总计', prop: 'totalApOrgn', show: true, width: '150'},
-                  {label: '订单利润', prop: 'orderProfit', show: true, width: '150'},
-                  //TODO
-                  {label: '汇率', prop: 'operator', show: true, width: '150'},
-                  {label: '开票进度', prop: 'invoicingStatus', show: true, width: '150'},
+                columns: [
+                  {label: '订单号', prop: 'orderNo', show: true, width: '120'},
+                  {label: '运单号', prop: 'waybillNo', show: true, width: '80'},
+                  {label: '航班日期', prop: 'departureDate', show: true, width: '80'},
+                  {label: '交单时间', prop: 'presentationTime', show: true, width: '80'},
+                  {label: '订舱客户', prop: 'customerName', show: true, width: '80'},
+                  {label: '代理上家', prop: 'agentName', show: true, width: '200'},
+                  {label: '航司', prop: 'airCompanyCode', show: true, width: '50'},
+                  {label: '起运港', prop: 'pol', show: true, width: '60'},
+                  {label: '目的港', prop: 'pod', show: true, width: '60'},
+                  {label: '货物信息', prop: 'cargoInfo', show: true, width: '80'},
+                  {label: '操作人员', prop: 'operator', show: true, width: '80'},
+                  {label: '应收金额', show: true},
+                  {label: '应付金额',  show: true},
+                  {label: '利润', prop: 'orderProfit', show: true, width: '100'},
+                  {label: '汇率',show: true, width: '50'},
+                  {label: '开票进度', prop: 'invoicingStatus', show: true, width: '80'},
+                  {label: '开票金额', prop: 'invoicedAmount', show: true, width: '80'},
+                  {label: '订单状态', prop: 'financeStatus', show: true, width: '80'},
 
 
 
-                ],*/
+                ],
         columns1: [
-          {label: '序号', prop: 'orderNo', show: true, width: '150'},
-          {label: '费用名称', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '收款单位', prop: 'pol', show: true, width: '150'},
-          {label: '单价', prop: 'pod', show: true, width: '100'},
-          {label: '数量', prop: 'continent', show: true, width: '100'},
-          {label: '币种', prop: 'nonStop', show: true, width: '100'},
-          {label: '原币合计', prop: 'legCount', show: true, width: '50'},
-          {label: '汇率', prop: 'continent', show: true, width: '100'},
-          {label: '人民币合计', prop: 'nonStop', show: true, width: '100'},
-          {label: '备注', prop: 'legCount', show: true, width: '50'}
+          {label: '序号', show: true, width: '50'},
+          {label: '费用名称', prop: 'expenseName', show: true, width: '100'},
+          {label: '收款单位', prop: 'expenseUnitName', show: true, width: '150'},
+          {label: '单价', prop: 'price', show: true, width: '100'},
+          {label: '数量', prop: 'quantity', show: true, width: '100'},
+          {label: '币种', prop: 'currency', show: true, width: '100'},
+          {label: '原币合计', prop: 'totalOrgn', show: true, width: '100'},
+          {label: '汇率', prop: 'exchangeRate', show: true, width: '100'},
+          {label: '人民币合计', prop: 'totalCny', show: true, width: '100'},
+          {label: '备注', prop: 'remark', show: true, width: '50'}
         ],
         columns2: [
-          {label: '序号', prop: 'orderNo', show: true, width: '150'},
-          {label: '费用名称', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '付款单位', prop: 'pol', show: true, width: '150'},
-          {label: '单价', prop: 'pod', show: true, width: '100'},
-          {label: '数量', prop: 'continent', show: true, width: '100'},
-          {label: '币种', prop: 'nonStop', show: true, width: '100'},
-          {label: '原币合计', prop: 'legCount', show: true, width: '50'},
-          {label: '汇率', prop: 'continent', show: true, width: '100'},
-          {label: '人民币合计', prop: 'nonStop', show: true, width: '100'},
-          {label: '备注', prop: 'legCount', show: true, width: '50'}
+          {label: '序号', prop: 'orderNo', show: true, width: '50'},
+          {label: '费用名称', prop: 'expenseName', show: true, width: '100'},
+          {label: '付款单位', prop: 'expenseUnitName', show: true, width: '150'},
+          {label: '单价', prop: 'price', show: true, width: '100'},
+          {label: '数量', prop: 'quantity', show: true, width: '100'},
+          {label: '币种', prop: 'currency', show: true, width: '100'},
+          {label: '原币合计', prop: 'totalOrgn', show: true, width: '100'},
+          {label: '汇率', prop: 'exchangeRate', show: true, width: '100'},
+          {label: '人民币合计', prop: 'totalCny', show: true, width: '100'},
+          {label: '备注', prop: 'remark', show: true, width: '50'}
         ],
         columns3: [
-          {label: '操作类型', prop: 'orderNo', show: true, width: '150'},
-          {label: '说明', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '操作时间', prop: 'pol', show: true, width: '150'},
-          {label: '操作人', prop: 'pod', show: true, width: '100'}
+          {label: '操作类型', prop: 'operationType', show: true, width: '150'},
+          {label: '说明', prop: 'operationInfo', show: true, width: '100'},
+          {label: '操作时间', prop: 'createTime', show: true, width: '150'},
+          {label: '操作人', prop: 'operator', show: true, width: '100'}
         ],
         // 操作
         operation: {
@@ -468,6 +502,31 @@
         pscsId: null,
         mscsId: null,
         principalId: null,
+        totalApOrgn: null,
+        totalArCny: null,
+        totalApCny: null,
+        totalArOrgn: null,
+        orderProfit: null,
+        payWay: null,
+        orderId: null,
+        info:null,
+        orderFinanceStatus:null,
+
+
+        invoiceOpt: [
+          {
+            Name: '未开票',
+            Value: '0'
+          },
+          {
+            Name: '已开票',
+            Value: '1'
+          },
+          {
+            Name: '部分开票',
+            Value: '2'
+          }
+        ],
       }
     },
     mounted() {
@@ -532,6 +591,111 @@
         this.initAgentList(agentName)
       },
       initOrderCountList() {
+      },
+      savePresentLog(operationType){
+        var json = {
+          orderId: this.orderId,
+          info: this.info,
+          operationType: operationType,
+          financeStatus: this.orderFinanceStatus,
+        }
+        // json = toData(json)
+        this.$http.post(this.$service.financeOrderList, json).then(data => {
+          if (data.code == 200) {
+            this.$message.success("操作成功")
+          } else {
+            this.$message.error(data.message)
+          }
+        }).catch((e) => {
+          console.log(e)
+        })
+      },
+      showFees(orderId, payWay,financeStatus) {
+        this.dialogFormVisible = true;
+        this.$http.get(this.$service.orderPriceTable + '?orderId=' + orderId).then(data => {
+          if (data.code == 200) {
+            // this.total = data.data.total
+            this.arData = data.data.arOrderPriceList
+            this.apData = data.data.apOrderPriceList
+            this.logData = data.data.logs
+            this.totalArOrgn = data.data.totalArOrgn
+            this.totalApOrgn = data.data.totalApOrgn
+            this.totalArCny = data.data.totalArCny
+            this.totalApCny = data.data.totalApCny
+            this.orderProfit = data.data.orderProfit
+            this.payWay = payWay
+            this.orderId=orderId
+            this.orderFinanceStatus=financeStatus
+          } else {
+            this.$message.error(data.message)
+          }
+          console.log(this.arData)
+        }).catch((e) => {
+          console.log(e)
+        })
+      },
+      getOrgn(orgn) {
+        if (!orgn) {
+          return;
+        }
+        orgn = JSON.parse(orgn);
+        var totalOrgn = ''
+        var value1 = 0
+        var value2 = 0
+        var value3 = 0
+        var value4 = 0
+        var value5 = 0
+        // HK$ $ € ￡
+        for (var i = 0; i < orgn.length; i++) {
+          if (orgn[i].currency == '1') {
+            value1 += orgn[i].amount
+          } else if (orgn[i].currency == '2') {
+            value2 += orgn[i].amount
+          } else if (orgn[i].currency == '3') {
+            value3 += orgn[i].amount
+          } else if (orgn[i].currency == '4') {
+            value4 += orgn[i].amount
+          } else if (orgn[i].currency == '5') {
+            value5 += orgn[i].amount
+          }
+        }
+        totalOrgn = ''
+        totalOrgn += value1 || value1 == 0 ? value1 + 'CNY' + '+' : ''
+        totalOrgn += value2 ? value2 + 'HKD' + '+' : ''
+        totalOrgn += value3 ? value3 + 'USD' + '+' : ''
+        totalOrgn += value4 ? value4 + 'EUR' + '+' : ''
+        totalOrgn += value5 ? value5 + 'GBP' : ''
+        totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
+        return totalOrgn;
+      },
+      getExchangeRate(exchangeRate) {
+        var totalOrgn = ''
+        var value1 = 0
+        var value2 = 0
+        var value3 = 0
+        var value4 = 0
+        var value5 = 0
+        for (var i = 0; i < exchangeRate.length; i++) {
+          if (exchangeRate[i].currency == '1') {
+            value1 += exchangeRate[i].exchangeRate
+          } else if (exchangeRate[i].currency == '2') {
+            value2 += exchangeRate[i].exchangeRate
+          } else if (exchangeRate[i].currency == '3') {
+            value3 += exchangeRate[i].exchangeRate
+          } else if (exchangeRate[i].currency == '4') {
+            value4 += exchangeRate[i].exchangeRate
+          } else if (exchangeRate[i].currency == '5') {
+            value5 += exchangeRate[i].exchangeRate
+          }
+        }
+        totalOrgn = ''
+        totalOrgn += value1 || value1 == 0 ? 'CNY:' + value1 + '+' : ''
+        totalOrgn += value2 ? 'HKD:' + value2 + '+' : ''
+        totalOrgn += value3 ? 'USD:' + value3 + '+' : ''
+        totalOrgn += value4 ? 'EUR:' + value4 + '+' : ''
+        totalOrgn += value5 ? 'GBP:' + value5 : ''
+        totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
+        return totalOrgn;
       },
       //航线列表
       initData() {

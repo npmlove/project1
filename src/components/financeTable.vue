@@ -6,12 +6,16 @@
       @sort-change="handleSort"
       @selection-change="handleSelect"
       :data="tableData"
-      style="width: 100%;"
+      :header-cell-style="{textAlign:'center'}"
+      :cell-style="{textAlign:'center',fontSize:'12px'}"
+
+      style="width: 100% ;"
     >
       <template slot="empty">
         <img class="data-pic" src="../assets/kong-icon.png"/>
         <p>暂无数据</p>
       </template>
+      <el-table-column type="selection" width="50"></el-table-column>
       <!-- <el-table-column
         v-if="checkbox"
         type="selection"
@@ -28,14 +32,74 @@
         :min-width="column.width"
         align="left"
       >
+        <el-table-column v-if="column.label == '应收金额'" prop="totalArCny" label="人民币" min-width="80"></el-table-column>
+        <el-table-column v-if="column.label == '应收金额'"  label="原币" min-width="80">
+          <template slot-scope="scope">
+            {{ getOrgn(scope.row.totalArOrgn) }}
+          </template>
+        </el-table-column>
+        <el-table-column v-if="column.label == '应付金额'" prop="totalApCny" label="人民币" min-width="80"></el-table-column>
+        <el-table-column v-if="column.label == '应付金额'"  label="原币" min-width="80">
+          <template slot-scope="scope">
+            {{ getOrgn(scope.row.totalApOrgn) }}
+          </template>
+        </el-table-column>
         <template slot-scope="scope">
           <span @click="handleItemClick(column.handle, scope)">
-            <span v-if="column.prop == 'orderNo' && column.label == '订单号'">
-              <a >{{scope.row.orderNo}}</a>
+            <span v-if=" column.label == '序号'">
+           {{ scope.$index + 1 }}
             </span>
             <span v-else-if="column.prop == 'expenseType' && column.label == '费用类型'">
-              {{scope.row.expenseType === 0 ? "国内段" : "国外段"}}
+              {{ scope.row.expenseType === 0 ? "国内段" : "国外段" }}
             </span>
+            <span v-else-if="column.prop == 'operationType' && column.label == '操作类型'">
+              {{
+                scope.row.operationType === 0 ? "交单" :
+                  scope.row.operationType === 1 ? "解锁申请" :
+                    scope.row.operationType === 2 ? "解锁通过" :
+                      scope.row.operationType === 3 ? "解锁驳回" :
+                        scope.row.operationType === 4 ? "交单审核" :
+                          scope.row.operationType === 5 ? "审核通过" :
+                            scope.row.operationType === 6 ? "审核驳回" : ""
+              }}
+            </span>
+             <span v-else-if="column.prop == 'cargoInfo' && column.label == '货物信息'">
+              <div>{{ scope.row.cargoInfo.split(",")[0] }}</div>
+                <div>{{ scope.row.cargoInfo.split(",")[1] }}PCS</div>
+                <div>{{ scope.row.cargoInfo.split(",")[2] }}CBM</div>
+                <div>{{ scope.row.cargoInfo.split(",")[3] }}KGS</div>
+                <div>1:{{ scope.row.cargoInfo.split(",")[4] }}</div>
+            </span>
+             <span v-else-if="column.prop == 'operator' && column.label == '操作人员'">
+               <div>客服：{{ scope.row.operator.split(",")[1] }}</div>
+                <div>销售：{{ scope.row.operator.split(",")[0] }}</div>
+                <div>航线：{{ scope.row.operator.split(",")[2] }}</div>
+            </span>
+              <span v-else-if=" column.label == '汇率'">
+              {{ getExchangeRate(scope.row.exchangeRate) }}
+            </span>
+              <span v-else-if=" column.label == '开票进度'">
+               {{
+                  scope.row.invoicingStatus == 0 ?
+                    '未开票' : scope.row.invoicingStatus == 1 ?
+                    '已开票' : scope.row.invoicingStatus == 2 ? '部分开票' : ''
+                }}
+            </span>
+              <span v-else-if=" column.label == '订单状态'">
+                 {{
+                  scope.row.financeStatus == 0 ?
+                    '未交单' : scope.row.financeStatus == 1 ?
+                    '已交单' : scope.row.financeStatus == 2 ?
+                      '申请解锁' : scope.row.financeStatus == 3 ?
+                        '交单待审核' : scope.row.financeStatus == 4 ?
+                          '异常' : scope.row.financeStatus == 5 ?
+                            '修改中' : ''
+                }}
+            </span>
+              <span v-else-if="column.prop=='orderNo'&& column.label == '订单号'">
+              <a @click="showFees(scope.row.id,scope.row.payWay,scope.row.financeStatus)" style="font-size: 12px;">{{ scope.row.orderNo }}</a>
+            </span>
+<!--            <div v-else >{{// scope[column.prop]}}</div>-->
             <span v-else v-html="getDataName(scope.row, column)"></span>
           </span>
         </template>
@@ -74,6 +138,7 @@
 <script>
   export default {
     props: {
+      type: 'index',
       // 表格数据源
       tableData: {
         type: Array,
@@ -173,6 +238,72 @@
           this.$emit(method, scope)
         }
       },
+      getExchangeRate(exchangeRate) {
+        var totalOrgn = ''
+        var value1 = 0
+        var value2 = 0
+        var value3 = 0
+        var value4 = 0
+        var value5 = 0
+        for (var i = 0; i < exchangeRate.length; i++) {
+          if (exchangeRate[i].currency == '1') {
+            value1 += exchangeRate[i].exchangeRate
+          } else if (exchangeRate[i].currency == '2') {
+            value2 += exchangeRate[i].exchangeRate
+          } else if (exchangeRate[i].currency == '3') {
+            value3 += exchangeRate[i].exchangeRate
+          } else if (exchangeRate[i].currency == '4') {
+            value4 += exchangeRate[i].exchangeRate
+          } else if (exchangeRate[i].currency == '5') {
+            value5 += exchangeRate[i].exchangeRate
+          }
+        }
+        totalOrgn = ''
+        totalOrgn += value1 || value1 == 0 ? 'CNY:' + value1 + '+' : ''
+        totalOrgn += value2 ? 'HKD:' + value2 + '+' : ''
+        totalOrgn += value3 ? 'USD:' + value3 + '+' : ''
+        totalOrgn += value4 ? 'EUR:' + value4 + '+' : ''
+        totalOrgn += value5 ? 'GBP:' + value5 : ''
+        totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
+        return totalOrgn;
+      },
+      getOrgn(orgn) {
+        if (!orgn) {
+          return;
+        }
+        orgn = JSON.parse(orgn);
+        var totalOrgn = ''
+        var value1 = 0
+        var value2 = 0
+        var value3 = 0
+        var value4 = 0
+        var value5 = 0
+        // HK$ $ € ￡
+        for (var i = 0; i < orgn.length; i++) {
+          if (orgn[i].currency == '1') {
+            value1 += orgn[i].amount
+          } else if (orgn[i].currency == '2') {
+            value2 += orgn[i].amount
+          } else if (orgn[i].currency == '3') {
+            value3 += orgn[i].amount
+          } else if (orgn[i].currency == '4') {
+            value4 += orgn[i].amount
+          } else if (orgn[i].currency == '5') {
+            value5 += orgn[i].amount
+          }
+        }
+        totalOrgn = ''
+        totalOrgn += value1 || value1 == 0 ? value1 + 'CNY' + '+' : ''
+        totalOrgn += value2 ? value2 + 'HKD' + '+' : ''
+        totalOrgn += value3 ? value3 + 'USD' + '+' : ''
+        totalOrgn += value4 ? value4 + 'EUR' + '+' : ''
+        totalOrgn += value5 ? value5 + 'GBP' : ''
+        totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
+        return totalOrgn;
+      },
+      showFees(val) {
+        this.$emit('showFees',val)
+      },
       // 页码跳转
       handleCurrent(val) {
         // this.rowSelect()
@@ -223,7 +354,11 @@
   span.gary {
     color: #bcbcbc;
   }
+  .caiwu{
+    color: #bcbcbc;
 
+    font-size: 12px;
+  }
   .tupian {
     width: 30px;
     height: auto;
