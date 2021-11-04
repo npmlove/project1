@@ -958,13 +958,21 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          var newOrderArr = []
+          if(this.arOrderPriceList.length > 0){
+            for(var y = 0; y < this.arOrderPriceList.length; y++){
+              for(var p = 0; p < this.arOrderPriceList[y].list.length; p++){
+                newOrderArr.push(this.arOrderPriceList[y].list[p])
+              }
+            }
+          }
           var data = {
             departureDate: this.departureDate,
             fullLeg: this.fullLeg,
             orderId: this.orderId,
             orderNo: this.orderNo,
             waybillNo: this.waybillNo,
-            prices: this.arOrderPriceList
+            prices: newOrderArr
           }
           this.$http.post(this.$service.priceSendBill, data).then(res => {
             if (res.code == 200) {
