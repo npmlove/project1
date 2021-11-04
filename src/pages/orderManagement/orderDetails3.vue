@@ -400,7 +400,7 @@
                 <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.quantity" @blur="priceBlur(childerItem.quantity,childerIndex,'应收','数量',priceIndex)" maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
-                <el-select :disabled="(childerItem.expenseName == '空运费') || (orderStatus.indexOf(status) == -1) ? true : false" v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 90%;">
+                <el-select @change="totalPriceType('应收')" :disabled="(childerItem.expenseName == '空运费') || (orderStatus.indexOf(status) == -1) ? true : false" v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 90%;">
                   <el-option
                     v-for="item in currencyOpt"
                     :key="item.Name"
@@ -511,7 +511,7 @@
                 <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.quantity" @blur="priceBlur(childerItem.quantity,childerIndex,'应付','数量')" maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
-                <el-select :disabled="(childerItem.expenseName == '空运费') || (orderStatus.indexOf(status) == -1) ? true : false" v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 80%;">
+                <el-select @change="totalPriceType('应付')" :disabled="(childerItem.expenseName == '空运费') || (orderStatus.indexOf(status) == -1) ? true : false" v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 80%;">
                   <el-option
                     v-for="item in currencyOpt"
                     :key="item.Name"
@@ -1181,7 +1181,15 @@
           inboundCw: this.inboundCw,
         }
         var orderPriceList = []
-        orderPriceList = this.arOrderPriceList.concat(this.apOrderPriceList)
+        var newOrderArr = []
+        if(this.arOrderPriceList.length > 0){
+          for(var y = 0; y < this.arOrderPriceList.length; y++){
+            for(var p = 0; p < this.arOrderPriceList[y].list.length; p++){
+              newOrderArr.push(this.arOrderPriceList[y].list[p])
+            }
+          }
+        }
+        orderPriceList = newOrderArr.concat(this.apOrderPriceList)
         if(orderPriceList.length > 0){
           for(var m = 0; m < orderPriceList.length; m++){
             if(!orderPriceList[m].expenseName){
@@ -1772,14 +1780,6 @@
             }
             this.apOrderPriceList = data.apOrderPriceList
 
-            // if(data.arOrderPriceList){
-            //   this.statusPrice = data.arOrderPriceList[0]
-            //   for(var i = 0; i < data.arOrderPriceList[0].list.length; i++){
-            //     data.arOrderPriceList[0].list[i].currency = data.arOrderPriceList[0].list[i].currency.toString()
-            //   }
-            // }
-            // this.arOrderPriceList = data.arOrderPriceList[0].list
-
             if(data.arOrderPriceList){
               for(var r = 0; r < data.arOrderPriceList.length; r++){
                 for(var t = 0; t < data.arOrderPriceList[r].list.length; t++){
@@ -1797,8 +1797,6 @@
                   this.orderOptionsList[q].flightNoOpt = []
                   this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
                   this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
-                  // console.log(data.orderOptionsList[q])
-                  // this.initAirlineSearchByPage(q,data.orderOptionsList[q])
                 }
               }
             }
