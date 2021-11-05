@@ -126,7 +126,7 @@
           },
           {
             label: '添加时间',
-            prop: 'createtime',
+            prop: 'createTime',
             show: true,
             width: '160'
           }
@@ -251,7 +251,7 @@
       },
       //操作
       handleClick(scope) {
-        if (!this.checkEdit(scope.row.createtime)){
+        if (!this.checkEdit(scope.row.createTime)){
           this.$message.error("汇率设置已超过24小时")
           return;
         }
