@@ -90,7 +90,30 @@ const expenseManagement=[{
 
 },
 ]
+//费用管理
+const cargoTrackingManage=[{
+  path:'/cargoTrackingManage',
+  component:Layout,
+  name:'cargoTrackingManage',
+  redirect:'noredirect',
+  alwaysShow:true,
+  meta:{
+    title:'货物追踪',
+    icon: 'icon iconfont icon-diannao',
+    breadcrumb: true
+  },
+  children:[{
+    path: 'cargoTracking',
+    component: () => import('@/pages/cargoTrackingManage/cargoTracking.vue'),
+    name: 'cargoTracking',
+    meta: {
+      title: '货物追踪详情',
+      keepAlive:true,
+      needLogin: true
+    },},]
 
+},
+]
 //管理模块
 const adminUserCenter = [{
   path: '/adminUser',
@@ -233,6 +256,101 @@ const routeManagementCenter = [{
       hidden: false,
       meta: {
         title: ' 航线导入',
+        keepAlive: false,
+        needLogin: true
+      }
+    }
+  ]
+}]
+// 财务管理
+const financeManagementCenter = [{
+  path: '/financeManagement',
+  component: Layout,
+  name: 'financeManagement',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title: '财务管理',
+    icon: 'icon iconfont icon-kucun',
+    breadcrumb: false
+  },
+  children: [
+    {
+      path: 'financeManage',
+      component: () => import('@/pages/financeManagement/financeManage.vue'),
+      name: 'financeManage',
+      meta: {
+        title: '财务列表',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'invoiceList',
+      component: () => import('@/pages/financeManagement/invoiceList.vue'),
+      name: 'invoiceList',
+      meta: {
+        title: '发票列表',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'orderWriteOff',
+      component: () => import('@/pages/financeManagement/orderWriteOff.vue'),
+      name: 'orderWriteOff',
+      meta: {
+        title: '订单核销',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'receivableStatistics',
+      component: () => import('@/pages/financeManagement/receivableStatistics.vue'),
+      name: 'receivableStatistics',
+      meta: {
+        title: '应收统计',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'receivableStatisticsDetails',
+      component: () => import('@/pages/financeManagement/receivableStatisticsDetails.vue'),
+      name: 'receivableStatisticsDetails',
+      meta: {
+        title: '应收核销明细',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'paysStatistics',
+      component: () => import('@/pages/financeManagement/paysStatistics.vue'),
+      name: 'paysStatistics',
+      meta: {
+        title: '应付统计',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'paysStatisticsDetails',
+      component: () => import('@/pages/financeManagement/paysStatisticsDetails.vue'),
+      name: 'paysStatisticsDetails',
+      meta: {
+        title: '应付核销明细',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'bankAccount',
+      component: () => import('@/pages/financeManagement/bankAccount.vue'),
+      name: 'bankAccount',
+      meta: {
+        title: '银行账号列表',
         keepAlive: false,
         needLogin: true
       }
@@ -416,16 +534,47 @@ const userManagementCenter = [{
   ]
 }]
 
+
+// 科目管理
+const courseManagement = [{
+  path: '/courseManagement',
+  component: Layout,
+  name: 'userManagement',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title: '科目管理',
+    icon: 'icon iconfont icon-ECN',
+    breadcrumb: false
+  },
+  children: [{
+    path: 'exchangeRateManagement',
+    component: () => import('@/pages/courseManagement/exchangeRateManagement.vue'),
+    name: 'exchangeRateManagement',
+    meta: {
+      title: '汇率管理',
+      keepAlive: false,
+      needLogin: true
+    }
+  }
+  ]
+}]
+
+
+
 const routes = [
   ...autoRoutes,
   ...orderManagementCenter,
   ...routeManagementCenter,
+  ...financeManagementCenter,
   ...adverManagementCenter,
   ...agentManagement,
   ...expenseManagement,
   // ...dictManagement,
   ...userManagementCenter,
-  ...adminUserCenter
+  ...adminUserCenter,
+  ...courseManagement,
+  ...cargoTrackingManage
 
 ]
 
