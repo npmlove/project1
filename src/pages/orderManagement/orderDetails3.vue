@@ -469,6 +469,82 @@
           </div>
         </div>
 
+        <div>
+          <div v-if="newZhangDanArr.length > 0" class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
+            <div class="flight-template" style="width: auto;margin-left: 0;">
+              <div class="flight-template-ul-header">
+                <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">序号</div>
+                <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">费用名称</div>
+                <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">收款单位</div>
+                <div class="flight-template-li" style="flex: 0 0 7%;text-align: center;">单价</div>
+                <div class="flight-template-li" style="flex: 0 0 7%;text-align: center;">数量</div>
+                <div class="flight-template-li" style="flex: 0 0 7%;text-align: center;">币种</div>
+                <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">原币合计</div>
+                <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">汇率</div>
+                <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">人民币合计</div>
+                <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">备注</div>
+                <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
+              </div>
+              <div v-for="(childerItem,childerIndex) in newZhangDanArr" :key="childerIndex" class="flight-template-ul-content">
+                <div class="flight-template-li" style="flex: 0 0 5%;">{{childerIndex+1}}</div>
+                <div class="flight-template-li" style="flex: 0 0 13%;">
+                  <el-input v-if="childerItem.expenseName == '空运费'" value="空运费" :disabled="true" size="small" style="width: 90%;"></el-input>
+                  <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.expenseName" size="small" clearable placeholder="请选择" style="width: 90%;">
+                    <el-option
+                      v-for="item in expenseCodeOpt"
+                      :key="item.expenseName"
+                      :label="item.expenseName"
+                      :value="item.expenseName">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div class="flight-template-li" style="flex: 0 0 13%;">
+                  <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.expenseUnitName" :disabled="true" size="small" style="width: 90%;"></el-input>
+                  <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
+                </div>
+                <div class="flight-template-li" style="flex: 0 0 7%;">
+                  <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.price" :disabled="true" size="small" style="width: 90%;"></el-input>
+                  <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.price" @blur="priceBlur(childerItem.price,childerIndex,'应收','单价',priceIndex)" onkeyup="value=value.replace(/[^\d\.]/g, '')"size="small" style="width: 90%;"></el-input>
+                </div>
+                <div class="flight-template-li" style="flex: 0 0 7%;">
+                  <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.quantity" :disabled="true" size="small" style="width: 90%;"></el-input>
+                  <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.quantity" @blur="priceBlur(childerItem.quantity,childerIndex,'应收','数量',priceIndex)" maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')" size="small" style="width: 90%;"></el-input>
+                </div>
+                <div class="flight-template-li" style="flex: 0 0 7%;">
+                  <el-select @change="totalPriceType('应收')" :disabled="(childerItem.expenseName == '空运费') || (orderStatus.indexOf(status) == -1) ? true : false" v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 90%;">
+                    <el-option
+                      v-for="item in currencyOpt"
+                      :key="item.Name"
+                      :label="item.Name"
+                      :value="item.Value">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div class="flight-template-li" style="flex: 0 0 10%;">
+                  <el-input v-model="childerItem.totalOrgn" :disabled="true" size="small" style="width: 90%;"></el-input>
+                </div>
+                <div class="flight-template-li" style="flex: 0 0 5%;">
+                  <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.exchangeRate" :disabled="true" size="small" style="width: 90%;"></el-input>
+                  <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.exchangeRate"  @blur="priceBlur(childerItem.exchangeRate,childerIndex,'应收','汇率',priceIndex)" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
+                </div>
+                <div class="flight-template-li" style="flex: 0 0 10%;">
+                  <el-input v-model="childerItem.totalCny" :disabled="true" size="small" style="width: 90%;"></el-input>
+                </div>
+                <div class="flight-template-li" style="flex: 0 0 13%;">
+                  <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="childerItem.remark" maxlength="50" size="small" style="width: 80%;"></el-input>
+                </div>
+                <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" size="small" style="flex: 0 0 10%;">
+                  <a :style="{visibility: arOrderPriceList.length > 9 ? 'hidden' : 'visible'}" @click="addArOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
+                  <a @click="delArOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <el-form-item label="">
+            <el-button @click="newZhangDan" style="width: auto;" size="medium" type="primary">新建账单</el-button>
+          </el-form-item> -->
+        </div>
+
         <!-- 账单信息-应付账单 -->
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">账单信息-应付账单</div>
         <div class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
@@ -854,7 +930,8 @@
         imgArr: [],
         statusDesc: '',
         statusPrice: {},
-        financeStatus: ''
+        financeStatus: '',
+        newZhangDanArr: []
       }
     },
     created() {
@@ -929,6 +1006,35 @@
       }
     },
     methods: {
+      newZhangDan() {
+        var json = {
+          id: '',
+          orderId: this.orderId,
+          orderNo: this.orderNo,
+          waybillNo: this.waybillNo,
+          expenseType: 1,
+          expenseName: '',
+          expenseUnitId: '',
+          expenseUnitName: '',
+          price: '',
+          quantity: '',
+          currency: '1',
+          totalOrgn: '',
+          exchangeRate: '',
+          totalCny: '',
+          remark: '',
+          createTime: '',
+          updateTime: '',
+          payCheckAmount: '',
+          payWriteOffAmount: '',
+          payWriteOffStatus: '',
+          payWriteOffCount: '',
+          payWay: '',
+          billId: '',
+          modifyColumn: ''
+        }
+        this.newZhangDanArr.push(json)
+      },
       jiaoDanClick() {
         this.$confirm('确定交单?', '提示', {
           confirmButtonText: '确定',
