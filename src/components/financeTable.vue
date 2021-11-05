@@ -315,7 +315,7 @@
       },
       // 复选框选择
       handleSelect(val) {
-        this.$emit('selectChange', val)
+        this.$emit('handleSelect', val)
       },
       //开关
       switchChangeUser(val) {

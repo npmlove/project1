@@ -146,6 +146,7 @@
             :currentPage='pageNum'
             :pageSize='pageSize'
             @showFees="showFees"
+            @handleSelect="handleSelect"
             @sizeChange='handleSizeChange'
             @currentChange='handleCurrentChange'>
           </Table>
@@ -437,7 +438,6 @@
         orderId: null,
         info:null,
         orderFinanceStatus:null,
-        multipleSelection:[],
 
         invoiceOpt: [
           {
@@ -563,9 +563,9 @@
           console.log(e)
         })
       },
-      selectChange(val){
-        this.multipleSelection = val;
-        console.log(this.multipleSelection)
+      handleSelect(val){
+
+        this.detailTabs = val;
       },
 
       getOrgn(orgn) {
