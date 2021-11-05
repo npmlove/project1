@@ -96,9 +96,9 @@
                             '修改中' : ''
                 }}
             </span>
-              <span v-else-if="column.prop=='orderNo'&& column.label == '订单号'">
-              <a @click="showFees(scope.row.id,scope.row.payWay,scope.row.financeStatus)" style="font-size: 12px;">{{ scope.row.orderNo }}</a>
-            </span>
+<!--              <span v-else-if="column.prop=='orderNo'&& column.label == '订单号'">-->
+              <a v-else-if="column.prop=='orderNo'&& column.label == '订单号'" @click="showFees(scope.row.id,scope.row.payWay,scope.row.financeStatus)" style="font-size: 12px;">{{ scope.row.orderNo }}</a>
+<!--            </span>-->
 <!--            <div v-else >{{// scope[column.prop]}}</div>-->
             <span v-else v-html="getDataName(scope.row, column)"></span>
           </span>
@@ -343,7 +343,7 @@
   }
 
   span {
-    padding-right: 10px;
+    padding-right: 0px;
   }
 
   span.cursor {

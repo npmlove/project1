@@ -118,6 +118,10 @@ const serviceApi = {
   savePresentLog: pulicWeb + '/t-order-present-log/savePresentLog',
   trackList: pulicWeb + '/track/monitorQuery/airCompanyInfo',
   trackDetail: pulicWeb + '/track/monitorQuery/getData',
+  //汇率编辑
+  editByYearAndMonth: pulicWeb + '/t-cur-exrate/editByYearAndMonth',
+  //汇率列表
+  searchByYear: pulicWeb + '/t-cur-exrate/searchByYear',
 
 }
 export default serviceApi

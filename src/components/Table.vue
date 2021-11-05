@@ -41,6 +41,12 @@
                             : "国外段"
                         }}
             </span>
+             <span v-else-if="column.prop == 'monthNo' && column.label == '有效期'">
+              {{
+                 scope.row.monthNo
+
+               }}月
+            </span>
             <span v-else v-html="getDataName(scope.row, column)"></span>
 
           </span>
