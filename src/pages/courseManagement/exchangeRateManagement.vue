@@ -256,6 +256,9 @@
           return;
         }
         if (scope.method == 'edit') {
+          if (this.$refs["ruleForm"]) {
+            this.$refs["ruleForm"].resetFields();
+          }
           this.dialogTitle = '请编辑汇率信息'
           this.dialogFormVisible = true
           this.ruleForm.currencyUsd = scope.row.currencyUsd
