@@ -99,7 +99,7 @@
           {label: '微信名称', prop: 'nickname', show: true, width: '150'},
           {label: '性别', prop: 'sex', show: true, width: '80'},
           {label: '认证主体', prop: 'certificationBody', show: true, width: '150'},
-          {label: '结算方式', prop: 'settlementModes', show: true, width: '100'},
+          {label: '结算方式', prop: 'payWay', show: true, width: '100'},
           {label: '手机号', prop: 'tel', show: true, width: '100'},
           {label: '注册时间', prop: 'createTime', show: true, width: '150'},
           {label: '绑定售前客服', prop: 'customerService', show: true, width: '100'}

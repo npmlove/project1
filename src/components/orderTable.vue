@@ -59,8 +59,8 @@
             </div>
           </div>
           <div v-else-if="column.label == '账单信息'" style="padding-top: 30px;">
-            <div v-if="scope.row.settlementModes == '0'">付款买单<!-- —<span style="color: #F00;">未核销</span> --></div>
-            <div v-if="scope.row.settlementModes == '1'">月结买单<!-- —<span style="color: #F00;">未核销</span> --></div>
+            <div v-if="scope.row.payWay == '0'">付款买单<!-- —<span style="color: #F00;">未核销</span> --></div>
+            <div v-if="scope.row.payWay == '1'">月结买单<!-- —<span style="color: #F00;">未核销</span> --></div>
             <div>单价：￥{{scope.row.bookingPrice || 0}}/kg</div>
             <div>应收账单：{{priceType(scope.row.totalArOrgn) || 0}}</div>
             <div>应付账单：{{priceType(scope.row.totalApOrgn) || 0}}</div>

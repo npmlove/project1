@@ -432,9 +432,9 @@
               <div>{{priceItem.billAmountCny}}</div>
             </el-form-item>
             <el-form-item label="结算方式">
-              <el-select :disabled="settlementModes == '0'" v-model="settlementModes" clearable placeholder="请选择结算方式">
+              <el-select :disabled="payWay == '0'" v-model="payWay" clearable placeholder="请选择结算方式">
                 <el-option
-                  v-for="item in settlementModesOpt"
+                  v-for="item in payWayOpt"
                   :key="item.Name"
                   :label="item.Name"
                   :value="item.Value">
@@ -779,8 +779,8 @@
           }
         ],
         expenseCodeOpt: [],
-        settlementModes: '',
-        settlementModesOpt: [
+        payWay: '',
+        payWayOpt: [
           {
             Name: '付款买单',
             Value: '0'
@@ -1089,7 +1089,7 @@
           pscsId: this.pscsId.split('#')[0],
           pscsName: this.pscsId.split('#')[1],
           remark: this.remark,
-          settlementModes: this.settlementModes,
+          payWay: this.payWay,
           status: this.status,
           totalApCny: this.totalApCny,
           totalApOrgn: this.totalApOrgn,
@@ -1679,7 +1679,7 @@
             this.deliveryAddress = data.deliveryAddress
             this.deliveryContacts = data.deliveryContacts
             this.deliveryTel = data.deliveryTel
-            this.settlementModes = data.settlementModes.toString()
+            this.payWay = data.payWay.toString()
             this.totalApCny = data.totalApCny
             this.totalApOrgn = this.priceType(data.totalApOrgn)
             this.totalArCny = data.totalArCny
