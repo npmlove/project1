@@ -138,96 +138,18 @@
       </el-form>
       <el-tabs class="nth9_class" v-model="financeStatus" type="border-card" @tab-click="tabClickData">
         <el-tab-pane label="全部" name="全部">
-          <el-table
-            :data="tableData"
-            border
-            stripe
-            header
-            class="finance-talbe"
-            style="width: 100%">
-            <template slot="empty">
-              <img class="data-pic" src="../../assets/kong-icon.png"/>
-              <p>暂无数据</p>
-            </template>
-            <el-table-column type="selection" width="50"></el-table-column>
-            <el-table-column label="订单号" min-width="120">
-              <template slot-scope="scope">
-                <a @click="showFees(scope.row.id,scope.row.payWay,scope.row.financeStatus)">{{ scope.row.orderNo }}</a>
-              </template>
-            </el-table-column>
-            <el-table-column prop="waybillNo" label="运单号" min-width="80"></el-table-column>
-            <el-table-column prop="departureDate" label="航班日期" min-width="80"></el-table-column>
-            <el-table-column prop="presentationTime" label="交单时间" min-width="80"></el-table-column>
-            <el-table-column prop="customerName" label="订舱客户" min-width="80"></el-table-column>
-            <el-table-column prop="agentName" label="代理上家" min-width="200"></el-table-column>
-            <el-table-column prop="airCompanyCode" label="航司" width="50"></el-table-column>
-            <el-table-column prop="pol" label="起运港" width="60"></el-table-column>
-            <el-table-column prop="pod" label="目的港" width="60"></el-table-column>
-            <el-table-column label="货物信息" min-width="80">
-              <template slot-scope="scope">
-                <div>{{ scope.row.cargoInfo.split(",")[0] }}</div>
-                <div>{{ scope.row.cargoInfo.split(",")[1] }}PCS</div>
-                <div>{{ scope.row.cargoInfo.split(",")[2] }}CBM</div>
-                <div>{{ scope.row.cargoInfo.split(",")[3] }}KGS</div>
-                <div>1:{{ scope.row.cargoInfo.split(",")[4] }}</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作人员" min-width="80">
-              <template slot-scope="scope">
-                <div>客服：{{ scope.row.operator.split(",")[1] }}</div>
-                <div>销售：{{ scope.row.operator.split(",")[0] }}</div>
-                <div>航线：{{ scope.row.operator.split(",")[2] }}</div>
-                <!--                  <div>操作：{{scope.row.operator.split(",")[0]}}</div>-->
-              </template>
-            </el-table-column>
-            <el-table-column label="应收金额">
-              <el-table-column prop="totalArCny" label="人民币" min-width="80"></el-table-column>
-              <el-table-column prop="totalArOrgn" label="原币" min-width="80">
-                <template slot-scope="scope">
-                  {{ getOrgn(scope.row.totalArOrgn) }}
-                </template>
-              </el-table-column>
-            </el-table-column>
-            <el-table-column label="应付金额">
-              <el-table-column prop="totalApCny" label="人民币" min-width="80"></el-table-column>
-              <el-table-column label="原币" min-width="80">
-                <template slot-scope="scope">
-                  {{ getOrgn(scope.row.totalApOrgn) }}
-                </template>
-
-              </el-table-column>
-            </el-table-column>
-            <el-table-column prop="orderProfit" label="利润" min-width="100"></el-table-column>
-            <el-table-column label="汇率" width="50">
-              <template slot-scope="scope">
-                {{ getExchangeRate(scope.row.exchangeRate) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="开票进度" min-width="80">
-              <template slot-scope="scope">
-                {{
-                  scope.row.invoicingStatus == 0 ?
-                    '未开票' : scope.row.invoicingStatus == 1 ?
-                    '已开票' : scope.row.invoicingStatus == 2 ? '部分开票' : ''
-                }}
-              </template>
-            </el-table-column>
-            <el-table-column prop="invoicedAmount" label="开票金额" min-width="80"></el-table-column>
-            <el-table-column label="订单状态" min-width="80">
-
-              <template slot-scope="scope">
-                {{
-                  scope.row.financeStatus == 0 ?
-                    '未交单' : scope.row.financeStatus == 1 ?
-                    '已交单' : scope.row.financeStatus == 2 ?
-                      '申请解锁' : scope.row.financeStatus == 3 ?
-                        '交单待审核' : scope.row.financeStatus == 4 ?
-                          '异常' : scope.row.financeStatus == 5 ?
-                            '修改中' : ''
-                }}
-              </template>
-            </el-table-column>
-          </el-table>
+          <Table
+            :tableData='tableData'
+            :columns='columns'
+            :operation='operation'
+            :total='total'
+            :currentPage='pageNum'
+            :pageSize='pageSize'
+            @showFees="showFees"
+            @handleSelect="handleSelect"
+            @sizeChange='handleSizeChange'
+            @currentChange='handleCurrentChange'>
+          </Table>
         </el-tab-pane>
         <el-tab-pane label="已交单" name="1">
           <Table
@@ -312,8 +234,13 @@
       <el-button size='medium' type="primary" style='position: absolute;right:110px;top:135px;'>修改</el-button>
     </div>
     <el-dialog :visible.sync="dialogFormVisible" width="80%">
-      <el-tabs style="margin: 20px 0;" v-model="financeStatus" type="border-card" @tab-click="tabClickData">
-        <el-tab-pane label="全部" name="全部">
+      <el-tabs v-model="orderId" type="card" editable @edit="handleTabsEdit">
+        <el-tab-pane
+          :key="item.name"
+          v-for="(item, index) in detailTabs"
+          :label="item.title"
+          :name="item.name"
+        >
           <div style="font-size: 18px;font-weight: 100;color: #333;padding: 0 20px 10px 20px;">应收账单</div>
           <Table
             :tableData='arData'
@@ -374,20 +301,19 @@
           </div>
 
         </el-tab-pane>
-        <!--        <el-tab-pane label="已交单" name="1">
-                  <Table
-                    :tableData='tableData'
-                    :columns='columns'
-                    :operation='operation'
-                    :total='total'
-                    :currentPage='pageNum'
-                    :pageSize='pageSize'
-                    @orderDetails="orderDetails"
-                    @sizeChange='handleSizeChange'
-                    @currentChange='handleCurrentChange'>
-                  </Table>
-                </el-tab-pane>-->
       </el-tabs>
+
+
+
+
+
+<!--      <el-tabs style="margin: 20px 0;" v-model="financeStatus" type="border-card" @tab-click="tabClickData">
+
+        <el-tab-pane label="全部" name="全部">
+
+        </el-tab-pane>
+
+      </el-tabs>-->
       <div slot="footer" class="dialog-footer" v-show="financeStatus==2||orderFinanceStatus==2">
         <el-button @click="savePresentLog(3)">驳回</el-button>
         <el-button type="primary" @click="savePresentLog(2)">确认解锁</el-button>
@@ -407,6 +333,7 @@
   export default {
     data() {
       return {
+        detailTabs:[],
         dialogFormVisible: false,
         showFeesDetail: false,
         //table
@@ -512,7 +439,6 @@
         info:null,
         orderFinanceStatus:null,
 
-
         invoiceOpt: [
           {
             Name: '未开票',
@@ -540,6 +466,9 @@
       tabClickData() {
         this.initData()
         this.initOrderCountList()
+      },
+      detailTabClickData(){
+        this.showFees(this.orderId)
       },
       //起始港三字码
       initAirportSearchByPage(keyWord, type) {
@@ -634,6 +563,11 @@
           console.log(e)
         })
       },
+      handleSelect(val){
+
+        this.detailTabs = val;
+      },
+
       getOrgn(orgn) {
         if (!orgn) {
           return;

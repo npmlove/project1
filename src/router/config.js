@@ -534,6 +534,34 @@ const userManagementCenter = [{
   ]
 }]
 
+
+// 科目管理
+const courseManagement = [{
+  path: '/courseManagement',
+  component: Layout,
+  name: 'userManagement',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title: '科目管理',
+    icon: 'icon iconfont icon-ECN',
+    breadcrumb: false
+  },
+  children: [{
+    path: 'exchangeRateManagement',
+    component: () => import('@/pages/courseManagement/exchangeRateManagement.vue'),
+    name: 'exchangeRateManagement',
+    meta: {
+      title: '汇率管理',
+      keepAlive: false,
+      needLogin: true
+    }
+  }
+  ]
+}]
+
+
+
 const routes = [
   ...autoRoutes,
   ...orderManagementCenter,
@@ -545,6 +573,7 @@ const routes = [
   // ...dictManagement,
   ...userManagementCenter,
   ...adminUserCenter,
+  ...courseManagement,
   ...cargoTrackingManage
 
 ]
