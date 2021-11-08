@@ -182,7 +182,7 @@
               v-model="departureDate"
               type="date"
               placeholder="选择日期"
-               :disabled="orderStatus.indexOf(status) > -1 ? false : true"
+              :disabled="orderStatus.indexOf(status) > -1 ? false : true"
               style="width: 216px;"
               value-format="yyyy-MM-dd">
             </el-date-picker>
