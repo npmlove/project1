@@ -3,140 +3,22 @@
     <div class="content">
       <el-form :inline="true" size="medium" class="demo-form-inline">
         <div class="content-search-normal">
-          <el-form-item>
-            <el-input v-model="orderNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入订单号"></el-input>
+          <el-form-item style="float:left">
+            开户行:
+            <el-input v-model="searchParm.accountBank" style="width: 200px;" size="medium" :maxlength="30" clearable placeholder="请输入开户行"></el-input>
           </el-form-item>
-
-          <el-form-item>
-            <el-input v-model="waybillNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入运单号"></el-input>
+          <el-form-item style="float:left;margin-left:20px">
+            户名：
+            <el-input v-model="searchParm.userName" style="width: 200px;" size="medium" :maxlength="30" clearable placeholder="请输入户名"></el-input>
           </el-form-item>
-
-          <el-form-item>
-            <el-input v-model="inboundNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入订舱客户"></el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-input v-model="inboundNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入代理上家"></el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入航司" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-date-picker
-              type="daterange"
-              range-separator="至"
-              start-placeholder="航班开始日期"
-              end-placeholder="航班结束日期">
-            </el-date-picker>
-          </el-form-item>
-
-          <el-form-item>
-            <el-date-picker
-              type="daterange"
-              range-separator="至"
-              start-placeholder="交单开始日期"
-              end-placeholder="交单结束日期">
-            </el-date-picker>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="pol" placeholder="起运港三字码" :remote-method="polMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="(item,index) in polOpt"
-                :disabled="pod == item.threeLetterCode"
-                :key="item.threeLetterCode"
-                :value="item.threeLetterCode">
-                <span>{{item.threeLetterCode}}</span>
-                <span style="margin-left: 5px;">{{item.name}}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="pod" placeholder="目的港三字码" :remote-method="podMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in podOpt"
-                :disabled="pol == item.threeLetterCode"
-                :key="item.threeLetterCode"
-                :value="item.threeLetterCode">
-                <span>{{item.threeLetterCode}}</span>
-                <span style="margin-left: 5px;">{{item.name}}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="开票进度" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入客服" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入销售" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入航线" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入操作" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-
-          <el-form-item>
+          <el-form-item style="float:right">
             <el-row>
-              <el-button @click="searchClick" size="medium" type="primary" icon="el-icon-search">查询</el-button>
-              <el-button @click="restClick" size="medium" type="primary">清空</el-button>
+              <el-button @click="searchBankAccount" size="medium" type="primary">搜索</el-button>
+              <el-button @click="editAccount(1)" size="medium" type="primary">新增</el-button>
             </el-row>
           </el-form-item>
         </div>
       </el-form>
-      <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData">
-        <el-tab-pane label="全部" name="全部">
           <el-table
               :data="tableData"
               border
@@ -148,313 +30,87 @@
                 <img class="data-pic" src="../../assets/kong-icon.png"/>
                 <p>暂无数据</p>
               </template>
-              <el-table-column type="selection" width="50"></el-table-column>
-              <el-table-column prop="date1" label="订单号" min-width="80"></el-table-column>
-              <el-table-column prop="date2" label="运单号" min-width="80"></el-table-column>
-              <el-table-column prop="date3" label="航班日期" min-width="80"></el-table-column>
-              <el-table-column prop="date4" label="交单时间" min-width="80"></el-table-column>
-              <el-table-column prop="date5" label="订舱客户" min-width="80"></el-table-column>
-              <el-table-column prop="date6" label="代理上家" min-width="80"></el-table-column>
-              <el-table-column prop="date7" label="航司" width="50"></el-table-column>
-              <el-table-column prop="date8" label="起运港" width="60"></el-table-column>
-              <el-table-column prop="date9" label="目的港" width="60"></el-table-column>
-              <el-table-column label="货物信息" min-width="80">
-                <template slot-scope="scope">
-                  <div>发动机</div>
-                  <div>1PCS</div>
-                  <div>20CBM</div>
-                  <div>500KGS</div>
-                  <div>1:25</div>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作人员" min-width="80">
-                <template slot-scope="scope">
-                  <div>客服：张三</div>
-                  <div>销售：李四</div>
-                  <div>航线：王五</div>
-                  <div>操作：赵六</div>
-                </template>
-              </el-table-column>
-              <el-table-column label="应收金额">
-                <el-table-column prop="date12" label="人民币" min-width="80"></el-table-column>
-                <el-table-column prop="date13" label="原币" min-width="80"></el-table-column>
-              </el-table-column>
-              <el-table-column label="应付金额">
-                <el-table-column prop="date14" label="人民币" min-width="80"></el-table-column>
-                <el-table-column prop="date15" label="原币" min-width="80"></el-table-column>
-              </el-table-column>
-              <el-table-column prop="date16" label="利润" min-width="150"></el-table-column>
-              <el-table-column prop="date17" label="汇率" width="50"></el-table-column>
-              <el-table-column prop="date18" label="开票进度" min-width="80"></el-table-column>
-              <el-table-column prop="date19" label="开票金额" min-width="80"></el-table-column>
-              <el-table-column prop="date20" label="订单状态" min-width="80"></el-table-column>
+              <el-table-column prop="id" label="序号" min-width="40"></el-table-column>
+              <el-table-column prop="userName" label="户名" min-width="80"></el-table-column>
+              <el-table-column prop="accountBank" label="开户行" min-width="80"></el-table-column>
+              <el-table-column prop="bankAccount" label="银行账号" min-width="80"></el-table-column>
+              <el-table-column prop="createTime" label="添加时间" min-width="80"></el-table-column>
+              <el-table-column  label="操作" min-width="80">
+                 <template slot-scope="scope">
+                  <el-button @click="editAccount(2,scope.row)" type="text" size="small">编辑</el-button>
+                  <el-button @click="deleteBankAccount(scope.row)" type="text" size="small">删除</el-button>
+                </template>  
+              </el-table-column>  
             </el-table>
-        </el-tab-pane>
-        <el-tab-pane label="已交单" name="1">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-        <el-tab-pane label="未交单" name="2">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-        <el-tab-pane label="修改申请" name="3">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-        <el-tab-pane label="修改审核" name="4">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-        <el-tab-pane label="异常" name="5">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-      </el-tabs>
     </div>
-    <el-dialog title="订单" :visible.sync="dialogFormVisible" width="80%">
-      <el-tabs style="margin: 20px 0;" v-model="typeCode" type="border-card" @tab-click="tabClickData">
-        <el-tab-pane label="全部" name="全部">
-          <div style="font-size: 18px;font-weight: 100;color: #333;padding: 0 20px 10px 20px;">应收账单</div>
-          <Table
-            :tableData='tableData'
-            :columns='columns1'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-          <div class="finance-table-price">
-            <div>账单合计：￥7000+$600</div>
-            <div>人民币合计：￥8625.5</div>
-            <div>结算方式：付款买单</div>
-          </div>
-          <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">应付账单</div>
-          <Table
-            :tableData='tableData'
-            :columns='columns2'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-          <div class="finance-table-price">
-            <div>账单合计：￥7000+$600</div>
-            <div>人民币合计：￥8625.5</div>
-            <div>订单利润：100</div>
-          </div>
-          <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">修改记录</div>
-          <Table
-            :tableData='tableData'
-            :columns='columns3'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-          <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;border-bottom: 1px dashed #999;">操作说明</div>
-          <el-input
-            type="textarea"
-            rows="2"
-            placeholder="请输入操作说明"
-            v-model="textarea2">
-          </el-input>
-        </el-tab-pane>
-        <el-tab-pane label="已交单" name="1">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-      </el-tabs>
+   
+    <el-dialog :title="this.buttonType==1 ? '新增银行账户':'修改银行账户'" :visible.sync="dialogFormVisible" style="width:60%;margin-left:20%">
+      
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">返 回</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确认解锁</el-button>
+        <el-form label-position="left" :inline="true" size="medium" class="dialog-demo">
+        <div class="rest-style" style="margin-top: 20px;">
+          <el-form-item label="开户行" label-width="120px" required>
+            <el-input v-model="bankMessage.accountBank" placeholder="请选择开户行" style="width:300px" maxlength="30">
+            </el-input>
+          </el-form-item>
+          <el-form-item label="户名" label-width="120px" required>
+            <el-input size="medium"  v-model="bankMessage.userName" placeholder="请输入户名" maxlength="30"  style="width:300px">
+            </el-input>
+          </el-form-item>
+          <el-form-item label="账号" label-width="120px" required>
+            <el-input size="medium"  v-model="bankMessage.bankAccount" placeholder="请输入账号" maxlength="19" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:300px">
+            </el-input>
+          </el-form-item>
+        </div>
+      </el-form>
+        <!-- 底部按钮 -->
+      <div slot="footer" class="dialog-footer">
+        <div style="text-align: center;padding-top:20px;">
+          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+            @click="dialogComfirm">确 定</el-button>
+          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" @click="dialogFormVisible = false">取 消
+          </el-button>
+        </div>
+      </div>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-  import Table from '@/components/financeTable'
-  import { toData } from '@/util/assist'
   export default {
     data() {
       return {
+        //判断新增和编辑按钮
+        buttonType:1,
+        //新增和编辑按钮的信息
+        bankMessage:{
+          bankAccount:"",
+          accountBank:"",
+          userName:"",
+        },
+        //搜索参数
+        searchParm:{
+          accountBank:"",
+          userName:""
+        },
+        //删除操作参数
+        deleteId:{id:0},
         dialogFormVisible: false,
         //table
         tableData: [
           {
-            date1: 'T21082416088448',
-            date2: '123-12345679',
-            date3: '2021-09-04',
-            date4: '2021-09-04',
-            date5: '石家庄XXX有限公司',
-            date6: '上海XXX运输有限公司',
-            date7: 'QW',
-            date8: 'CLT',
-            date9: 'SZX',
-            date10: '发动机',
-            date11: '张三（上海）',
-            date12: '200',
-            date13: '200CNY',
-            date14: '100',
-            date15: '100CNY',
-            date16: '100',
-            date17: '1',
-            date18: '部分开',
-            date19: '100',
-            date20: '正常'
-          },
-          {
-            date1: 'T21082416088448',
-            date2: '123-12345679',
-            date3: '2021-09-04',
-            date4: '2021-09-04',
-            date5: '石家庄XXX有限公司',
-            date6: '上海ZXC运输有限公司',
-            date7: 'QW',
-            date8: 'CLT',
-            date9: 'SZX',
-            date10: '发动机',
-            date11: '张三（上海）',
-            date12: '200',
-            date13: '200CNY',
-            date14: '100',
-            date15: '100CNY',
-            date16: '100',
-            date17: '1',
-            date18: '部分开',
-            date19: '100',
-            date20: '修改审核'
-          },
-          {
-            date1: 'T21082416088448',
-            date2: '123-12345679',
-            date3: '2021-09-04',
-            date4: '2021-09-04',
-            date5: '石家庄XXX有限公司',
-            date6: '上海AQS运输有限公司',
-            date7: 'QW',
-            date8: 'CLT',
-            date9: 'SZX',
-            date10: '发动机',
-            date11: '张三（上海）',
-            date12: '200',
-            date13: '200CNY',
-            date14: '100',
-            date15: '100CNY',
-            date16: '100',
-            date17: '1',
-            date18: '部分开',
-            date19: '100',
-            date20: '修改申请'
+          accountBank: "人民银行",
+          bankAccount: "45543488856453325",
+          createTime: "2021-11-05 16:42:09",
+          id: 18,
+          updatetime: "2021-11-05 16:42:09",
+          userName: "开周"
           }
         ],
         pageSize: 10,
         pageNum: 1,
         total: 0,
-        // 列
-        columns1: [
-          {label: '序号', prop: 'orderNo', show: true, width: '150'},
-          {label: '费用名称', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '收款单位', prop: 'pol', show: true, width: '150'},
-          {label: '单价', prop: 'pod', show: true, width: '100'},
-          {label: '数量', prop: 'continent', show: true, width: '100'},
-          {label: '币种', prop: 'nonStop', show: true, width: '100'},
-          {label: '原币合计', prop: 'legCount', show: true, width: '50'},
-          {label: '汇率', prop: 'continent', show: true, width: '100'},
-          {label: '人民币合计', prop: 'nonStop', show: true, width: '100'},
-          {label: '备注', prop: 'legCount', show: true, width: '50'}
-        ],
-        columns2: [
-          {label: '序号', prop: 'orderNo', show: true, width: '150'},
-          {label: '费用名称', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '付款单位', prop: 'pol', show: true, width: '150'},
-          {label: '单价', prop: 'pod', show: true, width: '100'},
-          {label: '数量', prop: 'continent', show: true, width: '100'},
-          {label: '币种', prop: 'nonStop', show: true, width: '100'},
-          {label: '原币合计', prop: 'legCount', show: true, width: '50'},
-          {label: '汇率', prop: 'continent', show: true, width: '100'},
-          {label: '人民币合计', prop: 'nonStop', show: true, width: '100'},
-          {label: '备注', prop: 'legCount', show: true, width: '50'}
-        ],
-        columns3: [
-          {label: '操作类型', prop: 'orderNo', show: true, width: '150'},
-          {label: '说明', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '操作时间', prop: 'pol', show: true, width: '150'},
-          {label: '操作人', prop: 'pod', show: true, width: '100'}
-        ],
-        // 操作
-        operation: {
-          show: false,
-          label: '操作',
-          width: '180',
-          options: [
-            {label: '编辑', method: 'routeEdit'}
-          ]
-        },
         orderNo: '',
         waybillNo: '',
         inboundNo: '',
@@ -470,208 +126,80 @@
       }
     },
     mounted() {
-      this.initData()
-      this.initOrderCountList()
-      this.initAgentList()
-      this.initAirportSearchByPage()
+      this.searchBankAccount()
     },
     methods: {
-      //tab切换
-      tabClickData() {
-      	this.initData()
-      	this.initOrderCountList()
-      },
-      //详情
-      orderDetails(scope) {
-        if(scope.row.status == '3' || scope.row.status == '5'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails1',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '9'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails2',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '13' || scope.row.status == '17' || scope.row.status == '21'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails3',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '25' || scope.row.status == '27' || scope.row.status == '29' || scope.row.status == '31' || scope.row.status == '33'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails4',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '37' || scope.row.status == '41'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails5',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '43'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails6',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '39'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails7',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }
-      },
-      //起始港三字码
-      initAirportSearchByPage(keyWord, type) {
-        if (!keyWord) {
-          keyWord = ''
-        }
-        this.$http.get(this.$service.airportSearchByPage + '?keyWord=' + keyWord).then((data) => {
+      //银行账号列表-查询
+      searchBankAccount() {
+        this.$http.post(this.$service.searchBankAccount+`?accountBank=${this.searchParm.accountBank}&userName=${this.searchParm.userName}`).then((data) => {
           this.loading = false
           if (data.code == 200) {
-            if (type == '起始港') {
-              this.polOpt = data.data.records
-            } else if (type == '目的港') {
-              this.podOpt = data.data.records
+            let getData = JSON.parse(JSON.stringify(data.data))
+            this.tableData = getData
+            this.searchParm = 
+            {
+              accountBank:"",
+              userName:""
+            }
+            // this.$forceUpdate()
+          } else {
+            this.$message.error(data.message)
+          }
+        })
+      },
+         //银行账号列表-编辑
+      editAccount(add,message){
+         this.bankMessage = {
+          bankAccount:"",
+          accountBank:"",
+          userName:"",
+        }
+        if(message) { 
+          this.bankMessage.id = message.id
+        } 
+        this.buttonType = add
+        this.dialogFormVisible = true
+      },
+      //编辑弹框确认
+       dialogComfirm(){
+        this.$http.post(this.$service.editBankAccount,this.bankMessage).then(
+          data =>{
+            if(data.code == 200) {
+              this.$message.success('编辑成功')
+              this.searchBankAccount()
             } else {
-              this.polOpt = data.data.records
-              this.podOpt = data.data.records
-            }
-          } else {
-            this.$message.error(data.message)
+                this.$message.error(data.message)
+              }
           }
-        })
+        ).catch(() => {
+            console.log('取消')
+          })
+        this.dialogFormVisible = false
       },
-      polMethod(keyWord) {
-        this.loading = true
-        this.initAirportSearchByPage(keyWord, '起始港')
+      //银行账号列表-删除
+      deleteBankAccount(parm){
+        this.$confirm("确定删除这条数据?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+            console.log(typeof(parm.id))
+            this.$http.post(this.$service.deleteBankAccount,{id:parm.id}).then(data => {
+              if (data.code == 200) {
+                this.searchBankAccount()
+                this.$message.success('删除成功')
+              } else {
+                this.$message.error(data.message)
+              }
+            })
+          }).catch(() => {
+            console.log('取消')
+          })
+        
       },
-      podMethod(keyWord) {
-        this.loading = true
-        this.initAirportSearchByPage(keyWord, '目的港')
-      },
-      //代理公司
-      initAgentList(agentName) {
-        if (!agentName) {
-          agentName = ''
-        }
-        var data = {
-          agentName: agentName
-        }
-        this.$http.post(this.$service.agentList, data).then((data) => {
-          this.loading = false
-          if (data.code == 200) {
-            this.agentOpt = data.data.records
-          } else {
-            this.$message.error(data.message)
-          }
-        })
-      },
-      agentMethod(agentName) {
-        this.initAgentList(agentName)
-      },
-      initOrderCountList() {
-        var json = {
-        	orderNo: this.orderNo,
-        	waybillNo: this.waybillNo,
-        	inboundNo: this.inboundNo,
-        	pol: this.pol,
-        	pod: this.pod,
-        	agentId: this.agentId,
-          customerName: this.customerName,
-        	typeCode: 8
-        }
-        json = toData(json)
-        this.$http.get(this.$service.orderCountList+'?'+json).then(data => {
-          if (data.code == 200) {
-            this.orderCount = data.data
-          }else {
-            this.$message.error(data.message)
-          }
-        }).catch((e) => {
-          console.log(e)
-        })
-      },
-      //航线列表
-      initData() {
-        var json = {
-        	orderNo: this.orderNo,
-        	waybillNo: this.waybillNo,
-        	inboundNo: this.inboundNo,
-        	pol: this.pol,
-        	pod: this.pod,
-        	agentId: this.agentId,
-          customerName: this.customerName,
-        	typeCode: this.typeCode == '全部订单' ? '' : this.typeCode,
-        	pageNum: this.pageNum,
-        	pageSize: this.pageSize
-        }
-        json = toData(json)
-        this.$http.get(this.$service.orderSearchByPage+'?'+json).then(data => {
-          if (data.code == 200) {
-            this.total = data.data.total
-            this.tableData = data.data.records
-          }else {
-            this.$message.error(data.message)
-          }
-        }).catch((e) => {
-          console.log(e)
-        })
-      },
-      //查询
-      searchClick() {
-        this.pageSize = 10
-        this.pageNum = 1
-        this.initData()
-        this.initOrderCountList()
-      },
-      //重置
-      restClick() {
-        this.orderNo = ''
-        this.waybillNo = ''
-        this.inboundNo = ''
-        this.pol = ''
-        this.pod = ''
-        this.agentId = ''
-        this.customerName = ''
-        this.pageNum = 1
-        this.pageSize = 10
-        this.initData()
-        this.initOrderCountList()
-      },
-      handleCurrentChange(e) {
-        this.pageNum = e
-        this.initData()
-      },
-      handleSizeChange(e) {
-        this.pageSize = e
-        this.initData()
-      },
-    },
-    watch: {
-      tableData(idx) {
-        return idx
-      }
-    },
-    components: {
-      Table
     }
   }
 </script>
-
 
 <style scoped lang="less">
   @import url("../../assets/icon/iconfont.css");
@@ -687,6 +215,7 @@
 
   .el-form {
     background-color: #FFF;
+    text-align: center;
   }
 
   .el-form--inline .el-form-item {

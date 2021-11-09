@@ -122,6 +122,13 @@ const serviceApi = {
   editByYearAndMonth: pulicWeb + '/t-cur-exrate/editByYearAndMonth',
   //汇率列表
   searchByYear: pulicWeb + '/t-cur-exrate/searchByYear',
+  //银行账户管理-删除
+  deleteBankAccount: pulicWeb + '/t-bank-account/deleteInfo',
+  //银行账户管理-新增编辑
+  editBankAccount: pulicWeb + '/t-bank-account/inorChInfo',
+
+  //银行账户管理-查询
+  searchBankAccount: pulicWeb + '/t-bank-account/searchByNameBank',
 
 }
 export default serviceApi
