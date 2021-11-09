@@ -83,7 +83,7 @@
       return {
         //判断新增和编辑按钮
         buttonType:1,
-        //新增和编辑按钮的信息
+        //新增和编辑按钮弹框的信息
         bankMessage:{
           bankAccount:"",
           accountBank:"",
@@ -98,16 +98,7 @@
         deleteId:{id:0},
         dialogFormVisible: false,
         //table
-        tableData: [
-          {
-          accountBank: "人民银行",
-          bankAccount: "45543488856453325",
-          createTime: "2021-11-05 16:42:09",
-          id: 18,
-          updatetime: "2021-11-05 16:42:09",
-          userName: "开周"
-          }
-        ],
+        tableData: [],
         pageSize: 10,
         pageNum: 1,
         total: 0,
@@ -142,12 +133,21 @@
           }
         })
       },
-         //银行账号列表-编辑
+         //银行账号列表-编辑&新增
       editAccount(add,message){
-         this.bankMessage = {
-          bankAccount:"",
-          accountBank:"",
-          userName:"",
+        console.log(message)
+        if(add == '1'){
+          this.bankMessage = {
+            bankAccount:"",
+            accountBank:"",
+            userName:"",
+          }
+        }else{
+          this.bankMessage = {
+            bankAccount:message.bankAccount,
+            accountBank:message.accountBank,
+            userName:message.userName,
+          }
         }
         if(message) { 
           this.bankMessage.id = message.id
