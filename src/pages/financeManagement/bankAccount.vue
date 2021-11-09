@@ -136,11 +136,6 @@
           if (data.code == 200) {
             let getData = JSON.parse(JSON.stringify(data.data))
             this.tableData = getData
-            this.searchParm = 
-            {
-              accountBank:"",
-              userName:""
-            }
             // this.$forceUpdate()
           } else {
             this.$message.error(data.message)
