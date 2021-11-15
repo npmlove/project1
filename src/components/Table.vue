@@ -62,7 +62,8 @@
       >
         <template slot-scope="scope">
           <a v-for="(item, index) in operation.options" @click.prevent="handleClick(item.method, scope.row, $event)">
-            <span style="color: #2273CE;">{{ item.label }}</span>
+<!--            <span style="color: #2273CE;">{{ item.label }}</span>-->
+            <span :style="{'color':(!!checkEdit(scope.row.createTime)||item.method!=='editExpense'?'#2273CE':'#808080')}">{{ item.label }}</span>
           </a>
         </template>
       </el-table-column>
@@ -164,6 +165,16 @@
       }
     },
     methods: {
+      checkEdit(date) {
+        var today = new Date();
+        date = new Date(date)
+        date.setDate(date.getDate()+1)
+        if (today > date) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       // 排序
       handleSort(column) {
         this.$emit('sortChange', column)

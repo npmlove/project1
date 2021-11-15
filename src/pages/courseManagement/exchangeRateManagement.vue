@@ -138,7 +138,7 @@
           width: '160',
           options: [{
             label: '编辑',
-            method: 'edit'
+            method: 'editExpense'
           }
           ]
         },
@@ -171,17 +171,15 @@
     methods: {
       init() {
         var myDate = new Date;
+        myDate.setFullYear(2021);
         var year = myDate.getFullYear();//获取当前年
         this.initSelectYear(year)
         this.form.recentYear = year;
       },
       initSelectYear(year) {
         this.years = [];
-        for (let i = 0; i < 30; i++) {
-          this.years.push({value: (year - i), label: (year - i) + "年"});
-        }
         for (let i = 1; i < 30; i++) {
-          this.years.unshift({value: (year + i), label: (year + i) + "年"});
+          this.years.unshift({value: (year + i-1), label: (year + i-1) + "年"});
 
         }
       },
@@ -255,7 +253,7 @@
           this.$message.error("汇率设置已超过24小时")
           return;
         }
-        if (scope.method == 'edit') {
+        if (scope.method == 'editExpense') {
           if (this.$refs["ruleForm"]) {
             this.$refs["ruleForm"].resetFields();
           }
@@ -272,9 +270,8 @@
       checkEdit(date) {
         var today = new Date();
         date = new Date(date)
-        var dateStr = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + (date.getDate() + 1) + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-        var todayStr = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate() + " " + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        if (todayStr > dateStr) {
+        date.setDate(date.getDate()+1)
+        if (today>date) {
           return false;
         } else {
           return true;
