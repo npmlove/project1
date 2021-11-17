@@ -1,460 +1,776 @@
 <template>
   <div class="content-wrapper">
     <div class="content">
-      <el-form :inline="true" size="medium" class="demo-form-inline">
+      <el-form :inline="true" size="medium" class="demo-form-inline" label-position="left">
         <div class="content-search-normal">
-          <el-form-item>
-            <el-input v-model="orderNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入订单号"></el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-input v-model="waybillNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入运单号"></el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-input v-model="inboundNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入订舱客户"></el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-input v-model="inboundNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入代理上家"></el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入航司" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-date-picker
-              type="daterange"
-              range-separator="至"
-              start-placeholder="航班开始日期"
-              end-placeholder="航班结束日期">
-            </el-date-picker>
-          </el-form-item>
-
-          <el-form-item>
-            <el-date-picker
-              type="daterange"
-              range-separator="至"
-              start-placeholder="交单开始日期"
-              end-placeholder="交单结束日期">
-            </el-date-picker>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="pol" placeholder="起运港三字码" :remote-method="polMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="(item,index) in polOpt"
-                :disabled="pod == item.threeLetterCode"
-                :key="item.threeLetterCode"
-                :value="item.threeLetterCode">
-                <span>{{item.threeLetterCode}}</span>
-                <span style="margin-left: 5px;">{{item.name}}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="pod" placeholder="目的港三字码" :remote-method="podMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in podOpt"
-                :disabled="pol == item.threeLetterCode"
-                :key="item.threeLetterCode"
-                :value="item.threeLetterCode">
-                <span>{{item.threeLetterCode}}</span>
-                <span style="margin-left: 5px;">{{item.name}}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="开票进度" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入客服" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入销售" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入航线" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入操作" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-
-          <el-form-item>
-            <el-row>
-              <el-button @click="searchClick" size="medium" type="primary" icon="el-icon-search">查询</el-button>
-              <el-button @click="restClick" size="medium" type="primary">清空</el-button>
-            </el-row>
+          <div class="formItem">
+          <el-form-item label="订单号:" label-width="80px">
+            <el-input v-model="selectResult.orderNo" style="width: 210px;" size="medium" maxlength="15" clearable placeholder="请输入订单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');"></el-input>
           </el-form-item>
         </div>
+
+        <div class="formItem">
+          <el-form-item label="运单号:" label-width="80px">
+            <el-input v-model="selectResult.waybillNo" style="width: 210px;" size="medium" maxlength="15" clearable placeholder="请输入运单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');"></el-input>
+          </el-form-item>
+        </div>
+        <div class="formItem">
+          <el-form-item label="订舱公司:" label-width="80px">
+            <el-input v-model="selectResult.customerName" style="width: 210px;" size="medium" maxlength="30" clearable placeholder="请输入订舱客户"></el-input>
+          </el-form-item>
+        </div>
+        <div class="formItem">
+          <el-form-item label="发票抬头:" label-width="80px"> 
+            <el-input v-model="selectResult.invoiceTitle" style="width: 210px;" size="medium" maxlength="30" clearable placeholder="请输入代理上家"></el-input>
+          </el-form-item>
+        </div>
+        <div class="formItem">
+          <el-form-item label="是否上传:" label-width="80px">
+            <el-select  v-model="selectResult.upload" style="width: 210px;">
+              <el-option
+                v-for="(item,index) in ifUpload"
+                :key="index"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <div class="formItem">
+          <el-form-item label="发票号:" label-width="80px">
+            <el-input v-model="selectResult.invoiceNum" style="width: 210px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入发票号"></el-input>
+          </el-form-item>
+        </div>
+        <div class="formItem">
+          <el-form-item label="发票类型:" label-width="80px">
+            <el-select v-model="selectResult.invoiceType" multiple  collapse-tags style="width: 210px;" @change="dealAllChange">
+              <el-option
+                v-for="(item,index) in billType"
+                :key="index"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <div class="formItem">
+          <el-form-item label="开票进度:" label-width="80px">
+            <el-select v-model="selectResult.invoicingStatus" multiple  collapse-tags style="width: 210px;" @change="dealAllChange">
+              <el-option
+                v-for="(item,index) in billProgress"
+                :key="index"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <div class="formItem">
+          <el-form-item label="发票状态:" label-width="80px">
+            <el-select v-model="selectResult.invoiceStatus" style="width: 210px;">
+              <el-option
+                v-for="(item,index) in billState"
+                :key="index"
+                :value="item.value"
+                :label="item.label"
+                >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <div class="formItem">  
+          <el-form-item label="快递状态:" label-width="80px">
+            <el-select v-model="selectResult.expressStatus" style="width: 210px;">
+              <el-option
+                v-for="(item,index) in expressState"
+                :key="index"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+       <div style="width:400px" class="formItem">
+          <el-form-item label="航班日期" label-width="80px">
+             <el-date-picker
+             style="width:150px"
+              v-model="selectResult.startDepartureDate"
+              type="date"
+              :picker-options="pickerOptionsStartOne"
+              placeholder="选择日期">
+            </el-date-picker >-
+             <el-date-picker
+             style="width:150px"
+              v-model="selectResult.endDepartureDate"
+              type="date"
+              :picker-options="pickerOptionsEndOne"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+        </div>
+        <div style="width:400px" class="formItem">
+          <el-form-item label="交单时间:" label-width="80px"> 
+            <el-date-picker
+             style="width:150px"
+              v-model="selectResult.startPresentationTime"
+              type="date"
+              :picker-options="pickerOptionsStartTwo"
+              placeholder="选择日期">
+            </el-date-picker >-
+             <el-date-picker
+             style="width:150px"
+              v-model="selectResult.endPresentationTime"
+              type="date"
+              :picker-options="pickerOptionsEndTwo"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+        </div>
+        <div style="width:400px" class="formItem">
+          <el-form-item label="申请时间:" label-width="80px">
+            <el-date-picker
+             style="width:150px"
+              v-model="selectResult.startInvoiceApplyTime"
+              :picker-options="pickerOptionsStartThree"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker >-
+             <el-date-picker
+             style="width:150px"
+              v-model="selectResult.endInvoiceApplyTime"
+              :picker-options="pickerOptionsEndThree"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+        </div>
+        <div style="width:400px" class="formItem">
+          <el-form-item label="开票日期:" label-width="80px">
+            <el-date-picker
+             style="width:140px"
+              v-model="selectResult.startInvoicingTime"
+              :picker-options="pickerOptionsStartFour"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker >-
+             <el-date-picker
+             style="width:140px"
+              v-model="selectResult.endInvoicingTime"
+              :picker-options="pickerOptionsEndFour"
+
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+        </div>
+        <div class="operateButton">
+              <el-button @click="searchClick" size="mini" type="primary" icon="el-icon-search">查询</el-button>
+              <el-button @click="restClick" size="mini" type="primary">清空</el-button>
+        </div>
+           <div class="operateButton">
+            <el-button size='mini' type="primary" @click="invoicing()">开票</el-button>
+            <el-button size='mini' type="primary" @click="delInvoice()">作废</el-button>
+            <el-button size='mini' type="primary" @click="delivery()">快递</el-button>
+            <el-button size='mini' type="primary">上传发票</el-button>
+            <el-button size='mini' type="primary" @click="exportList">导出列表</el-button>
+            <el-button @click="drawer = true" type="primary" size='mini'>选择表格列</el-button>
+          </div>
+        </div>
       </el-form>
-      <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData">
-        <el-tab-pane label="全部" name="全部">
+      <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData" value="全部">
+        <el-tab-pane v-for="(item,index) in tabName" :key="index" :label="item+'( '+tabNum[index]+' )'" :name="item">
           <el-table
+              ref="multipleTable"
               :data="tableData"
               border
               stripe
               header
-              class="finance-talbe"
+              class="finance-table"
+              row-key="copyId"
+              :tree-props="{children: 'invoiceInfos'}"
+              @selection-change="handleSelectionChange"
               style="width: 100%">
               <template slot="empty">
                 <img class="data-pic" src="../../assets/kong-icon.png"/>
                 <p>暂无数据</p>
               </template>
               <el-table-column type="selection" width="50"></el-table-column>
-              <el-table-column prop="date1" label="订单号" min-width="80"></el-table-column>
-              <el-table-column prop="date2" label="运单号" min-width="80"></el-table-column>
-              <el-table-column prop="date3" label="航班日期" min-width="80"></el-table-column>
-              <el-table-column prop="date4" label="交单时间" min-width="80"></el-table-column>
-              <el-table-column prop="date5" label="订舱客户" min-width="80"></el-table-column>
-              <el-table-column prop="date6" label="代理上家" min-width="80"></el-table-column>
-              <el-table-column prop="date7" label="航司" width="50"></el-table-column>
-              <el-table-column prop="date8" label="起运港" width="60"></el-table-column>
-              <el-table-column prop="date9" label="目的港" width="60"></el-table-column>
-              <el-table-column label="货物信息" min-width="80">
+              <el-table-column label="订单号" min-width="160"  type="" v-if="checkedTable.indexOf('订单号')!==-1">
                 <template slot-scope="scope">
-                  <div>发动机</div>
-                  <div>1PCS</div>
-                  <div>20CBM</div>
-                  <div>500KGS</div>
-                  <div>1:25</div>
+                  <div v-if="scope.row.hasChild">
+                     <el-popover
+                        placement="bottom-start"
+                        width="120"
+                        trigger="hover"
+                        >
+                        <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.orderNo}}</div>
+                        <div slot="reference" @click="showOrderWayBill()" style="color:skyblue">{{scope.row.orderNo}}</div>
+                     </el-popover>
+                  </div>
+                    <div v-else-if="!scope.row.hasChild">
+                        <div@click="showOrderWayBill()" style="color:skyblue">{{scope.row.orderNo}}</div>
+                    </div>
                 </template>
               </el-table-column>
-              <el-table-column label="操作人员" min-width="80">
+              <el-table-column label="运单号" min-width="160"  type="" v-if="checkedTable.indexOf('运单号')!==-1">
                 <template slot-scope="scope">
-                  <div>客服：张三</div>
-                  <div>销售：李四</div>
-                  <div>航线：王五</div>
-                  <div>操作：赵六</div>
+                  <div  v-if="scope.row.hasChild">
+                    <el-popover
+                        placement="bottom-start"
+                        width="120"
+                        trigger="hover"
+                        >
+                        <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.waybillNo}}</div>
+                        <div slot="reference" @click="showOrderWayBill()" style="color:skyblue">{{scope.row.waybillNo}}</div>
+                     </el-popover>
+                  </div>
+                  <div v-else-if="!scope.row.hasChild">
+                    <div @click="showOrderWayBill()" style="color:skyblue">{{scope.row.waybillNo}}</div>
+                  </div>
                 </template>
               </el-table-column>
-              <el-table-column label="应收金额">
-                <el-table-column prop="date12" label="人民币" min-width="80"></el-table-column>
-                <el-table-column prop="date13" label="原币" min-width="80"></el-table-column>
+              <el-table-column prop="customerName" label="订舱公司" min-width="160"  type="" v-if="checkedTable.indexOf('订舱公司')!==-1"></el-table-column>
+              <el-table-column prop="departureDate" label="航班日期" min-width="100"  type="" v-if="checkedTable.indexOf('航班日期')!==-1">
+                <template slot-scope="scope">
+                  <div  v-if="scope.row.hasChild">
+                    <el-popover
+                        placement="bottom-start"
+                        width="120"
+                        trigger="hover"
+                        >
+                        <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.departureDate}}</div>
+                        <div slot="reference">{{scope.row.departureDate}}</div>
+                     </el-popover>
+                  </div>
+                  <div  v-else-if="!scope.row.hasChild">
+                      <div>{{scope.row.departureDate}}</div>
+                  </div>
+                </template>
               </el-table-column>
-              <el-table-column label="应付金额">
-                <el-table-column prop="date14" label="人民币" min-width="80"></el-table-column>
-                <el-table-column prop="date15" label="原币" min-width="80"></el-table-column>
+              <el-table-column prop="presentationTime" label="交单时间" min-width="100"  type="" v-if="checkedTable.indexOf('交单时间')!==-1">
+                <template slot-scope="scope">
+                  <div  v-if="scope.row.hasChild">
+                    <el-popover
+                        placement="bottom-start"
+                        width="120"
+                        trigger="hover"
+                        >
+                        <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.presentationTime}}</div>
+                        <div slot="reference">{{scope.row.presentationTime}}</div>
+                     </el-popover>
+                  </div>
+                  <div v-else-if="!scope.row.hasChild">
+                        <div>{{scope.row.presentationTime}}</div>
+                  </div>
+                </template>
               </el-table-column>
-              <el-table-column prop="date16" label="利润" min-width="150"></el-table-column>
-              <el-table-column prop="date17" label="汇率" width="50"></el-table-column>
-              <el-table-column prop="date18" label="开票进度" min-width="80"></el-table-column>
-              <el-table-column prop="date19" label="开票金额" min-width="80"></el-table-column>
-              <el-table-column prop="date20" label="订单状态" min-width="80"></el-table-column>
+              <el-table-column prop="invoiceTitle" label="发票抬头" min-width="160"  type="" v-if="checkedTable.indexOf('发票抬头')!==-1"></el-table-column>
+              <el-table-column  label="开票信息" min-width="80" type="" v-if="checkedTable.indexOf('开票信息')!==-1">
+                  <template slot-scope="scope" v-if="!scope.row.ifChild">
+                    <div @click="showInvoice(scope.row)" style="color:skyblue">查看</div>
+                  </template>
+              </el-table-column>
+              <el-table-column prop="totalArCny" label="应收费用总金额" min-width="120"  type="" v-if="checkedTable.indexOf('应收费用总金额')!==-1"></el-table-column>
+              <el-table-column prop="applyAmount" label="申请开票金额" min-width="120"  type="" v-if="checkedTable.indexOf('申请开票金额')!==-1">
+                <template slot-scope="scope" v-if="!scope.row.ifChild">
+                  <div>
+                    {{scope.row.applyAmount}}CNY
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="invoiceType" label="发票种类" min-width="140"  type="" v-if="checkedTable.indexOf('发票种类')!==-1">
+                <template slot-scope="scope">
+                  <div>
+                    {{getBillType[scope.row.invoiceType]}}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="applicant" label="申请人" min-width="80"  type="" v-if="checkedTable.indexOf('申请人')!==-1"></el-table-column>
+              <el-table-column prop="applyTime" label="申请时间" min-width="100"  type="" v-if="checkedTable.indexOf('申请时间')!==-1"></el-table-column>
+              <el-table-column prop="invoicingStatus" label="开票进度" min-width="80"  type="" v-if="checkedTable.indexOf('开票进度')!==-1">
+                <template slot-scope="scope">
+                  <div>
+                    {{getBillProgress[scope.row.invoicingStatus]}}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="invoicedAmount" label="已开票金额" min-width="80"  type="" v-if="checkedTable.indexOf('已开票金额')!==-1">
+                  <template slot-scope="scope">
+                    <template v-if="scope.row.ifChild">
+                         <div>{{scope.row.invoiceAmount}}</div>
+                     </template>
+                    <template v-else>
+                        <div>
+                          <div>{{scope.row.invoicedAmount}}</div>
+                        </div>
+                    </template>
+                  </template>
+              </el-table-column>
+              <el-table-column label="发票号码" min-width="100"  v-if="checkedTable.indexOf('发票号码')!==-1">
+                <template slot-scope="scope">
+                  <div>
+                    <template v-if="scope.row.ifChild || !scope.row.hasChild">
+                       <div>
+                         <div>{{scope.row.invoiceNum}}</div>
+                       </div>
+                     </template>
+                    <template v-else>
+                        <div>
+                          <el-popover
+                              placement="bottom-start"
+                              width="120"
+                              trigger="hover"
+                              >
+                              <div v-for="(item,index) in scope.row.invoiceInfos" :key ="index">{{item.invoiceNum}}</div>
+                              <div slot="reference">{{scope.row.invoiceNum}}</div>
+                          </el-popover>
+                        </div>
+                    </template>
+                     
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="invoicingTime" label="开票时间" min-width="80" v-if="checkedTable.indexOf('开票时间')!==-1">
+                <template slot-scope="scope">
+                  <div>
+                    <template v-if="scope.row.ifChild  || !scope.row.hasChild">
+                        <div>
+                         <div>{{scope.row.invoicingTime}}</div>
+                        </div>
+                      </template>
+                     <template v-else>
+                       <div>
+                         <el-popover
+                              placement="bottom-start"
+                              width="120"
+                              trigger="hover"
+                              >
+                              <div v-for="(item,index) in scope.row.invoiceInfos" :key ="index">{{item.invoicingTime}}</div>
+                              <div slot="reference">{{scope.row.invoicingTime}}</div>
+                          </el-popover>
+                       </div>
+                     </template>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="expressInfo" label="快递信息" min-width="80" v-if="checkedTable.indexOf('快递信息')!==-1"></el-table-column>
+              <el-table-column prop="expressStatus" label="快递状态" min-width="80" v-if="checkedTable.indexOf('快递状态')!==-1">
+                <template slot-scope="scope">
+                  <div @click="openPost(scope.row)">
+                    {{scope.row.expressStatus}}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="invoiceStatus" label="发票状态" min-width="80" v-if="checkedTable.indexOf('发票状态')!==-1"></el-table-column>
+              <el-table-column prop="upload" label="是否上传" min-width="80" v-if="checkedTable.indexOf('是否上传')!==-1"></el-table-column>
             </el-table>
-        </el-tab-pane>
-        <el-tab-pane label="已交单" name="1">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-        <el-tab-pane label="未交单" name="2">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-        <el-tab-pane label="修改申请" name="3">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-        <el-tab-pane label="修改审核" name="4">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-        <el-tab-pane label="异常" name="5">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
+             <div style="display:flex;justify-content:space-between">
+               <div>
+                 <el-button size="mini" class="pageSkip"><el-checkbox v-model="pageSkipChecked" @change="selectAllTable">跨页全选</el-checkbox></el-button>
+                 <el-button  size="mini" @click="getStatistData">数据统计</el-button>
+                 <div style="margin-top:15px" v-if="statistDataShow">
+                   <span>应收总金额:{{statistData.shouldGet}}</span>
+                   <span style="margin-left:15px">申请开票金额: {{statistData.applyInvoice}}</span>
+                   <span style="margin-left:15px">已开票金额:{{statistData.invoicedMoney}}</span>
+                 </div>
+               </div>
+               
+               <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageNum"
+                :page-sizes="[10, 200, 300, 400]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total"
+                style="text-align: right;padding: 19px 30px 18px 0;background: #fff"
+                >
+              </el-pagination>
+             </div>
         </el-tab-pane>
       </el-tabs>
+      <!-- 表格控制列显示 -->
+      <el-drawer
+        title="表格列控制"
+        :visible.sync="drawer"
+        size="200px"
+        :direction="direction"
+        >
+        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange" style="margin:0 0 20px 20px">全选</el-checkbox>
+        <el-checkbox-group 
+          v-model="checkedTable"
+          :min="0"
+          :max="20">
+              <el-checkbox v-for="choose in tableOptions" :label="choose" :key="choose" style="display:block;margin-left:20px">{{choose}}</el-checkbox>
+        </el-checkbox-group>
+      </el-drawer>
+      
+      <!-- 订单号&运单号弹框 -->
+      <el-dialog
+          width="80%"
+          title="订单运单号信息"
+          :visible.sync="orderWayBillFrame"
+        >
+        <el-table :data="invoiceTableData">
+            <el-table-column prop="orderNos" label="订单号" min-width="80"></el-table-column>
+            <el-table-column prop="waybillNo" label="运单号" min-width="80"></el-table-column>
+            <el-table-column prop="customerName" label="订舱客户" min-width="80"></el-table-column>
+            <el-table-column prop="agentName" label="代理上家" min-width="80"></el-table-column>
+            <el-table-column prop="airCompanyCode" label="航司" min-width="80"></el-table-column>
+            <el-table-column prop="pol" label="起运港" min-width="80"></el-table-column>
+            <el-table-column prop="pod" label="目的港" min-width="80"></el-table-column>
+            <el-table-column prop="date20" label="货物信息" min-width="80"></el-table-column>
+            <el-table-column prop="date20" label="操作人员" min-width="80"></el-table-column>
+            <el-table-column prop="date20" label="航班日期" min-width="80"></el-table-column>
+            <el-table-column prop="date20" label="交单时间" min-width="80"></el-table-column>
+            <el-table-column prop="date20" label="应收金额" min-width="160">
+              <el-table-column prop="date20" label="人民币" min-width="80"></el-table-column>
+              <el-table-column prop="date20" label="原币" min-width="80"></el-table-column>
+            </el-table-column>
+            <el-table-column prop="date20" label="应付金额" min-width="160">
+              <el-table-column prop="date20" label="人民币" min-width="80"></el-table-column>
+              <el-table-column prop="date20" label="原币" min-width="80"></el-table-column>
+            </el-table-column>
+        </el-table>
+      </el-dialog>
+      <!-- 发票信息查看 -->
+       <el-dialog
+          width="60%"
+          title="发票信息"
+          :visible.sync="invoiceDialog"
+        >
+        <el-table :data="invoiceTableData">
+            <el-table-column prop="date20" label="发票抬头" min-width="80"></el-table-column>
+            <el-table-column prop="date20" label="税号" min-width="80"></el-table-column>
+            <el-table-column prop="date20" label="公司地址及电话" min-width="80"></el-table-column>
+            <el-table-column prop="date20" label="开户行及账号" min-width="80"></el-table-column>
+            <el-table-column prop="date20" label="收件人" min-width="80"></el-table-column>
+            <el-table-column prop="date20" label="收件人地址及电话" min-width="80"></el-table-column>
+        </el-table>
+      </el-dialog>
     </div>
-    <el-dialog title="订单" :visible.sync="dialogFormVisible" width="80%">
-      <el-tabs style="margin: 20px 0;" v-model="typeCode" type="border-card" @tab-click="tabClickData">
-        <el-tab-pane label="全部" name="全部">
-          <div style="font-size: 18px;font-weight: 100;color: #333;padding: 0 20px 10px 20px;">应收账单</div>
-          <Table
-            :tableData='tableData'
-            :columns='columns1'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-          <div class="finance-table-price">
-            <div>账单合计：￥7000+$600</div>
-            <div>人民币合计：￥8625.5</div>
-            <div>结算方式：付款买单</div>
-          </div>
-          <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">应付账单</div>
-          <Table
-            :tableData='tableData'
-            :columns='columns2'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-          <div class="finance-table-price">
-            <div>账单合计：￥7000+$600</div>
-            <div>人民币合计：￥8625.5</div>
-            <div>订单利润：100</div>
-          </div>
-          <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">修改记录</div>
-          <Table
-            :tableData='tableData'
-            :columns='columns3'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-          <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;border-bottom: 1px dashed #999;">操作说明</div>
-          <el-input
-            type="textarea"
-            rows="2"
-            placeholder="请输入操作说明"
-            v-model="textarea2">
-          </el-input>
-        </el-tab-pane>
-        <el-tab-pane label="已交单" name="1">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-      </el-tabs>
+     
+    <!-- 快递弹框 -->
+    <el-dialog title="快递信息" :visible.sync="postMessageDial" width="500px">
+      <el-form>
+      <div style="margin-top:20px">
+          <el-form-item label="快递公司" label-width="100px" required>
+            <el-select v-model="postMessage" placeholder="请选择" style="width:300px">
+              <el-option
+                v-for="item in postChoice"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label-width="100px" label="邮寄日期" required>
+            <el-date-picker
+              v-model="postMessage"
+              type="date"
+              placeholder="选择日期"
+              style="width:300px">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="快递单号" label-width="100px">
+            <el-input size="medium"  v-model="postMessage" placeholder="请输入快递单号" maxlength="10" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:300px">
+            </el-input>
+          </el-form-item>
+        </div>
+      </el-form>
+        <!-- 底部按钮 -->
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">返 回</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确认解锁</el-button>
+        <div style="text-align: center;padding-top:20px;">
+          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+            @click="confirmPost">确认邮寄</el-button>
+          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" @click="postMessageDial = false">取 消
+          </el-button>
+        </div>
+      </div>
+      
+    </el-dialog>
+    <!-- 作废按钮弹框 -->
+    <el-dialog title="提示" :visible.sync="delRequestDial" width="500px">
+      <div style="text-align:center;font-size:15px;color:#606266;margin-top:45px;margin-bottom:15px">
+         <div style="color:#2273ce"> 发票号码:{{rubbishInvoice}}</div>
+        <div>确认作废该发票吗？</div>
+      </div>
+          <!-- 底部按钮 -->
+      <div slot="footer" class="dialog-footer">
+        <div style="text-align: center;padding-top:20px;">
+          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+            @click="dialogComfirm">确定</el-button>
+          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" @click="delRequestDial = false">取 消
+          </el-button>
+        </div>
+      </div>
+    </el-dialog>
+    <!-- 开票按钮 -->
+    <el-dialog title="开票信息" :visible.sync="invoicingDial" width="800px">
+      <div class="invoicingDial">
+        <div style="width:50%;border:1px solid silver;padding:10px 0;margin-right:10px">
+          <el-form>
+           <el-form-item label="开票金额" label-width="120px" required>
+            <el-input size="medium"  v-model="invoicingLeft.invoiceAmount" placeholder="请输入开票金额" maxlength="12" onkeyup="this.value= this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)? this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)[0] : ''" style="width:170px">
+            </el-input>
+          </el-form-item>
+          <el-form-item label="开票首张号码" label-width="120px" required>
+            <el-input size="medium"  v-model="invoicingLeft.invoiceNum" placeholder="请输入开票首张号码" maxlength="8" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:170px">
+            </el-input>
+          </el-form-item>
+          <el-form-item label="开票张数" label-width="120px" required>
+            <el-input size="medium"  v-model="invoicingLeft.invoiceCount" placeholder="请输入开票张数" maxlength="2" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:170px">
+            </el-input>
+          </el-form-item>
+          <el-form-item label-width="120px" label="开票日期" required>
+            <el-date-picker
+              v-model="invoicingLeft.invoicingTime"
+              type="date"
+              placeholder="选择日期"
+              style="width:170px">
+            </el-date-picker>
+          </el-form-item>
+          </el-form>
+          <el-button type="primary" style="float:right;margin-right:20px;" @click="invoiceLeftConfirm">确认生成</el-button>
+        </div>
+        <div style="width:50%;">
+          <el-table
+              :data="invoicingRight"
+              height="90%"
+              >
+              <el-table-column label="序号" prop="data1"></el-table-column>
+              <el-table-column label="发票金额" prop="data2"></el-table-column>
+              <el-table-column label="发票号码" prop="data3"></el-table-column>
+              <el-table-column width="30">
+                <template slot-scope="scope">
+                  <span style="fontSize:15px;color:skyblue" @click="deleteInvoiceRight(scope)">X</span>
+                </template>
+              </el-table-column>
+
+          </el-table>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:15px">
+        <div>申请开票总金额：{{invoiceFootOne}}</div>
+        <div>未开票总金额：{{invoiceFootTwo}}</div>
+        <div>发票金额：{{invoiceFootThree}}</div>
+      </div>
+          <!-- 底部按钮 -->
+      <div slot="footer" class="dialog-footer">
+        <div style="text-align: center;padding-top:20px;">
+          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+            @click="dialogComfirm">确认开票</el-button>
+          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" @click="invoicingDial = false">取 消
+          </el-button>
+        </div>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-  import Table from '@/components/financeTable'
   import { toData } from '@/util/assist'
   export default {
     data() {
       return {
-        dialogFormVisible: false,
-        //table
-        tableData: [
+        //表格控制列drawer
+        drawer: false,
+        checkAll: false,
+        isIndeterminate: true,
+        direction: 'rtl',
+        checkedTable:['序号','订单号', '运单号', '订舱公司','航班日期','交单时间'],
+        tableOptions:['序号','订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票信息','应收费用总金额','申请开票金额','发票种类','申请人','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','快递状态','发票状态','是否上传'],
+        //表格tab页
+        tabName:["全部","合并开票","单独开票","异常"],
+        tabNum:[],
+        
+        //页面查询条件
+        //是否上传
+        ifUpload:[
           {
-            date1: 'T21082416088448',
-            date2: '123-12345679',
-            date3: '2021-09-04',
-            date4: '2021-09-04',
-            date5: '石家庄XXX有限公司',
-            date6: '上海XXX运输有限公司',
-            date7: 'QW',
-            date8: 'CLT',
-            date9: 'SZX',
-            date10: '发动机',
-            date11: '张三（上海）',
-            date12: '200',
-            date13: '200CNY',
-            date14: '100',
-            date15: '100CNY',
-            date16: '100',
-            date17: '1',
-            date18: '部分开',
-            date19: '100',
-            date20: '正常'
+            label:"全部",
+            value:""
+          },{
+            label:"是",
+            value:"1"
+          },{
+            label:"否",
+            value:"0"
           },
-          {
-            date1: 'T21082416088448',
-            date2: '123-12345679',
-            date3: '2021-09-04',
-            date4: '2021-09-04',
-            date5: '石家庄XXX有限公司',
-            date6: '上海ZXC运输有限公司',
-            date7: 'QW',
-            date8: 'CLT',
-            date9: 'SZX',
-            date10: '发动机',
-            date11: '张三（上海）',
-            date12: '200',
-            date13: '200CNY',
-            date14: '100',
-            date15: '100CNY',
-            date16: '100',
-            date17: '1',
-            date18: '部分开',
-            date19: '100',
-            date20: '修改审核'
-          },
-          {
-            date1: 'T21082416088448',
-            date2: '123-12345679',
-            date3: '2021-09-04',
-            date4: '2021-09-04',
-            date5: '石家庄XXX有限公司',
-            date6: '上海AQS运输有限公司',
-            date7: 'QW',
-            date8: 'CLT',
-            date9: 'SZX',
-            date10: '发动机',
-            date11: '张三（上海）',
-            date12: '200',
-            date13: '200CNY',
-            date14: '100',
-            date15: '100CNY',
-            date16: '100',
-            date17: '1',
-            date18: '部分开',
-            date19: '100',
-            date20: '修改申请'
+        ],
+        getUpLoad:['否','是'],
+        //发票类型
+        billType:[
+          {label:"全部",value:""},
+          {label:"增值税普通发票",value:"0"},
+          {label:"增值税专用发票",value:"1"},
+          {label:"增值税电子普通发票",value:"2"},
+      ],
+      getBillType:["增值税普通发票","增值税专用发票","增值税电子普通发票"],
+      //开票进度
+        billProgress:[
+          {label:"全部",value:""},
+          {label:"未开",value:"0"},
+          {label:"部分开",value:"2"},
+          {label:"已开",value:"1"},
+        ],
+        getBillProgress:["未开","已开","部分开"],
+        //发票状态
+        billState:[
+          {label:"全部",value:""},
+          {label:"正常",value:"0"},
+          {label:"部分作废",value:"2"},
+          {label:"作废",value:"1"},
+        ],
+        getBillState:["正常","部分作废","作废"],
+        //快递状态
+        expressState:[
+          {label:"全部",value:""},
+          {label:"已寄出",value:"1"},
+          {label:"未寄出",value:"0"}
+        ],
+        getExpressState:["未寄出","已寄出"],
+        //航班日期选择器
+         // 限制结束日期大于开始日期
+        pickerOptionsStartOne: {
+          disabledDate: time => {
+            let endDateVal = this.selectResult.endDepartureDate
+            if (endDateVal) {
+              return time.getTime() > new Date(endDateVal).getTime()
+            }
           }
-        ],
-        pageSize: 10,
-        pageNum: 1,
-        total: 0,
-        // 列
-        columns1: [
-          {label: '序号', prop: 'orderNo', show: true, width: '150'},
-          {label: '费用名称', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '收款单位', prop: 'pol', show: true, width: '150'},
-          {label: '单价', prop: 'pod', show: true, width: '100'},
-          {label: '数量', prop: 'continent', show: true, width: '100'},
-          {label: '币种', prop: 'nonStop', show: true, width: '100'},
-          {label: '原币合计', prop: 'legCount', show: true, width: '50'},
-          {label: '汇率', prop: 'continent', show: true, width: '100'},
-          {label: '人民币合计', prop: 'nonStop', show: true, width: '100'},
-          {label: '备注', prop: 'legCount', show: true, width: '50'}
-        ],
-        columns2: [
-          {label: '序号', prop: 'orderNo', show: true, width: '150'},
-          {label: '费用名称', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '付款单位', prop: 'pol', show: true, width: '150'},
-          {label: '单价', prop: 'pod', show: true, width: '100'},
-          {label: '数量', prop: 'continent', show: true, width: '100'},
-          {label: '币种', prop: 'nonStop', show: true, width: '100'},
-          {label: '原币合计', prop: 'legCount', show: true, width: '50'},
-          {label: '汇率', prop: 'continent', show: true, width: '100'},
-          {label: '人民币合计', prop: 'nonStop', show: true, width: '100'},
-          {label: '备注', prop: 'legCount', show: true, width: '50'}
-        ],
-        columns3: [
-          {label: '操作类型', prop: 'orderNo', show: true, width: '150'},
-          {label: '说明', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '操作时间', prop: 'pol', show: true, width: '150'},
-          {label: '操作人', prop: 'pod', show: true, width: '100'}
-        ],
-        // 操作
-        operation: {
-          show: false,
-          label: '操作',
-          width: '180',
-          options: [
-            {label: '编辑', method: 'routeEdit'}
-          ]
         },
+        pickerOptionsEndOne: {
+          disabledDate: time => {
+            let beginDateVal = this.selectResult.startDepartureDate
+            if (beginDateVal) {
+              return time.getTime() < new Date(beginDateVal).getTime()
+            }
+          }
+        },
+        // 交易时间
+         pickerOptionsStartTwo: {
+          disabledDate: time => {
+            let endDateVal = this.selectResult.endPresentationTime
+            if (endDateVal) {
+              return time.getTime() > new Date(endDateVal).getTime()
+            }
+          }
+        },
+        pickerOptionsEndTwo: {
+          disabledDate: time => {
+            let beginDateVal = this.selectResult.startPresentationTime
+            if (beginDateVal) {
+              return time.getTime() < new Date(beginDateVal).getTime()
+            }
+          }
+        },
+        //申请时间
+         pickerOptionsStartThree: {
+          disabledDate: time => {
+            let endDateVal = this.selectResult.endInvoiceApplyTime
+            if (endDateVal) {
+              return time.getTime() > new Date(endDateVal).getTime()
+            }
+          }
+        },
+        pickerOptionsEndThree: {
+          disabledDate: time => {
+            let beginDateVal = this.selectResult.startInvoiceApplyTime
+            if (beginDateVal) {
+              return time.getTime() < new Date(beginDateVal).getTime()
+            }
+          }
+        },
+        //开票时间
+         pickerOptionsStartFour: {
+          disabledDate: time => {
+            let endDateVal = this.selectResult.endInvoicingTime
+            if (endDateVal) {
+              return time.getTime() > new Date(endDateVal).getTime()
+            }
+          }
+        },
+        pickerOptionsEndFour: {
+          disabledDate: time => {
+            let beginDateVal = this.selectResult.startInvoicingTime
+            if (beginDateVal) {
+              return time.getTime() < new Date(beginDateVal).getTime()
+            }
+          }
+        },
+        //搜索框结果
+        selectResult:{
+          orderNo:"",
+          waybillNo:"",
+          customerName:"",
+          invoiceTitle:"",
+          upload:"",
+          invoiceNum:"",
+          invoiceType:[""],
+          invoicingStatus:[""],
+          invoiceStatus:"",
+          expressStatus:"",
+          startDepartureDate:"",
+          endDepartureDate:"",
+          startPresentationTime:"",
+          endPresentationTime:"",
+          startInvoiceApplyTime:"",
+          endInvoiceApplyTime:"",
+          startInvoicingTime:"",
+          endInvoicingTime:"",
+        },
+
+        //table数据
+        tableData: [],
+        //拷贝表格数据用于调接口
+        copyTableOne:[],
+        //table 订单号列&运单号列弹框
+        orderWayBillFrame:false,
+        //table选中数据
+        selectTableData:[],
+
+        //点击/按钮弹框
+      
+        //开票信息弹框是否显示
+        invoiceDialog:false,
+        //开票信息查看表格数据
+        invoiceTableData:[],
+        invoiceFootOne:'',
+        invoiceFootTwo:'',
+        invoiceFootThree:'',
+
+        //快递按钮弹框数据
+        postMessage:"",
+        //快递按钮弹框-快递公司下拉框数据
+        postChoice:[],
+        //快递按钮弹出框是否显示
+        postMessageDial:false,
+
+        //作废按钮弹出框是否显示
+        delRequestDial:false,
+        //作废按钮发票信息
+        rubbishInvoice:"",
+        //开票按钮弹框是否显示
+        invoicingDial:false,
+        //开票左侧表单数据
+        invoicingLeft:{id:'',invoiceNum:"",invoiceCount:"",invoicingTime:"",invoiceAmount:""},
+        //开票右侧表格数据
+        invoicingRight:[],
+
+        //分页操作参数
+        pageNum:1,
+        pageSize: 10,
+        total: "",
+        //跨页全选
+        pageSkipChecked:false,
+        //数据统计按钮数据
+        statistData:{shouldGet:0,applyInvoice:0,invoicedMoney:0},
+        //数据统计是否显示
+        statistDataShow:false,
+        //表格tab栏
+        typeCode: '全部',
+
         orderNo: '',
         waybillNo: '',
         inboundNo: '',
@@ -465,209 +781,359 @@
         polOpt: [],
         pod: '',
         podOpt: [],
-        typeCode: '全部',
         orderCount: 0
       }
     },
+    created() {
+      this.tableData.forEach(item=>item.orderWayBill = false)
+      console.log(this.tableData)
+    },
     mounted() {
-      this.initData()
-      this.initOrderCountList()
-      this.initAgentList()
-      this.initAirportSearchByPage()
+        this.searchClick()
     },
     methods: {
-      //tab切换
-      tabClickData() {
-      	this.initData()
-      	this.initOrderCountList()
-      },
-      //详情
-      orderDetails(scope) {
-        if(scope.row.status == '3' || scope.row.status == '5'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails1',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '9'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails2',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '13' || scope.row.status == '17' || scope.row.status == '21'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails3',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '25' || scope.row.status == '27' || scope.row.status == '29' || scope.row.status == '31' || scope.row.status == '33'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails4',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '37' || scope.row.status == '41'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails5',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '43'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails6',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '39'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails7',
-            query: {
-              id: scope.row.id
-            }
-          })
+      //多选合并同一折叠行数据
+      sortArr(arr, str) {
+        var _arr = [],
+            _t = [],
+            // 临时的变量
+            _tmp;
+      
+        // 按照特定的参数将数组排序将具有相同值得排在一起
+        arr = arr.sort(function(a, b) {
+            var s = a[str],
+                t = b[str];
+      
+            return s < t ? -1 : 1;
+        });
+      
+        if ( arr.length ){
+            _tmp = arr[0][str];
         }
-      },
-      //起始港三字码
-      initAirportSearchByPage(keyWord, type) {
-        if (!keyWord) {
-          keyWord = ''
-        }
-        this.$http.get(this.$service.airportSearchByPage + '?keyWord=' + keyWord).then((data) => {
-          this.loading = false
-          if (data.code == 200) {
-            if (type == '起始港') {
-              this.polOpt = data.data.records
-            } else if (type == '目的港') {
-              this.podOpt = data.data.records
+        // 将相同类别的对象添加到统一个数组
+        for (var i in arr) {
+            console.log( _tmp);
+            if ( arr[i][str] === _tmp ){
+                _t.push( arr[i] );
             } else {
-              this.polOpt = data.data.records
-              this.podOpt = data.data.records
+                _tmp = arr[i][str];
+                _arr.push( _t );
+                _t = [arr[i]];
             }
-          } else {
-            this.$message.error(data.message)
+        }
+        // 将最后的内容推出新数组
+        _arr.push( _t );
+        return _arr;
+      },
+      //导出列表
+      exportList (){
+           const aLink = document.createElement("a");
+            let blob = new Blob([], {
+              type: "application/vnd.ms-excel"
+            })
+            aLink.href = URL.createObjectURL(blob)
+            aLink.setAttribute('download', '航线价格表' + '.xlsx') // 设置下载文件名称
+            aLink.click()
+            document.body.appendChild(aLink)
+      },
+      //搜索表单中多选框控制
+      dealAllChange (){
+        if(this.selectResult.invoicingStatus.indexOf("") != -1) {
+          this.selectResult.invoicingStatus = [""]
+        }
+        if(this.selectResult.invoiceType.indexOf("") != -1) {
+          this.selectResult.invoiceType = [""]
+        }
+      },
+      //表格选择列显示drawer -全选
+       handleCheckAllChange(val) {
+        this.checkedTable = val ? this.tableOptions : [];
+        this.isIndeterminate = false;
+      },
+      //表格选中事件
+     handleSelectionChange(e){
+       console.log(e)
+       
+       this.selectTableData = e
+     },
+      //查看开票信息
+      showInvoice(message){
+        console.log(message)
+        this.invoiceDialog = true
+      },
+      
+      //表格内点出快递弹框
+      openPost(message){
+        if(message.expressStatus == "未寄出"){
+          this.postMessageDial=true
+        }
+      },
+      //表格运单号&订单号弹框
+      showOrderWayBill(){
+        this.orderWayBillFrame = true
+      },
+      //判断是否同时勾选主数据和折叠数据
+      ifMainFold(e){
+        let exist = false
+        for(let i=0; i< e.length;i++){
+          for(let j=0; j< e.length;j++){
+            if((e[i].id == e[j].iaId) && (e[i].id!=undefined)) {
+              exist = true
+              break
+            }
           }
+        }
+        return exist;
+      },
+      //作废按钮
+      delInvoice(){
+        
+        if(this.selectTableData.length<1 || this.selectTableData.length>10) {
+          this.$message({
+            message: '请选择1到10条信息',
+            type: 'warning'
+          });
+        }  else if(this.ifMainFold(this.selectTableData)){
+           this.$message({
+            message: '主数据和折叠数据不能同时存在',
+            type: 'warning'
+          });
+        } 
+        else {
+          var rubbishArray = []
+          this.selectTableData.forEach(item=>{
+            if(item.hasChild) {
+              item.invoiceInfos.forEach(item2=>{
+                rubbishArray.push(item2.invoiceNum)
+              })
+            } else {
+                rubbishArray.push(item.invoiceNum)
+            }
+            })
+          this.rubbishInvoice = rubbishArray.join("、")
+          this.delRequestDial = true;
+        }
+      },
+      //开票按钮
+      invoicing(){
+        if(this.selectTableData.length != 1) {
+          this.$message({
+            message: '只能选择一条信息进行开票哦',
+            type: 'warning'
+          });
+        }
+        else if(Boolean(this.selectTableData.some(item=>item.ifChild == true))){
+          this.$message({
+            message: '必须选择主信息进行开票哦',
+            type: 'warning'
+          });
+        }
+        else if (this.selectTableData[0].invoicingStatus == 1) {
+          this.$message({
+            message: '不能选择已开票的发票哦',
+            type: 'warning'
+          });
+        }
+        else {
+          this.invoiceFootOne = this.selectTableData[0].applyAmount
+          this.invoiceFootTwo = this.selectTableData[0].applyAmount - this.selectTableData[0].invoicedAmount
+          this.invoicingLeft.id = ""
+          this.invoicingDial = true
+        }
+      },
+      //开票弹框左侧确认生成
+      invoiceLeftConfirm() {
+        console.log(this.invoicingLeft)
+        if(this.invoicingLeft.invoiceCount>50){
+          this.$message({
+            message: '开票张数不能大于50',
+            type: 'warning'
+          });
+        } else if(this.invoicingRight.length+this.invoicingLeft.invoiceCount>50) {
+          this.$message({
+            message: '右侧发票张数不能大于50',
+            type: 'warning'
+          });
+        }
+        else {
+          let data = this.copyTableOne.filter(item=>item.id==this.selectTableData[0].id)[0]
+          data.toBeInvoiceList = this.invoicingRight
+          console.log(data,"xxx")
+
+          this.$http.post(this.$service.actionInvoice,{firstInvoiceInfo:this.invoicingLeft,tInvoiceAppListVos:data}).then(data=>{
+
+          })
+        }
+      },
+      //开票弹出框 表格删除功能
+      deleteInvoiceRight(e){
+        this.invoicingRight.splice(e.$index,1)
+      },
+      //快递按钮
+      delivery(){
+        console.log(this.selectTableData)
+        if (this.selectTableData.length == 0) {
+          this.$message({
+            message: '请至少选择1条信息',
+            type: 'warning'
+          });
+        }
+         else if(Boolean(this.ifMainFold(this.selectTableData))){
+           this.$message({
+            message: '主数据和折叠数据不能同时存在',
+            type: 'warning'
+          });
+        } 
+        else if (Boolean(this.selectTableData.some(item=>item.invoicingStatus ==0))) {
+          this.$message({
+            message: '选项中存在暂未开票的信息,请重新勾选',
+            type: 'warning'
+          });
+        } else if (Boolean(this.selectTableData.some(item=>item.invoiceType == 2))){
+          this.$message({
+            message: '电子发票不需要邮寄哦,请重新勾选',
+            type: 'warning'
+          });
+        } 
+        else {
+          this.postMessageDial = true;
+        }
+      },
+      //快递弹框确认
+      confirmPost(){
+        var postArr = this.sortArr(this.selectTableData,"iaId")
+        console.log(postArr)
+      },
+      //数据统计按钮
+      getStatistData(){
+        console.log(this.tableData)
+        this.statistDataShow = !this.statistDataShow
+        this.statistData = {shouldGet:0,applyInvoice:0,invoicedMoney:0}
+        this.tableData.forEach(item=>{
+          this.statistData.shouldGet += parseInt(item.totalArCny);
+          this.statistData.applyInvoice += parseInt(item.applyAmount);
+          this.statistData.invoicedMoney += parseInt(item.invoicedAmount);
         })
       },
-      polMethod(keyWord) {
-        this.loading = true
-        this.initAirportSearchByPage(keyWord, '起始港')
-      },
-      podMethod(keyWord) {
-        this.loading = true
-        this.initAirportSearchByPage(keyWord, '目的港')
-      },
-      //代理公司
-      initAgentList(agentName) {
-        if (!agentName) {
-          agentName = ''
+      //跨页全选按钮
+      selectAllTable(){
+        console.log(this.pageSkipChecked)
+        for(let i=0;i<this.$refs.multipleTable.length;i++){
+          this.pageSkipChecked ?  this.$refs.multipleTable[i].toggleAllSelection() : this.$refs.multipleTable[i].clearSelection()
         }
-        var data = {
-          agentName: agentName
-        }
-        this.$http.post(this.$service.agentList, data).then((data) => {
-          this.loading = false
-          if (data.code == 200) {
-            this.agentOpt = data.data.records
-          } else {
-            this.$message.error(data.message)
-          }
-        })
       },
-      agentMethod(agentName) {
-        this.initAgentList(agentName)
+      //tab切换
+      tabClickData(tab,event) {
+        console.log(this.typeCode)
+        this.searchClick()
       },
-      initOrderCountList() {
-        var json = {
-        	orderNo: this.orderNo,
-        	waybillNo: this.waybillNo,
-        	inboundNo: this.inboundNo,
-        	pol: this.pol,
-        	pod: this.pod,
-        	agentId: this.agentId,
-          customerName: this.customerName,
-        	typeCode: 8
-        }
-        json = toData(json)
-        this.$http.get(this.$service.orderCountList+'?'+json).then(data => {
-          if (data.code == 200) {
-            this.orderCount = data.data
-          }else {
-            this.$message.error(data.message)
-          }
-        }).catch((e) => {
-          console.log(e)
-        })
-      },
-      //航线列表
-      initData() {
-        var json = {
-        	orderNo: this.orderNo,
-        	waybillNo: this.waybillNo,
-        	inboundNo: this.inboundNo,
-        	pol: this.pol,
-        	pod: this.pod,
-        	agentId: this.agentId,
-          customerName: this.customerName,
-        	typeCode: this.typeCode == '全部订单' ? '' : this.typeCode,
-        	pageNum: this.pageNum,
-        	pageSize: this.pageSize
-        }
-        json = toData(json)
-        this.$http.get(this.$service.orderSearchByPage+'?'+json).then(data => {
-          if (data.code == 200) {
-            this.total = data.data.total
-            this.tableData = data.data.records
-          }else {
-            this.$message.error(data.message)
-          }
-        }).catch((e) => {
-          console.log(e)
-        })
-      },
+ 
       //查询
       searchClick() {
-        this.pageSize = 10
-        this.pageNum = 1
-        this.initData()
-        this.initOrderCountList()
+        let arrayCopy = JSON.parse(JSON.stringify(this.selectResult))
+        if(arrayCopy.expressStatus == "") delete arrayCopy.expressStatus;
+        if(arrayCopy.invoiceStatus == "") delete arrayCopy.invoiceStatus;
+        if(arrayCopy.upload == "") delete arrayCopy.upload;
+        if(arrayCopy.invoiceType.length == 1 && (arrayCopy.invoiceType)[0]=="" ) delete arrayCopy.invoiceType;
+        if(arrayCopy.invoicingStatus.length == 1 && arrayCopy.invoicingStatus[0]=="" ) delete arrayCopy.invoicingStatus;
+        if(this.typeCode == "合并开票") {arrayCopy.merge = 0}
+        else if(this.typeCode == "单独开票") {arrayCopy.merge = 1}
+        else if (this.typeCode == "异常") {arrayCopy.abnormalFlag = 1}
+        arrayCopy.pageNum = this.pageNum
+        arrayCopy.pageSize = this.pageSize
+        if(arrayCopy.invoiceType) arrayCopy.invoiceType = arrayCopy.invoiceType.join()
+        if(arrayCopy.invoicingStatus) arrayCopy.invoicingStatus = arrayCopy.invoicingStatus.join()
+        // console.log(arrayCopy)
+        this.$http.post(this.$service.invoiceSearch,arrayCopy).then((data) => {
+          this.loading = false
+          if (data.code == 200) {
+            this.total = data.data.pageInfo.total
+            this.tabNum[0] = data.data.totalCount
+            this.tabNum[1] = data.data.mergeCount
+            this.tabNum[2] = data.data.notMergeCount
+            this.tabNum[3] = data.data.abNormalCount
+            this.copyTableOne = JSON.parse(JSON.stringify(data.data.pageInfo.records))
+            let getData = JSON.parse(JSON.stringify(data.data.pageInfo.records))
+            getData.forEach((item,index)=>{
+              item.copyId = item.id
+              console.log(item,index)
+              if(item.invoiceType == 2 && item.invoiceInfos && item.invoiceInfos.length>=2){
+                 item.invoiceInfos.forEach(item2=>{
+                  item2.invoiceType == 2
+                })
+              }
+              if(item.invoiceInfos && item.invoiceInfos.length>=2){
+                item.hasChild = true
+                item.invoiceInfos.forEach((item2,index)=>{
+                  item2.ifChild = true
+                  item2.copyId = String(item.id)+'-'+String(index)
+                  item2.expressStatus = this.getExpressState[item2.expressStatus]
+                  item2.invoiceStatus = this.getBillState[item2.invoiceStatus]
+                  item2.upload = this.getUpLoad[item2.upload]
+                })
+              }
+              //从invoiceInfos和orderInfos中取数据
+              item.invoiceNum = (item.invoiceInfos && item.invoiceInfos[0] && item.invoiceInfos[0].invoiceNum) || ""
+              item.invoicingTime = (item.invoiceInfos && item.invoiceInfos[0] && item.invoiceInfos[0].invoicingTime) || ""
+              item.expressInfo = (item.invoiceInfos && item.invoiceInfos[0] && item.invoiceInfos[0].expressInfo) || ""
+              item.expressStatus = (item.invoiceInfos && item.invoiceInfos[0] && this.getExpressState[item.invoiceInfos[0].expressStatus]) || ""
+              item.invoiceStatus = (item.invoiceInfos && item.invoiceInfos[0] && this.getBillState[item.invoiceInfos[0].invoiceStatus]) || ""
+              item.upload = (item.invoiceInfos && item.invoiceInfos[0] && this.getUpLoad[item.invoiceInfos[0].upload]) || ""
+              item.orderNo = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].orderNo) || ""
+              item.waybillNo = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].waybillNo) || ""
+              item.departureDate = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].departureDate) || ""
+              item.presentationTime = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].presentationTime) || ""
+              //折叠操作控制
+              if(item.invoiceInfos && item.invoiceInfos.length == 1) {
+                item.hasChild = false
+                delete item.invoiceInfos
+              }
+            })
+            this.tableData = getData
+            console.log(getData,1111)
+            // this.$forceUpdate()
+          } else {
+            this.$message.error(data.message)
+          }
+        })
       },
       //重置
       restClick() {
-        this.orderNo = ''
-        this.waybillNo = ''
-        this.inboundNo = ''
-        this.pol = ''
-        this.pod = ''
-        this.agentId = ''
-        this.customerName = ''
         this.pageNum = 1
         this.pageSize = 10
-        this.initData()
-        this.initOrderCountList()
+        this.selectResult={
+          orderNo:"",
+          waybillNo:"",
+          customerName:"",
+          invoiceTitle:"",
+          upload:"",
+          invoiceNum:"",
+          invoiceType:[""],
+          invoicingStatus:[""],
+          invoiceStatus:"",
+          expressStatus:"",
+          startDepartureDate:"",
+          endDepartureDate:"",
+          startPresentationTime:"",
+          endPresentationTime:"",
+          startInvoiceApplyTime:"",
+          endInvoiceApplyTime:"",
+          startInvoicingTime:"",
+          endInvoicingTime:"",
+        }
       },
       handleCurrentChange(e) {
+        // console.log(e)
+        this.statistDataShow = false
         this.pageNum = e
-        this.initData()
+        this.searchClick()
       },
       handleSizeChange(e) {
+        // console.log(e)
+        this.statistDataShow = false
         this.pageSize = e
-        this.initData()
+        this.searchClick()
       },
-    },
-    watch: {
-      tableData(idx) {
-        return idx
-      }
-    },
-    components: {
-      Table
     }
   }
 </script>
@@ -675,7 +1141,51 @@
 
 <style scoped lang="less">
   @import url("../../assets/icon/iconfont.css");
-
+  /deep/.pageSkip {
+        padding:3px 5px!important
+  }
+  .content-search-normal {
+    .formItem{
+      display:inline-block;
+      width: 320px;
+      margin-top:-5px;
+    }
+  }
+  .operateButton {
+    display:flex;
+    justify-content: flex-end;
+    margin-bottom:-10px;
+    button {
+      margin:0px 10px 20px 10px;
+    }
+  }
+  //select多选框选中项限制宽度
+  /deep/.el-tag.el-tag--info {
+    max-width: 120px;
+  }
+  //表格单元格设置
+  .el-table{
+    /deep/.cell{
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      white-space: nowrap;
+      }
+  }
+  //开票按钮弹出框
+  .invoicingDial{ 
+    width: 100%;
+    display:flex;
+    justify-content: space-between;
+    margin:15px auto 0;
+    /deep/.el-table__empty-text{
+      display:none
+    }
+    /deep/ .el-table th{
+      height: 35px;
+    }
+  }
+  
   .content-wrapper {
     width: 100%;
     box-sizing: border-box;
