@@ -130,5 +130,9 @@ const serviceApi = {
   //银行账户管理-查询
   searchBankAccount: pulicWeb + '/t-bank-account/searchByNameBank',
 
+  //发票申请页面-查询
+  invoiceSearch: pulicWeb + '/t-invoice-apply/searchByPage',
+  //发票申请页面 -开票确认生成
+  actionInvoice: pulicWeb + '/t-invoice-apply/actionInvoice'
 }
 export default serviceApi
