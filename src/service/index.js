@@ -1,6 +1,6 @@
 //ng开发环境
 // var pulicWeb = '/faw'
-var pulicWeb = '/back/dcErp/faw'
+var pulicWeb = '/faw'
 
 
 //ng测试环境
@@ -133,6 +133,14 @@ const serviceApi = {
   //发票申请页面-查询
   invoiceSearch: pulicWeb + '/t-invoice-apply/searchByPage',
   //发票申请页面 -开票确认生成
-  actionInvoice: pulicWeb + '/t-invoice-apply/actionInvoice'
+  actionInvoice: pulicWeb + '/t-invoice-apply/actionInvoice',
+  //应收核销明细列表
+  searchWoDetailByPage: pulicWeb + '/t-rcv-records/searchWoDetailByPage',
+//应收核销操作记录
+  searchArList: pulicWeb + '/t-write-off-records/searchArWoList',
+//应收核销操作记录
+  arRevoke: pulicWeb + '/t-write-off-records/arRevoke',
+  //应收核销页面，点击订单编号时，查询订单详情及财务记录
+  searchOrderDetail: pulicWeb + '/t-rcv-records/searchOrderDetail'
 }
 export default serviceApi
