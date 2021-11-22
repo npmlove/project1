@@ -132,7 +132,13 @@ const serviceApi = {
 
   //发票申请页面-查询
   invoiceSearch: pulicWeb + '/t-invoice-apply/searchByPage',
-  //发票申请页面 -开票确认生成
-  actionInvoice: pulicWeb + '/t-invoice-apply/actionInvoice'
+  //发票申请页面 -开票弹框确认生成
+  actionInvoice: pulicWeb + '/t-invoice-apply/actionInvoice',
+  //发票申请页面 - 开票弹框申请开票
+  confirmInvoice: pulicWeb + '/t-invoice-apply/confirmInvoice',
+  //发票申请页面 - 作废按钮
+  nullifyInvoiceMore: pulicWeb + '/t-invoice-apply/nullifyInvoiceMore',
+  //发票申请页面 - 快递按钮
+  expressInvoices: pulicWeb + '/t-invoice-apply/expressInvoices'
 }
 export default serviceApi

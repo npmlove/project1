@@ -97,6 +97,7 @@
               v-model="selectResult.startDepartureDate"
               type="date"
               :picker-options="pickerOptionsStartOne"
+              value-format="yyyy-MM-dd"
               placeholder="选择日期">
             </el-date-picker >-
              <el-date-picker
@@ -104,6 +105,7 @@
               v-model="selectResult.endDepartureDate"
               type="date"
               :picker-options="pickerOptionsEndOne"
+              value-format="yyyy-MM-dd"
               placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
@@ -115,12 +117,14 @@
               v-model="selectResult.startPresentationTime"
               type="date"
               :picker-options="pickerOptionsStartTwo"
+              value-format="yyyy-MM-dd"
               placeholder="选择日期">
             </el-date-picker >-
              <el-date-picker
              style="width:150px"
               v-model="selectResult.endPresentationTime"
               type="date"
+              value-format="yyyy-MM-dd"
               :picker-options="pickerOptionsEndTwo"
               placeholder="选择日期">
             </el-date-picker>
@@ -132,6 +136,7 @@
              style="width:150px"
               v-model="selectResult.startInvoiceApplyTime"
               :picker-options="pickerOptionsStartThree"
+              value-format="yyyy-MM-dd"
               type="date"
               placeholder="选择日期">
             </el-date-picker >-
@@ -139,6 +144,7 @@
              style="width:150px"
               v-model="selectResult.endInvoiceApplyTime"
               :picker-options="pickerOptionsEndThree"
+              value-format="yyyy-MM-dd"
               type="date"
               placeholder="选择日期">
             </el-date-picker>
@@ -150,6 +156,7 @@
              style="width:140px"
               v-model="selectResult.startInvoicingTime"
               :picker-options="pickerOptionsStartFour"
+              value-format="yyyy-MM-dd"
               type="date"
               placeholder="选择日期">
             </el-date-picker >-
@@ -157,21 +164,33 @@
              style="width:140px"
               v-model="selectResult.endInvoicingTime"
               :picker-options="pickerOptionsEndFour"
-
+              value-format="yyyy-MM-dd"
               type="date"
               placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
         </div>
         <div class="operateButton">
-              <el-button @click="searchClick" size="mini" type="primary" icon="el-icon-search">查询</el-button>
+              <el-button @click="searchClick(true)" size="mini" type="primary" icon="el-icon-search">查询</el-button>
               <el-button @click="restClick" size="mini" type="primary">清空</el-button>
         </div>
            <div class="operateButton">
             <el-button size='mini' type="primary" @click="invoicing()">开票</el-button>
             <el-button size='mini' type="primary" @click="delInvoice()">作废</el-button>
             <el-button size='mini' type="primary" @click="delivery()">快递</el-button>
-            <el-button size='mini' type="primary">上传发票</el-button>
+            <el-upload
+              style="width:100px;height:28px;margin-right:10px"
+              action="#"
+              accept=".pdf"
+              class="upLoad"
+              :multiple = "true"
+              :file-list="fileList"
+              :on-change="handleChange"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :auto-upload="false">
+              <el-button type="primary" size="medium">上传发票</el-button>
+            </el-upload>
             <el-button size='mini' type="primary" @click="exportList">导出列表</el-button>
             <el-button @click="drawer = true" type="primary" size='mini'>选择表格列</el-button>
           </div>
@@ -194,7 +213,7 @@
                 <img class="data-pic" src="../../assets/kong-icon.png"/>
                 <p>暂无数据</p>
               </template>
-              <el-table-column type="selection" width="50"></el-table-column>
+              <el-table-column type="selection" width="50" :selectable="ifDisabled" :key="Math.random()"></el-table-column>
               <el-table-column label="订单号" min-width="160"  type="" v-if="checkedTable.indexOf('订单号')!==-1">
                 <template slot-scope="scope">
                   <div v-if="scope.row.hasChild">
@@ -280,8 +299,8 @@
               </el-table-column>
               <el-table-column prop="invoiceType" label="发票种类" min-width="140"  type="" v-if="checkedTable.indexOf('发票种类')!==-1">
                 <template slot-scope="scope">
-                  <div>
-                    {{getBillType[scope.row.invoiceType]}}
+                  <div v-if="!scope.row.ifChild">
+                      {{getBillType[scope.row.invoiceType]}}
                   </div>
                 </template>
               </el-table-column>
@@ -369,9 +388,9 @@
                  <el-button size="mini" class="pageSkip"><el-checkbox v-model="pageSkipChecked" @change="selectAllTable">跨页全选</el-checkbox></el-button>
                  <el-button  size="mini" @click="getStatistData">数据统计</el-button>
                  <div style="margin-top:15px" v-if="statistDataShow">
-                   <span>应收总金额:{{statistData.shouldGet}}</span>
-                   <span style="margin-left:15px">申请开票金额: {{statistData.applyInvoice}}</span>
-                   <span style="margin-left:15px">已开票金额:{{statistData.invoicedMoney}}</span>
+                   <span>应收总金额:{{statistData.shouldGet.toLocaleString('en-US')}}</span>
+                   <span style="margin-left:15px">申请开票金额: {{statistData.applyInvoice.toLocaleString('en-US')}}</span>
+                   <span style="margin-left:15px">已开票金额:{{statistData.invoicedMoney.toLocaleString('en-US')}}</span>
                  </div>
                </div>
                
@@ -435,17 +454,38 @@
       </el-dialog>
       <!-- 发票信息查看 -->
        <el-dialog
-          width="60%"
+          width="85%"
           title="发票信息"
           :visible.sync="invoiceDialog"
         >
         <el-table :data="invoiceTableData">
-            <el-table-column prop="date20" label="发票抬头" min-width="80"></el-table-column>
-            <el-table-column prop="date20" label="税号" min-width="80"></el-table-column>
-            <el-table-column prop="date20" label="公司地址及电话" min-width="80"></el-table-column>
-            <el-table-column prop="date20" label="开户行及账号" min-width="80"></el-table-column>
-            <el-table-column prop="date20" label="收件人" min-width="80"></el-table-column>
-            <el-table-column prop="date20" label="收件人地址及电话" min-width="80"></el-table-column>
+            <el-table-column prop="invoiceTitle" label="发票抬头" min-width="120"></el-table-column>
+            <el-table-column prop="dutyParagraph" label="税号" min-width="80"></el-table-column>
+            <el-table-column label="公司地址及电话" min-width="140">
+              <template slot-scope="scope">
+                <div>
+                  {{scope.row.companyAddress}}
+                  {{scope.row.companyTel}}
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="开户行及账号" min-width="140">
+              <template slot-scope="scope">
+                <div>
+                  {{scope.row.accountBank}}
+                  {{scope.row.bankAccount}}
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="recipient" label="收件人" min-width="80"></el-table-column>
+            <el-table-column label="收件人地址及电话" min-width="140">
+              <template slot-scope="scope">
+                <div>
+                  {{scope.row.recipientAddress}}
+                  {{scope.row.recipientTel}}
+                </div>
+              </template>
+            </el-table-column>
         </el-table>
       </el-dialog>
     </div>
@@ -455,7 +495,7 @@
       <el-form>
       <div style="margin-top:20px">
           <el-form-item label="快递公司" label-width="100px" required>
-            <el-select v-model="postMessage" placeholder="请选择" style="width:300px">
+            <el-select v-model="postMessage.postOne" placeholder="请选择" style="width:300px">
               <el-option
                 v-for="item in postChoice"
                 :key="item.value"
@@ -466,14 +506,15 @@
           </el-form-item>
           <el-form-item label-width="100px" label="邮寄日期" required>
             <el-date-picker
-              v-model="postMessage"
+              v-model="postMessage.postTwo"
+              value-format="yyyy-MM-dd"
               type="date"
               placeholder="选择日期"
               style="width:300px">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="快递单号" label-width="100px">
-            <el-input size="medium"  v-model="postMessage" placeholder="请输入快递单号" maxlength="10" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:300px">
+            <el-input size="medium"  v-model="postMessage.postThree" placeholder="请输入快递单号" maxlength="10" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:300px">
             </el-input>
           </el-form-item>
         </div>
@@ -499,7 +540,7 @@
       <div slot="footer" class="dialog-footer">
         <div style="text-align: center;padding-top:20px;">
           <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
-            @click="dialogComfirm">确定</el-button>
+            @click="comfirmDele">确定</el-button>
           <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" @click="delRequestDial = false">取 消
           </el-button>
         </div>
@@ -511,19 +552,20 @@
         <div style="width:50%;border:1px solid silver;padding:10px 0;margin-right:10px">
           <el-form>
            <el-form-item label="开票金额" label-width="120px" required>
-            <el-input size="medium"  v-model="invoicingLeft.invoiceAmount" placeholder="请输入开票金额" maxlength="12" onkeyup="this.value= this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)? this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)[0] : ''" style="width:170px">
+            <el-input size="medium"  v-model.number="invoicingLeft.invoiceAmount" placeholder="请输入开票金额" maxlength="12" onkeyup="this.value= this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)? this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)[0] : ''" style="width:170px">
             </el-input>
           </el-form-item>
-          <el-form-item label="开票首张号码" label-width="120px" required>
-            <el-input size="medium"  v-model="invoicingLeft.invoiceNum" placeholder="请输入开票首张号码" maxlength="8" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:170px">
+          <el-form-item label="开票首张号码" label-width="120px" required >
+            <el-input size="medium"  v-model="invoicingLeft.invoiceNum" placeholder="请输入开票首张号码" minlength="8" maxlength="8" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:170px">
             </el-input>
           </el-form-item>
           <el-form-item label="开票张数" label-width="120px" required>
-            <el-input size="medium"  v-model="invoicingLeft.invoiceCount" placeholder="请输入开票张数" maxlength="2" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:170px">
+            <el-input size="medium"  v-model.number="invoicingLeft.invoiceCount" placeholder="请输入开票张数" maxlength="2" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:170px">
             </el-input>
           </el-form-item>
           <el-form-item label-width="120px" label="开票日期" required>
             <el-date-picker
+              value-format="yyyy-MM-dd"
               v-model="invoicingLeft.invoicingTime"
               type="date"
               placeholder="选择日期"
@@ -538,9 +580,9 @@
               :data="invoicingRight"
               height="90%"
               >
-              <el-table-column label="序号" prop="data1"></el-table-column>
-              <el-table-column label="发票金额" prop="data2"></el-table-column>
-              <el-table-column label="发票号码" prop="data3"></el-table-column>
+              <el-table-column label="序号" type="index"></el-table-column>
+              <el-table-column label="发票金额" prop="invoiceAmount"></el-table-column>
+              <el-table-column label="发票号码" prop="invoiceNum"></el-table-column>
               <el-table-column width="30">
                 <template slot-scope="scope">
                   <span style="fontSize:15px;color:skyblue" @click="deleteInvoiceRight(scope)">X</span>
@@ -559,7 +601,7 @@
       <div slot="footer" class="dialog-footer">
         <div style="text-align: center;padding-top:20px;">
           <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
-            @click="dialogComfirm">确认开票</el-button>
+            @click="confirmInvoice">确认开票</el-button>
           <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" @click="invoicingDial = false">取 消
           </el-button>
         </div>
@@ -573,12 +615,13 @@
   export default {
     data() {
       return {
+        ifDisable:true,
         //表格控制列drawer
         drawer: false,
         checkAll: false,
         isIndeterminate: true,
         direction: 'rtl',
-        checkedTable:['序号','订单号', '运单号', '订舱公司','航班日期','交单时间'],
+        checkedTable:['序号','订单号', '运单号', '订舱公司','航班日期','交单时间','发票号码'],
         tableOptions:['序号','订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票信息','应收费用总金额','申请开票金额','发票种类','申请人','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','快递状态','发票状态','是否上传'],
         //表格tab页
         tabName:["全部","合并开票","单独开票","异常"],
@@ -630,6 +673,7 @@
           {label:"未寄出",value:"0"}
         ],
         getExpressState:["未寄出","已寄出"],
+
         //航班日期选择器
          // 限制结束日期大于开始日期
         pickerOptionsStartOne: {
@@ -724,7 +768,7 @@
         //table数据
         tableData: [],
         //拷贝表格数据用于调接口
-        copyTableOne:[],
+        copyTable:[],
         //table 订单号列&运单号列弹框
         orderWayBillFrame:false,
         //table选中数据
@@ -741,9 +785,21 @@
         invoiceFootThree:'',
 
         //快递按钮弹框数据
-        postMessage:"",
+        postMessage:{postOne:"",postTwo:"",postThree:""},
         //快递按钮弹框-快递公司下拉框数据
-        postChoice:[],
+        postChoice:[{
+          value: '中通',
+          label: '中通快递'
+        }, {
+          value: '顺丰',
+          label: '顺丰快递'
+        }, {
+          value: '申通',
+          label: '申通快递'
+        }, {
+          value: '圆通',
+          label: '圆通快递'
+        }],
         //快递按钮弹出框是否显示
         postMessageDial:false,
 
@@ -770,18 +826,7 @@
         statistDataShow:false,
         //表格tab栏
         typeCode: '全部',
-
-        orderNo: '',
-        waybillNo: '',
-        inboundNo: '',
-        agentId: '',
-        agentOpt: [],
-        customerName: '',
-        pol: '',
-        polOpt: [],
-        pod: '',
-        podOpt: [],
-        orderCount: 0
+        fileList:[]
       }
     },
     created() {
@@ -789,9 +834,70 @@
       console.log(this.tableData)
     },
     mounted() {
-        this.searchClick()
+        this.searchClick(true)
     },
     methods: {
+      //跨页全选禁用
+      ifDisabled(row) {
+        if(this.pageSkipChecked == true) {
+          return false
+        } else {
+          return true
+        }
+      },
+      // 导入文件的上传
+      handleChange(file) {
+        // this.pdfInfo = file.raw;
+        const isExcel = file.raw.type === "application/pdf";
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        this.fileList.push(file.raw)
+        console.log(this.fileList)
+        if (!isExcel) {
+          this.$message.error('只能上传PDF文件');
+          return
+        }
+        if (!isLt2M) {
+          this.$message.error('');
+          return
+        }
+        // this.importExcel()
+      },
+      importExcel() {
+        const formdate = new FormData();
+        formdate.append("excel", this.excelInfo);
+        axios.post(this.$service.airlineExcelImport, formdate, {responseType: 'arraybuffer'}).then(res => {
+          let enc = new TextDecoder("utf-8");
+          let uint8_msg = new Uint8Array(res);
+          let str=enc.decode(uint8_msg);
+          if (str.indexOf("code") !== -1) {
+            let data = JSON.parse(enc.decode(uint8_msg));
+            this.$message.error(data.message)
+            return;
+          }
+          if (res.byteLength == 0) {
+            this.$message.success('导入成功')
+            return;
+          } else {
+            this.$message.error('导入失败,请查看失败文件')
+          }
+          const aLink = document.createElement("a");
+          let blob = new Blob([res], {
+            type: "application/vnd.ms-excel"
+          })
+          aLink.href = URL.createObjectURL(blob)
+          aLink.setAttribute('download', '导入失败文件' + '.xlsx')
+          aLink.click()
+          document.body.appendChild(aLink)
+        })
+      },
+      // 删除文件
+      handleRemove(file) {
+        this.excelInfo = "";
+      },
+      // 预览文件
+      handlePreview(file) {
+        window.location.href = URL.createObjectURL(file.raw);
+      },
       //多选合并同一折叠行数据
       sortArr(arr, str) {
         var _arr = [],
@@ -803,10 +909,8 @@
         arr = arr.sort(function(a, b) {
             var s = a[str],
                 t = b[str];
-      
             return s < t ? -1 : 1;
         });
-      
         if ( arr.length ){
             _tmp = arr[0][str];
         }
@@ -859,6 +963,7 @@
       //查看开票信息
       showInvoice(message){
         console.log(message)
+        this.invoiceTableData = [JSON.parse(JSON.stringify(message))]
         this.invoiceDialog = true
       },
       
@@ -875,20 +980,21 @@
       //判断是否同时勾选主数据和折叠数据
       ifMainFold(e){
         let exist = false
-        for(let i=0; i< e.length;i++){
-          for(let j=0; j< e.length;j++){
-            if((e[i].id == e[j].iaId) && (e[i].id!=undefined)) {
-              exist = true
-              break
-            }
-          }
+        if(e.some(item=>item.ifChild != undefined) && e.some(item=>item.hasChild != undefined)){
+          exist = true
         }
         return exist;
       },
       //作废按钮
       delInvoice(){
-        
-        if(this.selectTableData.length<1 || this.selectTableData.length>10) {
+        if(this.pageSkipChecked) {
+          this.$message({
+            message: '作废不支持跨页全选',
+            type: 'warning'
+          });
+        }
+        // if(this.pageSkipChecked) this.selectTableData = JSON.parse(JSON.stringify(this.copyTable))
+        else if(this.selectTableData.length<1 || this.selectTableData.length>10) {
           this.$message({
             message: '请选择1到10条信息',
             type: 'warning'
@@ -902,6 +1008,7 @@
         else {
           var rubbishArray = []
           this.selectTableData.forEach(item=>{
+            //判断是否是主数据 是就将折叠数据放入数组
             if(item.hasChild) {
               item.invoiceInfos.forEach(item2=>{
                 rubbishArray.push(item2.invoiceNum)
@@ -914,9 +1021,84 @@
           this.delRequestDial = true;
         }
       },
+      //作废接口折叠数据处理
+      delData(){
+        var result = []
+        if(this.selectTableData.some(item=>item.ifChild == true)){
+          let fatherData = JSON.parse(JSON.stringify(this.copyTable))
+        let data = JSON.parse(JSON.stringify(this.selectTableData))
+        data.forEach(item=>{
+          delete item.copyId
+          delete item.ifChild
+          delete item.invoiceType
+        })
+          var postArr = this.sortArr(data,"iaId")
+          postArr.forEach((item,index)=>{
+            result[index] = {}
+            item.forEach(item4=>{
+              item4.expressStatus = this.getExpressState.indexOf(item4.expressStatus)
+              item4.invoiceStatus = this.getBillState.indexOf(item4.invoiceStatus)
+              item4.upload = this.getUpLoad.indexOf(item4.upload)
+            })
+            result[index].nullifyInvoiceList = item
+            var getFatherData = fatherData.filter(item2=>item[0].iaId == item2.id)
+             result[index].id = getFatherData[0].id
+             result[index].invoiceNumbers = getFatherData[0].invoiceNumbers
+             result[index].invoiceStatus = getFatherData[0].invoiceStatus
+             result[index].invoicedAmount = getFatherData[0].invoicedAmount
+             result[index].invoicingStatus = getFatherData[0].invoicingStatus
+             var data2= []
+            if(getFatherData.orderInfos) {
+              getFatherData.orderInfos.forEach((item3,index3)=>{data2[index3]=item3.id})
+            }
+             result[index].orderId = data2
+          })
+        } else {
+          this.selectTableData.forEach((item,index)=>{
+            result[index] = {}
+            let fatherData = JSON.parse(JSON.stringify(this.copyTable))
+            var getFatherData = fatherData.filter(item2=>item.id == item2.id)
+            result[index].id = getFatherData[0].id
+            result[index].invoiceNumbers = getFatherData[0].invoiceNumbers
+            result[index].invoiceStatus = getFatherData[0].invoiceStatus
+            result[index].invoicedAmount = getFatherData[0].invoicedAmount
+            result[index].invoicingStatus = getFatherData[0].invoicingStatus
+            result[index].nullifyInvoiceList = getFatherData[0].invoiceInfos
+            var data2= []
+            if(getFatherData.orderInfos) {
+              getFatherData.orderInfos.forEach((item3,index3)=>{data2[index3]=item3.id})
+            }
+             result[index].orderId = data2
+          })
+        }
+        
+          return result
+      },
+      
+      //确认作废
+      comfirmDele(){
+          let data = JSON.parse(JSON.stringify(this.delData()))
+          console.log(data)
+          this.$http.post(this.$service.nullifyInvoiceMore,data).then(data=>{
+            if(data.code == 200) {
+              this.delRequestDial = false
+              this.searchClick(true)
+            }else {
+                this.$message.error(data.message)
+                this.delRequestDial = false
+              }
+          })
+      },
       //开票按钮
       invoicing(){
-        if(this.selectTableData.length != 1) {
+        if(this.pageSkipChecked) {
+          this.$message({
+            message: '开票不支持跨页全选',
+            type: 'warning'
+          });
+        }
+        //  if(this.pageSkipChecked) this.selectTableData = JSON.parse(JSON.stringify(this.copyTable))
+        else if(this.selectTableData.length != 1) {
           this.$message({
             message: '只能选择一条信息进行开票哦',
             type: 'warning'
@@ -935,6 +1117,8 @@
           });
         }
         else {
+          this.invoicingLeft = {id:'',invoiceNum:"",invoiceCount:"",invoicingTime:"",invoiceAmount:""}
+          this.invoicingRight = []
           this.invoiceFootOne = this.selectTableData[0].applyAmount
           this.invoiceFootTwo = this.selectTableData[0].applyAmount - this.selectTableData[0].invoicedAmount
           this.invoicingLeft.id = ""
@@ -956,22 +1140,47 @@
           });
         }
         else {
-          let data = this.copyTableOne.filter(item=>item.id==this.selectTableData[0].id)[0]
+          const copyData = JSON.parse(JSON.stringify(this.copyTable))
+          let data = copyData.filter(item=>item.id==this.selectTableData[0].id)[0]
           data.toBeInvoiceList = this.invoicingRight
-          console.log(data,"xxx")
-
           this.$http.post(this.$service.actionInvoice,{firstInvoiceInfo:this.invoicingLeft,tInvoiceAppListVos:data}).then(data=>{
-
+            this.invoicingRight.push(...data.data)
+            let totalMoney = 0
+            this.invoicingRight.forEach(item=> {
+            totalMoney+=item.invoiceAmount})
+            this.invoiceFootThree = totalMoney
           })
+          
         }
       },
       //开票弹出框 表格删除功能
       deleteInvoiceRight(e){
+        console.log(this.invoicingRight)
         this.invoicingRight.splice(e.$index,1)
+      },
+      //开票弹出框 确认开票
+      confirmInvoice (){
+        if(this.invoiceFootThree > this.invoiceFootTwo) {
+           this.$message({
+            message: '发票金额大于未开票金额,请重新填写',
+            type: 'warning'
+          });
+        } else {
+          const copyData = JSON.parse(JSON.stringify(this.copyTable))
+          let data = copyData.filter(item=>item.id==this.selectTableData[0].id)[0]
+          data.toBeInvoiceList = this.invoicingRight
+          this.$http.post(this.$service.confirmInvoice,data).then(data=>{
+            if(data.code == 200) {
+              this.searchClick(true)
+            }else {
+                this.$message.error(data.message)
+              }
+          })
+        }
       },
       //快递按钮
       delivery(){
-        console.log(this.selectTableData)
+        // if(this.pageSkipChecked) this.selectTableData = JSON.parse(JSON.stringify(this.copyTable))
         if (this.selectTableData.length == 0) {
           this.$message({
             message: '请至少选择1条信息',
@@ -984,25 +1193,81 @@
             type: 'warning'
           });
         } 
-        else if (Boolean(this.selectTableData.some(item=>item.invoicingStatus ==0))) {
-          this.$message({
-            message: '选项中存在暂未开票的信息,请重新勾选',
-            type: 'warning'
-          });
-        } else if (Boolean(this.selectTableData.some(item=>item.invoiceType == 2))){
-          this.$message({
-            message: '电子发票不需要邮寄哦,请重新勾选',
-            type: 'warning'
-          });
-        } 
+        // else if (Boolean(this.selectTableData.some(item=>item.invoicingStatus ==0))) {
+        //   this.$message({
+        //     message: '选项中存在暂未开票的信息,请重新勾选',
+        //     type: 'warning'
+        //   });
+        // } 
+        
+        // else if (Boolean(this.selectTableData.some(item=>item.invoiceType == 2))){
+        //   this.$message({
+        //     message: '电子发票不需要邮寄哦,请重新勾选',
+        //     type: 'warning'
+        //   });
+        // } 
         else {
           this.postMessageDial = true;
         }
       },
+      
       //快递弹框确认
       confirmPost(){
-        var postArr = this.sortArr(this.selectTableData,"iaId")
-        console.log(postArr)
+        let requestData = {
+          expressDTOList:[],
+          expressInfo:"",
+          financePageDTO:{},
+          overPageCheck:false
+        }
+        let postMess = String(this.postMessage.postOne)+","+String(this.postMessage.postThree)+","+String(this.postMessage.postTwo)
+        requestData.expressInfo = postMess
+        if(this.pageSkipChecked == false) {
+          requestData.overPageCheck = this.pageSkipChecked
+          requestData.expressDTOList =[]
+          var data = JSON.parse(JSON.stringify(this.selectTableData))
+          if(Boolean(this.selectTableData.some(item=>item.ifChild == true))){
+            var postArr = this.sortArr(data,"iaId")
+            postArr.forEach((item,index)=>{
+              requestData.expressDTOList[index]={}
+              requestData.expressDTOList[index].toBeExpressInvoice = []
+              item.forEach((item2,index2)=>{
+                requestData.expressDTOList[index].toBeExpressInvoice[index2]=item2.invoiceNum
+              })
+              var copyD = JSON.parse(JSON.stringify(this.copyTable))
+              var copyObj = copyD.filter(item3=>item3.id == item[0].iaId)
+              requestData.expressDTOList[index].expressInfo = copyObj[0].expressInfo
+              requestData.expressDTOList[index].expressStatus = copyObj[0].expressStatus
+              requestData.expressDTOList[index].id = copyObj[0].id
+              requestData.expressDTOList[index].invoiceNumbers = copyObj[0].invoiceNumbers
+              requestData.expressDTOList[index].recipient = copyObj[0].recipient
+              requestData.expressDTOList[index].recipientAddress = copyObj[0].recipientAddress
+              requestData.expressDTOList[index].recipientTel = copyObj[0].recipientTel
+            })
+          } else {
+            data.forEach((item,index)=>{
+              requestData.expressDTOList[index]={}
+              requestData.expressDTOList[index].expressInfo = item.expressInfo
+              requestData.expressDTOList[index].expressStatus = this.getExpressState.findIndex(items => items == item.expressStatus)
+              requestData.expressDTOList[index].id = item.id
+              requestData.expressDTOList[index].invoiceNumbers = item.invoiceNumbers
+              requestData.expressDTOList[index].recipient = item.recipient
+              requestData.expressDTOList[index].recipientAddress = item.recipientAddress
+              requestData.expressDTOList[index].recipientTel = item.recipientTel
+              requestData.expressDTOList[index].toBeExpressInvoice = []
+              if(item.invoiceInfos){
+                 item.invoiceInfos.forEach((item2,index2)=>{
+                requestData.expressDTOList[index].toBeExpressInvoice[index2] = item2.invoiceNum
+              })
+              } else {
+                requestData.expressDTOList[index].toBeExpressInvoice[0]=item.invoiceNum
+              }
+            })
+          }
+        } else {
+          requestData.overPageCheck = true
+          requestData.financePageDTO = this.selectResult
+        }
+        this.$http.post(this.$service.expressInvoices,requestData).then(data=>{})
       },
       //数据统计按钮
       getStatistData(){
@@ -1017,56 +1282,73 @@
       },
       //跨页全选按钮
       selectAllTable(){
-        console.log(this.pageSkipChecked)
+        
         for(let i=0;i<this.$refs.multipleTable.length;i++){
-          this.pageSkipChecked ?  this.$refs.multipleTable[i].toggleAllSelection() : this.$refs.multipleTable[i].clearSelection()
+          // this.pageSkipChecked ?  this.$refs.multipleTable[i].toggleAllSelection() : this.$refs.multipleTable[i].clearSelection()
+          for(let j=0;j<this.tableData.length;j++){
+            if(this.pageSkipChecked == true ) {
+							this.$refs.multipleTable[i].toggleRowSelection(this.tableData[j]);
+						} else {
+              this.$refs.multipleTable[i].clearSelection();;
+            }
+          
+          }
         }
+        
       },
       //tab切换
       tabClickData(tab,event) {
-        console.log(this.typeCode)
+        this.pageSkipChecked = false
         this.searchClick()
       },
  
       //查询
-      searchClick() {
+      searchClick(self) {
         let arrayCopy = JSON.parse(JSON.stringify(this.selectResult))
+        //搜索框选择全部 删除属性
         if(arrayCopy.expressStatus == "") delete arrayCopy.expressStatus;
         if(arrayCopy.invoiceStatus == "") delete arrayCopy.invoiceStatus;
         if(arrayCopy.upload == "") delete arrayCopy.upload;
         if(arrayCopy.invoiceType.length == 1 && (arrayCopy.invoiceType)[0]=="" ) delete arrayCopy.invoiceType;
         if(arrayCopy.invoicingStatus.length == 1 && arrayCopy.invoicingStatus[0]=="" ) delete arrayCopy.invoicingStatus;
+        //调接口 判断当前tab页
         if(this.typeCode == "合并开票") {arrayCopy.merge = 0}
         else if(this.typeCode == "单独开票") {arrayCopy.merge = 1}
         else if (this.typeCode == "异常") {arrayCopy.abnormalFlag = 1}
+        //当前页数和每页显示个数
         arrayCopy.pageNum = this.pageNum
         arrayCopy.pageSize = this.pageSize
+        //搜索框多选情况
         if(arrayCopy.invoiceType) arrayCopy.invoiceType = arrayCopy.invoiceType.join()
         if(arrayCopy.invoicingStatus) arrayCopy.invoicingStatus = arrayCopy.invoicingStatus.join()
         // console.log(arrayCopy)
         this.$http.post(this.$service.invoiceSearch,arrayCopy).then((data) => {
           this.loading = false
           if (data.code == 200) {
+            //获取信息总数，及表格tab页的数据数量
             this.total = data.data.pageInfo.total
             this.tabNum[0] = data.data.totalCount
             this.tabNum[1] = data.data.mergeCount
             this.tabNum[2] = data.data.notMergeCount
             this.tabNum[3] = data.data.abNormalCount
-            this.copyTableOne = JSON.parse(JSON.stringify(data.data.pageInfo.records))
+            //用于后续调接口操作
+            this.copyTable = JSON.parse(JSON.stringify(data.data.pageInfo.records))
+            //处理数据后在表格上显示
             let getData = JSON.parse(JSON.stringify(data.data.pageInfo.records))
             getData.forEach((item,index)=>{
+              //copyID用于折叠表格的rowKey
               item.copyId = item.id
-              console.log(item,index)
-              if(item.invoiceType == 2 && item.invoiceInfos && item.invoiceInfos.length>=2){
-                 item.invoiceInfos.forEach(item2=>{
-                  item2.invoiceType == 2
-                })
-              }
-              if(item.invoiceInfos && item.invoiceInfos.length>=2){
+              // item.iaId = item.id
+              if(item.invoiceInfos && item.invoiceInfos.length>=1){
+                //判断是否是主数据
                 item.hasChild = true
                 item.invoiceInfos.forEach((item2,index)=>{
+                  item2.invoiceType =item.invoiceType
+                  //判断是否是折叠数据
                   item2.ifChild = true
+                  //作为element table 折叠表格的row-key使用
                   item2.copyId = String(item.id)+'-'+String(index)
+                  //将折叠数据中的数字处理成文字显示
                   item2.expressStatus = this.getExpressState[item2.expressStatus]
                   item2.invoiceStatus = this.getBillState[item2.invoiceStatus]
                   item2.upload = this.getUpLoad[item2.upload]
@@ -1076,9 +1358,9 @@
               item.invoiceNum = (item.invoiceInfos && item.invoiceInfos[0] && item.invoiceInfos[0].invoiceNum) || ""
               item.invoicingTime = (item.invoiceInfos && item.invoiceInfos[0] && item.invoiceInfos[0].invoicingTime) || ""
               item.expressInfo = (item.invoiceInfos && item.invoiceInfos[0] && item.invoiceInfos[0].expressInfo) || ""
-              item.expressStatus = (item.invoiceInfos && item.invoiceInfos[0] && this.getExpressState[item.invoiceInfos[0].expressStatus]) || ""
-              item.invoiceStatus = (item.invoiceInfos && item.invoiceInfos[0] && this.getBillState[item.invoiceInfos[0].invoiceStatus]) || ""
-              item.upload = (item.invoiceInfos && item.invoiceInfos[0] && this.getUpLoad[item.invoiceInfos[0].upload]) || ""
+              item.expressStatus = (item.invoiceInfos && item.invoiceInfos[0].expressStatus) || ""
+              item.invoiceStatus = (item.invoiceInfos && item.invoiceInfos[0].invoiceStatus) || ""
+              item.upload = (item.invoiceInfos && item.invoiceInfos[0].upload) || ""
               item.orderNo = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].orderNo) || ""
               item.waybillNo = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].waybillNo) || ""
               item.departureDate = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].departureDate) || ""
@@ -1090,7 +1372,10 @@
               }
             })
             this.tableData = getData
-            console.log(getData,1111)
+            //控制跨页全选
+            if(self) this.pageSkipChecked = false
+            this.selectAllTable()
+            // console.log(getData,1111)
             // this.$forceUpdate()
           } else {
             this.$message.error(data.message)
@@ -1099,6 +1384,8 @@
       },
       //重置
       restClick() {
+        this.pageSkipChecked = false
+        this.selectAllTable()
         this.pageNum = 1
         this.pageSize = 10
         this.selectResult={
@@ -1144,6 +1431,11 @@
   /deep/.pageSkip {
         padding:3px 5px!important
   }
+  /deep/.el-table{
+    .cell {
+      white-space: normal!important;
+    }
+  }
   .content-search-normal {
     .formItem{
       display:inline-block;
@@ -1155,6 +1447,11 @@
     display:flex;
     justify-content: flex-end;
     margin-bottom:-10px;
+    .upLoad {
+      /deep/.el-button--medium {
+        padding:6px 20px
+      }
+    }
     button {
       margin:0px 10px 20px 10px;
     }
