@@ -7,7 +7,7 @@
       @selection-change="handleSelect"
       :data="tableData"
       :header-cell-style="{textAlign:'center'}"
-      :cell-style="{textAlign:'center',fontSize:'12px'}"
+      :cell-style="{textAlign:'center',fontSize:'14px'}"
 
       style="width: 100% ;"
     >
@@ -15,7 +15,7 @@
         <img class="data-pic" src="../assets/kong-icon.png"/>
         <p>暂无数据</p>
       </template>
-      <el-table-column type="selection" width="50"></el-table-column>
+      <el-table-column v-if="select===0" type="selection" width="50"></el-table-column>
       <!-- <el-table-column
         v-if="checkbox"
         type="selection"
@@ -32,25 +32,114 @@
         :min-width="column.width"
         align="left"
       >
-        <el-table-column v-if="column.label == '应收金额'" prop="totalArCny" label="人民币" min-width="80"></el-table-column>
-        <el-table-column v-if="column.label == '应收金额'" label="原币" min-width="80">
+        <el-table-column v-if="column.label == '应收金额'&&typeof (column.prop)== 'undefined'" prop="totalArCny" label="人民币"
+                         min-width="100"></el-table-column>
+        <el-table-column v-if="column.label == '应收金额'&&typeof (column.prop) == 'undefined'" label="原币" min-width="100">
           <template slot-scope="scope">
-            {{ getOrgn(scope.row.totalArOrgn) }}
+            <div style="white-space:pre">{{ getOrgn(scope.row.totalArOrgn) }}</div>
           </template>
         </el-table-column>
         <el-table-column v-if="column.label == '应付金额'" prop="totalApCny" label="人民币" min-width="80"></el-table-column>
         <el-table-column v-if="column.label == '应付金额'" label="原币" min-width="80">
           <template slot-scope="scope">
-            {{ getOrgn(scope.row.totalApOrgn) }}
+            <div style="white-space:pre">{{ getOrgn(scope.row.totalApOrgn) }}</div>
           </template>
         </el-table-column>
         <template slot-scope="scope">
           <span @click="handleItemClick(column.handle, scope)">
+
             <span v-if=" column.label == '序号'">
            {{ scope.$index + 1 }}
             </span>
+                        <div v-else-if=" column.label == '核销金额'">
+ <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
+      :style="{'background':(optIndex%2===0?'':'')}">{{
+     optItem.writeOffAmount
+   }}{{ getCurrency(optItem.currency) }}</div>
+            </div>
+            <div v-else-if=" column.label == '开户行'">
+              <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
+                   :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.accountBank }}</div>
+            </div>
+            <div v-else-if=" column.label == '户名'">
+              <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
+                   :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.accountName }}</div>
+            </div>
+            <div v-else-if=" column.label == '银行账户'">
+              <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
+                   :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.bankAccount }}</div>
+            </div>
+            <div v-else-if=" column.label == '汇率'">
+              <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
+                   :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.exchangeRate }}</div>
+            </div>
+            <div v-else-if=" column.label == '收款方式'">
+              <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
+                   :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.payWay === 0 ? "银行转账" : "应付对冲" }}</div>
+            </div>
+            <div v-else-if=" column.label == '到账时间'">
+              <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
+                   :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.payDate }}</div>
+            </div>
+           <div v-else-if=" column.label == '开户行'">
+ <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
+      :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.accountBank }}
+        </div>
+            </div>
+           <div v-else-if=" column.label == '核销时间'">
+ <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
+      :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.writeOffTime }}
+        </div>
+            </div>
+            <div v-else-if=" column.label == '记录'&&column.prop == 'log'">
+            <table v-for="(optItem,optIndex) in scope.row.log" :key="optIndex"
+                   :style="{'background':(optIndex%2===0?'':'')}">
+            <table v-if="optItem.status==0||optItem.status==-1" style="padding: 0px">
+            <td style="margin: 0px;padding: 0px;">{{ "操作" + (optIndex + 1) + "：" + optItem.writeOffOperator }}</td><td
+              style="color: cornflowerblue ;margin-right: 0">核销</td><td>{{
+                "该订单，核销金额：" + optItem.writeOffAmount + getCurrency(optItem.currency)
+              }}</td><td
+              style="padding-left: 20px">{{ optItem.writeOffTime }}</td>
+          </table>
+<table v-if="optItem.status==2">
+<td>{{ "操作" + (optIndex + 1) + "：" + optItem.writeOffOperator }}</td><td style="color: crimson">撤销</td><td>{{
+    "操作" + getIndex(scope.row.log, optItem.id)
+  }}</td><td
+  style="padding-left: 20px">{{ optItem.revokeTime }}</td>
+</table>
+        </table>
+            </div>
+                       <table v-else-if=" column.label == '操作'&&column.prop == 'revoke'">
+ <table v-for="(optItem,optIndex) in scope.row.log" :key="optIndex" :style="{'background':(optIndex%2===0?'':'')}">
+   <td v-if="optItem.status==0" style="padding: 0px"><a @click="revoke(optItem.id,scope.row)">撤销</a></td>
+  <td v-if="optItem.status==-1" style="padding: 0px">已撤销</td>
+  <td v-if="optItem.status==2" style="padding: 0px"></td>
+        </table>
+            </table>
+
             <span v-else-if="column.prop == 'expenseType' && column.label == '费用类型'">
               {{ scope.row.expenseType === 0 ? "国内段" : "国外段" }}
+            </span>
+            <span v-else-if="column.prop == 'payWay' && column.label == '结算方式'">
+              {{ scope.row.payWay === 0 ? "付款买单" : "月结" }}
+            </span>
+            <span v-else-if="column.prop == 'rcvWriteOffStatus' && column.label == '核销状态'">
+              {{
+                scope.row.rcvWriteOffStatus === 0 ? "未对账未核销" :
+                  scope.row.rcvWriteOffStatus === 1 ? "部分对账未核销" :
+                    scope.row.rcvWriteOffStatus === 2 ? "已对账未核销" :
+                      scope.row.rcvWriteOffStatus === 3 ? "未对账部分核销" :
+                        scope.row.rcvWriteOffStatus === 4 ? "部分对账部分核销" :
+                          scope.row.rcvWriteOffStatus === 5 ? "已对账部分核销" :
+                            scope.row.rcvWriteOffStatus === 6 ? "未对账已核销" :
+                              scope.row.rcvWriteOffStatus === 7 ? "部分对账已核销" :
+                                scope.row.rcvWriteOffStatus === 8 ? "已对账已核销" : ""
+
+              }}
+            </span>
+               <span v-else-if="column.prop == 'rcvWriteOffCount' && column.label == '核销次数'">
+              <a v-if="scope.row.rcvWriteOffCount>0" @click="showWOLogs(scope.row)">{{ scope.row.rcvWriteOffCount }}</a><div
+                 v-if="scope.row.rcvWriteOffCount==0">0</div>
             </span>
             <span v-else-if="column.prop == 'operationType' && column.label == '操作类型'">
               {{
@@ -64,19 +153,22 @@
               }}
             </span>
              <span v-else-if="column.prop == 'cargoInfo' && column.label == '货物信息'">
-              <div>{{ scope.row.cargoInfo.split(",")[0] }}</div>
-                <div>{{ scope.row.cargoInfo.split(",")[1] }}PCS</div>
-                <div>{{ scope.row.cargoInfo.split(",")[2] }}CBM</div>
-                <div>{{ scope.row.cargoInfo.split(",")[3] }}KGS</div>
-                <div>1:{{ scope.row.cargoInfo.split(",")[4] }}</div>
+              <div>{{ scope.row.cargoName }}</div>
+                <div>{{ scope.row.inboundPiece }}PCS</div>
+                <div>{{ scope.row.inboundCbm }}CBM</div>
+                <div>{{ scope.row.inboundWeight}}KGS</div>
+                <div>1:{{ scope.row.inboundVwr }}</div>
             </span>
              <span v-else-if="column.prop == 'operator' && column.label == '操作人员'">
-               <div>客服：{{ scope.row.operator.split(",")[1] }}</div>
-                <div>销售：{{ scope.row.operator.split(",")[0] }}</div>
-                <div>航线：{{ scope.row.operator.split(",")[2] }}</div>
+               <div>客服：{{ scope.row.pscsName }}</div>
+                <div>销售：{{ scope.row.mscsName }}</div>
+                <div>航线：{{ scope.row.principalName }}</div>
             </span>
               <span v-else-if=" column.label == '汇率'">
               {{ getExchangeRate(scope.row.exchangeRate) }}
+            </span>
+              <span v-else-if=" column.label == '对账金额'">
+              {{ scope.row.rcvCheckAmount }}CNY
             </span>
               <span v-else-if=" column.label == '开票进度'">
                {{
@@ -98,7 +190,7 @@
             </span>
             <!--              <span v-else-if="column.prop=='orderNo'&& column.label == '订单号'">-->
               <a v-else-if="column.prop=='orderNo'&& column.label == '订单号'"
-                 @click="showFees(scope.row.id,scope.row.payWay,scope.row.financeStatus)"
+                 @click="showFees(scope.row.orderId)"
                  style="font-size: 12px;">{{ scope.row.orderNo }}</a>
             <!--            </span>-->
             <!--            <div v-else >{{// scope[column.prop]}}</div>-->
@@ -135,6 +227,7 @@
       </el-pagination>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -164,6 +257,11 @@
       },
       // 总条数
       total: {
+        type: Number,
+        default: () => 0
+      },
+      // 总条数
+      select: {
         type: Number,
         default: () => 0
       },
@@ -219,9 +317,47 @@
       }
     },
     methods: {
+      selectAllTable(pageSkipChecked){
+        for(let i=0;i<this.$refs.multipleTable.length;i++){
+          pageSkipChecked ?  this.$refs.multipleTable[i].toggleAllSelection() : this.$refs.multipleTable[i].clearSelection()
+        }
+      },
+      getIndex(log, id) {
+        for (var i = 0; i < log.length; i++) {
+          if (log[i].id == id) {
+            return i + 1;
+          }
+        }
+      },
+      getCurrency(type) {
+        return type === 1 ? "CNY" :
+          type === 1 ? "CNY" :
+            type === 2 ? "HKD" :
+              type === 3 ? "USD" :
+                type === 4 ? "EUR" :
+                  type === 5 ? "GBP" : "";
+      },
+      cellStylePadding0({row, column, ronIndex, columnIndex}) {
+        if (
+          column.property == "writeOffAmount" ||
+          column.property == "branchLastTime" ||
+          column.property == "branchThisTime" ||
+          column.property == "branchAddReduceQty" ||
+          column.property == "branchAddReducePercent"
+        ) {
+          return "padding:0";
+        } else {
+          return "";
+        }
+        //console.log(column.property)
+      },
       // 排序
       handleSort(column) {
         this.$emit('sortChange', column)
+      },
+      // 排序
+      revoke(id,row) {
+        this.$emit('revoke', id,row)
       },
       // 操作，将操作类型和当前row数据作为参数传递
       handleClick(method, row, e) {
@@ -298,16 +434,19 @@
           }
         }
         totalOrgn = ''
-        totalOrgn += value1 || value1 == 0 ? value1 + 'CNY' + '+' : ''
-        totalOrgn += value2 ? value2 + 'HKD' + '+' : ''
-        totalOrgn += value3 ? value3 + 'USD' + '+' : ''
-        totalOrgn += value4 ? value4 + 'EUR' + '+' : ''
+        totalOrgn += value1 || value1 == 0 ? value1 + 'CNY' + '\n' : ''
+        totalOrgn += value2 ? value2 + 'HKD' + '\n' : ''
+        totalOrgn += value3 ? value3 + 'USD' + '\n' : ''
+        totalOrgn += value4 ? value4 + 'EUR' + '\n' : ''
         totalOrgn += value5 ? value5 + 'GBP' : ''
         totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
         return totalOrgn;
       },
       showFees(val) {
         this.$emit('showFees', val)
+      },
+      showWOLogs(val) {
+        this.$emit('showWOLogs', val)
       },
       // 页码跳转
       handleCurrent(val) {
@@ -369,5 +508,9 @@
   .tupian {
     width: 30px;
     height: auto;
+  }
+
+  .lineHeight28 {
+    background: #606266
   }
 </style>
