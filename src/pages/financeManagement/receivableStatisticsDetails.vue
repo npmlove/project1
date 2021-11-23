@@ -74,7 +74,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="rcvWriteOffStatus" multiple collapse-tags placeholder="核销状态" @change="dealAllChange"
+              <el-select v-model="rcvWriteOffStatus" multiple collapse-tags placeholder="核销状态"  @change="dealAllChange"
                        :loading="loading"
                        clearable filterable remote reserve-keyword style="width: 230px;">
               <el-option
@@ -368,7 +368,7 @@
         writeOffTime: [],
         payWay: '',
         payWayTab: '',
-        rcvWriteOffStatus: '',
+        rcvWriteOffStatus: null,
         payWayOpt: [
           //0=付款买单,1=月结买单
           {
@@ -450,7 +450,7 @@
         this.initData()
       },
       dealAllChange() {
-        if (this.rcvWriteOffStatus.indexOf('') != -1) {
+        if (this.rcvWriteOffStatus.indexOf("")!=-1) {
           this.rcvWriteOffStatus = ['']
         }
       },
@@ -480,7 +480,7 @@
           endWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[1],
           writeOffWay: this.writeOffWay,
           payWay: this.payWay,
-          rcvWriteOffStatus: this.getSearchArgument(this.rcvWriteOffStatus),
+          rcvWriteOffStatusList: this.rcvWriteOffStatus.length==0||this.rcvWriteOffStatus.indexOf("")!=-1?null:this.rcvWriteOffStatus,
           woStatus: this.woStatus,
           pageNum: this.pageNum,
           pageSize: this.pageSize
@@ -643,7 +643,7 @@
           endWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[1],
           writeOffWay: this.writeOffWay,
           payWay: this.payWay,
-          rcvWriteOffStatus: this.getSearchArgument(this.rcvWriteOffStatus),
+          rcvWriteOffStatusList: this.rcvWriteOffStatus.length==0||this.rcvWriteOffStatus.indexOf("")!=-1?null:this.rcvWriteOffStatus,
           woStatus: this.woStatus,
           pageNum: this.pageNum,
           pageSize: this.pageSize
@@ -695,7 +695,7 @@
         this.writeOffTime = []
         this.writeOffWay = ''
         this.payWay = ''
-        this.rcvWriteOffStatus = ['']
+        this.rcvWriteOffStatus = null
         // this.woStatus=''
         this.pageNum = 1
         this.pageSize = 10
@@ -728,7 +728,7 @@
           endWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[1],
           writeOffWay: this.writeOffWay,
           payWay: this.payWay,
-          rcvWriteOffStatus: this.getSearchArgument(this.rcvWriteOffStatus),
+          rcvWriteOffStatusList: this.rcvWriteOffStatus.length==0||this.rcvWriteOffStatus.indexOf("")!=-1?null:this.rcvWriteOffStatus,
           woStatus: this.woStatus,
           pageNum: this.pageNum,
           pageSize: this.pageSize

@@ -1,13 +1,13 @@
 <template>
   <div>
     <el-table
-      stripe
       ref="multipleTable"
       @sort-change="handleSort"
       @selection-change="handleSelect"
       :data="tableData"
       :header-cell-style="{textAlign:'center'}"
       :cell-style="{textAlign:'center',fontSize:'14px'}"
+      :row-class-name="tableRowClassName"
 
       style="width: 100% ;"
     >
@@ -499,6 +499,17 @@
       handleSize(val) {
         this.$emit('sizeChange', val)
       },
+      tableRowClassName({row, rowIndex}) {
+        if (row.abnormalFlag === 1) {
+          return 'warning-row';
+        } else if(rowIndex%2==0){
+          return 'row1';
+        }else{
+          return 'row2';
+
+        }
+      }
+    ,
       // 复选框选择
       handleSelect(val) {
         this.$emit('handleSelect', val)
@@ -523,6 +534,18 @@
     }
   }
 </script>
+<style>
+  .el-table .warning-row {
+    background: #f28080;
+  }
+
+  .el-table .row1 {
+    background: #ffffff;
+  }
+  .el-table .row2 {
+    background: #F9F9F9;
+  }
+</style>
 <style lang="less" scoped>
   a {
     padding: 0;

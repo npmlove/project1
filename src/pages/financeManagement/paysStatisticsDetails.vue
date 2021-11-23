@@ -223,6 +223,7 @@
 <script>
   import Table from '@/components/receivableStatisticsDetailsTable'
   import {toData} from '@/util/assist'
+  import axios from "axios";
 
   export default {
     data() {
@@ -369,6 +370,10 @@
         rcvWriteOffStatusOpt: [
           //应收核销状态 0=未对账未核销,1=部分对账未核销,2=已对账未核销,3=未对账部分核销,4=部分对账部分核销,5=已对账部分核销,6=未对账已核销,7=部分对账已核销,8=已对账已核销
           {
+            rcvWriteOffStatus: '全部',
+            value: ''
+          },
+          {
             rcvWriteOffStatus: '未对账未核销',
             value: '0'
           },
@@ -476,6 +481,49 @@
           console.log(e)
         })
       },
+      exportList() {
+        axios.post(this.$service.exportWriteOffExcel, {
+          overPageCheck: this.overPageCheck,
+          rcvIds: this.rcvIds,
+          orderNo: this.orderNo,
+          waybillNo: this.waybillNo,
+          reconciliationUnit: this.reconciliationUnit,
+          accountBank: this.accountBank,
+          accountName: this.accountName,
+          startPayTime: this.payTime.length === 0 ? '' : this.payTime[0],
+          endPayTime: this.payTime.length === 0 ? '' : this.payTime[1],
+          startWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[0],
+          endWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[1],
+          writeOffWay: this.writeOffWay,
+          payWay: this.payWay,
+          payWriteOffStatusList: this.rcvWriteOffStatus.length==0||this.rcvWriteOffStatus.indexOf("")!=-1?null:this.rcvWriteOffStatus,
+          woStatus: this.woStatus,
+          pageNum: this.pageNum,
+          pageSize: this.pageSize
+        }, {
+          responseType: 'arraybuffer'
+        }).then((res) => {
+          let enc = new TextDecoder("utf-8");
+          let uint8_msg = new Uint8Array(res);
+          let str = enc.decode(uint8_msg);
+          if (str.indexOf("code") !== -1) {
+            let data = JSON.parse(enc.decode(uint8_msg));
+            this.$message.error(data.message)
+            return;
+          }
+          // if(res.status == "200") {
+          const aLink = document.createElement("a");
+          let blob = new Blob([res], {
+            type: "application/vnd.ms-excel"
+          })
+          aLink.href = URL.createObjectURL(blob)
+          aLink.setAttribute('download', '应付核销明细列表' + '.xlsx') // 设置下载文件名称
+
+          aLink.click()
+          document.body.appendChild(aLink)
+        })
+      },
+
       handleSelect(val) {
         this.detailTabs = val;
       },
@@ -571,15 +619,15 @@
           endWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[1],
           writeOffWay: this.writeOffWay,
           payWay: this.payWay,
-          payWriteOffStatusList: this.rcvWriteOffStatus,
+          payWriteOffStatusList:this.rcvWriteOffStatus.length==0||this.rcvWriteOffStatus.indexOf("")!=-1?null:this.rcvWriteOffStatus,
           woStatus: this.woStatus,
           pageNum: this.pageNum,
           pageSize: this.pageSize
         }
         this.$http.post(this.$service.writeOffSearch, json).then(data => {
           if (data.code == 200) {
-            this.total = data.data.page.total
-            data.data.page.records.forEach(x=>{
+            this.total =this.woStatus==0?data.data.countAuth:this.woStatus==1?data.data.countNoAuth: data.data.countErr
+/*            data.data.page.records.forEach(x=>{
               var writeOffList=[]
             if (x.writeOffList!=null){
               x.writeOffList.forEach(y=>{
@@ -589,7 +637,7 @@
               })
               x.writeOffList=writeOffList;
             }
-            })
+            })*/
             this.tableData = data.data.page.records
             this.countNoAuth = data.data.countNoAuth
             this.countAuth = data.data.countAuth
@@ -678,7 +726,7 @@
           endWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[1],
           writeOffWay: this.writeOffWay,
           payWay: this.payWay,
-          rcvWriteOffStatus: this.getSearchArgument(this.rcvWriteOffStatus),
+          payWriteOffStatusList: this.rcvWriteOffStatus.length==0||this.rcvWriteOffStatus.indexOf("")!=-1?null:this.rcvWriteOffStatus,
           woStatus: this.woStatus,
           pageNum: this.pageNum,
           pageSize: this.pageSize
