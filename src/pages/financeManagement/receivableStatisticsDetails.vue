@@ -74,7 +74,8 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="rcvWriteOffStatus" multiple collapse-tags placeholder="核销状态" @change="dealAllChange" :loading="loading"
+            <el-select v-model="rcvWriteOffStatus" multiple collapse-tags placeholder="核销状态" @change="dealAllChange"
+                       :loading="loading"
                        clearable filterable remote reserve-keyword style="width: 230px;">
               <el-option
                 v-for="item in rcvWriteOffStatusOpt"
@@ -164,7 +165,6 @@
         :tableData='logData'
         :columns='columns1'
         :operation='operation1'
-        :total='total'
         :select=1
         :currentPage='pageNum'
         :pageSize='pageSize'
@@ -175,7 +175,7 @@
     </el-dialog>
 
     <el-dialog :visible.sync="dialogFormVisible" width="80%">
-      <td style="font-size: 18px;font-weight: 100;color: #169BD5;padding: 10px 0px 10px 20px;">{{ orderNo }}</td>
+      <td style="font-size: 18px;font-weight: 100;color: #169BD5;padding: 10px 0px 10px 20px;">{{ orderNoTab }}</td>
       <td style="font-size: 18px;font-weight: 100;color: #333333;padding: 10px 20px 10px 0px;">订单详情</td>
       <Table
         :tableData='orderData'
@@ -188,14 +188,13 @@
         @currentChange='handleCurrentChange'>
       </Table>
 
-      <td style="font-size: 18px;font-weight: 100;color: #169BD5;padding: 10px 0px 10px 20px;">{{ orderNo }}</td>
+      <td style="font-size: 18px;font-weight: 100;color: #169BD5;padding: 10px 0px 10px 20px;">{{ orderNoTab }}</td>
       <td style="font-size: 18px;font-weight: 100;color: #333333;padding: 10px 20px 10px 0px;">应收账单</td>
       <Table
         :tableData='arData'
         :columns='columns3'
         :select=1
         :operation='operation'
-        :total='total1'
         :currentPage='pageNum'
         :pageSize='pageSize'
         @orderDetails="orderDetails"
@@ -206,7 +205,7 @@
       <div class="finance-table-price">
         <div>账单合计：{{ getOrgn(this.totalArOrgn) }}</div>
         <div>人民币合计：￥{{ this.totalArCny }}</div>
-        <div>订单利润：{{ this.orderProfit }}</div>
+<!--        <div>订单利润：{{ this.orderProfit }}</div>-->
       </div>
       <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">修改记录</div>
       <Table
@@ -319,7 +318,7 @@
           {label: '数量', prop: 'quantity', show: true, width: '100'},
           {label: '币种', prop: 'currency', show: true, width: '100'},
           {label: '原币合计', prop: 'totalOrgn', show: true, width: '100'},
-          {label: '汇率', prop: 'exchangeRate', show: true, width: '100'},
+          {label: '汇率', prop: 'exchangeRateNum', show: true, width: '100'},
           {label: '人民币合计', prop: 'totalCny', show: true, width: '100'},
           {label: '备注', prop: 'remark', show: true, width: '50'}
         ],
@@ -347,6 +346,7 @@
           ]
         },
         orderNo: '',
+        orderNoTab:'',
         rcvIds: [],
         select: 0,
         waybillNo: '',
@@ -367,6 +367,7 @@
         payTime: [],
         writeOffTime: [],
         payWay: '',
+        payWayTab: '',
         rcvWriteOffStatus: '',
         payWayOpt: [
           //0=付款买单,1=月结买单
@@ -379,7 +380,7 @@
             value: '1'
           },
         ],
-        rcvWriteOffStatusOpt: [ {
+        rcvWriteOffStatusOpt: [{
           rcvWriteOffStatus: '全部',
           value: ''
         },
@@ -448,8 +449,8 @@
       tabClickData() {
         this.initData()
       },
-      dealAllChange (){
-        if(this.rcvWriteOffStatus.indexOf('') != -1) {
+      dealAllChange() {
+        if (this.rcvWriteOffStatus.indexOf('') != -1) {
           this.rcvWriteOffStatus = ['']
         }
       },
@@ -458,10 +459,10 @@
         this.$refs.child.selectAllTable(this.pageSkipChecked, this.tableData);
         this.rcvIds = []
       },
-      getSearchArgument(argument){
-        var result=''
-        argument.forEach(x=>result+=x+',')
-        result=result.substring(0,result.length-1)
+      getSearchArgument(argument) {
+        var result = ''
+        argument.forEach(x => result += x + ',')
+        result = result.substring(0, result.length - 1)
         return result
       },
       exportList() {
@@ -509,21 +510,6 @@
           aLink.click()
           document.body.appendChild(aLink)
         })
-
-
-        /*        this.$http.post(this.$service.exportWoDetailExcel, json).then(data => {
-                  if (data.code == 200) {
-                    this.total = data.data.page.total
-                    this.tableData = data.data.page.records
-                    this.countNoAuth = data.data.countNoAuth
-                    this.countAuth = data.data.countAuth
-                    this.countErr = data.data.countErr
-                  } else {
-                    this.$message.error(data.message)
-                  }
-                }).catch((e) => {
-                  console.log(e)
-                })*/
       },
       showFees(row) {
 
@@ -531,12 +517,11 @@
         this.$http.get(this.$service.searchOrderDetail + '?orderId=' + row.orderId).then(data => {
           if (data.code == 200) {
             this.arData = data.data.arOrderPriceList
-            this.orderNo = data.data.orderNo
+            this.orderNoTab = data.data.orderNo
             this.orderLogs = data.data.orderPresentLogs
             this.totalArOrgn = data.data.totalArOrgn
             this.totalArCny = data.data.totalArCny
             this.orderProfit = data.data.orderProfit
-            this.payWay = data.data.payWay
             this.orderId = data.data.orderId
             this.orderData[0].customerName = data.data.customerName
             this.orderData[0].agentName = data.data.agentName
@@ -562,9 +547,13 @@
       handleSelect(val) {
         this.rcvIds = []
         if (this.overPageCheck) {
-          var tableData=this.tableData;
-          var d = tableData.filter(function(v){ return val.indexOf(v) == -1 })
-          d.forEach(x=>{this.rcvIds.push(x.id)})
+          var tableData = this.tableData;
+          var d = tableData.filter(function (v) {
+            return val.indexOf(v) == -1
+          })
+          d.forEach(x => {
+            this.rcvIds.push(x.id)
+          })
         }
       },
       //代理公司
@@ -723,7 +712,10 @@
       },
       //数据统计按钮
       getStatistData() {
-        this.statistDataShow = !this.statistDataShow
+        if (this.statistDataShow) {
+          this.statistDataShow = !this.statistDataShow
+          return;
+        }
         var json = {
           orderNo: this.orderNo,
           waybillNo: this.waybillNo,
@@ -751,6 +743,7 @@
             this.statistData.totalRcUnwoOrgn = data.data.totalRcUnwoOrgn;
             this.statistData.totalRcWoCny = data.data.totalRcWoCny;
             this.statistData.totalRcWoOrgn = data.data.totalRcWoOrgn;
+            this.statistDataShow = !this.statistDataShow
           } else {
             this.$message.error(data.message)
           }

@@ -69,7 +69,7 @@
               <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
                    :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.bankAccount }}</div>
             </div>
-            <div v-else-if=" column.label == '汇率'">
+            <div v-else-if=" column.label == '汇率'&&column.prop == 'exchangeRate'">
               <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
                    :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.exchangeRate }}</div>
             </div>
@@ -126,6 +126,9 @@
 
             <span v-else-if="column.prop == 'expenseType' && column.label == '费用类型'">
               {{ scope.row.expenseType === 0 ? "国内段" : "国外段" }}
+            </span>
+            <span v-else-if="column.prop == 'exchangeRateNum' && column.label == '汇率'">
+              {{ scope.row.exchangeRate  }}
             </span>
             <span v-else-if="column.prop == 'payWay' && column.label == '结算方式'">
               {{ scope.row.payWay === 0 ? "付款买单" : "月结" }}
@@ -189,9 +192,6 @@
                 <div>销售：{{ scope.row.mscsName }}</div>
                 <div>航线：{{ scope.row.principalName }}</div>
             </span>
-              <span v-else-if=" column.label == '汇率'">
-              {{ getExchangeRate(scope.row.exchangeRate) }}
-            </span>
               <span v-else-if=" column.label == '对账金额'&&column.prop == 'rcvCheckAmount'">
               {{ scope.row.rcvCheckAmount }}CNY
             </span>
@@ -204,6 +204,10 @@
                     '未开票' : scope.row.invoicingStatus == 1 ?
                     '已开票' : scope.row.invoicingStatus == 2 ? '部分开票' : ''
                 }}
+            </span>
+                    <span v-else-if=" column.label == '币种'&&column.prop == 'currency'">
+               {{getCurrencyZh(scope.row.currency)
+                      }}
             </span>
               <span v-else-if=" column.label == '订单状态'">
                  {{
@@ -363,11 +367,17 @@
       },
       getCurrency(type) {
         return type === 1 ? "CNY" :
-          type === 1 ? "CNY" :
             type === 2 ? "HKD" :
               type === 3 ? "USD" :
                 type === 4 ? "EUR" :
                   type === 5 ? "GBP" : "";
+      },
+      getCurrencyZh(type) {
+        return type === 1 ? "人民币" :
+            type === 2 ? "港币" :
+              type === 3 ? "美元" :
+                type === 4 ? "欧元" :
+                  type === 5 ? "英镑" : "";
       },
       cellStylePadding0({row, column, ronIndex, columnIndex}) {
         if (

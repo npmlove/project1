@@ -164,7 +164,6 @@
         :tableData='logData'
         :columns='columns1'
         :operation='operation1'
-        :total='total'
         :select=1
         :currentPage='pageNum'
         :pageSize='pageSize'
@@ -175,7 +174,7 @@
     </el-dialog>
 
     <el-dialog :visible.sync="dialogFormVisible" width="80%">
-      <td style="font-size: 18px;font-weight: 100;color: #169BD5;padding: 10px 0px 10px 20px;">{{ orderNo }}</td>
+      <td style="font-size: 18px;font-weight: 100;color: #169BD5;padding: 10px 0px 10px 20px;">{{ orderNoTab }}</td>
       <td style="font-size: 18px;font-weight: 100;color: #333333;padding: 10px 20px 10px 0px;">订单详情</td>
       <Table
         :tableData='orderData'
@@ -188,7 +187,7 @@
         @currentChange='handleCurrentChange'>
       </Table>
 
-      <td style="font-size: 18px;font-weight: 100;color: #169BD5;padding: 10px 0px 10px 20px;">{{ orderNo }}</td>
+      <td style="font-size: 18px;font-weight: 100;color: #169BD5;padding: 10px 0px 10px 20px;">{{ orderNoTab }}</td>
       <td style="font-size: 18px;font-weight: 100;color: #333333;padding: 10px 20px 10px 0px;">应付账单</td>
       <Table
         :tableData='arData'
@@ -204,7 +203,6 @@
       <div class="finance-table-price">
         <div>账单合计：{{ getOrgn(this.totalArOrgn) }}</div>
         <div>人民币合计：￥{{ this.totalArCny }}</div>
-        <div>订单利润：{{ this.orderProfit }}</div>
       </div>
       <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">修改记录</div>
       <Table
@@ -308,7 +306,7 @@
           {label: '数量', prop: 'quantity', show: true, width: '100'},
           {label: '币种', prop: 'currency', show: true, width: '100'},
           {label: '原币合计', prop: 'totalOrgn', show: true, width: '100'},
-          {label: '汇率', prop: 'exchangeRate', show: true, width: '100'},
+          {label: '汇率', prop: 'exchangeRateNum', show: true, width: '100'},
           {label: '人民币合计', prop: 'totalCny', show: true, width: '100'},
           {label: '备注', prop: 'remark', show: true, width: '50'}
         ],
@@ -336,6 +334,7 @@
           ]
         },
         orderNo: '',
+        orderNoTab: '',
         select: 0,
         waybillNo: '',
         reconciliationUnit: '',
@@ -447,18 +446,14 @@
       showFees(row) {
 
         this.dialogFormVisible = true;
-        var data={
-          orderNos:row.orderNo
-        }
-        this.$http.post(this.$service.search ,data).then(data => {
+        this.$http.post(this.$service.search+"?orderId="+row.orderId).then(data => {
           if (data.code == 200) {
             this.arData = data.data.arOrderPriceList
-            this.orderNo = data.data.orderNo
+            this.orderNoTab = data.data.orderNo
             this.orderLogs = data.data.orderPresentLogs
             this.totalArOrgn = data.data.totalArOrgn
             this.totalArCny = data.data.totalArCny
             this.orderProfit = data.data.orderProfit
-            this.payWay = data.data.payWay
             this.orderId = data.data.orderId
             this.orderData[0].customerName = data.data.customerName
             this.orderData[0].agentName = data.data.agentName
@@ -586,12 +581,14 @@
             this.total = data.data.page.total
             data.data.page.records.forEach(x=>{
               var writeOffList=[]
+            if (x.writeOffList!=null){
               x.writeOffList.forEach(y=>{
                 if (y.payWay!=null){
                   writeOffList.push(y)
                 }
               })
               x.writeOffList=writeOffList;
+            }
             })
             this.tableData = data.data.page.records
             this.countNoAuth = data.data.countNoAuth
@@ -665,7 +662,10 @@
       },
       //数据统计按钮
       getStatistData() {
-        this.statistDataShow = !this.statistDataShow
+        if (this.statistDataShow) {
+          this.statistDataShow = !this.statistDataShow
+          return;
+        }
         var json = {
           orderNo: this.orderNo,
           waybillNo: this.waybillNo,
@@ -693,6 +693,7 @@
             this.statistData.totalApUnwoOrgn = data.data.totalApUnwoOrgn;
             this.statistData.totalApWoCny = data.data.totalApWoCny;
             this.statistData.totalApWoOrgn = data.data.totalApWoOrgn;
+            this.statistDataShow = !this.statistDataShow
           } else {
             this.$message.error(data.message)
           }
