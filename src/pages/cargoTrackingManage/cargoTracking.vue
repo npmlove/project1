@@ -131,8 +131,8 @@
       <!-- 分页 -->
       <div v-show="total>10">
         <el-pagination
-          layout="total, sizes, prev, pager, next, jumper"
           :total="total"
+          layout="total, sizes, prev, pager, next, jumper"
           :page-sizes="[10, 20, 30, 40, 50]"
           :page-size="pageSize"
           :current-page="pageNum"
@@ -140,6 +140,8 @@
           @size-change="handleSize"
           style="text-align: right;padding: 19px 30px 18px 0;background: #fff">
         </el-pagination>
+
+
       </div>
     </div>
 
@@ -157,6 +159,7 @@
     data() {
       return {
         //table
+        isSuccess:'',
         tableData: [],
         detailData: [],
         pageSize: 10,
@@ -230,7 +233,7 @@
         console.log(params);
         this.$http.post(this.$service.trackDetail, params).then(data => {
           if (data.code == 200) {
-            this.total = data.data.detailsTotalNum
+            this.total = parseInt(data.data.detailsTotalNum)
             this.detailsTotalNum = data.data.detailsTotalNum
             this.detailsSuccRate = data.data.detailsSuccRate
             this.detailsFailRate = data.data.detailsFailRate
@@ -258,7 +261,7 @@
       },
       //查询
       searchClick(type, isSuccess) {
-
+        this.isSuccess=isSuccess
         this.pageSize = 10
         this.pageNum = 1
         // this.initListSearch(type)
@@ -287,12 +290,13 @@
         this.initListSearch()
       },
       // 页码跳转
-      handleCurrent(val) {
-        // this.rowSelect()
-        this.$emit('currentChange', val)
+      handleCurrent(e) {
+        this.pageNum = e
+        this.initDetailSearch(null, this.isSuccess)
       },
-      handleSize(val) {
-        this.$emit('sizeChange', val)
+      handleSize(e) {
+        this.pageSize = e
+        this.initDetailSearch(null, this.isSuccess)
       },
       //操作
       handleClick(row) {
