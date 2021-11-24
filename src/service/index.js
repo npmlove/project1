@@ -157,7 +157,9 @@ const serviceApi = {
   //数据统计
   revokeRecords: pulicWeb + '/t-order-payment/revokeRecords',
   //查询
-  search: pulicWeb + '/t-order-payment/search'
+  search: pulicWeb + '/t-order-payment/search',
+  //导出核销明细对账单
+  exportWriteOffExcel: pulicWeb + '/t-payment-write-off/exportWriteOffExcel'
 
 }
 export default serviceApi
