@@ -8,7 +8,6 @@
       :header-cell-style="{textAlign:'center'}"
       :cell-style="{textAlign:'center',fontSize:'14px'}"
       :row-class-name="tableRowClassName"
-
       style="width: 100% ;"
     >
       <template slot="empty">
