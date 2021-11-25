@@ -70,7 +70,7 @@
   export default {
     data() {
       var sortNo = (rule, value, callback) => {
-        var reg = /(^[1-9][0-9]{0,3}$)|(^[0-9]{0,4}[\.][0-9]{1,4}$)/
+        var reg = /(^[1-9][0-9]{0,3}$)|(^[0-9]{0,3}[\.][0-9]{1,4}$)/
         if (!reg.test(value)) {
           callback(new Error('汇率范围是整数最大四位数，小数保留四位'));
         } else {
