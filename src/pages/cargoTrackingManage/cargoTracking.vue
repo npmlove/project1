@@ -324,7 +324,8 @@
       getParam() {
         var result = '';
         this.errType.forEach(x => result = result + x + ",")
-        return result.substring(0, result.length - 1)
+        var x=result.substring(0, result.length - 1)
+        return x.length==0?"1,2,3,4":x
       },
       searchClick(type, isSuccess) {
         if (isSuccess === 1) {
