@@ -21,7 +21,7 @@
         </div>
         <div class="formItem">
           <el-form-item label="发票抬头:" label-width="80px"> 
-            <el-input v-model="selectResult.invoiceTitle" style="width: 210px;" size="medium" maxlength="30" clearable placeholder="请输入代理上家"></el-input>
+            <el-input v-model="selectResult.invoiceTitle" style="width: 210px;" size="medium" maxlength="30" clearable placeholder="请输入发票抬头"></el-input>
           </el-form-item>
         </div>
         <div class="formItem">
@@ -223,11 +223,11 @@
                         trigger="hover"
                         >
                         <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.orderNo}}</div>
-                        <div slot="reference" @click="showOrderWayBill()" style="color:skyblue">{{scope.row.orderNo}}</div>
+                        <div slot="reference" @click="showOrderWayBill(scope.row.id)" style="color:skyblue">{{scope.row.orderNo}}</div>
                      </el-popover>
                   </div>
                     <div v-else-if="!scope.row.hasChild">
-                        <div@click="showOrderWayBill()" style="color:skyblue">{{scope.row.orderNo}}</div>
+                        <div@click="showOrderWayBill(scope.row.id)" style="color:skyblue">{{scope.row.orderNo}}</div>
                     </div>
                 </template>
               </el-table-column>
@@ -240,11 +240,11 @@
                         trigger="hover"
                         >
                         <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.waybillNo}}</div>
-                        <div slot="reference" @click="showOrderWayBill()" style="color:skyblue">{{scope.row.waybillNo}}</div>
+                        <div slot="reference" @click="showOrderWayBill(scope.row.id)" style="color:skyblue">{{scope.row.waybillNo}}</div>
                      </el-popover>
                   </div>
                   <div v-else-if="!scope.row.hasChild">
-                    <div @click="showOrderWayBill()" style="color:skyblue">{{scope.row.waybillNo}}</div>
+                    <div @click="showOrderWayBill(scope.row.id)" style="color:skyblue">{{scope.row.waybillNo}}</div>
                   </div>
                 </template>
               </el-table-column>
@@ -349,7 +349,7 @@
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column prop="invoicingTime" label="开票时间" min-width="80" v-if="checkedTable.indexOf('开票时间')!==-1">
+              <el-table-column prop="invoicingTime" label="开票时间" min-width="120" v-if="checkedTable.indexOf('开票时间')!==-1">
                 <template slot-scope="scope">
                   <div>
                     <template v-if="scope.row.ifChild  || !scope.row.hasChild">
@@ -372,7 +372,11 @@
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column prop="expressInfo" label="快递信息" min-width="80" v-if="checkedTable.indexOf('快递信息')!==-1"></el-table-column>
+              <el-table-column label="快递信息" min-width="120" v-if="checkedTable.indexOf('快递信息')!==-1" prop="expressInfo">
+                 <template slot-scope="scope">
+                  <div v-html="dealExpress(scope.row.expressInfo)" style="white-space:pre-line;text-align:left;width:100%"></div>
+                </template>
+              </el-table-column>
               <el-table-column prop="expressStatus" label="快递状态" min-width="80" v-if="checkedTable.indexOf('快递状态')!==-1">
                 <template slot-scope="scope">
                   <div @click="openPost(scope.row)">
@@ -430,25 +434,55 @@
           title="订单运单号信息"
           :visible.sync="orderWayBillFrame"
         >
-        <el-table :data="invoiceTableData">
-            <el-table-column prop="orderNos" label="订单号" min-width="80"></el-table-column>
+        <el-table :data="orderTableData">
+            <el-table-column prop="orderNo" label="订单号" min-width="80"></el-table-column>
             <el-table-column prop="waybillNo" label="运单号" min-width="80"></el-table-column>
             <el-table-column prop="customerName" label="订舱客户" min-width="80"></el-table-column>
             <el-table-column prop="agentName" label="代理上家" min-width="80"></el-table-column>
             <el-table-column prop="airCompanyCode" label="航司" min-width="80"></el-table-column>
             <el-table-column prop="pol" label="起运港" min-width="80"></el-table-column>
             <el-table-column prop="pod" label="目的港" min-width="80"></el-table-column>
-            <el-table-column prop="date20" label="货物信息" min-width="80"></el-table-column>
-            <el-table-column prop="date20" label="操作人员" min-width="80"></el-table-column>
-            <el-table-column prop="date20" label="航班日期" min-width="80"></el-table-column>
-            <el-table-column prop="date20" label="交单时间" min-width="80"></el-table-column>
-            <el-table-column prop="date20" label="应收金额" min-width="160">
-              <el-table-column prop="date20" label="人民币" min-width="80"></el-table-column>
-              <el-table-column prop="date20" label="原币" min-width="80"></el-table-column>
+            <el-table-column prop="date20" label="货物信息" min-width="80">
+              <template slot-scope="scope">
+               <span>
+                 <div>{{ scope.row.cargoInfo.split(",")[0] }}</div>
+                  <div>{{ scope.row.cargoInfo.split(",")[1] }}PCS</div>
+                  <div>{{ scope.row.cargoInfo.split(",")[2] }}CBM</div>
+                  <div>{{ scope.row.cargoInfo.split(",")[3] }}KGS</div>
+                  <div>1:{{ scope.row.cargoInfo.split(",")[4] }}</div>
+               </span>
+              </template>
             </el-table-column>
-            <el-table-column prop="date20" label="应付金额" min-width="160">
-              <el-table-column prop="date20" label="人民币" min-width="80"></el-table-column>
-              <el-table-column prop="date20" label="原币" min-width="80"></el-table-column>
+            <el-table-column label="操作人员" min-width="80">
+               <template slot-scope="scope">
+              <span>
+                <div>客服：{{ scope.row.operator.split(",")[1] }}</div>
+                <div>销售：{{ scope.row.operator.split(",")[0] }}</div>
+                <div>航线：{{ scope.row.operator.split(",")[2] }}</div>
+              </span>
+            </template>
+            </el-table-column>
+            <el-table-column prop="departureDate" label="航班日期" min-width="80"></el-table-column>
+            <el-table-column prop="presentationTime" label="交单时间" min-width="80"></el-table-column>
+            <el-table-column label="应收金额" min-width="160">
+              <el-table-column prop="totalArCny" label="人民币" min-width="80"></el-table-column>
+              <el-table-column  label="原币" min-width="80">
+                <template slot-scope="scope">
+                  <div>
+                    {{scope.row.totalArOrgn | getOrgn}}
+                   </div>
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column  label="应付金额" min-width="160">
+              <el-table-column prop="totalApCny" label="人民币" min-width="80"></el-table-column>
+              <el-table-column prop="date20" label="原币" min-width="80">
+                <template slot-scope="scope">
+                  <div>
+                    {{scope.row.totalApOrgn | getOrgn}}
+                   </div>
+                </template>
+              </el-table-column>
             </el-table-column>
         </el-table>
       </el-dialog>
@@ -657,7 +691,7 @@
           {label:"部分开",value:"2"},
           {label:"已开",value:"1"},
         ],
-        getBillProgress:["未开","已开","部分开"],
+        getBillProgress:["未开","部分开","已开"],
         //发票状态
         billState:[
           {label:"全部",value:""},
@@ -665,7 +699,7 @@
           {label:"部分作废",value:"2"},
           {label:"作废",value:"1"},
         ],
-        getBillState:["正常","部分作废","作废"],
+        getBillState:["正常","作废","部分作废"],
         //快递状态
         expressState:[
           {label:"全部",value:""},
@@ -771,11 +805,13 @@
         copyTable:[],
         //table 订单号列&运单号列弹框
         orderWayBillFrame:false,
+        //订单运单号弹框数据
+        orderTableData:[],
         //table选中数据
         selectTableData:[],
 
         //点击/按钮弹框
-      
+
         //开票信息弹框是否显示
         invoiceDialog:false,
         //开票信息查看表格数据
@@ -929,16 +965,38 @@
         _arr.push( _t );
         return _arr;
       },
+      
       //导出列表
       exportList (){
-           const aLink = document.createElement("a");
-            let blob = new Blob([], {
+        if(this.selectTableData.length == 0) {
+          this.$message({type:"warning",message:"请选择数据"})
+          return false
+      }
+        let requestData = {}
+        if(this.pageSkipChecked == true) {
+          requestData.overPageCheck = true
+          requestData.financePageDTO = this.selectResultData()
+          requestData.invoiceAppIds = []
+        } else {
+          requestData.invoiceAppIds = []
+          requestData.financePageDTO = {}
+          this.selectTableData.forEach((item,index)=>{
+            requestData.invoiceAppIds[index] = item.id
+          })
+          requestData.overPageCheck = false
+        }
+        this.$http.post(this.$service.exportToExcel,requestData, {
+            responseType: 'arraybuffer'
+          }).then(res=>{
+            const aLink = document.createElement("a");
+            let blob = new Blob([res], {
               type: "application/vnd.ms-excel"
             })
             aLink.href = URL.createObjectURL(blob)
-            aLink.setAttribute('download', '航线价格表' + '.xlsx') // 设置下载文件名称
+            aLink.setAttribute('download', '发票列表' + '.xlsx') // 设置下载文件名称
             aLink.click()
             document.body.appendChild(aLink)
+        })
       },
       //搜索表单中多选框控制
       dealAllChange (){
@@ -974,7 +1032,11 @@
         }
       },
       //表格运单号&订单号弹框
-      showOrderWayBill(){
+      showOrderWayBill(id){
+        this.orderTableData = []
+        this.$http.post(this.$service.orderInfoShow,[id]).then(item=>{
+          this.orderTableData = item.data
+        })
         this.orderWayBillFrame = true
       },
       //判断是否同时勾选主数据和折叠数据
@@ -1024,6 +1086,7 @@
       //作废接口折叠数据处理
       delData(){
         var result = []
+        //折叠数据
         if(this.selectTableData.some(item=>item.ifChild == true)){
           let fatherData = JSON.parse(JSON.stringify(this.copyTable))
         let data = JSON.parse(JSON.stringify(this.selectTableData))
@@ -1048,15 +1111,16 @@
              result[index].invoicedAmount = getFatherData[0].invoicedAmount
              result[index].invoicingStatus = getFatherData[0].invoicingStatus
              var data2= []
-            if(getFatherData.orderInfos) {
-              getFatherData.orderInfos.forEach((item3,index3)=>{data2[index3]=item3.id})
+            if(getFatherData[0].orderInfos) {
+              getFatherData[0].orderInfos.forEach((item3,index3)=>{data2[index3]=item3.id})
             }
+            debugger
              result[index].orderId = data2
           })
         } else {
+          let fatherData = JSON.parse(JSON.stringify(this.copyTable))
           this.selectTableData.forEach((item,index)=>{
             result[index] = {}
-            let fatherData = JSON.parse(JSON.stringify(this.copyTable))
             var getFatherData = fatherData.filter(item2=>item.id == item2.id)
             result[index].id = getFatherData[0].id
             result[index].invoiceNumbers = getFatherData[0].invoiceNumbers
@@ -1110,7 +1174,7 @@
             type: 'warning'
           });
         }
-        else if (this.selectTableData[0].invoicingStatus == 1) {
+        else if (this.selectTableData[0].invoicingStatus == 2) {
           this.$message({
             message: '不能选择已开票的发票哦',
             type: 'warning'
@@ -1157,6 +1221,10 @@
       deleteInvoiceRight(e){
         console.log(this.invoicingRight)
         this.invoicingRight.splice(e.$index,1)
+        let totalMoney = 0
+            this.invoicingRight.forEach(item=> {
+            totalMoney+=item.invoiceAmount})
+            this.invoiceFootThree = totalMoney
       },
       //开票弹出框 确认开票
       confirmInvoice (){
@@ -1176,6 +1244,8 @@
                 this.$message.error(data.message)
               }
           })
+          this.invoicingDial = false
+
         }
       },
       //快递按钮
@@ -1265,7 +1335,7 @@
           }
         } else {
           requestData.overPageCheck = true
-          requestData.financePageDTO = this.selectResult
+          requestData.financePageDTO = this.selectResultData()
         }
         this.$http.post(this.$service.expressInvoices,requestData).then(data=>{})
       },
@@ -1282,26 +1352,41 @@
       },
       //跨页全选按钮
       selectAllTable(){
-        
         for(let i=0;i<this.$refs.multipleTable.length;i++){
+          this.$refs.multipleTable[i].clearSelection();
           // this.pageSkipChecked ?  this.$refs.multipleTable[i].toggleAllSelection() : this.$refs.multipleTable[i].clearSelection()
           for(let j=0;j<this.tableData.length;j++){
             if(this.pageSkipChecked == true ) {
 							this.$refs.multipleTable[i].toggleRowSelection(this.tableData[j]);
 						} else {
-              this.$refs.multipleTable[i].clearSelection();;
+              this.$refs.multipleTable[i].clearSelection();
             }
           
           }
         }
-        
       },
       //tab切换
       tabClickData(tab,event) {
         this.pageSkipChecked = false
         this.searchClick()
       },
- 
+      selectResultData(){
+        let arrayCopy = JSON.parse(JSON.stringify(this.selectResult))
+        //搜索框选择全部 删除属性
+        if(arrayCopy.expressStatus == "") delete arrayCopy.expressStatus;
+        if(arrayCopy.invoiceStatus == "") delete arrayCopy.invoiceStatus;
+        if(arrayCopy.upload == "") delete arrayCopy.upload;
+        if(arrayCopy.invoiceType.length == 1 && (arrayCopy.invoiceType)[0]=="" ) delete arrayCopy.invoiceType;
+        if(arrayCopy.invoicingStatus.length == 1 && arrayCopy.invoicingStatus[0]=="" ) delete arrayCopy.invoicingStatus;
+        //搜索框多选情况
+        if(arrayCopy.invoiceType) arrayCopy.invoiceType = arrayCopy.invoiceType.join()
+        if(arrayCopy.invoicingStatus) arrayCopy.invoicingStatus = arrayCopy.invoicingStatus.join()
+        //调接口 判断当前tab页
+        if(this.typeCode == "合并开票") {arrayCopy.merge = 0}
+        else if(this.typeCode == "单独开票") {arrayCopy.merge = 1}
+        else if (this.typeCode == "异常") {arrayCopy.abnormalFlag = 1}
+        return arrayCopy
+      },
       //查询
       searchClick(self) {
         let arrayCopy = JSON.parse(JSON.stringify(this.selectResult))
@@ -1358,9 +1443,9 @@
               item.invoiceNum = (item.invoiceInfos && item.invoiceInfos[0] && item.invoiceInfos[0].invoiceNum) || ""
               item.invoicingTime = (item.invoiceInfos && item.invoiceInfos[0] && item.invoiceInfos[0].invoicingTime) || ""
               item.expressInfo = (item.invoiceInfos && item.invoiceInfos[0] && item.invoiceInfos[0].expressInfo) || ""
-              item.expressStatus = (item.invoiceInfos && item.invoiceInfos[0].expressStatus) || ""
-              item.invoiceStatus = (item.invoiceInfos && item.invoiceInfos[0].invoiceStatus) || ""
-              item.upload = (item.invoiceInfos && item.invoiceInfos[0].upload) || ""
+              item.expressStatus = this.getExpressState[item.expressStatus] || ""
+              item.invoiceStatus = this.getBillState[item.invoiceStatus] ||  ""
+              item.upload = this.getUpLoad[item.upload] || ""
               item.orderNo = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].orderNo) || ""
               item.waybillNo = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].waybillNo) || ""
               item.departureDate = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].departureDate) || ""
@@ -1420,6 +1505,46 @@
         this.statistDataShow = false
         this.pageSize = e
         this.searchClick()
+      },
+      dealExpress(express) {
+        let data = express.split(",")
+        return `<div>公司:${data[0]?data[0]:""}\n单号:${data[1]?data[1]:""}\n日期:${data[2]?data[2]:""}</div>`
+      }
+    },
+   filters:{
+      getOrgn(orgn) {
+        if (!orgn) {
+          return;
+        }
+        orgn = JSON.parse(orgn);
+        var totalOrgn = ''
+        var value1 = 0
+        var value2 = 0
+        var value3 = 0
+        var value4 = 0
+        var value5 = 0
+        // HK$ $ € ￡
+        for (var i = 0; i < orgn.length; i++) {
+          if (orgn[i].currency == '1') {
+            value1 += orgn[i].amount
+          } else if (orgn[i].currency == '2') {
+            value2 += orgn[i].amount
+          } else if (orgn[i].currency == '3') {
+            value3 += orgn[i].amount
+          } else if (orgn[i].currency == '4') {
+            value4 += orgn[i].amount
+          } else if (orgn[i].currency == '5') {
+            value5 += orgn[i].amount
+          }
+        }
+        totalOrgn = ''
+        totalOrgn += value1 || value1 == 0 ? value1.toLocaleString('en-US') + 'CNY' + '+' : ''
+        totalOrgn += value2 ? value2.toLocaleString('en-US') + 'HKD' + '+' : ''
+        totalOrgn += value3 ? value3.toLocaleString('en-US') + 'USD' + '+' : ''
+        totalOrgn += value4 ? value4.toLocaleString('en-US') + 'EUR' + '+' : ''
+        totalOrgn += value5 ? value5.toLocaleString('en-US') + 'GBP' : ''
+        totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
+        return totalOrgn;
       },
     }
   }

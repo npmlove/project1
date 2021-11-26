@@ -15,7 +15,7 @@
         <img class="data-pic" src="../assets/kong-icon.png"/>
         <p>暂无数据</p>
       </template>
-      <el-table-column type="selection" width="50"></el-table-column>
+      <el-table-column type="selection" width="50" v-if="showSelection"></el-table-column>
       <!-- <el-table-column
         v-if="checkbox"
         type="selection"
@@ -145,6 +145,11 @@
       tableData: {
         type: Array,
         default: () => []
+      },
+      //显示选择框
+      showSelection:{
+        type:Boolean,
+        default:true
       },
       //选择
       xuanzhong: {

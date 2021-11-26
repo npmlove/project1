@@ -1,6 +1,6 @@
 //ng开发环境
+var pulicWeb = '/back/dcErp/faw'
 // var pulicWeb = '/faw'
-var pulicWeb = '/faw'
 
 
 //ng测试环境
@@ -18,6 +18,8 @@ const serviceApi = {
   userUpdate: pulicWeb + '/t-sys-user/update',
   //用户修改密码
   userUpdatePassword: pulicWeb + '/t-sys-user/updatePassword',
+  //用户查询
+  userSearch:pulicWeb + '/t-sys-user/search',
   //角色查询
   roleSearch: pulicWeb + '/t-sys-role/search',
   //新增角色
@@ -114,6 +116,10 @@ const serviceApi = {
   financeOrderList: pulicWeb + '/t-order/financeOrderList',
 
   orderPriceTable: pulicWeb + '/t-order-price/getOrderPriceTable',
+  //财务订单列表导出列表
+  exportFoExcel: pulicWeb + '/t-order/exportFoExcel',
+  //财务订单列表 数据统计
+  financeOrderCount: pulicWeb + '/t-order/financeOrderCount',
   //财务订单列表查询
   savePresentLog: pulicWeb + '/t-order-present-log/savePresentLog',
   trackList: pulicWeb + '/track/monitorQuery/airCompanyInfo',
@@ -135,6 +141,11 @@ const serviceApi = {
 
   //发票申请页面 -开票确认生成
   actionInvoice: pulicWeb + '/t-invoice-apply/actionInvoice',
+  //发票申请页面 - 订单号运单号查看详情
+  orderInfoShow: pulicWeb + '/t-invoice-apply/orderInfoShow',
+  //发票申请页面 - 导出列表
+  exportToExcel: pulicWeb + '/t-invoice-apply/exportToExcel',
+
   //应收核销明细列表
   searchWoDetailByPage: pulicWeb + '/t-rcv-records/searchWoDetailByPage',
 //应收核销操作记录
@@ -142,7 +153,14 @@ const serviceApi = {
 //应收核销操作记录
   arRevoke: pulicWeb + '/t-write-off-records/arRevoke',
   //应收核销页面，点击订单编号时，查询订单详情及财务记录
-  searchOrderDetail: pulicWeb + '/t-rcv-records/searchOrderDetail'
-
+  searchOrderDetail: pulicWeb + '/t-rcv-records/searchOrderDetail',
+  //订单核销页面 - 查询
+  searchWoByPage: pulicWeb +'/t-order/searchWoByPage',
+  //订单核销页面 - 订单号详情
+  searchWoDetail: pulicWeb +'/t-order/searchWoDetail',
+  //订单核销页面 - 数据统计
+  subWoList: pulicWeb +'/t-order/subWoList' , 
+  //订单核销页面 - 导出列表
+  exportWoExcel: pulicWeb +'/t-order/exportWoExcel' 
 }
 export default serviceApi
