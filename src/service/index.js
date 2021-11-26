@@ -1,11 +1,8 @@
 //ng开发环境
 var pulicWeb = '/back/dcErp/faw'
 // var pulicWeb = '/faw'
-<<<<<<< HEAD
-=======
 // var pulicWeb = '/faw'
-var pulicWeb = '/back/dcErp/faw'
->>>>>>> ece6e78a0c34e2bf645718050b0205ad009c2563
+// var pulicWeb = '/back/dcErp/faw'
 
 
 //ng测试环境
