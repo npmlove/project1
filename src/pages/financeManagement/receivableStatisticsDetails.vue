@@ -33,6 +33,7 @@
               v-model="payTime"
               type="daterange"
               range-separator="至"
+              value-format="yyyy-MM-dd"
               start-placeholder="付款开始日期"
               end-placeholder="付款结束日期">
             </el-date-picker>
@@ -42,6 +43,7 @@
             <el-date-picker
               v-model="writeOffTime"
               type="daterange"
+              value-format="yyyy-MM-dd"
               range-separator="至"
               start-placeholder="核销开始日期"
               end-placeholder="核销结束日期">
@@ -72,8 +74,9 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="rcvWriteOffStatus" placeholder="核销状态" :remote-method="agentMethod" :loading="loading"
-                       clearable filterable remote reserve-keyword style="width: 200px;">
+              <el-select v-model="rcvWriteOffStatus" multiple collapse-tags placeholder="核销状态"  @change="dealAllChange"
+                       :loading="loading"
+                       clearable filterable remote reserve-keyword style="width: 230px;">
               <el-option
                 v-for="item in rcvWriteOffStatusOpt"
                 :key="item.value"
@@ -141,15 +144,18 @@
       </el-tabs>
       <div style="display:flex;justify-content:space-between">
         <div>
-          <el-button size="mini" class="pageSkip"><el-checkbox v-model="pageSkipChecked" @change="selectAllTable">跨页全选</el-checkbox></el-button>
-          <el-button  size="mini" @click="getStatistData">数据统计</el-button>
+          <el-button size="mini" class="pageSkip">
+            <el-checkbox v-model="pageSkipChecked" @change="selectAllTable">跨页全选</el-checkbox>
+          </el-button>
+          <el-button size="mini" @click="getStatistData">数据统计</el-button>
           <div style="margin-top:15px" v-if="statistDataShow">
-            <span>应收总金额:{{statistData.shouldGet}}</span>
-            <span style="margin-left:15px">已核销总金额: {{statistData.applyInvoice}}</span>
-            <span style="margin-left:15px">未核销总金额:{{statistData.invoicedMoney}}</span>
-            <span style="margin-left:15px">应收原币:{{statistData.invoicedMoney}}</span>
-            <span style="margin-left:15px">已核销原币:{{statistData.invoicedMoney}}</span>
-            <span style="margin-left:15px">未核销原币:{{statistData.invoicedMoney}}</span>
+            <span>应收总金额:{{ statistData.totalArCny }}</span>
+            <span style="margin-left:15px">已核销总金额: {{ statistData.totalRcWoCny }}</span>
+            <span style="margin-left:15px">未核销总金额:{{ statistData.totalRcUnwoCny }}</span>
+            <span style="margin-left:15px">应收原币:{{ getOrgn(statistData.totalArOrgn) }}</span>
+            <span style="margin-left:15px">已核销原币:{{ getOrgn(statistData.totalRcWoOrgn) }}</span>
+            <span style="margin-left:15px">未核销原币:{{ getOrgn(statistData.totalRcUnwoOrgn) }}</span>
+            <span style="margin-left:15px;color: red">{{ statistData.hasAbNormal ? '存在异常订单!' : '' }}</span>
           </div>
         </div>
       </div>
@@ -159,7 +165,6 @@
         :tableData='logData'
         :columns='columns1'
         :operation='operation1'
-        :total='total'
         :select=1
         :currentPage='pageNum'
         :pageSize='pageSize'
@@ -170,7 +175,8 @@
     </el-dialog>
 
     <el-dialog :visible.sync="dialogFormVisible" width="80%">
-      <td style="font-size: 18px;font-weight: 100;color: #169BD5;padding: 10px 0px 10px 20px;">{{orderNo}}</td><td style="font-size: 18px;font-weight: 100;color: #333333;padding: 10px 20px 10px 0px;">订单详情</td>
+      <td style="font-size: 18px;font-weight: 100;color: #169BD5;padding: 10px 0px 10px 20px;">{{ orderNoTab }}</td>
+      <td style="font-size: 18px;font-weight: 100;color: #333333;padding: 10px 20px 10px 0px;">订单详情</td>
       <Table
         :tableData='orderData'
         :columns='columns2'
@@ -182,13 +188,13 @@
         @currentChange='handleCurrentChange'>
       </Table>
 
-      <td style="font-size: 18px;font-weight: 100;color: #169BD5;padding: 10px 0px 10px 20px;">{{orderNo}}</td><td style="font-size: 18px;font-weight: 100;color: #333333;padding: 10px 20px 10px 0px;">应收账单</td>
+      <td style="font-size: 18px;font-weight: 100;color: #169BD5;padding: 10px 0px 10px 20px;">{{ orderNoTab }}</td>
+      <td style="font-size: 18px;font-weight: 100;color: #333333;padding: 10px 20px 10px 0px;">应收账单</td>
       <Table
         :tableData='arData'
         :columns='columns3'
         :select=1
         :operation='operation'
-        :total='total1'
         :currentPage='pageNum'
         :pageSize='pageSize'
         @orderDetails="orderDetails"
@@ -199,7 +205,7 @@
       <div class="finance-table-price">
         <div>账单合计：{{ getOrgn(this.totalArOrgn) }}</div>
         <div>人民币合计：￥{{ this.totalArCny }}</div>
-        <div>订单利润：{{ this.orderProfit }}</div>
+<!--        <div>订单利润：{{ this.orderProfit }}</div>-->
       </div>
       <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">修改记录</div>
       <Table
@@ -220,6 +226,7 @@
 <script>
   import Table from '@/components/receivableStatisticsDetailsTable'
   import {toData} from '@/util/assist'
+  import axios from "axios";
 
   export default {
     data() {
@@ -231,26 +238,35 @@
         tableData: [],
         arData: [],
         orderLogs: [],
-        orderProfit:0,
-        pageSkipChecked:false,
+        orderProfit: 0,
+        pageSkipChecked: false,
         orderData: [
           {
             customerName: "",
-            agentName:"",
-            airCompanyCode:"",
-            pol:"",
-            pod:"",
-            cargoName:"",
-            inboundPiece:"",
-            inboundCbm:"",
-            inboundWeight:"",
-            inboundVwr:"",
-            pscsName:"",
-            principalName:"",
-            mscsName:"",
+            agentName: "",
+            airCompanyCode: "",
+            pol: "",
+            pod: "",
+            cargoName: "",
+            inboundPiece: "",
+            inboundCbm: "",
+            inboundWeight: "",
+            inboundVwr: "",
+            pscsName: "",
+            principalName: "",
+            mscsName: "",
 
           }
         ],
+        statistData: {
+          hasAbNormal: true,
+          totalArCny: 0,
+          totalArOrgn: '',
+          totalRcUnwoCny: 0,
+          totalRcUnwoOrgn: '',
+          totalRcWoCny: 0,
+          totalRcWoOrgn: ''
+        },
         pageSize: 10,
         pageNum: 1,
         total: 0,
@@ -262,7 +278,7 @@
           {label: '运单号', prop: 'waybillNo', show: true, width: '150'},
           {label: '应收对象', prop: 'reconciliationUnit', show: true, width: '100'},
           {label: '应收金额', show: true, width: '100'},
-          {label: '对账金额', prop: 'rcvCheckAmount', show: true, width: '80'},
+          {label: '对账金额', prop: 'payCheckAmount', show: true, width: '80'},
           {label: '核销金额', prop: 'writeOffAmount', show: true, width: '100'},
           {label: '开户行', prop: 'accountBank', show: true, width: '100'},
           {label: '户名', prop: 'accountName', show: true, width: '100'},
@@ -302,7 +318,7 @@
           {label: '数量', prop: 'quantity', show: true, width: '100'},
           {label: '币种', prop: 'currency', show: true, width: '100'},
           {label: '原币合计', prop: 'totalOrgn', show: true, width: '100'},
-          {label: '汇率', prop: 'exchangeRate', show: true, width: '100'},
+          {label: '汇率', prop: 'exchangeRateNum', show: true, width: '100'},
           {label: '人民币合计', prop: 'totalCny', show: true, width: '100'},
           {label: '备注', prop: 'remark', show: true, width: '50'}
         ],
@@ -330,6 +346,8 @@
           ]
         },
         orderNo: '',
+        orderNoTab:'',
+        rcvIds: [],
         select: 0,
         waybillNo: '',
         reconciliationUnit: '',
@@ -349,7 +367,8 @@
         payTime: [],
         writeOffTime: [],
         payWay: '',
-        rcvWriteOffStatus: '',
+        payWayTab: '',
+        rcvWriteOffStatus: null,
         payWayOpt: [
           //0=付款买单,1=月结买单
           {
@@ -361,7 +380,10 @@
             value: '1'
           },
         ],
-        rcvWriteOffStatusOpt: [
+        rcvWriteOffStatusOpt: [{
+          rcvWriteOffStatus: '全部',
+          value: ''
+        },
           //应收核销状态 0=未对账未核销,1=部分对账未核销,2=已对账未核销,3=未对账部分核销,4=部分对账部分核销,5=已对账部分核销,6=未对账已核销,7=部分对账已核销,8=已对账已核销
           {
             rcvWriteOffStatus: '未对账未核销',
@@ -400,6 +422,7 @@
             value: '8'
           },
         ],
+        overPageCheck: false,
         woStatus: '0',
         totalArOrgn: '',
         totalArCny: 0,
@@ -426,22 +449,80 @@
       tabClickData() {
         this.initData()
       },
-      selectAllTable(){
-        this.$refs.child.selectAllTable(this.pageSkipChecked);
+      dealAllChange() {
+        if (this.rcvWriteOffStatus.indexOf("")!=-1) {
+          this.rcvWriteOffStatus = ['']
+        }
       },
-      showFees(orderId) {
+      selectAllTable() {
+        this.overPageCheck = this.pageSkipChecked
+        this.$refs.child.selectAllTable(this.pageSkipChecked, this.tableData);
+        this.rcvIds = []
+      },
+      getSearchArgument(argument) {
+        var result = ''
+        argument.forEach(x => result += x + ',')
+        result = result.substring(0, result.length - 1)
+        return result
+      },
+      exportList() {
+        axios.post(this.$service.exportWoDetailExcel, {
+          overPageCheck: this.overPageCheck,
+          rcvIds: this.rcvIds,
+          orderNo: this.orderNo,
+          waybillNo: this.waybillNo,
+          reconciliationUnit: this.reconciliationUnit,
+          accountBank: this.accountBank,
+          accountName: this.accountName,
+          startPayTime: this.payTime.length === 0 ? '' : this.payTime[0],
+          endPayTime: this.payTime.length === 0 ? '' : this.payTime[1],
+          startWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[0],
+          endWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[1],
+          writeOffWay: this.writeOffWay,
+          payWay: this.payWay,
+          rcvWriteOffStatusList: this.rcvWriteOffStatus.length==0||this.rcvWriteOffStatus.indexOf("")!=-1?null:this.rcvWriteOffStatus,
+          woStatus: this.woStatus,
+          pageNum: this.pageNum,
+          pageSize: this.pageSize
+        }, {
+          responseType: 'arraybuffer'
+        }).then((res) => {
+          let enc = new TextDecoder("utf-8");
+          let uint8_msg = new Uint8Array(res);
+          let str = enc.decode(uint8_msg);
+          if (str.indexOf("code") !== -1) {
+            let data = JSON.parse(enc.decode(uint8_msg));
+            this.$message.error(data.message)
+            return;
+          }
+          // if(res.status == "200") {
+          const aLink = document.createElement("a");
+          let blob = new Blob([res], {
+            type: "application/vnd.ms-excel"
+          })
+          aLink.href = URL.createObjectURL(blob)
+          aLink.setAttribute('download', '订单核销列表' + '.xlsx') // 设置下载文件名称
 
-          this.dialogFormVisible = true;
-        this.$http.get(this.$service.searchOrderDetail + '?orderId=' + orderId).then(data => {
+          /*  if ([...new Set(value.split(","))].filter((x)=>x!=='').length > 1) {
+              aLink.setAttribute('download', '航线价格表' + '.zip') // 设置下载文件名称
+            } else {
+            }*/
+          aLink.click()
+          document.body.appendChild(aLink)
+        })
+      },
+      showFees(row) {
+
+        this.dialogFormVisible = true;
+        this.$http.get(this.$service.searchOrderDetail + '?orderId=' + row.orderId).then(data => {
           if (data.code == 200) {
             this.arData = data.data.arOrderPriceList
-            this.orderNo = data.data.orderNo
+            this.orderNoTab = data.data.orderNo
             this.orderLogs = data.data.orderPresentLogs
             this.totalArOrgn = data.data.totalArOrgn
             this.totalArCny = data.data.totalArCny
             this.orderProfit = data.data.orderProfit
-            this.payWay = data.data.payWay
-            this.orderId =data.data. orderId
+            this.orderId = data.data.orderId
             this.orderData[0].customerName = data.data.customerName
             this.orderData[0].agentName = data.data.agentName
             this.orderData[0].airCompanyCode = data.data.airCompanyCode
@@ -464,7 +545,16 @@
         })
       },
       handleSelect(val) {
-        this.detailTabs = val;
+        this.rcvIds = []
+        if (this.overPageCheck) {
+          var tableData = this.tableData;
+          var d = tableData.filter(function (v) {
+            return val.indexOf(v) == -1
+          })
+          d.forEach(x => {
+            this.rcvIds.push(x.id)
+          })
+        }
       },
       //代理公司
       initAgentList(agentName) {
@@ -533,7 +623,7 @@
 
         totalOrgn += value1 || value1 == 0 ? value1 + 'CNY' + '+' : ''
         totalOrgn += value2 ? value2 + 'HKD' + '+' : ''
-        totalOrgn += value3 ? value3 + 'USD' +'+' : ''
+        totalOrgn += value3 ? value3 + 'USD' + '+' : ''
         totalOrgn += value4 ? value4 + 'EUR' + '+' : ''
         totalOrgn += value5 ? value5 + 'GBP' : ''
         totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
@@ -547,13 +637,13 @@
           reconciliationUnit: this.reconciliationUnit,
           accountBank: this.accountBank,
           accountName: this.accountName,
-          startPayTime: this.payTime.length === 0 ? '' : this.payTime[0] + " 00:00:00",
-          endPayTime: this.payTime.length === 0 ? '' : this.payTime[1] + " 23:59:59",
-          startWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[0] + " 00:00:00",
-          endWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[1] + " 23:59:59",
+          startPayTime: this.payTime.length === 0 ? '' : this.payTime[0],
+          endPayTime: this.payTime.length === 0 ? '' : this.payTime[1],
+          startWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[0],
+          endWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[1],
           writeOffWay: this.writeOffWay,
           payWay: this.payWay,
-          rcvWriteOffStatus: this.rcvWriteOffStatus,
+          rcvWriteOffStatusList: this.rcvWriteOffStatus.length==0||this.rcvWriteOffStatus.indexOf("")!=-1?null:this.rcvWriteOffStatus,
           woStatus: this.woStatus,
           pageNum: this.pageNum,
           pageSize: this.pageSize
@@ -577,7 +667,6 @@
 
         this.$http.post(this.$service.arRevoke + "?woId=" + id).then(data => {
           if (data.code == 200) {
-            console.log(row)
             this.showWOLogs(row)
             this.$message.success("撤销成功")
           } else {
@@ -597,14 +686,21 @@
       restClick() {
         this.orderNo = ''
         this.waybillNo = ''
-        this.inboundNo = ''
-        this.pol = ''
-        this.pod = ''
-        this.agentId = ''
-        this.customerName = ''
+        this.reconciliationUnit = ''
+        this.accountBank = ''
+        this.accountName = ''
+        this.payTime = []
+        this.payTime = []
+        this.writeOffTime = []
+        this.writeOffTime = []
+        this.writeOffWay = ''
+        this.payWay = ''
+        this.rcvWriteOffStatus = null
+        // this.woStatus=''
         this.pageNum = 1
         this.pageSize = 10
         this.initData()
+
       },
       handleCurrentChange(e) {
         this.pageNum = e
@@ -615,13 +711,44 @@
         this.initData()
       },
       //数据统计按钮
-      getStatistData(){
-        this.statistDataShow = !this.statistDataShow
-        this.statistData = {shouldGet:0,applyInvoice:0,invoicedMoney:0}
-        this.tableData.forEach(item=>{
-          this.statistData.shouldGet += parseInt(item.totalArCny);
-          this.statistData.applyInvoice += parseInt(item.applyAmount);
-          this.statistData.invoicedMoney += parseInt(item.invoicedAmount);
+      getStatistData() {
+        if (this.statistDataShow) {
+          this.statistDataShow = !this.statistDataShow
+          return;
+        }
+        var json = {
+          orderNo: this.orderNo,
+          waybillNo: this.waybillNo,
+          reconciliationUnit: this.reconciliationUnit,
+          accountBank: this.accountBank,
+          accountName: this.accountName,
+          startPayTime: this.payTime.length === 0 ? '' : this.payTime[0],
+          endPayTime: this.payTime.length === 0 ? '' : this.payTime[1],
+          startWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[0],
+          endWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[1],
+          writeOffWay: this.writeOffWay,
+          payWay: this.payWay,
+          rcvWriteOffStatusList: this.rcvWriteOffStatus.length==0||this.rcvWriteOffStatus.indexOf("")!=-1?null:this.rcvWriteOffStatus,
+          woStatus: this.woStatus,
+          pageNum: this.pageNum,
+          pageSize: this.pageSize
+        }
+        this.$http.post(this.$service.sumWoDetail, json).then(data => {
+          if (data.code == 200) {
+            //        statistData:{hasAbNormal:true,totalArCny:0,totalArOrgn:'',totalRcUnwoCny:0,totalRcUnwoOrgn:'',totalRcWoCny:0,totalRcWoOrgn:''},
+            this.statistData.hasAbNormal = data.data.hasAbNormal;
+            this.statistData.totalArCny = data.data.totalArCny;
+            this.statistData.totalArOrgn = data.data.totalArOrgn;
+            this.statistData.totalRcUnwoCny = data.data.totalRcUnwoCny;
+            this.statistData.totalRcUnwoOrgn = data.data.totalRcUnwoOrgn;
+            this.statistData.totalRcWoCny = data.data.totalRcWoCny;
+            this.statistData.totalRcWoOrgn = data.data.totalRcWoOrgn;
+            this.statistDataShow = !this.statistDataShow
+          } else {
+            this.$message.error(data.message)
+          }
+        }).catch((e) => {
+          console.log(e)
         })
       },
 
@@ -640,9 +767,11 @@
 
 <style scoped lang="less">
   @import url("../../assets/icon/iconfont.css");
-  /deep/.pageSkip {
-    padding:3px 5px!important
+
+  /deep/ .pageSkip {
+    padding: 3px 5px !important
   }
+
   .content-wrapper {
     width: 100%;
     box-sizing: border-box;
@@ -710,14 +839,17 @@
   .content-search-high {
     padding: 0 0 20px 30px;
   }
+
   .operateButton {
-    display:flex;
+    display: flex;
     justify-content: flex-end;
-    margin-bottom:-10px;
+    margin-bottom: -10px;
+
     button {
-      margin:0px 10px 20px 10px;
+      margin: 0px 10px 20px 10px;
     }
   }
+
   /deep/ .el-dialog {
     min-width: 480px;
     border-radius: 6px;

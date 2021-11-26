@@ -1,6 +1,11 @@
 //ng开发环境
 var pulicWeb = '/back/dcErp/faw'
 // var pulicWeb = '/faw'
+<<<<<<< HEAD
+=======
+// var pulicWeb = '/faw'
+var pulicWeb = '/back/dcErp/faw'
+>>>>>>> ece6e78a0c34e2bf645718050b0205ad009c2563
 
 
 //ng测试环境
@@ -148,6 +153,8 @@ const serviceApi = {
 
   //应收核销明细列表
   searchWoDetailByPage: pulicWeb + '/t-rcv-records/searchWoDetailByPage',
+  //核销明细列表查询
+  writeOffSearch: pulicWeb + '/t-payment-write-off/writeOffSearch',
 //应收核销操作记录
   searchArList: pulicWeb + '/t-write-off-records/searchArWoList',
 //应收核销操作记录
@@ -161,6 +168,21 @@ const serviceApi = {
   //订单核销页面 - 数据统计
   subWoList: pulicWeb +'/t-order/subWoList' , 
   //订单核销页面 - 导出列表
-  exportWoExcel: pulicWeb +'/t-order/exportWoExcel' 
+  exportWoExcel: pulicWeb +'/t-order/exportWoExcel' ,
+  //统计应收核销明细数据
+  sumWoDetail: pulicWeb + '/t-rcv-records/sumWoDetail',
+  //订单核销列表导出
+  exportWoDetailExcel: pulicWeb + '/t-rcv-records/exportWoDetailExcel',
+  //查询操作记录
+  searchRecords: pulicWeb + '/t-order-payment/searchRecords',
+  //数据统计
+  dataStatistics: pulicWeb + '/t-order-payment/dataStatistics',
+  //数据统计
+  revokeRecords: pulicWeb + '/t-order-payment/revokeRecords',
+  //查询
+  search: pulicWeb + '/t-order-payment/search',
+  //导出核销明细对账单
+  exportWriteOffExcel: pulicWeb + '/t-payment-write-off/exportWriteOffExcel'
+
 }
 export default serviceApi

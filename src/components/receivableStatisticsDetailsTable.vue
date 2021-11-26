@@ -1,14 +1,13 @@
 <template>
   <div>
     <el-table
-      stripe
       ref="multipleTable"
       @sort-change="handleSort"
       @selection-change="handleSelect"
       :data="tableData"
       :header-cell-style="{textAlign:'center'}"
       :cell-style="{textAlign:'center',fontSize:'14px'}"
-
+      :row-class-name="tableRowClassName"
       style="width: 100% ;"
     >
       <template slot="empty">
@@ -39,8 +38,8 @@
             <div style="white-space:pre">{{ getOrgn(scope.row.totalArOrgn) }}</div>
           </template>
         </el-table-column>
-        <el-table-column v-if="column.label == '应付金额'" prop="totalApCny" label="人民币" min-width="80"></el-table-column>
-        <el-table-column v-if="column.label == '应付金额'" label="原币" min-width="80">
+        <el-table-column v-if="column.label == '应付金额'&&typeof (column.prop)== 'undefined'" prop="totalApCny" label="人民币" min-width="100"></el-table-column>
+        <el-table-column v-if="column.label == '应付金额'&&typeof (column.prop)== 'undefined'" label="原币" min-width="100">
           <template slot-scope="scope">
             <div style="white-space:pre">{{ getOrgn(scope.row.totalApOrgn) }}</div>
           </template>
@@ -69,7 +68,7 @@
               <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
                    :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.bankAccount }}</div>
             </div>
-            <div v-else-if=" column.label == '汇率'">
+            <div v-else-if=" column.label == '汇率'&&column.prop == 'exchangeRate'">
               <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
                    :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.exchangeRate }}</div>
             </div>
@@ -94,16 +93,23 @@
             <div v-else-if=" column.label == '记录'&&column.prop == 'log'">
             <table v-for="(optItem,optIndex) in scope.row.log" :key="optIndex"
                    :style="{'background':(optIndex%2===0?'':'')}">
-            <table v-if="optItem.status==0||optItem.status==-1" style="padding: 0px">
+            <table v-if="(optItem.status==0||optItem.status==-1)&&optItem.payWay!=null" style="padding: 0px">
             <td style="margin: 0px;padding: 0px;">{{ "操作" + (optIndex + 1) + "：" + optItem.writeOffOperator }}</td><td
               style="color: cornflowerblue ;margin-right: 0">核销</td><td>{{
                 "该订单，核销金额：" + optItem.writeOffAmount + getCurrency(optItem.currency)
               }}</td><td
               style="padding-left: 20px">{{ optItem.writeOffTime }}</td>
           </table>
+            <table v-if="(optItem.status==0||optItem.status==-1)&&optItem.payWay==null" style="padding: 0px">
+            <td style="margin: 0px;padding: 0px;">{{ "操作" + (optIndex + 1) + "：" + optItem.writeOffOperator }}</td><td
+              style="color: cornflowerblue ;margin-right: 0">对账</td><td>{{
+                "该订单，核销金额：" + optItem.writeOffAmount + getCurrency(optItem.currency)
+              }}</td><td
+              style="padding-left: 20px">{{ optItem.writeOffTime }}</td>
+          </table>
 <table v-if="optItem.status==2">
 <td>{{ "操作" + (optIndex + 1) + "：" + optItem.writeOffOperator }}</td><td style="color: crimson">撤销</td><td>{{
-    "操作" + getIndex(scope.row.log, optItem.id)
+    "操作" + getIndex(scope.row.log,optItem.revokeId== 0?optItem.id:optItem.revokeId)
   }}</td><td
   style="padding-left: 20px">{{ optItem.revokeTime }}</td>
 </table>
@@ -119,6 +125,9 @@
 
             <span v-else-if="column.prop == 'expenseType' && column.label == '费用类型'">
               {{ scope.row.expenseType === 0 ? "国内段" : "国外段" }}
+            </span>
+            <span v-else-if="column.prop == 'exchangeRateNum' && column.label == '汇率'">
+              {{ scope.row.exchangeRate  }}
             </span>
             <span v-else-if="column.prop == 'payWay' && column.label == '结算方式'">
               {{ scope.row.payWay === 0 ? "付款买单" : "月结" }}
@@ -137,9 +146,27 @@
 
               }}
             </span>
+            <span v-else-if="column.prop == 'payWriteOffStatus' && column.label == '核销状态'">
+              {{
+                scope.row.payWriteOffStatus === 0 ? "未对账未核销" :
+                  scope.row.payWriteOffStatus === 1 ? "部分对账未核销" :
+                    scope.row.payWriteOffStatus === 2 ? "已对账未核销" :
+                      scope.row.payWriteOffStatus === 3 ? "未对账部分核销" :
+                        scope.row.payWriteOffStatus === 4 ? "部分对账部分核销" :
+                          scope.row.payWriteOffStatus === 5 ? "已对账部分核销" :
+                            scope.row.payWriteOffStatus === 6 ? "未对账已核销" :
+                              scope.row.payWriteOffStatus === 7 ? "部分对账已核销" :
+                                scope.row.payWriteOffStatus === 8 ? "已对账已核销" : ""
+
+              }}
+            </span>
                <span v-else-if="column.prop == 'rcvWriteOffCount' && column.label == '核销次数'">
               <a v-if="scope.row.rcvWriteOffCount>0" @click="showWOLogs(scope.row)">{{ scope.row.rcvWriteOffCount }}</a><div
                  v-if="scope.row.rcvWriteOffCount==0">0</div>
+            </span>
+               <span v-else-if="column.prop == 'payWriteOffCount' && column.label == '核销次数'">
+              <a v-if="scope.row.payWriteOffCount>0" @click="showWOLogs(scope.row)">{{ scope.row.payWriteOffCount }}</a><div
+                 v-if="scope.row.payWriteOffCount==0">0</div>
             </span>
             <span v-else-if="column.prop == 'operationType' && column.label == '操作类型'">
               {{
@@ -164,11 +191,11 @@
                 <div>销售：{{ scope.row.mscsName }}</div>
                 <div>航线：{{ scope.row.principalName }}</div>
             </span>
-              <span v-else-if=" column.label == '汇率'">
-              {{ getExchangeRate(scope.row.exchangeRate) }}
-            </span>
-              <span v-else-if=" column.label == '对账金额'">
+              <span v-else-if=" column.label == '对账金额'&&column.prop == 'rcvCheckAmount'">
               {{ scope.row.rcvCheckAmount }}CNY
+            </span>
+              <span v-else-if=" column.label == '对账金额'&&column.prop == 'payCheckAmount'">
+              {{ scope.row.payCheckAmount }}CNY
             </span>
               <span v-else-if=" column.label == '开票进度'">
                {{
@@ -176,6 +203,10 @@
                     '未开票' : scope.row.invoicingStatus == 1 ?
                     '已开票' : scope.row.invoicingStatus == 2 ? '部分开票' : ''
                 }}
+            </span>
+                    <span v-else-if=" column.label == '币种'&&column.prop == 'currency'">
+               {{getCurrencyZh(scope.row.currency)
+                      }}
             </span>
               <span v-else-if=" column.label == '订单状态'">
                  {{
@@ -190,7 +221,7 @@
             </span>
             <!--              <span v-else-if="column.prop=='orderNo'&& column.label == '订单号'">-->
               <a v-else-if="column.prop=='orderNo'&& column.label == '订单号'"
-                 @click="showFees(scope.row.orderId)"
+                 @click="showFees(scope.row)"
                  style="font-size: 12px;">{{ scope.row.orderNo }}</a>
             <!--            </span>-->
             <!--            <div v-else >{{// scope[column.prop]}}</div>-->
@@ -317,9 +348,13 @@
       }
     },
     methods: {
-      selectAllTable(pageSkipChecked){
-        for(let i=0;i<this.$refs.multipleTable.length;i++){
-          pageSkipChecked ?  this.$refs.multipleTable[i].toggleAllSelection() : this.$refs.multipleTable[i].clearSelection()
+      selectAllTable(pageSkipChecked,tableData){
+        if (pageSkipChecked) {
+          tableData.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row);
+          });
+        } else {
+          this.$refs.multipleTable.clearSelection();
         }
       },
       getIndex(log, id) {
@@ -331,11 +366,17 @@
       },
       getCurrency(type) {
         return type === 1 ? "CNY" :
-          type === 1 ? "CNY" :
             type === 2 ? "HKD" :
               type === 3 ? "USD" :
                 type === 4 ? "EUR" :
                   type === 5 ? "GBP" : "";
+      },
+      getCurrencyZh(type) {
+        return type === 1 ? "人民币" :
+            type === 2 ? "港币" :
+              type === 3 ? "美元" :
+                type === 4 ? "欧元" :
+                  type === 5 ? "英镑" : "";
       },
       cellStylePadding0({row, column, ronIndex, columnIndex}) {
         if (
@@ -457,6 +498,17 @@
       handleSize(val) {
         this.$emit('sizeChange', val)
       },
+      tableRowClassName({row, rowIndex}) {
+        if (row.abnormalFlag === 1) {
+          return 'warning-row';
+        } else if(rowIndex%2==0){
+          return 'row1';
+        }else{
+          return 'row2';
+
+        }
+      }
+    ,
       // 复选框选择
       handleSelect(val) {
         this.$emit('handleSelect', val)
@@ -481,6 +533,18 @@
     }
   }
 </script>
+<style>
+  .el-table .warning-row {
+    background: #f28080;
+  }
+
+  .el-table .row1 {
+    background: #ffffff;
+  }
+  .el-table .row2 {
+    background: #F9F9F9;
+  }
+</style>
 <style lang="less" scoped>
   a {
     padding: 0;
