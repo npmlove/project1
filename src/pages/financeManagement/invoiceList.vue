@@ -884,13 +884,8 @@
       // 导入文件的上传
       handleChange(file) {
         console.log(file)
-        const isExcel = file.raw.type === "application/pdf";
         const isLt2M = file.size / 1024 / 1024 < 2;
-        this.fileList.push(file.raw)
-        // if (!isExcel) {
-        //   this.$message.error('只能上传PDF文件');
-        //   return
-        // }
+       
         if (!isLt2M) {
           this.$message.error('');
           return
@@ -1127,8 +1122,8 @@
             result[index].invoicingStatus = getFatherData[0].invoicingStatus
             result[index].nullifyInvoiceList = getFatherData[0].invoiceInfos
             var data2= []
-            if(getFatherData.orderInfos) {
-              getFatherData.orderInfos.forEach((item3,index3)=>{data2[index3]=item3.id})
+            if(getFatherData[0].orderInfos) {
+              getFatherData[0].orderInfos.forEach((item3,index3)=>{data2[index3]=item3.id})
             }
              result[index].orderId = data2
           })
