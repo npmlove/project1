@@ -20,8 +20,6 @@ const serviceApi = {
   userUpdate: pulicWeb + '/t-sys-user/update',
   //用户修改密码
   userUpdatePassword: pulicWeb + '/t-sys-user/updatePassword',
-  //用户查询
-  userSearch:pulicWeb + '/t-sys-user/search',
   //角色查询
   roleSearch: pulicWeb + '/t-sys-role/search',
   //新增角色
@@ -149,7 +147,7 @@ const serviceApi = {
   confirmInvoice: pulicWeb + '/t-invoice-apply/confirmInvoice',
 
   expressInvoices: pulicWeb + '/t-invoice-apply/expressInvoices',
-  
+
   nullifyInvoiceMore: pulicWeb + '/t-invoice-apply/nullifyInvoiceMore',
 
 
@@ -172,7 +170,7 @@ const serviceApi = {
   //订单核销页面 - 订单号详情
   searchWoDetail: pulicWeb +'/t-order/searchWoDetail',
   //订单核销页面 - 数据统计
-  subWoList: pulicWeb +'/t-order/subWoList' , 
+  subWoList: pulicWeb +'/t-order/subWoList' ,
   //订单核销页面 - 导出列表
   exportWoExcel: pulicWeb +'/t-order/exportWoExcel' ,
   //统计应收核销明细数据
