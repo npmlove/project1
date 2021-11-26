@@ -145,9 +145,18 @@ const serviceApi = {
   actionInvoice: pulicWeb + '/t-invoice-apply/actionInvoice',
   //发票申请页面 - 订单号运单号查看详情
   orderInfoShow: pulicWeb + '/t-invoice-apply/orderInfoShow',
+  //生成发票
+  confirmInvoice: pulicWeb + '/t-invoice-apply/confirmInvoice',
+
+  expressInvoices: pulicWeb + '/t-invoice-apply/expressInvoices',
+  
+  nullifyInvoiceMore: pulicWeb + '/t-invoice-apply/nullifyInvoiceMore',
+
+
   //发票申请页面 - 导出列表
   exportToExcel: pulicWeb + '/t-invoice-apply/exportToExcel',
-
+  //发票申请页面 - 上传发票
+  uploadInvoicePDF: pulicWeb + '/t-invoice-apply/uploadInvoicePDF',
   //应收核销明细列表
   searchWoDetailByPage: pulicWeb + '/t-rcv-records/searchWoDetailByPage',
   //核销明细列表查询

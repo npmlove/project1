@@ -181,7 +181,7 @@
             <el-upload
               style="width:100px;height:28px;margin-right:10px"
               action="#"
-              accept=".pdf"
+              accept=".zip,.rar"
               class="upLoad"
               :multiple = "true"
               :file-list="fileList"
@@ -883,25 +883,24 @@
       },
       // 导入文件的上传
       handleChange(file) {
-        // this.pdfInfo = file.raw;
+        console.log(file)
         const isExcel = file.raw.type === "application/pdf";
         const isLt2M = file.size / 1024 / 1024 < 2;
         this.fileList.push(file.raw)
-        console.log(this.fileList)
-        if (!isExcel) {
-          this.$message.error('只能上传PDF文件');
-          return
-        }
+        // if (!isExcel) {
+        //   this.$message.error('只能上传PDF文件');
+        //   return
+        // }
         if (!isLt2M) {
           this.$message.error('');
           return
         }
-        // this.importExcel()
+        this.importExcel(file.raw)
       },
-      importExcel() {
+      importExcel(file) {
         const formdate = new FormData();
-        formdate.append("excel", this.excelInfo);
-        axios.post(this.$service.airlineExcelImport, formdate, {responseType: 'arraybuffer'}).then(res => {
+        formdate.append("file", file);
+        this.$http.post(this.$service.uploadInvoicePDF, formdate, {responseType: 'arraybuffer'}).then(res => {
           let enc = new TextDecoder("utf-8");
           let uint8_msg = new Uint8Array(res);
           let str=enc.decode(uint8_msg);
@@ -916,14 +915,14 @@
           } else {
             this.$message.error('导入失败,请查看失败文件')
           }
-          const aLink = document.createElement("a");
-          let blob = new Blob([res], {
-            type: "application/vnd.ms-excel"
-          })
-          aLink.href = URL.createObjectURL(blob)
-          aLink.setAttribute('download', '导入失败文件' + '.xlsx')
-          aLink.click()
-          document.body.appendChild(aLink)
+          // const aLink = document.createElement("a");
+          // let blob = new Blob([res], {
+          //   type: "application/vnd.ms-excel"
+          // })
+          // aLink.href = URL.createObjectURL(blob)
+          // aLink.setAttribute('download', '导入失败文件' + '.xlsx')
+          // aLink.click()
+          // document.body.appendChild(aLink)
         })
       },
       // 删除文件
@@ -1106,7 +1105,7 @@
             result[index].nullifyInvoiceList = item
             var getFatherData = fatherData.filter(item2=>item[0].iaId == item2.id)
              result[index].id = getFatherData[0].id
-             result[index].invoiceNumbers = getFatherData[0].invoiceNumbers
+            //  result[index].invoiceNumbers = getFatherData[0].invoiceNumbers
              result[index].invoiceStatus = getFatherData[0].invoiceStatus
              result[index].invoicedAmount = getFatherData[0].invoicedAmount
              result[index].invoicingStatus = getFatherData[0].invoicingStatus
@@ -1114,7 +1113,6 @@
             if(getFatherData[0].orderInfos) {
               getFatherData[0].orderInfos.forEach((item3,index3)=>{data2[index3]=item3.id})
             }
-            debugger
              result[index].orderId = data2
           })
         } else {
@@ -1123,7 +1121,7 @@
             result[index] = {}
             var getFatherData = fatherData.filter(item2=>item.id == item2.id)
             result[index].id = getFatherData[0].id
-            result[index].invoiceNumbers = getFatherData[0].invoiceNumbers
+            // result[index].invoiceNumbers = getFatherData[0].invoiceNumbers
             result[index].invoiceStatus = getFatherData[0].invoiceStatus
             result[index].invoicedAmount = getFatherData[0].invoicedAmount
             result[index].invoicingStatus = getFatherData[0].invoicingStatus
@@ -1141,6 +1139,7 @@
       
       //确认作废
       comfirmDele(){
+        console.log(this.delData())
           let data = JSON.parse(JSON.stringify(this.delData()))
           console.log(data)
           this.$http.post(this.$service.nullifyInvoiceMore,data).then(data=>{
@@ -1263,19 +1262,19 @@
             type: 'warning'
           });
         } 
-        // else if (Boolean(this.selectTableData.some(item=>item.invoicingStatus ==0))) {
-        //   this.$message({
-        //     message: '选项中存在暂未开票的信息,请重新勾选',
-        //     type: 'warning'
-        //   });
-        // } 
+        else if (Boolean(this.selectTableData.some(item=>item.invoicingStatus ==0))) {
+          this.$message({
+            message: '选项中存在暂未开票的信息,请重新勾选',
+            type: 'warning'
+          });
+        } 
         
-        // else if (Boolean(this.selectTableData.some(item=>item.invoiceType == 2))){
-        //   this.$message({
-        //     message: '电子发票不需要邮寄哦,请重新勾选',
-        //     type: 'warning'
-        //   });
-        // } 
+        else if (Boolean(this.selectTableData.some(item=>item.invoiceType == 2))){
+          this.$message({
+            message: '电子发票不需要邮寄哦,请重新勾选',
+            type: 'warning'
+          });
+        } 
         else {
           this.postMessageDial = true;
         }
@@ -1308,7 +1307,7 @@
               requestData.expressDTOList[index].expressInfo = copyObj[0].expressInfo
               requestData.expressDTOList[index].expressStatus = copyObj[0].expressStatus
               requestData.expressDTOList[index].id = copyObj[0].id
-              requestData.expressDTOList[index].invoiceNumbers = copyObj[0].invoiceNumbers
+              // requestData.expressDTOList[index].invoiceNumbers = copyObj[0].invoiceNumbers
               requestData.expressDTOList[index].recipient = copyObj[0].recipient
               requestData.expressDTOList[index].recipientAddress = copyObj[0].recipientAddress
               requestData.expressDTOList[index].recipientTel = copyObj[0].recipientTel
@@ -1319,7 +1318,7 @@
               requestData.expressDTOList[index].expressInfo = item.expressInfo
               requestData.expressDTOList[index].expressStatus = this.getExpressState.findIndex(items => items == item.expressStatus)
               requestData.expressDTOList[index].id = item.id
-              requestData.expressDTOList[index].invoiceNumbers = item.invoiceNumbers
+              // requestData.expressDTOList[index].invoiceNumbers = item.invoiceNumbers
               requestData.expressDTOList[index].recipient = item.recipient
               requestData.expressDTOList[index].recipientAddress = item.recipientAddress
               requestData.expressDTOList[index].recipientTel = item.recipientTel

@@ -511,12 +511,12 @@
                 >数据统计</el-button
               >
               <div style="margin-top: 15px" v-if="statistDataShow">
-                <span>应收总金额:{{ statistData.totalArCny }}</span>
+                <span>应收总金额:{{ statistData.totalArCny.toLocaleString('en-US') }}</span>
                 <span style="margin-left: 15px"
-                  >应付总金额: {{ statistData.totalApCny }}</span
+                  >应付总金额: {{ statistData.totalApCny.toLocaleString('en-US') }}</span
                 >
                 <span style="margin-left: 15px"
-                  >利润:{{ statistData.orderProfit }}</span
+                  >利润:{{ statistData.orderProfit.toLocaleString('en-US') }}</span
                 >
               </div>
             </div>
@@ -685,7 +685,8 @@
               <el-pagination
                   @current-change="handleDialChange"
                   layout="total, prev, pager, next"
-                  :current-page="dialPage"
+                  :page-size="1"
+                  :current-page.sync="dialPage"
                   :total="selectTableData.length">
                 </el-pagination>
             </div>
@@ -1091,7 +1092,7 @@ export default {
           console.log(e);
         });
     },
-    showFees(orderId, payWay, financeStatus,onlyShow) {
+    showFees(orderId, payWay, financeStatus,onlyShow,pageSkip) {
       if (this.pageSkipChecked == true) {
         this.$message({
           type:"warning",
@@ -1101,7 +1102,7 @@ export default {
       }
       this.showFeesPage = false
       if(orderId == false){
-        if(this.selectTableData.length == 0) {
+        if(this.selectTableData.length == 0 || this.selectTableData.length > 20) {
            this.$message({
             message: '请选择1到20条信息',
             type: 'warning'
@@ -1113,15 +1114,11 @@ export default {
           financeStatus = this.selectTableData[0].financeStatus
         }
       }
-      if(financeStatus != 2 && financeStatus != 3 && financeStatus != 1 && onlyShow == false) {
-        return false
-      } 
-      //判断是否是表格运单号列点击进入弹框
-      if(onlyShow ==true) {
-        this.onlyShow = true 
-      } else {
-        this.onlyShow = false
+      if(pageSkip) {
+        this.showFeesPage = true
       }
+      //判断是否是表格运单号列点击进入弹框
+      onlyShow ==true ? this.onlyShow = true : this.onlyShow = false
       this.dialogFormVisible = true;
       this.$http
         .get(this.$service.orderPriceTable + "?orderId=" + orderId)
@@ -1139,6 +1136,7 @@ export default {
             this.payWay = payWay;
             this.orderId = orderId;
             this.orderFinanceStatus = financeStatus;
+            this.dialogFormVisible = true;
           } else {
             this.$message.error(data.message);
           }
@@ -1227,7 +1225,8 @@ export default {
         .then((data) => {
           if (data.code == 200) {
             // this.total = data.data.total;
-            this.tabNum = [data.data.totalCount,data.data.commitCount,data.data.notCommitCount,data.data.applyCount,data.data.changeCount,data.data.checkCount,data.data.checkCount,data.data.errorCount]
+            this.tabNum = [data.data.totalCount,data.data.commitCount,data.data.notCommitCount,data.data.applyCount,data.data.changeCount,data.data.checkCount,data.data.errorCount]
+            console.log(this.tabNum)
             if(data.data.pageInfo == null) {
               this.tableData = []
               this.total = 0
@@ -1281,8 +1280,8 @@ export default {
       this.pageSize = 10;
     },
     handleDialChange (e) {
-      console.log(e)
-      this.showFees(this.selectTableData[e].id,this.selectTableData[e].payWay,this.selectTableData[e].financeStatus,false)
+      console.log(e,this.selectTableData)
+      this.showFees(this.selectTableData[e-1].id,this.selectTableData[e-1].payWay,this.selectTableData[e-1].financeStatus,false,true)
     },
      handleCurrentChange(e) {
       this.pageNum = e;
