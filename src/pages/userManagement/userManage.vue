@@ -68,6 +68,28 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item prop="customerServiceId" label="结算方式">
+          <el-radio-group v-model="ruleForm.payWay">
+            <el-radio :label="0">付款买单</el-radio>
+            <el-radio :label="1">月结</el-radio>
+          </el-radio-group>
+        </el-form-item>
+          <el-form-item  prop="certificationBody" label="账期" >
+            <el-input style="width: 125px" v-model="ruleForm.creditTerm" clearable onkeyup="value=value.replace(/[^\d]/g, '')"  placeholder="请输入账期"
+                      :maxlength="3"></el-input>
+            <el-select size="medium" v-model="ruleForm.unit" clearable style="width: 75px; margin-right: -5px;">
+              <el-option
+                v-for="item in unitOpt"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        <el-form-item  prop="certificationBody" label="额度">
+          <el-input style="width: 270px;" v-model="ruleForm.quota" clearable placeholder="请输入额度"
+                    :maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')"></el-input> 元
+        </el-form-item>
       </el-form>
       <!-- 底部按钮 -->
       <div slot="footer" class="dialog-footer">
@@ -102,7 +124,9 @@
           {label: '结算方式', prop: 'payWay', show: true, width: '100'},
           {label: '手机号', prop: 'tel', show: true, width: '100'},
           {label: '注册时间', prop: 'createTime', show: true, width: '150'},
-          {label: '绑定售前客服', prop: 'customerService', show: true, width: '100'}
+          {label: '绑定售前客服', prop: 'customerService', show: true, width: '100'},
+          {label: '额度', prop: 'quota', show: true, width: '100'},
+          {label: '账期', prop: 'creditTerm', show: true, width: '100'}
         ],
         // 操作
         operation: {
@@ -122,16 +146,28 @@
         customerService: '',
         customerServiceId: '',
         roleOpt: [],
+        unitOpt: [
+          {name:"月",value:1},
+          {name:"天",value:0}
+        ],
         dialogTitle: '密码修改',
         dialogFormVisible: false,
         rules: {
           // customerServiceId: [{required: true, message: '请选择售前客服', trigger: 'change'}],
           certificationBody: [{max: 20, message: '认证主体最长20个字符', trigger: 'change'}]
         },
+        creditTerm:{
+          creditTerm:'',
+          unit:''
+        },
         ruleForm: {
           customerServiceId: '',
           certificationBody: '',
-          id: ''
+          creditTerm:'',
+          unit:1,
+          quota:'',
+          id: '',
+          payWay:''
         }
       }
     },
@@ -193,25 +229,34 @@
         this.initUserSearch()
       },
       handleClick(val) {
+        var creditTerm= typeof (val.row.creditTerm)=='undefined'||val.row.creditTerm==null?'':JSON.parse(val.row.creditTerm)
         this.dialogFormVisible = true
         this.dialogTitle = '编辑'
         this.ruleForm.id = val.row.id
         this.customerServiceId=val.row.customerServiceId
         this.ruleForm.customerServiceId = val.row.customerService
         this.ruleForm.certificationBody = val.row.certificationBody
+        this.ruleForm.unit = creditTerm==''?1:creditTerm.unit
+        this.ruleForm.quota = val.row.quota
+        this.ruleForm.payWay = val.row.payWay
+        this.ruleForm.creditTerm = creditTerm==''?'':creditTerm.creditTerm
+
       },
       //绑定售前客服
       submitForm(ruleForm) {
         this.$refs[ruleForm].validate((valid, object) => {
           if (valid) {
+            this.creditTerm.unit=this.ruleForm.unit
+            this.creditTerm.creditTerm=this.ruleForm.creditTerm
             var params = {
               id: this.ruleForm.id,
-
               customerServiceId:typeof this.ruleForm.customerServiceId=="string"&&this.ruleForm.customerServiceId!==""?this.customerServiceId:this.ruleForm.customerServiceId ,
               certificationBody: this.ruleForm.certificationBody===""?null:this.ruleForm.certificationBody,
+              quota:this.ruleForm.quota,
+              payWay: this.ruleForm.payWay,
+              creditTerm:JSON.stringify(this.creditTerm)
+
             }
-            console.log(this.ruleForm.customerServiceId);
-            console.log(typeof this.ruleForm.customerServiceId);
             this.$http.post(this.$service.userUpdateUserinfo, params).then(data => {
               if (data.code == 200) {
                 this.dialogFormVisible = false
