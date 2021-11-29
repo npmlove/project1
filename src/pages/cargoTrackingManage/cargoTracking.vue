@@ -55,13 +55,13 @@
       </div>
     </el-form>
     <div class="divleft">
-      <el-button @click="isSupport();checkButton1=7" size="medium" :class="checkButton1==7?'buttonDiv':'buttonColor2'">
+      <el-button @click="isSupport();checkButtonOne=7" size="medium" :class="checkButtonOne==7?'buttonDiv':'buttonColor2'">
         全部
       </el-button>
-      <el-button @click="isSupport(1);checkButton1=5" size="medium" :class="checkButton1==5?'buttonDiv':'buttonColor2'">
+      <el-button @click="isSupport(1);checkButtonOne=5" size="medium" :class="checkButtonOne==5?'buttonDiv':'buttonColor2'">
         已支持
       </el-button>
-      <el-button @click="isSupport(2);checkButton1=6" size="medium" :class="checkButton1==6?'buttonDiv':'buttonColor2'">
+      <el-button @click="isSupport(2);checkButtonOne=6" size="medium" :class="checkButtonOne==6?'buttonDiv':'buttonColor2'">
         未支持
       </el-button>
       <el-table
@@ -104,10 +104,10 @@
       </div>
     </div>
     <div class="divright">
-      <el-button @click="searchClick(2)" size="medium" :class="checkButton2==8?'buttonDiv':''">
+      <el-button @click="searchClick(2)" size="medium" :class="checkButtonTwo==8?'buttonDiv':''">
         全部
       </el-button>
-      <el-button @click="searchClick(1)" size="medium" :class="checkButton2==9?'buttonDiv':''">
+      <el-button @click="searchClick(1)" size="medium" :class="checkButtonTwo==9?'buttonDiv':''">
         成功
       </el-button>
       <el-popover
@@ -124,7 +124,7 @@
           <el-checkbox  v-for="(failType,index) in failTypeList" :label="index+1" :key="index+1"  @change="initDetailSearch()">{{failType}}</el-checkbox>
           </el-checkbox-group>
         </div>
-        <el-button slot="reference" @click="searchClick(0)" size="medium" :class="checkButton2==10?'buttonDiv':''">
+        <el-button slot="reference" @click="searchClick(0)" size="medium" :class="checkButtonTwo==10?'buttonDiv':''">
           失败
           <i class="el-icon-arrow-down  " @click="visible = !visible"></i>
         </el-button>
@@ -193,11 +193,11 @@
         failType2: true,
         failType3: true,
         failType4: true,
-        checkButton: 0,
+        checkButton: 1,
         errType: [1, 2, 3, 4],
         visible: false,
-        checkButton1: 0,
-        checkButton2: 0,
+        checkButtonOne: 7,
+        checkButtonTwo: 8,
         isSuccess: null,
         tableData: [],
         detailData: [],
@@ -235,9 +235,9 @@
     mounted() {
       this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime())
       this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
-      this.checkButton = 1
-      this.checkButton1 = 7
-      this.checkButton2 = 8
+      // this.checkButton = 1
+      // this.checkButtonOne = 7
+      // this.checkButtonTwo = 8
       this.initListSearch()
       this.initDetailSearch()
     },
@@ -295,22 +295,22 @@
         if (type === 1) {
           this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime())
           this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
-          this.checkButton1 = 7
+          this.checkButtonOne = 7
           this.accessDate = []
         } else if (type === 2) {
           this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime() - 24 * 60 * 60 * 1000);
           this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() - 1);
-          this.checkButton1 = 7
+          this.checkButtonOne = 7
           this.accessDate = []
         } else if (type === 3) {
           this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime() - 7 * 24 * 60 * 60 * 1000);
           this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
-          this.checkButton1 = 7
+          this.checkButtonOne = 7
           this.accessDate = []
         } else if (type === 4) {
           this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime() - 30 * 24 * 60 * 60 * 1000);
           this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
-          this.checkButton1 = 7
+          this.checkButtonOne = 7
           this.accessDate = []
         }
         this.initListSearch()
@@ -334,12 +334,12 @@
 
         if (isSuccess === 1) {
           this.visible=false
-          this.checkButton2 = 9
+          this.checkButtonTwo = 9
         } else if (isSuccess === 0) {
-          this.checkButton2 = 10
+          this.checkButtonTwo = 10
         } else if (isSuccess === 2 || isSuccess === 3) {
           this.visible=false
-          this.checkButton2 = 8
+          this.checkButtonTwo = 8
           isSuccess = null
         }
         this.isSuccess = isSuccess
@@ -382,7 +382,7 @@
       //操作
       handleClick(row) {
         // this.airCPCode = row.airCPCode
-        this.checkButton2 = 8
+        this.checkButtonTwo = 8
         this.awb = null
         this.airCPCode = row.airCPCode
         this.isSuccess = null
@@ -506,16 +506,18 @@
     background: #2273ce;
   }
 
-  /*鼠标悬浮，没有按下；鼠标按下后抬起，没有移开*/
+/*
+  !*鼠标悬浮，没有按下；鼠标按下后抬起，没有移开*!
   .buttonDiv:focus, .buttonDiv:hover {
     color: #FFFFFF;
     background: #2273ce;
   }
 
-  /*鼠标按下，没有抬起*/
+  !*鼠标按下，没有抬起*!
   .buttonDiv:active {
     color: #FFFFFF;
     background: #2273ce;
   }
+*/
 
 </style>

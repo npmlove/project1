@@ -539,7 +539,7 @@ const userManagementCenter = [{
 const courseManagement = [{
   path: '/courseManagement',
   component: Layout,
-  name: 'userManagement',
+  name: 'courseManagement',
   redirect: 'noredirect',
   alwaysShow: true,
   meta: {

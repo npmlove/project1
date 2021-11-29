@@ -42,6 +42,15 @@
               <span v-if="scope.row.certificationBody" v-html="getDataName(scope.row, column)"></span>
               <span v-else style="color: #f00;">未认证</span>
             </span>
+            <span v-else-if="column.prop == 'creditTerm' && column.label == '账期'">
+              {{getCreditTerm(scope.row.creditTerm)}}
+            </span>
+            <span v-else-if="column.prop == 'sex' && column.label == '性别'">
+              {{scope.row.sex==1?'男':scope.row.sex==2?'女':'未知'}}
+            </span>
+            <span v-else-if="column.prop == 'payWay' && column.label == '结算方式'">
+              {{scope.row.payWay==0?'付款买单':'月结'}}
+            </span>
             <span v-else v-html="getDataName(scope.row, column)"></span>
           </span>
         </template>
@@ -157,6 +166,15 @@ export default {
     }
   },
   methods: {
+    getCreditTerm(creditTerm){
+      console.log(creditTerm)
+    if (typeof (creditTerm)=='undefined'||creditTerm==null){
+      return '请设置账期'
+    }
+    creditTerm= JSON.parse(creditTerm)
+      var unit=creditTerm.unit == 0?"天":"个月";
+      return creditTerm.creditTerm+unit;
+    },
     // 排序
     handleSort (column) {
       this.$emit('sortChange', column)
