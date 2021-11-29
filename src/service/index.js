@@ -150,7 +150,8 @@ const serviceApi = {
 
   nullifyInvoiceMore: pulicWeb + '/t-invoice-apply/nullifyInvoiceMore',
 
-
+  //发票申请页面 - 数据统计
+  invoiceStatistics: pulicWeb +'/t-invoice-apply/dataStatistics',
   //发票申请页面 - 导出列表
   exportToExcel: pulicWeb + '/t-invoice-apply/exportToExcel',
   //发票申请页面 - 上传发票
@@ -170,7 +171,7 @@ const serviceApi = {
   //订单核销页面 - 订单号详情
   searchWoDetail: pulicWeb +'/t-order/searchWoDetail',
   //订单核销页面 - 数据统计
-  subWoList: pulicWeb +'/t-order/subWoList' ,
+  subWoList: pulicWeb +'/t-order/sumWoList' ,
   //订单核销页面 - 导出列表
   exportWoExcel: pulicWeb +'/t-order/exportWoExcel' ,
   //统计应收核销明细数据

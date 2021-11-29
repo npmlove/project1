@@ -4,15 +4,15 @@
       <el-form :inline="true" size="medium" class="demo-form-inline" label-position="right">
         <div class="content-search-normal">
           <el-form-item label="订单号" label-width="100px">
-            <el-input v-model="selectResult.orderNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入订单号"></el-input>
+            <el-input v-model="selectResult.orderNo" style="width: 200px;" size="medium" maxlength="15" clearable placeholder="请输入订单号"></el-input>
           </el-form-item>
 
           <el-form-item label="运单号" label-width="100px">
-            <el-input v-model="selectResult.waybillNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入运单号"></el-input>
+            <el-input v-model="selectResult.waybillNo" style="width: 200px;" size="medium" maxlength="11" clearable placeholder="请输入运单号"></el-input>
           </el-form-item>
 
           <el-form-item label="订舱客户" label-width="100px">
-            <el-input v-model="selectResult.customerName" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入订舱客户"></el-input>
+            <el-input v-model="selectResult.customerName" style="width: 200px;" size="medium" maxlength="30" clearable placeholder="请输入订舱客户"></el-input>
           </el-form-item>
 
           <el-form-item label="代理上家" label-width="100px">
@@ -23,6 +23,7 @@
               :loading="loading"
               clearable
               filterable
+              maxlength="30"
               remote
               reserve-keyword
               style="width: 200px"
@@ -38,7 +39,7 @@
           </el-form-item>
 
           <el-form-item label="航司" label-width="100px">
-            <el-select v-model="selectResult.airCompanyCode" placeholder="请输入航司" :remote-method="companyMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
+            <el-select v-model="selectResult.airCompanyCode" placeholder="请输入航司" :remote-method="companyMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
               <el-option
                 v-for="(item,index) in airCompanyCodeOpt"
                 :key="index"
@@ -129,7 +130,7 @@
           </el-form-item>
 
           <el-form-item label="起运港" label-width="100px">
-            <el-select v-model="selectResult.pol" placeholder="起运港三字码" :remote-method="polMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
+            <el-select v-model="selectResult.pol" placeholder="起运港三字码" :remote-method="polMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
               <el-option
                 v-for="(item,index) in polOpt"
                 :disabled="pod == item.threeLetterCode"
@@ -142,7 +143,7 @@
           </el-form-item>
 
           <el-form-item label="目的港" label-width="100px">
-            <el-select v-model="selectResult.pod" placeholder="目的港三字码" :remote-method="podMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
+            <el-select v-model="selectResult.pod" placeholder="目的港三字码" :remote-method="podMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
               <el-option
                 v-for="item in podOpt"
                 :disabled="pol == item.threeLetterCode"
@@ -556,7 +557,23 @@
       checkAll: false,
       isIndeterminate: true,
       direction: "rtl",
-      checkedTable: ["序号", "订单号", "运单号", "航班日期", "交单时间"],
+      checkedTable: [  "序号",
+        "订单号",
+        "运单号",
+        "航班日期",
+        "交单时间",
+        "订舱客户",
+        "代理上家",
+        "航司",
+        "起运港",
+        "目的港",
+        "应收金额",
+        "应收已核销金额",
+        "应收未核销金额",
+        "应付金额",
+        "应付已核销金额",
+        "应付未核销金额",
+        "利润",],
       tableOptions: [
         "序号",
         "订单号",
@@ -731,14 +748,14 @@
           // console.log(this.selectTableData)
         },
       tableRowClassName({row, rowIndex}) {
-        if(row.orderProfit > 0  )
+        // if(row.orderProfit > 0  )
       if (row.orderProfit<0 &&  row.orderProfit>-200 ) {
         return 'background-color: #ffff66';
       }
         else if (row.orderProfit<=-200 && row.orderProfit>-500) {
           return 'background-color: pink';
         } else if (row.orderProfit<=-500 ) {
-        return 'background-color: red';
+        return 'background-color: #e55f5f';
       }
       },
        //搜索表单中多选框控制
@@ -1043,6 +1060,11 @@
   // /deep/.el-table tbody tr:hover>td { 
     // background-color:blue!important
 // }
+ /deep/.el-input--medium{
+     .el-input__inner {
+        text-overflow: ellipsis!important;
+      }
+     }
 /deep/.pageSkip {
         padding:3px 5px!important
   }

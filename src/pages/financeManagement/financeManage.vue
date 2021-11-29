@@ -54,6 +54,7 @@
               clearable
               filterable
               remote
+              maxlength="30"
               reserve-keyword
               style="width: 200px"
             >
@@ -76,6 +77,7 @@
               clearable
               filterable
               remote
+              maxlength="15"
               reserve-keyword
               style="width: 200px"
             >
@@ -97,6 +99,7 @@
               :loading="loading"
               clearable
               filterable
+              maxlength="15"
               remote
               reserve-keyword
               style="width: 200px"
@@ -118,6 +121,7 @@
               v-model="selectResult.pod"
               placeholder="目的港三字码"
               :remote-method="podMethod"
+              maxlength="15"
               :loading="loading"
               clearable
               filterable
@@ -304,6 +308,7 @@
             border
             stripe
             header
+            :cell-style="tableRowClassName"
             ref="multipleTable"
             class="finance-table"
             @selection-change="handleSelectionChange"
@@ -712,7 +717,25 @@ export default {
       checkAll: false,
       isIndeterminate: true,
       direction: "rtl",
-      checkedTable: ["序号", "订单号", "运单号", "航班日期", "交单时间","订单状态"],
+      checkedTable: ["序号",
+        "订单号",
+        "运单号",
+        "航班日期",
+        "交单时间",
+        "订舱客户",
+        "代理上家",
+        "货物信息",
+        "操作人员",
+        "航司",
+        "起运港",
+        "目的港",
+        "应收金额",
+        "应付金额",
+        "利润",
+        "汇率",
+        "开票进度",
+        "开票金额",
+        "订单状态",],
       tableOptions: [
         "序号",
         "订单号",
@@ -910,6 +933,17 @@ export default {
     this.operateData()
   },
   methods: {
+     tableRowClassName({row, rowIndex}) {
+        // if(row.orderProfit > 0  )
+      if (row.orderProfit<0 &&  row.orderProfit>-200 ) {
+        return 'background-color: #ffff66';
+      }
+        else if (row.orderProfit<=-200 && row.orderProfit>-500) {
+          return 'background-color: pink';
+        } else if (row.orderProfit<=-500 ) {
+        return 'background-color: #e55f5f';
+      }
+      },
     getExportExcel () {
        if(this.selectTableData.length == 0) {
           this.$message({type:"warning",message:"请选择数据进行导出"})
@@ -1086,6 +1120,7 @@ export default {
         .then((data) => {
           if (data.code == 200) {
             this.$message.success("操作成功");
+            this.initData()
           } else {
             this.$message.error(data.message);
           }
@@ -1093,6 +1128,7 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+        this.dialogFormVisible =false
     },
     showFees(orderId, payWay, financeStatus,onlyShow,pageSkip) {
       if (this.pageSkipChecked == true) {
@@ -1142,12 +1178,10 @@ export default {
           } else {
             this.$message.error(data.message);
           }
-          console.log(this.orderFinanceStatus);
         })
         .catch((e) => {
-          console.log(e);
         });
-
+       
     },
 
     getOrgn(orgn) {
@@ -1376,6 +1410,11 @@ export default {
 /deep/.pageSkip {
         padding:3px 5px!important
   }
+  /deep/.el-input--medium{
+     .el-input__inner {
+        text-overflow: ellipsis!important;
+      }
+     }
 .operateButton {
   display: flex;
   justify-content: flex-end;
