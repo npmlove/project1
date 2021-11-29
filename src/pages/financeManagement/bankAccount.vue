@@ -135,7 +135,6 @@
       },
          //银行账号列表-编辑&新增
       editAccount(add,message){
-        console.log(message)
         if(add == '1'){
           this.bankMessage = {
             bankAccount:"",
@@ -157,6 +156,7 @@
       },
       //编辑弹框确认
        dialogComfirm(){
+         console.log(this.bankMessage)
          if(this.bankMessage.bankAccount == "" || this.bankMessage.accountBank == "" || this.bankMessage.userName == "") {
            this.$message({
              type:"warning",
@@ -164,6 +164,8 @@
            })
            return
          }
+        
+        this.bankMessage.bankAccount = this.bankMessage.bankAccount.replace(/[^\d.]/g,'')
         this.$http.post(this.$service.editBankAccount,this.bankMessage).then(
           data =>{
             if(data.code == 200) {
