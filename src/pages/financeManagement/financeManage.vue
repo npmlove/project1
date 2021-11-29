@@ -13,6 +13,7 @@
               v-model="selectResult.orderNo"
               style="width: 200px"
               size="medium"
+              @blur="selectResult.orderNo = $event.target.value"
               maxlength="15"
               onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');"
               clearable
@@ -27,6 +28,7 @@
               size="medium"
               maxlength="11"
               onkeyup="this.value = this.value.replace(/[^\d]/g,'');"
+              @blur="selectResult.waybillNo = $event.target.value"
               clearable
               placeholder="请输入运单号"
             ></el-input>

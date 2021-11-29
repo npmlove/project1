@@ -5,13 +5,13 @@
         <div class="content-search-normal">
           <div class="formItem">
           <el-form-item label="订单号:" label-width="80px">
-            <el-input v-model="selectResult.orderNo" style="width: 210px;" size="medium" maxlength="15" clearable placeholder="请输入订单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');"></el-input>
+            <el-input v-model="selectResult.orderNo" style="width: 210px;" size="medium" maxlength="15" clearable placeholder="请输入订单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.orderNo = $event.target.value"></el-input>
           </el-form-item>
         </div>
 
         <div class="formItem">
           <el-form-item label="运单号:" label-width="80px">
-            <el-input v-model="selectResult.waybillNo" style="width: 210px;" size="medium" maxlength="15" clearable placeholder="请输入运单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');"></el-input>
+            <el-input v-model="selectResult.waybillNo" style="width: 210px;" size="medium" maxlength="15" clearable placeholder="请输入运单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.waybillNo = $event.target.value"></el-input>
           </el-form-item>
         </div>
         <div class="formItem">
@@ -181,13 +181,10 @@
             <el-upload
               style="width:100px;height:28px;margin-right:10px"
               action="#"
-              accept=".zip,.rar"
+              accept=".zip"
               class="upLoad"
               :multiple = "true"
-              :file-list="fileList"
               :on-change="handleChange"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
               :auto-upload="false">
               <el-button type="primary" size="medium">上传发票</el-button>
             </el-upload>
@@ -548,7 +545,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="快递单号" label-width="100px">
-            <el-input size="medium"  v-model="postMessage.postThree" placeholder="请输入快递单号" maxlength="10" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:300px">
+            <el-input size="medium"  v-model="postMessage.postThree" placeholder="请输入快递单号" maxlength="10" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');"  @blur="postMessage.postThree = $event.target.value" style="width:300px">
             </el-input>
           </el-form-item>
         </div>
@@ -586,15 +583,15 @@
         <div style="width:50%;border:1px solid silver;padding:10px 0;margin-right:10px">
           <el-form>
            <el-form-item label="开票金额" label-width="120px" required>
-            <el-input size="medium"  v-model.number="invoicingLeft.invoiceAmount" placeholder="请输入开票金额" maxlength="12" onkeyup="this.value= this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)? this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)[0] : ''" style="width:170px">
+            <el-input size="medium"  v-model="invoicingLeft.invoiceAmount" clearable placeholder="请输入开票金额" maxlength="12" onkeyup="this.value= this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)? this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)[0] : ''" @blur="invoicingLeft.invoiceAmount = $event.target.value" style="width:170px">
             </el-input>
           </el-form-item>
           <el-form-item label="开票首张号码" label-width="120px" required >
-            <el-input size="medium"  v-model="invoicingLeft.invoiceNum" placeholder="请输入开票首张号码" minlength="8" maxlength="8" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:170px">
+            <el-input size="medium"  v-model.number="invoicingLeft.invoiceNum" clearable placeholder="请输入开票首张号码" maxlength="8"style="width:170px">
             </el-input>
           </el-form-item>
           <el-form-item label="开票张数" label-width="120px" required>
-            <el-input size="medium"  v-model.number="invoicingLeft.invoiceCount" placeholder="请输入开票张数" maxlength="2" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:170px">
+            <el-input size="medium"  v-model.number="invoicingLeft.invoiceCount" clearable placeholder="请输入开票张数" maxlength="2"  style="width:170px">
             </el-input>
           </el-form-item>
           <el-form-item label-width="120px" label="开票日期" required>
@@ -646,6 +643,7 @@
 
 <script>
   import { toData } from '@/util/assist'
+// import Axios from '../../../static/axios.min.js'
   export default {
     data() {
       return {
@@ -873,6 +871,7 @@
         this.searchClick(true)
     },
     methods: {
+   
       //跨页全选禁用
       ifDisabled(row) {
         if(this.pageSkipChecked == true) {
@@ -883,43 +882,25 @@
       },
       // 导入文件的上传
       handleChange(file) {
+        console.log(this)
         console.log(file)
         const isLt2M = file.size / 1024 / 1024 < 2;
-       
         if (!isLt2M) {
           this.$message.error('');
           return
         }
-        this.importExcel(file.raw)
+        // this.importExcel(file.raw)
+        // console.log(formdate)
+        let reader = new FileReader();
+        let vm = this
+          reader.readAsDataURL(file.raw);
+          reader.onload = function() {
+            const fileFormData = new FormData();
+            fileFormData.append('file', file.raw)
+            vm.$http.post(vm.$service.uploadInvoicePDF, fileFormData).then(res => {})
+            };
       },
-      importExcel(file) {
-        const formdate = new FormData();
-        formdate.append("file", file);
-        this.$http.post(this.$service.uploadInvoicePDF, formdate, {responseType: 'arraybuffer'}).then(res => {
-          let enc = new TextDecoder("utf-8");
-          let uint8_msg = new Uint8Array(res);
-          let str=enc.decode(uint8_msg);
-          if (str.indexOf("code") !== -1) {
-            let data = JSON.parse(enc.decode(uint8_msg));
-            this.$message.error(data.message)
-            return;
-          }
-          if (res.byteLength == 0) {
-            this.$message.success('导入成功')
-            return;
-          } else {
-            this.$message.error('导入失败,请查看失败文件')
-          }
-          // const aLink = document.createElement("a");
-          // let blob = new Blob([res], {
-          //   type: "application/vnd.ms-excel"
-          // })
-          // aLink.href = URL.createObjectURL(blob)
-          // aLink.setAttribute('download', '导入失败文件' + '.xlsx')
-          // aLink.click()
-          // document.body.appendChild(aLink)
-        })
-      },
+      
       // 删除文件
       handleRemove(file) {
         this.excelInfo = "";
@@ -1331,7 +1312,14 @@
           requestData.overPageCheck = true
           requestData.financePageDTO = this.selectResultData()
         }
-        this.$http.post(this.$service.expressInvoices,requestData).then(data=>{})
+        this.$http.post(this.$service.expressInvoices,requestData).then(data=>{
+           if(data.code == 200) {
+              this.$message.success('快递编辑成功')
+            } else {
+                this.$message.error(data.message)
+              }
+        })
+        this.postMessageDial = false;
       },
       //数据统计按钮
       getStatistData(){
