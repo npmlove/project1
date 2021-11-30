@@ -15,16 +15,16 @@
         </el-form-item>
         <el-form-item>
           <el-row>
-            <el-button  @click="chooseDate(1);checkButton=1;clickHandler($event)" :class="checkButton==1?'buttonColor1':'buttonColor2'">
+            <el-button  @click="chooseDate(1);checkButton=1;clickHandler($event)" :class="{'buttonColor1': checkButton==1}">
               今天
             </el-button>
-            <el-button id="tt" @click="chooseDate(2);checkButton=2;clickHandler($event)" :class="checkButton==2?'buttonColor1':'buttonColor2'">
+            <el-button id="tt" @click="chooseDate(2);checkButton=2;clickHandler($event)" :class="{'buttonColor1': checkButton==2}">
               昨天
             </el-button>
-            <el-button @click="chooseDate(3);checkButton=3;clickHandler($event)" :class="checkButton==3?'buttonColor1':'buttonColor2'">
+            <el-button @click="chooseDate(3);checkButton=3;clickHandler($event)" :class="{'buttonColor1': checkButton==3}">
               近七天
             </el-button>
-            <el-button @click="chooseDate(4);checkButton=4;clickHandler($event)" :class="checkButton==4?'buttonColor1':'buttonColor2'">
+            <el-button @click="chooseDate(4);checkButton=4;clickHandler($event)" :class="{'buttonColor1': checkButton==4}">
               近三十天
             </el-button>
           </el-row>
@@ -55,13 +55,13 @@
       </div>
     </el-form>
     <div class="divleft">
-      <el-button @click="isSupport();checkButtonOne=7;clickHandler($event)" size="medium" :class="checkButtonOne==7?'buttonColor1':'buttonColor2'">
+      <el-button @click="isSupport();checkButtonOne=7;clickHandler($event)" size="medium" :class="{'buttonColor1': checkButtonOne==7}">
         全部
       </el-button>
-      <el-button @click="isSupport(1);checkButtonOne=5;clickHandler($event)" size="medium" :class="checkButtonOne==5?'buttonColor1':'buttonColor2'">
+      <el-button @click="isSupport(1);checkButtonOne=5;clickHandler($event)" size="medium" :class="{'buttonColor1': checkButtonOne==5}">
         已支持
       </el-button>
-      <el-button @click="isSupport(2);checkButtonOne=6;clickHandler($event)" size="medium" :class="checkButtonOne==6?'buttonColor1':'buttonColor2'">
+      <el-button @click="isSupport(2);checkButtonOne=6;clickHandler($event)" size="medium" :class="{'buttonColor1': checkButtonOne==6}">
         未支持
       </el-button>
       <el-table
@@ -104,10 +104,10 @@
       </div>
     </div>
     <div class="divright">
-      <el-button @click="searchClick(2);clickHandler($event)" size="medium" :class="checkButtonTwo==8?'buttonColor1':''">
+      <el-button @click="searchClick(2);clickHandler($event)" size="medium" :class="{'buttonColor1': checkButtonTwo==8}">
         全部
       </el-button>
-      <el-button @click="searchClick(1);clickHandler($event)" size="medium" :class="checkButtonTwo==9?'buttonColor1':''">
+      <el-button @click="searchClick(1);clickHandler($event)" size="medium" :class="{'buttonColor1': checkButtonTwo==9}">
         成功
       </el-button>
       <el-popover
@@ -124,7 +124,7 @@
           <el-checkbox  v-for="(failType,index) in failTypeList" :label="index+1" :key="index+1"  @change="initDetailSearch()">{{failType}}</el-checkbox>
           </el-checkbox-group>
         </div>
-        <el-button slot="reference" @click="searchClick(0);clickHandler($event)" size="medium" :class="checkButtonTwo==10?'buttonColor1':''">
+        <el-button slot="reference" @click="searchClick(0);clickHandler($event)" size="medium" :class="{'buttonColor1': checkButtonTwo==10}" >
           失败
           <i class="el-icon-arrow-down  " @click="visible = !visible;clickHandler($event)"></i>
         </el-button>
@@ -503,7 +503,7 @@
 
   .buttonColor1 {
     background: #2273ce;
-    color: white
+    color: #FFFFFF;
   }
 
   .buttonColor2 {
