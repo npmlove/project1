@@ -18,7 +18,7 @@
             <el-button @click="chooseDate(1);checkButton=1" :class="checkButton==1?'buttonDiv':'buttonColor2'">
               今天
             </el-button>
-            <el-button @click="chooseDate(2);checkButton=2" :class="checkButton==2?'buttonDiv':'buttonColor2'">
+            <el-button id="tt" @click="chooseDate(2);checkButton=2" :class="checkButton==2?'buttonDiv':'buttonColor2'">
               昨天
             </el-button>
             <el-button @click="chooseDate(3);checkButton=3" :class="checkButton==3?'buttonDiv':'buttonColor2'">
@@ -501,23 +501,21 @@
   }
 
   /*鼠标点击后移开，恢复本身样式*/
-  .buttonDiv, .buttonDiv:focus:not(.buttonDiv:hover) {
+  .buttonDiv, .buttonDiv:focus:not(.buttonDiv:hover){
     color: #FFFFFF;
     background: #2273ce;
   }
-
-/*
-  !*鼠标悬浮，没有按下；鼠标按下后抬起，没有移开*!
-  .buttonDiv:focus, .buttonDiv:hover {
-    color: #FFFFFF;
+  /*鼠标悬浮，没有按下；鼠标按下后抬起，没有移开*/
+  .buttonDiv:focus, .buttonDiv:hover{
     background: #2273ce;
+    border: 1px solid #2794f8 !important;
+    color: #FFFFFF;
   }
-
-  !*鼠标按下，没有抬起*!
+  /*鼠标按下，没有抬起*/
   .buttonDiv:active {
-    color: #FFFFFF;
     background: #2273ce;
+    color: #FFFFFF;
   }
-*/
+
 
 </style>
