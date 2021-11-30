@@ -13,7 +13,12 @@
               </el-option>
             </el-select>
           </el-form-item>
-
+          <el-form-item>
+            <el-select placeholder="中转/直飞" size="medium" v-model="legCount" clearable style="width: 130px;">
+              <el-option v-for="item in legCountOpt" :key="item.value" :label="item.name" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item>
             <el-select v-model="pod" placeholder="目的港三字码" :remote-method="podMethod" :loading="loading" clearable
               filterable remote reserve-keyword>
@@ -36,21 +41,21 @@
           <el-form-item>
             <el-select v-model="airCompanyCode" placeholder="航司代码" :remote-method="companyMethod" :loading="loading"
               clearable filterable remote reserve-keyword>
-              <el-option v-for="item in airCompanyCodeOpt" 
-				:key="item.airCompanyCode" 
+              <el-option v-for="item in airCompanyCodeOpt"
+				:key="item.airCompanyCode"
 				:value="item.airCompanyCode">
                 <span>{{item.airCompanyCode}}</span>
                 <span style="margin-left: 5px;">{{item.name}}</span>
               </el-option>
             </el-select>
           </el-form-item>
-
           <el-form-item>
-            <el-select placeholder="中转/直飞" size="medium" v-model="legCount" clearable style="width: 130px;">
-              <el-option v-for="item in legCountOpt" :key="item.value" :label="item.name" :value="item.value">
+            <el-select placeholder="航线区域" size="medium" v-model="continent" clearable style="width: 130px;">
+              <el-option v-for="item in routeArea" :key="item.value" :label="item.name" :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
+
 
           <el-form-item>
             <el-select placeholder="状态" size="medium" v-model="status" clearable style="width: 130px;">
@@ -195,6 +200,41 @@
         agentName: '',
         airCompanyCode: '',
         legCount: '',
+        continent: '',
+        routeArea: [
+          {
+            name: '全部',
+            value: '0'
+          },
+          {
+            name: '欧洲',
+            value: '1'
+          },
+          {
+            name: '亚洲',
+            value: '2'
+          },
+          {
+            name: '非洲',
+            value: '3'
+          },
+          {
+            name: '北美洲',
+            value: '4'
+          },
+          {
+            name: '南美洲',
+            value: '5'
+          },
+          {
+            name: '南极洲',
+            value: '6'
+          },
+          {
+            name: '大洋洲',
+            value: '7'
+          },
+        ],
         legCountOpt: [{
             name: '全部',
             value: '2'
@@ -329,7 +369,8 @@
           status: this.status,
           legCount: this.legCount,
           airCompanyCode: this.airCompanyCode,
-          agentName: this.agentName
+          agentName: this.agentName,
+          continent: this.continent
         }
         vm.$http.post(vm.$service.airlineSearchByPage, data).then(data => {
           if (data.code == 200) {
