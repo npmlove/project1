@@ -15,16 +15,16 @@
         </el-form-item>
         <el-form-item>
           <el-row>
-            <el-button @click="chooseDate(1);checkButton=1" :class="checkButton==1?'buttonDiv':'buttonColor2'">
+            <el-button  @click="chooseDate(1);checkButton=1;clickHandler($event)" :class="checkButton==1?'buttonColor1':'buttonColor2'">
               今天
             </el-button>
-            <el-button id="tt" @click="chooseDate(2);checkButton=2" :class="checkButton==2?'buttonDiv':'buttonColor2'">
+            <el-button id="tt" @click="chooseDate(2);checkButton=2;clickHandler($event)" :class="checkButton==2?'buttonColor1':'buttonColor2'">
               昨天
             </el-button>
-            <el-button @click="chooseDate(3);checkButton=3" :class="checkButton==3?'buttonDiv':'buttonColor2'">
+            <el-button @click="chooseDate(3);checkButton=3;clickHandler($event)" :class="checkButton==3?'buttonColor1':'buttonColor2'">
               近七天
             </el-button>
-            <el-button @click="chooseDate(4);checkButton=4" :class="checkButton==4?'buttonDiv':'buttonColor2'">
+            <el-button @click="chooseDate(4);checkButton=4;clickHandler($event)" :class="checkButton==4?'buttonColor1':'buttonColor2'">
               近三十天
             </el-button>
           </el-row>
@@ -55,13 +55,13 @@
       </div>
     </el-form>
     <div class="divleft">
-      <el-button @click="isSupport();checkButtonOne=7" size="medium" :class="checkButtonOne==7?'buttonDiv':'buttonColor2'">
+      <el-button @click="isSupport();checkButtonOne=7;clickHandler($event)" size="medium" :class="checkButtonOne==7?'buttonColor1':'buttonColor2'">
         全部
       </el-button>
-      <el-button @click="isSupport(1);checkButtonOne=5" size="medium" :class="checkButtonOne==5?'buttonDiv':'buttonColor2'">
+      <el-button @click="isSupport(1);checkButtonOne=5;clickHandler($event)" size="medium" :class="checkButtonOne==5?'buttonColor1':'buttonColor2'">
         已支持
       </el-button>
-      <el-button @click="isSupport(2);checkButtonOne=6" size="medium" :class="checkButtonOne==6?'buttonDiv':'buttonColor2'">
+      <el-button @click="isSupport(2);checkButtonOne=6;clickHandler($event)" size="medium" :class="checkButtonOne==6?'buttonColor1':'buttonColor2'">
         未支持
       </el-button>
       <el-table
@@ -104,10 +104,10 @@
       </div>
     </div>
     <div class="divright">
-      <el-button @click="searchClick(2)" size="medium" :class="checkButtonTwo==8?'buttonDiv':''">
+      <el-button @click="searchClick(2);clickHandler($event)" size="medium" :class="checkButtonTwo==8?'buttonColor1':''">
         全部
       </el-button>
-      <el-button @click="searchClick(1)" size="medium" :class="checkButtonTwo==9?'buttonDiv':''">
+      <el-button @click="searchClick(1);clickHandler($event)" size="medium" :class="checkButtonTwo==9?'buttonColor1':''">
         成功
       </el-button>
       <el-popover
@@ -124,9 +124,9 @@
           <el-checkbox  v-for="(failType,index) in failTypeList" :label="index+1" :key="index+1"  @change="initDetailSearch()">{{failType}}</el-checkbox>
           </el-checkbox-group>
         </div>
-        <el-button slot="reference" @click="searchClick(0)" size="medium" :class="checkButtonTwo==10?'buttonDiv':''">
+        <el-button slot="reference" @click="searchClick(0);clickHandler($event)" size="medium" :class="checkButtonTwo==10?'buttonColor1':''">
           失败
-          <i class="el-icon-arrow-down  " @click="visible = !visible"></i>
+          <i class="el-icon-arrow-down  " @click="visible = !visible;clickHandler($event)"></i>
         </el-button>
       </el-popover>
 
@@ -289,7 +289,18 @@
           }
         })
       },
-      chooseDate(type) {
+
+      clickHandler(evt) {
+        let target = evt.target;
+        if (target.nodeName == "SPAN") {
+          target = evt.target.parentNode;
+        }
+        if (target.nodeName == "I") {
+          target = evt.target.parentNode.parentNode;
+        }
+        target.blur();
+      },
+        chooseDate(type) {
         this.awb = null
         this.airCPCode = null
         if (type === 1) {
