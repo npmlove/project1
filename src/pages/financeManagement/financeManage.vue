@@ -307,6 +307,7 @@
             :data="tableData"
             border
             stripe
+            max-height="800px"
             header
             :cell-style="tableRowClassName"
             ref="multipleTable"
@@ -328,6 +329,7 @@
             <el-table-column
               label="订单号"
               min-width="160"
+              align="center"
               v-if="checkedTable.indexOf('订单号') !== -1"
             >
             <template slot-scope="scope">
@@ -340,6 +342,7 @@
               prop="waybillNo"
               label="运单号"
               min-width="160"
+              align="center"
               type=""
               v-if="checkedTable.indexOf('运单号') !== -1"
             ></el-table-column>
@@ -767,7 +770,7 @@ export default {
       //订单状态
       getFinanceStatus:["未提单","正常","修改申请","修改中","异常"],
       //表格tab
-      tabName: ["全部", "已交单", "未交单", "修改申请","修改中","修改审核","异常"],
+      tabName: ["全部", "未交单", "已交单", "修改申请","修改中","修改审核","异常"],
       typeCode: "全部",
       tabNum: [0, 0, 0, 0,0,0,0],
       detailTabs: [],
@@ -1001,7 +1004,7 @@ export default {
     //获取表格选中数据
     handleSelectionChange (e) {
       this.selectTableData = e
-      // console.log(this.selectTableData)
+      console.log(this.selectTableData)
     },
     //控制多选框
     dealAllChange (){
@@ -1261,7 +1264,7 @@ export default {
         .then((data) => {
           if (data.code == 200) {
             // this.total = data.data.total;
-            this.tabNum = [data.data.totalCount,data.data.commitCount,data.data.notCommitCount,data.data.applyCount,data.data.changeCount,data.data.checkCount,data.data.errorCount]
+            this.tabNum = [data.data.totalCount,data.data.notCommitCount,data.data.commitCount,data.data.applyCount,data.data.changeCount,data.data.checkCount,data.data.errorCount]
             console.log(this.tabNum)
             if(data.data.pageInfo == null) {
               this.tableData = []
@@ -1423,6 +1426,11 @@ export default {
     margin: 0px 10px 20px 10px;
   }
 }
+/deep/ .el-table {
+          .cell {
+            text-align: center;
+          }
+      } 
 .dialog-footer {
   text-align:center;
   margin-top:20px;

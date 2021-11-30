@@ -204,6 +204,7 @@
               :key="tableKey"
               class="finance-table"
               row-key="copyId"
+              max-height="800px"
               :tree-props="{children: 'invoiceInfos'}"
               @selection-change="handleSelectionChange"
               style="width: 100%">
@@ -217,7 +218,7 @@
                   <div v-if="scope.row.hasChild">
                      <el-popover
                         placement="bottom-start"
-                        width="120"
+                        width="100"
                         trigger="hover"
                         >
                         <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.orderNo}}</div>
@@ -234,7 +235,7 @@
                   <div  v-if="scope.row.hasChild">
                     <el-popover
                         placement="bottom-start"
-                        width="120"
+                        width="90"
                         trigger="hover"
                         >
                         <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.waybillNo}}</div>
@@ -252,7 +253,7 @@
                   <div  v-if="scope.row.hasChild">
                     <el-popover
                         placement="bottom-start"
-                        width="120"
+                        width="60"
                         trigger="hover"
                         >
                         <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.departureDate}}</div>
@@ -269,7 +270,7 @@
                   <div  v-if="scope.row.hasChild">
                     <el-popover
                         placement="bottom-start"
-                        width="120"
+                        width="60"
                         trigger="hover"
                         >
                         <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.presentationTime}}</div>
@@ -335,8 +336,9 @@
                         <div>
                           <el-popover
                               placement="bottom-start"
-                              width="120"
+                              width="40"
                               trigger="hover"
+                              class = "popoverShow"
                               >
                               <div v-for="(item,index) in scope.row.invoiceInfos" :key ="index">{{item.invoiceNum}}</div>
                               <div slot="reference">{{scope.row.invoiceNum}}</div>
@@ -359,7 +361,7 @@
                        <div>
                          <el-popover
                               placement="bottom-start"
-                              width="120"
+                              width="40"
                               trigger="hover"
                               >
                               <div v-for="(item,index) in scope.row.invoiceInfos" :key ="index">{{item.invoicingTime}}</div>
@@ -400,7 +402,7 @@
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page="pageNum"
-                :page-sizes="[10, 200, 300, 400]"
+                :page-sizes="[10,30,50]"
                 :page-size="pageSize"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="total"
@@ -1185,6 +1187,12 @@
             type: 'warning'
           });
         }
+        else if (!this.invoicingLeft.invoiceAmount || !this.invoicingLeft.invoiceCount|| !this.invoicingLeft.invoiceNum || !this.invoicingLeft.invoicingTime ){
+          this.$message({
+            message: '请填写左侧全部信息后进行操作',
+            type: 'warning'
+          });
+        }
         else {
           const copyData = JSON.parse(JSON.stringify(this.copyTable))
           let data = copyData.filter(item=>item.id==this.selectTableData[0].id)[0]
@@ -1277,6 +1285,13 @@
           expressInfo:"",
           financePageDTO:{},
           overPageCheck:false
+        }
+        if(this.postMessage.postOne == "" || this.postMessage.postTwo =="") {
+          this.$message({
+            type:"warning",
+            message:"快递公司和邮寄信息不能为空"
+          })
+          return
         }
         let postMess = String(this.postMessage.postOne)+","+String(this.postMessage.postThree)+","+String(this.postMessage.postTwo)
         requestData.expressInfo = postMess
@@ -1528,9 +1543,15 @@
   }
 </script>
 
-
+<style lang="less">
+  .el-popover{
+      max-height: 200px;
+      overflow: scroll;
+  }
+</style>
 <style scoped lang="less">
   @import url("../../assets/icon/iconfont.css");
+  
   /deep/.pageSkip {
         padding:3px 5px!important
   }

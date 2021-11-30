@@ -1068,6 +1068,11 @@
 /deep/.pageSkip {
         padding:3px 5px!important
   }
+  /deep/ .el-table {
+          .cell {
+            text-align: center;
+          }
+      } 
    .content-search-normal {
     .formItem{
       display:inline-block;
