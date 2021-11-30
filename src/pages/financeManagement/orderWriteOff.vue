@@ -53,6 +53,7 @@
           <el-form-item label="下单时间:" label-width="100px"> 
             <el-date-picker
              style="width:165px"
+              value-format="yyyy-MM-dd"
               v-model="selectResult.startOrderTime"
               type="date"
               :picker-options="pickerOptionsStartTwo"
@@ -60,6 +61,7 @@
             </el-date-picker >-
              <el-date-picker
              style="width:165px"
+              value-format="yyyy-MM-dd"
               v-model="selectResult.endOrderTime"
               type="date"
               :picker-options="pickerOptionsEndTwo"
@@ -72,6 +74,7 @@
           <el-form-item label="航班日期" label-width="100px">
              <el-date-picker
              style="width:165px"
+              value-format="yyyy-MM-dd"
               v-model="selectResult.startDepartureDate"
               type="date"
               :picker-options="pickerOptionsStartOne"
@@ -79,6 +82,7 @@
             </el-date-picker >-
              <el-date-picker
              style="width:165px"
+              value-format="yyyy-MM-dd"
               v-model="selectResult.endDepartureDate"
               type="date"
               :picker-options="pickerOptionsEndOne"
@@ -108,7 +112,7 @@
           </el-form-item>
 
           <el-form-item label="应收核销状态" label-width="100px">
-            <el-select v-model="selectResult.rcvWriteOffStatusList" placeholder="应收核销状态"  multiple collapse-tags  @change="dealAllChange" style="width: 200px;">
+            <el-select v-model="selectResult.rcvWriteOffStatusList" placeholder="应收核销状态" clearable multiple collapse-tags  @change="dealAllChange" style="width: 200px;">
               <el-option
                 v-for="(item,index) in writeOffStatus"
                 :key="index"
@@ -119,7 +123,7 @@
           </el-form-item>
 
           <el-form-item label="应付核销状态" label-width="100px">
-            <el-select v-model="selectResult.payWriteOffStatusList" placeholder="应付核销状态"  multiple collapse-tags  @change="dealAllChange" style="width: 200px;">
+            <el-select v-model="selectResult.payWriteOffStatusList" placeholder="应付核销状态" clearable multiple collapse-tags  @change="dealAllChange" style="width: 200px;">
               <el-option
                 v-for="(item,index) in writeOffStatus"
                 :key="index"
@@ -805,6 +809,7 @@
     },
       //tab切换
       tabClickData() {
+        this.pageNum =1
         this.pageSkipChecked = false
       	this.initData()
       },
@@ -898,6 +903,7 @@
       //跨页全选按钮
     selectAllTable(){
         for(let i=0;i<this.$refs.multipleTable.length;i++){
+          this.$refs.multipleTable[i].clearSelection();
           for(let j=0;j<this.tableData.length;j++){
             if(this.pageSkipChecked == true ) {
 							this.$refs.multipleTable[i].toggleRowSelection(this.tableData[j]);
@@ -978,6 +984,7 @@
       },
       //重置
       restClick() {
+        
         this.selectResult={
           orderNo:"",
           waybillNo:"",
@@ -1000,6 +1007,8 @@
         this.pageNum = 1
         this.pageSize = 10
         this.initData()
+        this.pageSkipChecked = false
+        this.selectAllTable()
       },
       handleCurrentChange(e) {
         this.pageNum = e

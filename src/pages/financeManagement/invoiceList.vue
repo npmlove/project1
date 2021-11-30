@@ -1359,6 +1359,7 @@
       },
       //tab切换
       tabClickData(tab,event) {
+        this.pageNum = 1
         this.pageSkipChecked = false
         this.searchClick()
       },

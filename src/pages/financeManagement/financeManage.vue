@@ -207,6 +207,7 @@
           >
             <el-date-picker
               style="width: 180px"
+              value-format="yyyy-MM-dd"
               v-model="selectResult.startDepartureDate"
               type="date"
               :picker-options="pickerOptionsStartOne"
@@ -216,6 +217,7 @@
             >-
             <el-date-picker
               style="width: 180px"
+              value-format="yyyy-MM-dd"
               v-model="selectResult.endDepartureDate"
               type="date"
               :picker-options="pickerOptionsEndOne"
@@ -226,6 +228,7 @@
 
           <el-form-item label="交单时间:" style="width: 480px">
             <el-date-picker
+              value-format="yyyy-MM-dd"
               style="width: 180px"
               v-model="selectResult.startPresentationTime"
               type="date"
@@ -235,6 +238,7 @@
             </el-date-picker
             >-
             <el-date-picker
+              value-format="yyyy-MM-dd"
               style="width: 180px"
               v-model="selectResult.endPresentationTime"
               type="date"
@@ -687,7 +691,7 @@
             v-show="orderFinanceStatus == 3"
           >
             <el-button @click="savePresentLog(5)">驳回</el-button>
-            <el-button type="primary" @click="savePresentLog(3)"
+            <el-button type="primary" @click="savePresentLog(4)"
               >审核通过</el-button
             >
           </div>
@@ -842,7 +846,7 @@ export default {
         disabledDate: (time) => {
           let endDateVal = this.selectResult.endDepartureDate;
           if (endDateVal) {
-            return time.getTime() > new Date(endDateVal).getTime();
+            return time.getTime() > new Date(endDateVal).getTime() ;
           }
         },
       },
@@ -1021,6 +1025,7 @@ export default {
     tabClickData() {
       this.pageSkipChecked = false
       this.statistDataShow = false
+      this.pageNum = 1
       this.initData()
     },
     //起始港三字码
@@ -1119,7 +1124,7 @@ export default {
       };
       // json = toData(json)
       this.$http
-        .post(this.$service.financeOrderList, json)
+        .post(this.$service.savePresentLog, json)
         .then((data) => {
           if (data.code == 200) {
             this.$message.success("操作成功");
@@ -1291,6 +1296,8 @@ export default {
     },
     //重置
     restClick() {
+      this.pageSkipChecked = false
+        this.selectAllTable()
       // this.orderNo = "";
       // this.waybillNo = "";
       // this.inboundNo = "";
