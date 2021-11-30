@@ -594,6 +594,7 @@
           :columns="columns1"
           :showSelection="false"
           :operation="operation"
+          :cell-style="dialTableClassName"
           @orderDetails="orderDetails"
         >
         </Table>
@@ -615,6 +616,7 @@
         <Table
           :tableData="apData"
           :columns="columns2"
+          :cell-style="dialTableClassName"
           :showSelection="false"
           :operation="operation"
           @orderDetails="orderDetails"
@@ -940,6 +942,13 @@ export default {
     this.operateData()
   },
   methods: {
+    // dialTableClassName({row,rowIndex}){
+    //   if(true){
+    //     return {position:relative,
+        
+    //     }
+    //   }
+    // },
      tableRowClassName({row, rowIndex}) {
         // if(row.orderProfit > 0  )
       if (row.orderProfit<0 &&  row.orderProfit>-200 ) {
@@ -1417,6 +1426,9 @@ export default {
 
 <style scoped lang="less">
 @import url("../../assets/icon/iconfont.css");
+.table-cell {
+  background-color: blue;
+}
 /deep/.pageSkip {
         padding:3px 5px!important
   }

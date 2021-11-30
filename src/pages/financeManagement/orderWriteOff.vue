@@ -752,14 +752,16 @@
           // console.log(this.selectTableData)
         },
       tableRowClassName({row, rowIndex}) {
-        // if(row.orderProfit > 0  )
-      if (row.orderProfit<0 &&  row.orderProfit>-200 ) {
+        if(row.abnormalFlag > 1){
+          return 'background-color: #e55f5f';
+        }
+      else if (row.orderProfit<0 &&  row.orderProfit>-200 ) {
         return 'background-color: #ffff66';
       }
         else if (row.orderProfit<=-200 && row.orderProfit>-500) {
           return 'background-color: pink';
         } else if (row.orderProfit<=-500 ) {
-        return 'background-color: #e55f5f';
+        return 'background-color: red';
       }
       },
        //搜索表单中多选框控制
