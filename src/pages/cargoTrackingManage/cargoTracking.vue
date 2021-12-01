@@ -6,7 +6,7 @@
           <el-date-picker
             v-model="accessDate"
             type="daterange"
-            @change="chooseDate();checkButton=0"
+            @change="checkButton=0"
             range-separator="至"
             value-format="yyyy-MM-dd"
             start-placeholder="起始日期"
@@ -15,16 +15,20 @@
         </el-form-item>
         <el-form-item>
           <el-row>
-            <el-button  @click="chooseDate(1);checkButton=1;clickHandler($event)" :class="{'buttonColor1': checkButton==1}">
+            <el-button @click="chooseDate(1);checkButton=1;clickHandler($event)"
+                       :class="{'buttonColor1': checkButton==1}">
               今天
             </el-button>
-            <el-button id="tt" @click="chooseDate(2);checkButton=2;clickHandler($event)" :class="{'buttonColor1': checkButton==2}">
+            <el-button id="tt" @click="chooseDate(2);checkButton=2;clickHandler($event)"
+                       :class="{'buttonColor1': checkButton==2}">
               昨天
             </el-button>
-            <el-button @click="chooseDate(3);checkButton=3;clickHandler($event)" :class="{'buttonColor1': checkButton==3}">
+            <el-button @click="chooseDate(3);checkButton=3;clickHandler($event)"
+                       :class="{'buttonColor1': checkButton==3}">
               近七天
             </el-button>
-            <el-button @click="chooseDate(4);checkButton=4;clickHandler($event)" :class="{'buttonColor1': checkButton==4}">
+            <el-button @click="chooseDate(4);checkButton=4;clickHandler($event)"
+                       :class="{'buttonColor1': checkButton==4}">
               近三十天
             </el-button>
           </el-row>
@@ -37,12 +41,12 @@
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
-<!--        <el-form-item label="航司">
-          <el-input style="width: 200px;" size="medium" :maxlength="20" v-model="airCPCode" clearable
-                    placeholder="请输入航司">
-            <i slot="prefix" class="el-input__icon el-icon-search"></i>
-          </el-input>
-        </el-form-item>-->
+        <!--        <el-form-item label="航司">
+                  <el-input style="width: 200px;" size="medium" :maxlength="20" v-model="airCPCode" clearable
+                            placeholder="请输入航司">
+                    <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                  </el-input>
+                </el-form-item>-->
         <el-form-item label="航司:" class="formItem" label-width="80px">
           <el-select
             v-model="airCPCode"
@@ -69,23 +73,26 @@
           </el-select>
         </el-form-item>
 
-                <el-form-item style="float: right;margin-right: 0">
-                  <el-row>
-        <!--            <el-button @click="newAdd" size="medium">新增</el-button>-->
-                    <el-button @click="searchClick(3)" size="medium" type="primary">搜索</el-button>
-                    <el-button @click="restClick" size="medium" type="primary">清空</el-button>
-                  </el-row>
-                </el-form-item>
+        <el-form-item style="float: right;margin-right: 0">
+          <el-row>
+            <!--            <el-button @click="newAdd" size="medium">新增</el-button>-->
+            <el-button @click="searchClick(3)" size="medium" type="primary">搜索</el-button>
+            <el-button @click="restClick" size="medium" type="primary">清空</el-button>
+          </el-row>
+        </el-form-item>
       </div>
     </el-form>
     <div class="divleft">
-      <el-button @click="isSupport();checkButtonOne=7;clickHandler($event)" size="medium" :class="{'buttonColor1': checkButtonOne==7}">
+      <el-button @click="isSupport();checkButtonOne=7;clickHandler($event)" size="medium"
+                 :class="{'buttonColor1': checkButtonOne==7}">
         全部
       </el-button>
-      <el-button @click="isSupport(1);checkButtonOne=5;clickHandler($event)" size="medium" :class="{'buttonColor1': checkButtonOne==5}">
+      <el-button @click="isSupport(1);checkButtonOne=5;clickHandler($event)" size="medium"
+                 :class="{'buttonColor1': checkButtonOne==5}">
         已支持
       </el-button>
-      <el-button @click="isSupport(2);checkButtonOne=6;clickHandler($event)" size="medium" :class="{'buttonColor1': checkButtonOne==6}">
+      <el-button @click="isSupport(2);checkButtonOne=6;clickHandler($event)" size="medium"
+                 :class="{'buttonColor1': checkButtonOne==6}">
         未支持
       </el-button>
       <el-table
@@ -100,15 +107,22 @@
           <img class="data-pic" src="../../assets/kong-icon.png"/>
           <p>暂无数据</p>
         </template>
-        <el-table-column type="selection" width="50"></el-table-column>
-        <el-table-column prop="airCPCode" label="航司" min-width="80"></el-table-column>
-        <el-table-column prop="totalNum" label="访问次数" min-width="80" sortable
-                         :sort-method="sortByDate1"></el-table-column>
-        <el-table-column prop="successNum" label="成功次数" min-width="80" sortable
-                         :sort-method="sortByDate2"></el-table-column>
-        <el-table-column prop="failNum" label="失败次数" min-width="80" sortable
-                         :sort-method="sortByDate3"></el-table-column>
-        <el-table-column prop="rate" label="成功率" min-width="80" sortable :sort-method="sortByDate4"></el-table-column>
+          <el-table-column type="selection" width="50"></el-table-column>
+          <el-table-column prop="airCPCode" label="航司" min-width="80"></el-table-column>
+          <el-table-column prop="totalNum" label="访问次数" min-width="80" sortable
+                           :sort-method="sortByDate1"></el-table-column>
+          <el-table-column prop="successNum" label="成功次数" min-width="80" sortable
+                           :sort-method="sortByDate2"></el-table-column>
+          <el-table-column prop="failNum" label="失败次数" min-width="80" sortable
+                           :sort-method="sortByDate3"></el-table-column>
+          <el-table-column prop="rate" label="成功率" min-width="80" sortable :sort-method="sortByDate4">
+            <template slot-scope="scope">
+              {{scope.row.rate}}%
+            </template>
+
+
+          </el-table-column>
+
         <el-table-column
           fixed="right"
           v-if="operation.show"
@@ -128,10 +142,12 @@
       </div>
     </div>
     <div class="divright">
-      <el-button @click="searchClick(2);clickHandler($event)" size="medium" :class="{'buttonColor1': checkButtonTwo==8}">
+      <el-button @click="searchClick(2);clickHandler($event)" size="medium"
+                 :class="{'buttonColor1': checkButtonTwo==8}">
         全部
       </el-button>
-      <el-button @click="searchClick(1);clickHandler($event)" size="medium" :class="{'buttonColor1': checkButtonTwo==9}">
+      <el-button @click="searchClick(1);clickHandler($event)" size="medium"
+                 :class="{'buttonColor1': checkButtonTwo==9}">
         成功
       </el-button>
       <el-popover
@@ -144,11 +160,14 @@
           <el-checkbox-group
             v-model="errType"
             :min="1"
-            >
-          <el-checkbox  v-for="(failType,index) in failTypeList" :label="index+1" :key="index+1"  @change="initDetailSearch()">{{failType}}</el-checkbox>
+          >
+            <el-checkbox v-for="(failType,index) in failTypeList" :label="index+1" :key="index+1"
+                         @change="initDetailSearch()">{{ failType }}
+            </el-checkbox>
           </el-checkbox-group>
         </div>
-        <el-button slot="reference" @click="searchClick(0);clickHandler($event)" size="medium" :class="{'buttonColor1': checkButtonTwo==10}" >
+        <el-button slot="reference" @click="searchClick(0);clickHandler($event)" size="medium"
+                   :class="{'buttonColor1': checkButtonTwo==10}">
           失败
           <i class="el-icon-arrow-down  " @click="visible = !visible;clickHandler($event)"></i>
         </el-button>
@@ -174,7 +193,7 @@
             {{ scope.row.isSuccessed == 1 ? "成功" : scope.row.errMessage }}
           </template>
         </el-table-column>
-        <el-table-column prop="repAirNeedTime" label="查询时长" min-width="80"></el-table-column>
+        <el-table-column prop="repAirNeedTime" label="查询时长(s)" min-width="80"></el-table-column>
         <el-table-column prop="lastQueryTime" label="访问时间" min-width="80"></el-table-column>
       </el-table>
       <div v-show="detailsTotalNum>0">总次数:{{ detailsTotalNum }},成功率:{{ detailsSuccRate }}%,失败率:{{
@@ -212,7 +231,7 @@
     data() {
       return {
         //table
-        failTypeList: ['不支持该航司','官网访问失败','未找到该单号','未知错误'],
+        failTypeList: ['不支持该航司', '官网访问失败', '未找到该单号', '未知错误'],
         failType1: true,
         failType2: true,
         failType3: true,
@@ -225,7 +244,7 @@
         isSuccess: null,
         tableData: [],
         detailData: [],
-        airCompanyCodeOpt:[],
+        airCompanyCodeOpt: [],
         pageSize: 10,
         pageNum: 1,
         total: 0,
@@ -269,6 +288,9 @@
     methods: {
       //获取代理列表
       initListSearch(isSupport) {
+        this.detailData=[]
+        this.tableData=[]
+
         var params = {
           fromDate: this.accessDate.length == 0 ? this.accessDay[0] : this.accessDate[0] + " 00:00:00",
           toDate: this.accessDate.length == 0 ? this.accessDay[1] : this.accessDate[1] + " 23:59:59",
@@ -290,6 +312,7 @@
         })
       },
       initDetailSearch(airCPCode, isSuccess) {
+
         var params = {
           fromDate: this.accessDate.length == 0 ? this.accessDay[0] : this.accessDate[0] + " 00:00:00",
           toDate: this.accessDate.length == 0 ? this.accessDay[1] : this.accessDate[1] + " 23:59:59",
@@ -300,7 +323,7 @@
           pageSize: this.pageSize,
           errType: this.isSuccess == null || this.isSuccess == 1 ? null : this.getParam()
         }
-        if (params.airCPCode==null||params.airCPCode==''){
+        if ((params.airCPCode == null || params.airCPCode == '')&&(params.awb == null||params.awb == '')) {
           return;
         }
         this.$http.post(this.$service.trackDetail, params).then(data => {
@@ -328,7 +351,7 @@
         }
         target.blur();
       },
-        chooseDate(type) {
+      chooseDate(type) {
         this.awb = null
         this.airCPCode = null
         if (type === 1) {
@@ -372,12 +395,12 @@
       searchClick(isSuccess) {
 
         if (isSuccess === 1) {
-          this.visible=false
+          this.visible = false
           this.checkButtonTwo = 9
         } else if (isSuccess === 0) {
           this.checkButtonTwo = 10
         } else if (isSuccess === 2 || isSuccess === 3) {
-          this.visible=false
+          this.visible = false
           this.checkButtonTwo = 8
           isSuccess = null
         }
@@ -404,10 +427,14 @@
         this.awb = null
         this.accessDate[0] = this.format(new Date(new Date().toLocaleDateString()).getTime())
         this.accessDate[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
-
+        this.checkButton = 1
+        this.checkButtonOne = 7
+        this.checkButtonTwo = 8
         this.pageSize = 10
         this.pageNum = 1
-        this.searchClick(0)
+        this.tableData=[]
+        this.detailData=[]
+        this.initListSearch()
       },
       // 页码跳转
       handleCurrent(e) {
@@ -556,16 +583,18 @@
   }
 
   /*鼠标点击后移开，恢复本身样式*/
-  .buttonDiv, .buttonDiv:focus:not(.buttonDiv:hover){
+  .buttonDiv, .buttonDiv:focus:not(.buttonDiv:hover) {
     color: #FFFFFF;
     background: #2273ce;
   }
+
   /*鼠标悬浮，没有按下；鼠标按下后抬起，没有移开*/
-  .buttonDiv:focus, .buttonDiv:hover{
+  .buttonDiv:focus, .buttonDiv:hover {
     background: #2273ce;
     border: 1px solid #2794f8 !important;
     color: #FFFFFF;
   }
+
   /*鼠标按下，没有抬起*/
   .buttonDiv:active {
     background: #2273ce;
