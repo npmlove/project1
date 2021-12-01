@@ -107,21 +107,21 @@
           <img class="data-pic" src="../../assets/kong-icon.png"/>
           <p>暂无数据</p>
         </template>
-          <el-table-column type="selection" width="50"></el-table-column>
-          <el-table-column prop="airCPCode" label="航司" min-width="80"></el-table-column>
-          <el-table-column prop="totalNum" label="访问次数" min-width="80" sortable
-                           :sort-method="sortByDate1"></el-table-column>
-          <el-table-column prop="successNum" label="成功次数" min-width="80" sortable
-                           :sort-method="sortByDate2"></el-table-column>
-          <el-table-column prop="failNum" label="失败次数" min-width="80" sortable
-                           :sort-method="sortByDate3"></el-table-column>
-          <el-table-column prop="rate" label="成功率" min-width="80" sortable :sort-method="sortByDate4">
-            <template slot-scope="scope">
-              {{scope.row.rate}}%
-            </template>
+        <el-table-column type="selection" width="50"></el-table-column>
+        <el-table-column prop="airCPCode" label="航司" min-width="80"></el-table-column>
+        <el-table-column prop="totalNum" label="访问次数" min-width="80" sortable
+                         :sort-method="sortByDate1"></el-table-column>
+        <el-table-column prop="successNum" label="成功次数" min-width="80" sortable
+                         :sort-method="sortByDate2"></el-table-column>
+        <el-table-column prop="failNum" label="失败次数" min-width="80" sortable
+                         :sort-method="sortByDate3"></el-table-column>
+        <el-table-column prop="rate" label="成功率" min-width="80" sortable :sort-method="sortByDate4">
+          <template slot-scope="scope">
+            {{ scope.row.rate }}%
+          </template>
 
 
-          </el-table-column>
+        </el-table-column>
 
         <el-table-column
           fixed="right"
@@ -288,8 +288,8 @@
     methods: {
       //获取代理列表
       initListSearch(isSupport) {
-        this.detailData=[]
-        this.tableData=[]
+        this.detailData = []
+        this.tableData = []
 
         var params = {
           fromDate: this.accessDate.length == 0 ? this.accessDay[0] : this.accessDate[0] + " 00:00:00",
@@ -323,7 +323,7 @@
           pageSize: this.pageSize,
           errType: this.isSuccess == null || this.isSuccess == 1 ? null : this.getParam()
         }
-        if ((params.airCPCode == null || params.airCPCode == '')&&(params.awb == null||params.awb == '')) {
+        if ((params.airCPCode == null || params.airCPCode == '') && (params.awb == null || params.awb == '')) {
           return;
         }
         this.$http.post(this.$service.trackDetail, params).then(data => {
@@ -393,7 +393,9 @@
         return x.length == 0 ? "1,2,3,4" : x
       },
       searchClick(isSuccess) {
-
+        if (isSuccess == 3) {
+          this.initListSearch()
+        }
         if (isSuccess === 1) {
           this.visible = false
           this.checkButtonTwo = 9
@@ -407,10 +409,7 @@
         this.isSuccess = isSuccess
         this.pageSize = 10
         this.pageNum = 1
-        if (isSuccess==3){
 
-        this.initListSearch()
-        }
         this.initDetailSearch(null, isSuccess)
 
       },
@@ -437,8 +436,8 @@
         this.checkButtonTwo = 8
         this.pageSize = 10
         this.pageNum = 1
-        this.tableData=[]
-        this.detailData=[]
+        this.tableData = []
+        this.detailData = []
         this.initListSearch()
       },
       // 页码跳转
