@@ -20,7 +20,7 @@
           </el-form-item>
         </div>
         <div class="formItem">
-          <el-form-item label="发票抬头:" label-width="80px"> 
+          <el-form-item label="发票抬头:" label-width="80px">
             <el-input v-model="selectResult.invoiceTitle" style="width: 210px;" size="medium" maxlength="30" clearable placeholder="请输入发票抬头"></el-input>
           </el-form-item>
         </div>
@@ -78,7 +78,7 @@
             </el-select>
           </el-form-item>
         </div>
-        <div class="formItem">  
+        <div class="formItem">
           <el-form-item label="快递状态:" label-width="80px">
             <el-select v-model="selectResult.expressStatus" style="width: 210px;">
               <el-option
@@ -111,7 +111,7 @@
           </el-form-item>
         </div>
         <div style="width:400px" class="formItem">
-          <el-form-item label="交单时间:" label-width="80px"> 
+          <el-form-item label="交单时间:" label-width="80px">
             <el-date-picker
              style="width:150px"
               v-model="selectResult.startPresentationTime"
@@ -345,7 +345,7 @@
                           </el-popover>
                         </div>
                     </template>
-                     
+
                   </div>
                 </template>
               </el-table-column>
@@ -397,7 +397,7 @@
                    <span style="margin-left:15px">已开票金额:{{statistData.invoicedMoney.toLocaleString('en-US')}}</span>
                  </div>
                </div>
-               
+
                <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
@@ -420,14 +420,14 @@
         :direction="direction"
         >
         <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange" style="margin:0 0 20px 20px">全选</el-checkbox>
-        <el-checkbox-group 
+        <el-checkbox-group
           v-model="checkedTable"
           :min="0"
           :max="20">
               <el-checkbox v-for="choose in tableOptions" :label="choose" :key="choose" style="display:block;margin-left:20px">{{choose}}</el-checkbox>
         </el-checkbox-group>
       </el-drawer>
-      
+
       <!-- 订单号&运单号弹框 -->
       <el-dialog
           width="80%"
@@ -523,7 +523,7 @@
         </el-table>
       </el-dialog>
     </div>
-     
+
     <!-- 快递弹框 -->
     <el-dialog title="快递信息" :visible.sync="postMessageDial" width="500px">
       <el-form>
@@ -562,7 +562,7 @@
           </el-button>
         </div>
       </div>
-      
+
     </el-dialog>
     <!-- 作废按钮弹框 -->
     <el-dialog title="提示" :visible.sync="delRequestDial" width="500px">
@@ -662,7 +662,7 @@
         //表格tab页
         tabName:["全部","合并开票","单独开票","异常"],
         tabNum:[0,0,0,0],
-        
+
         //页面查询条件
         //是否上传
         ifUpload:[
@@ -818,7 +818,7 @@
         invoiceDialog:false,
         //开票信息查看表格数据
         invoiceTableData:[],
-        
+
         invoiceFootOne:'',
         invoiceFootTwo:'',
         invoiceFootThree:'',
@@ -876,7 +876,7 @@
         this.searchClick(true)
     },
     methods: {
-   
+
       //跨页全选禁用
       ifDisabled(row) {
         if(this.pageSkipChecked == true) {
@@ -905,7 +905,7 @@
             vm.$http.post(vm.$service.uploadInvoicePDF, fileFormData).then(res => {})
             };
       },
-      
+
       // 删除文件
       handleRemove(file) {
         this.excelInfo = "";
@@ -920,7 +920,7 @@
             _t = [],
             // 临时的变量
             _tmp;
-      
+
         // 按照特定的参数将数组排序将具有相同值得排在一起
         arr = arr.sort(function(a, b) {
             var s = a[str],
@@ -945,7 +945,7 @@
         _arr.push( _t );
         return _arr;
       },
-      
+
       //导出列表
       exportList (){
         if(this.selectTableData.length == 0) {
@@ -998,7 +998,7 @@
       //表格选中事件
      handleSelectionChange(e){
        console.log(e)
-       
+
        this.selectTableData = e
      },
       //查看开票信息
@@ -1007,7 +1007,7 @@
         this.invoiceTableData = [JSON.parse(JSON.stringify(message))]
         this.invoiceDialog = true
       },
-      
+
       //表格内点出快递弹框
       openPost(message){
         if(message.expressStatus == "未寄出"){
@@ -1049,7 +1049,7 @@
             message: '主数据和折叠数据不能同时存在',
             type: 'warning'
           });
-        } 
+        }
         else {
           var rubbishArray = []
           this.selectTableData.forEach(item=>{
@@ -1117,10 +1117,10 @@
              result[index].orderId = data2
           })
         }
-        
+
           return result
       },
-      
+
       //确认作废
       comfirmDele(){
         console.log(this.delData())
@@ -1204,7 +1204,7 @@
             totalMoney+=item.invoiceAmount})
             this.invoiceFootThree = totalMoney
           })
-          
+
         }
       },
       //开票弹出框 表格删除功能
@@ -1238,7 +1238,7 @@
           this.invoicingDial = false
         }
       },
-     
+
       //快递按钮
       delivery(){
         // if(this.pageSkipChecked) this.selectTableData = JSON.parse(JSON.stringify(this.copyTable))
@@ -1253,14 +1253,14 @@
             message: '只能选择主数据进行快递哦',
             type: 'warning'
           });
-        } 
+        }
         else if (Boolean(this.selectTableData.some(item=>item.invoicingStatus ==0))) {
           this.$message({
             message: '选项中存在暂未开票的信息,请重新勾选',
             type: 'warning'
           });
-        } 
-        
+        }
+
         else if (Boolean(this.selectTableData.some(item=>item.invoiceType == 2))){
           this.$message({
             message: '电子发票不需要邮寄哦,请重新勾选',
@@ -1272,12 +1272,12 @@
             message: '邮寄信息不一致哦,请重新勾选',
             type: 'warning'
           });
-        } 
+        }
         else {
           this.postMessageDial = true;
         }
       },
-      
+
       //快递弹框确认
       confirmPost(){
         let requestData = {
@@ -1353,7 +1353,7 @@
 						} else {
               this.$refs.multipleTable[i].clearSelection();
             }
-          
+
           }
         }
       },
@@ -1551,7 +1551,7 @@
 </style>
 <style scoped lang="less">
   @import url("../../assets/icon/iconfont.css");
-  
+
   /deep/.pageSkip {
         padding:3px 5px!important
   }
@@ -1584,7 +1584,7 @@
   /deep/.el-tag.el-tag--info {
     max-width: 120px;
   }
- 
+
   //表格单元格设置
   .el-table{
     /deep/.cell{
@@ -1595,7 +1595,7 @@
       }
   }
   //开票按钮弹出框
-  .invoicingDial{ 
+  .invoicingDial{
     width: 100%;
     display:flex;
     justify-content: space-between;
@@ -1607,7 +1607,7 @@
       height: 35px;
     }
   }
-  
+
   .content-wrapper {
     width: 100%;
     box-sizing: border-box;
