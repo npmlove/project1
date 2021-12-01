@@ -408,6 +408,8 @@
         this.pageSize = 10
         this.pageNum = 1
         this.initDetailSearch(null, isSuccess)
+        this.initListSearch()
+
       },
       //清空
       format(date) {
