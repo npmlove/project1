@@ -199,7 +199,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          
+
           <el-form-item
             label="航班日期:"
             style="width: 480px"
@@ -641,7 +641,7 @@
           @orderDetails="orderDetails"
         >
         </Table>
-        
+
         <div v-if="onlyShow == false">
           <div
             style="
@@ -701,7 +701,7 @@
                 </el-pagination>
             </div>
         </div>
-     
+
     </el-dialog>
   </div>
 </template>
@@ -788,7 +788,7 @@ export default {
       pageNum: 1,
       total: 0,
       // 列
-      
+
       columns1: [
         { label: "序号", show: true, width: "50" },
         { label: "费用名称", prop: "expenseName", show: true, width: "100" },
@@ -887,7 +887,7 @@ export default {
         endDepartureDate:"",
         startPresentationTime:"",
         endPresentationTime:"",
-        principalId:""		
+        principalId:""
     },
       //数据统计是否显示
       statistDataShow:false,
@@ -1148,7 +1148,7 @@ export default {
             message: '请选择1到20条信息',
             type: 'warning'
           });
-          return false 
+          return false
         } else {
           this.showFeesPage = true
           orderId = this.selectTableData[0].id
@@ -1184,7 +1184,7 @@ export default {
         })
         .catch((e) => {
         });
-       
+
     },
 
     getOrgn(orgn) {
@@ -1233,7 +1233,7 @@ export default {
 						} else {
               this.$refs.multipleTable[i].clearSelection();
             }
-          
+
           }
         }
       },
@@ -1313,7 +1313,7 @@ export default {
         endDepartureDate:"",
         startPresentationTime:"",
         endPresentationTime:"",
-        principalId:""		
+        principalId:""
     },
       this.pageNum = 1;
       this.pageSize = 10;
@@ -1430,7 +1430,7 @@ export default {
           .cell {
             text-align: center;
           }
-      } 
+      }
 .dialog-footer {
   text-align:center;
   margin-top:20px;
