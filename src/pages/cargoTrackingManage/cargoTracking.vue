@@ -407,8 +407,11 @@
         this.isSuccess = isSuccess
         this.pageSize = 10
         this.pageNum = 1
-        this.initDetailSearch(null, isSuccess)
+        if (isSuccess==3){
+
         this.initListSearch()
+        }
+        this.initDetailSearch(null, isSuccess)
 
       },
       //清空
