@@ -31,27 +31,51 @@
         </el-form-item>
 
         <el-form-item label="运单号">
-          <el-input style="width: 200px;" size="medium" :maxlength="11" onkeyup="value=value.replace(/[^\d]/g, '')"
+          <el-input style="width: 150px;" size="medium" :maxlength="11" onkeyup="value=value.replace(/[^\d]/g, '')"
                     v-model="awb" clearable
-                    placeholder="请输入运单号" @blur="searchClick(3)">
+                    placeholder="请输入运单号">
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
         </el-form-item>
-        <el-form-item label="航司">
+<!--        <el-form-item label="航司">
           <el-input style="width: 200px;" size="medium" :maxlength="20" v-model="airCPCode" clearable
-                    placeholder="请输入航司" @blur="searchClick(3)">
+                    placeholder="请输入航司">
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
+        </el-form-item>-->
+        <el-form-item label="航司:" class="formItem" label-width="80px">
+          <el-select
+            v-model="airCPCode"
+            placeholder="请输入航司"
+            :remote-method="companyMethod"
+            :loading="loading"
+            clearable
+            filterable
+            remote
+            maxlength="15"
+            reserve-keyword
+            style="width: 150px"
+          >
+            <el-option
+              v-for="(item,index) in airCompanyCodeOpt"
+              :key="index"
+              :label="item.airCompanyCode"
+              :value="item.airCompanyCode"
+
+            >
+              <span style="float: left">{{ item.name }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.airCompanyCode }}</span>
+            </el-option>
+          </el-select>
         </el-form-item>
 
-
-        <!--        <el-form-item style="float: right;margin-right: 0">
+                <el-form-item style="float: right;margin-right: 0">
                   <el-row>
-        &lt;!&ndash;            <el-button @click="newAdd" size="medium">新增</el-button>&ndash;&gt;
-                    <el-button @click="searchClick" size="medium" type="primary">搜索</el-button>
+        <!--            <el-button @click="newAdd" size="medium">新增</el-button>-->
+                    <el-button @click="searchClick(3)" size="medium" type="primary">搜索</el-button>
                     <el-button @click="restClick" size="medium" type="primary">清空</el-button>
                   </el-row>
-                </el-form-item>-->
+                </el-form-item>
       </div>
     </el-form>
     <div class="divleft">
@@ -201,6 +225,7 @@
         isSuccess: null,
         tableData: [],
         detailData: [],
+        airCompanyCodeOpt:[],
         pageSize: 10,
         pageNum: 1,
         total: 0,
@@ -239,7 +264,7 @@
       // this.checkButtonOne = 7
       // this.checkButtonTwo = 8
       this.initListSearch()
-      this.initDetailSearch()
+      // this.initDetailSearch()
     },
     methods: {
       //获取代理列表
@@ -274,6 +299,9 @@
           pageNum: this.pageNum,
           pageSize: this.pageSize,
           errType: this.isSuccess == null || this.isSuccess == 1 ? null : this.getParam()
+        }
+        if (params.airCPCode==null||params.airCPCode==''){
+          return;
         }
         this.$http.post(this.$service.trackDetail, params).then(data => {
           if (data.code == 200) {
@@ -325,7 +353,7 @@
           this.accessDate = []
         }
         this.initListSearch()
-        this.initDetailSearch()
+        // this.initDetailSearch()
       },
       isSupport(type) {
         if (type === 1) {
@@ -415,7 +443,7 @@
         return val1 - val2
       },
       tableRowClassName({row, rowIndex}) {
-        if (row.rate == '0.0') {
+        if (row.isSupport == '0') {
           return 'warning-row';
         } else if (rowIndex % 2 == 0) {
           return 'row1';
@@ -428,8 +456,24 @@
         let val1 = obj1.rate
         let val2 = obj2.rate
         return val1 - val2
-      }
-
+      },
+      companyMethod(keyWord) {
+        this.initCompanySearchByPage(keyWord)
+      },
+      //航司公司
+      initCompanySearchByPage(keyWord) {
+        if (!keyWord) {
+          keyWord = ''
+        }
+        this.$http.get(this.$service.companySearchByPage + '?keyWord=' + keyWord).then((data) => {
+          this.loading = false
+          if (data.code == 200) {
+            this.airCompanyCodeOpt = data.data.records
+          } else {
+            this.$message.error(data.message)
+          }
+        })
+      },
     },
     watch: {
       tableData(idx) {
