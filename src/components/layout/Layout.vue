@@ -1,8 +1,11 @@
 <template>
   <div class="app-wrapper">
+    <div class="arrowsImg" v-if="isShow" @click="switchover">
+      <img :src="srcImg" alt="">
+    </div>
     <navbar/>
-    <div style="display: flex;width: 100%;">
-      <sidebar class="sidebar-container"/>
+    <div style="display: flex;width: 100%;" @mouseover="mouseOver">
+      <sidebar :class="['sidebar-container', leftWidth ? 'sidebar-width' : '']"/>
       <div class="main-container">
         <crumb/>
         <router-view v-if="!$route.meta.keepAlive"/>
@@ -24,6 +27,36 @@ export default {
     Navbar,
     Sidebar,
     Crumb
+  },
+  data() {
+    return {
+      isShow: false,
+      leftWidth: false,
+      srcImg: require('../../assets/zankai.png')
+    }
+  },
+  methods: {
+    mouseOver(event) {
+      if (event.clientX < 230) {
+        this.isShow = true;
+        if (this.leftWidth) {
+          this.srcImg = require('../../assets/shou.png');
+        } else {
+          this.srcImg = require('../../assets/zankai.png');
+        }
+
+      } else {
+        this.isShow = false;
+      }
+    },
+    switchover() {
+      this.leftWidth = !this.leftWidth;
+      if (this.leftWidth) {
+        this.srcImg = require('../../assets/shou.png');
+      } else {
+        this.srcImg = require('../../assets/zankai.png');
+      }
+    }
   }
 }
 </script>
@@ -33,6 +66,19 @@ export default {
   position: relative;
   height: 100%;
   width: 100%;
+  .arrowsImg {
+    position: absolute;
+    left: 0;
+    top: 64px;
+    z-index: 10;
+    img {
+      width: 40px;
+      height: 40px;
+    }
+  }
+  .sidebar-width {
+    flex: 0 0 230px !important;
+  }
   .sidebar-wrapper {
     /deep/
     .el-scrollbar__wrap {
@@ -45,7 +91,9 @@ export default {
         overflow-x: auto;
       }
     }
-    flex: 0 0 230px;
+    flex: 0 0 0;
+    // width: 230px;
+    transition: flex 1s;
     overflow: hidden;
     background: #fff;
     /deep/
@@ -99,7 +147,8 @@ export default {
     }
   }
   .main-container {
-    width: calc(100% - 230px);
+    // width: calc(100% - 230px);
+    width: 100%;
     box-sizing: border-box;
     // margin-left: 230px;
 
