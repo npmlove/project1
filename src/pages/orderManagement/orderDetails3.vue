@@ -882,7 +882,6 @@
         mscsName: '',
         agentName: '',
         activityCodeDoing: '',
-        activityCodeDoing: '',
         updateTime: '',
         timeOut: '',
         h: '',
@@ -1834,7 +1833,6 @@
           if(data.code == 200){
             this.detailsArr = data.data
             var data = data.data
-
             this.statusDesc = data.statusDesc
             this.status = data.status
             this.pscsName = data.pscsName
