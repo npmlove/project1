@@ -2,7 +2,31 @@
   <div class="content-wrapper">
     <el-form :inline="true" size="medium" class="demo-form-inline">
       <div class="content-search-normal">
-        <el-form-item label="访问日期">
+
+
+          <el-form-item label="访问日期" label-width="100px">
+            <el-date-picker
+              style="width:165px"
+              v-model="startAccessDate"
+              type="date"
+              :picker-options="pickerOptionsStartOne"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期">
+            </el-date-picker >-
+            <el-date-picker
+              style="width:165px"
+              v-model="endAccessDate"
+              type="date"
+              :picker-options="pickerOptionsEndOne"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+
+
+
+
+<!--        <el-form-item label="访问日期">
           <el-date-picker
             v-model="accessDate"
             type="daterange"
@@ -12,7 +36,7 @@
             start-placeholder="起始日期"
             end-placeholder="结束日期">
           </el-date-picker>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item>
           <el-row>
             <el-button @click="chooseDate(1);checkButton=1;clickHandler($event)"
@@ -190,7 +214,7 @@
         <el-table-column prop="awb" label="运单号" min-width="80"></el-table-column>
         <el-table-column prop="errMessage" label="查询结果" min-width="80">
           <template slot-scope="scope">
-            {{ scope.row.isSuccessed == 1 ? "成功" : scope.row.errMessage }}
+            {{ scope.row.isSuccessed == 1 ? "成功" : scope.row.failType==1?'不支持该航司':scope.row.failType==2?'官网访问失败':scope.row.failType==3?'未找到该单号':'未知错误' }}
           </template>
         </el-table-column>
         <el-table-column prop="repAirNeedTime" label="查询时长(s)" min-width="80"></el-table-column>
@@ -268,7 +292,25 @@
           }
           ]
         },
-        accessDate: [],
+        // 限制结束日期大于开始日期
+        pickerOptionsStartOne: {
+          disabledDate: (time) => {
+            let endDateVal = this.endAccessDate;
+            if (endDateVal) {
+              return time.getTime() > new Date(endDateVal).getTime();
+            }
+          },
+        },
+        pickerOptionsEndOne: {
+          disabledDate: (time) => {
+            let beginDateVal = this.startAccessDate;
+            if (beginDateVal) {
+              return time.getTime() < new Date(beginDateVal).getTime();
+            }
+          },
+        },
+        startAccessDate:'',
+        endAccessDate:'',
         accessDay: [],
         support: null,
         labelPosition: 'right',
@@ -277,8 +319,8 @@
       }
     },
     mounted() {
-      this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime())
-      this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
+      this.startAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime())
+      this.endAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
       // this.checkButton = 1
       // this.checkButtonOne = 7
       // this.checkButtonTwo = 8
@@ -292,8 +334,8 @@
         this.tableData = []
 
         var params = {
-          fromDate: this.accessDate.length == 0 ? this.accessDay[0] : this.accessDate[0] + " 00:00:00",
-          toDate: this.accessDate.length == 0 ? this.accessDay[1] : this.accessDate[1] + " 23:59:59",
+          fromDate: this.startAccessDate==''||this.startAccessDate==null ? this.startAccessDate : this.startAccessDate + " 00:00:00",
+          toDate: this.endAccessDate==''||this.endAccessDate==null ? this.endAccessDate : this.endAccessDate + " 23:59:59",
         }
         this.$http.post(this.$service.trackList, params).then(data => {
           if (data.code == 200) {
@@ -314,8 +356,8 @@
       initDetailSearch(airCPCode, isSuccess) {
 
         var params = {
-          fromDate: this.accessDate.length == 0 ? this.accessDay[0] : this.accessDate[0] + " 00:00:00",
-          toDate: this.accessDate.length == 0 ? this.accessDay[1] : this.accessDate[1] + " 23:59:59",
+          fromDate: this.startAccessDate==''||this.startAccessDate==null ? this.startAccessDate : this.startAccessDate + " 00:00:00",
+          toDate: this.endAccessDate==''||this.endAccessDate==null ? this.endAccessDate : this.endAccessDate + " 23:59:59",
           awb: airCPCode == null ? this.awb == "" ? null : this.awb : null,
           airCPCode: airCPCode != null ? airCPCode : this.airCPCode == "" ? null : this.airCPCode,
           isSuccess: isSuccess == null ? this.isSuccess : isSuccess,
@@ -355,23 +397,23 @@
         this.awb = null
         this.airCPCode = null
         if (type === 1) {
-          this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime())
-          this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
+          this.startAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime())
+          this.endAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
           this.checkButtonOne = 7
           this.accessDate = []
         } else if (type === 2) {
-          this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime() - 24 * 60 * 60 * 1000);
-          this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() - 1);
+          this.startAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() - 24 * 60 * 60 * 1000);
+          this.endAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() - 1);
           this.checkButtonOne = 7
           this.accessDate = []
         } else if (type === 3) {
-          this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime() - 7 * 24 * 60 * 60 * 1000);
-          this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
+          this.startAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() - 7 * 24 * 60 * 60 * 1000);
+          this.endAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
           this.checkButtonOne = 7
           this.accessDate = []
         } else if (type === 4) {
-          this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime() - 30 * 24 * 60 * 60 * 1000);
-          this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
+          this.startAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() - 30 * 24 * 60 * 60 * 1000);
+          this.endAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
           this.checkButtonOne = 7
           this.accessDate = []
         }
