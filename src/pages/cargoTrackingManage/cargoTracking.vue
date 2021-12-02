@@ -131,7 +131,6 @@
 </template>
 
 <script>
-<<<<<<< HEAD
 import Table from '@/components/Table'
 import {
   toData
@@ -197,6 +196,9 @@ export default {
   methods: {
     //获取代理列表
     initListSearch(isSupport) {
+      this.detailData = []
+      this.tableData = []
+
       var params = {
         fromDate: this.accessDate.length == 0 ? this.accessDay[0] : this.accessDate[0] + " 00:00:00",
         toDate: this.accessDate.length == 0 ? this.accessDay[1] : this.accessDate[1] + " 23:59:59",
@@ -207,52 +209,6 @@ export default {
             data.data.airCompanyDate = data.data.airCompanyDate.filter(item => item.isSupport == 1)
           } else if (isSupport === 2) {
             data.data.airCompanyDate = data.data.airCompanyDate.filter(item => item.isSupport != 1)
-=======
-  import Table from '@/components/Table'
-  import {
-    toData
-  } from '@/util/assist'
-
-  export default {
-
-    data() {
-      return {
-        //table
-        failTypeList: ['不支持该航司', '官网访问失败', '未找到该单号', '未知错误'],
-        failType1: true,
-        failType2: true,
-        failType3: true,
-        failType4: true,
-        checkButton: 1,
-        errType: [1, 2, 3, 4],
-        visible: false,
-        checkButtonOne: 7,
-        checkButtonTwo: 8,
-        isSuccess: null,
-        tableData: [],
-        detailData: [],
-        airCompanyCodeOpt: [],
-        pageSize: 10,
-        pageNum: 1,
-        total: 0,
-        awb: null,
-        totalNum: 0,
-        succRate: 0,
-        failRate: 0,
-        detailsTotalNum: 0,
-        detailsSuccRate: 0,
-        detailsFailRate: 0,
-        airCPCode: null,
-        // 列
-        // 操作
-        operation: {
-          show: true,
-          label: '操作',
-          width: '160',
-          options: [{
-            label: '查看',
-            method: 'edit'
->>>>>>> 483d1a9e438cafdf9200f47c1f9da2bdefddffd2
           }
           this.tableData = data.data.airCompanyDate
           this.totalNum = data.data.totalNum
@@ -264,6 +220,7 @@ export default {
       })
     },
     initDetailSearch(airCPCode, isSuccess) {
+
       var params = {
         fromDate: this.accessDate.length == 0 ? this.accessDay[0] : this.accessDate[0] + " 00:00:00",
         toDate: this.accessDate.length == 0 ? this.accessDay[1] : this.accessDate[1] + " 23:59:59",
@@ -273,6 +230,9 @@ export default {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
         errType: this.isSuccess == null || this.isSuccess == 1 ? null : this.getParam()
+      }
+      if ((params.airCPCode == null || params.airCPCode == '') && (params.awb == null || params.awb == '')) {
+        return;
       }
       this.$http.post(this.$service.trackDetail, params).then(data => {
         if (data.code == 200) {
@@ -326,7 +286,6 @@ export default {
       this.initListSearch()
       // this.initDetailSearch()
     },
-<<<<<<< HEAD
     isSupport(type) {
       if (type === 1) {
         this.initListSearch(type)
@@ -357,6 +316,8 @@ export default {
       this.pageSize = 10
       this.pageNum = 1
       this.initDetailSearch(null, isSuccess)
+      this.initListSearch()
+
     },
     //清空
     format(date) {
@@ -376,10 +337,14 @@ export default {
       this.awb = null
       this.accessDate[0] = this.format(new Date(new Date().toLocaleDateString()).getTime())
       this.accessDate[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
-
+      this.checkButton = 1
+      this.checkButtonOne = 7
+      this.checkButtonTwo = 8
       this.pageSize = 10
       this.pageNum = 1
-      this.searchClick(0)
+      this.tableData = []
+      this.detailData = []
+      this.initListSearch()
     },
     // 页码跳转
     handleCurrent(e) {
@@ -389,226 +354,65 @@ export default {
     handleSize(e) {
       this.pageSize = e
       this.initDetailSearch(null, this.isSuccess)
-=======
-    methods: {
-      //获取代理列表
-      initListSearch(isSupport) {
-        this.detailData=[]
-        this.tableData=[]
+    },
+    //操作
+    handleClick(row) {
+      // this.airCPCode = row.airCPCode
+      this.checkButtonTwo = 8
+      this.awb = null
+      this.airCPCode = row.airCPCode
+      this.isSuccess = null
+      this.initDetailSearch()
+    },
+    sortByDate1(obj1, obj2) {
+      let val1 = obj1.totalNum
+      let val2 = obj2.totalNum
+      return val1 - val2
+    },
+    sortByDate2(obj1, obj2) {
+      let val1 = obj1.successNum
+      let val2 = obj2.successNum
+      return val1 - val2
+    },
+    sortByDate3(obj1, obj2) {
+      let val1 = obj1.failNum
+      let val2 = obj2.failNum
+      return val1 - val2
+    },
+    tableRowClassName({
+      row,
+      rowIndex
+    }) {
+      if (row.isSupport == '0') {
+        return 'warning-row';
+      } else if (rowIndex % 2 == 0) {
+        return 'row1';
+      } else {
+        return 'row2';
 
-        var params = {
-          fromDate: this.accessDate.length == 0 ? this.accessDay[0] : this.accessDate[0] + " 00:00:00",
-          toDate: this.accessDate.length == 0 ? this.accessDay[1] : this.accessDate[1] + " 23:59:59",
-        }
-        this.$http.post(this.$service.trackList, params).then(data => {
-          if (data.code == 200) {
-            if (isSupport === 1) {
-              data.data.airCompanyDate = data.data.airCompanyDate.filter(item => item.isSupport == 1)
-            } else if (isSupport === 2) {
-              data.data.airCompanyDate = data.data.airCompanyDate.filter(item => item.isSupport != 1)
-            }
-            this.tableData = data.data.airCompanyDate
-            this.totalNum = data.data.totalNum
-            this.succRate = data.data.succRate
-            this.failRate = data.data.failRate
-          } else {
-            this.$message.error(data.message)
-          }
-        })
-      },
-      initDetailSearch(airCPCode, isSuccess) {
-
-        var params = {
-          fromDate: this.accessDate.length == 0 ? this.accessDay[0] : this.accessDate[0] + " 00:00:00",
-          toDate: this.accessDate.length == 0 ? this.accessDay[1] : this.accessDate[1] + " 23:59:59",
-          awb: airCPCode == null ? this.awb == "" ? null : this.awb : null,
-          airCPCode: airCPCode != null ? airCPCode : this.airCPCode == "" ? null : this.airCPCode,
-          isSuccess: isSuccess == null ? this.isSuccess : isSuccess,
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
-          errType: this.isSuccess == null || this.isSuccess == 1 ? null : this.getParam()
-        }
-        if ((params.airCPCode == null || params.airCPCode == '')&&(params.awb == null||params.awb == '')) {
-          return;
-        }
-        this.$http.post(this.$service.trackDetail, params).then(data => {
-          if (data.code == 200) {
-            this.total = params.isSuccess == 0 ? data.data.detFailTimes :
-              params.isSuccess == 1 ? data.data.detSuccTimes
-                : data.data.detailsTotalNum;
-            this.detailsTotalNum = data.data.detailsTotalNum
-            this.detailsSuccRate = data.data.detailsSuccRate
-            this.detailsFailRate = data.data.detailsFailRate
-            this.detailData = data.data.monitors;
-          } else {
-            this.$message.error(data.message)
-          }
-        })
-      },
-
-      clickHandler(evt) {
-        let target = evt.target;
-        if (target.nodeName == "SPAN") {
-          target = evt.target.parentNode;
-        }
-        if (target.nodeName == "I") {
-          target = evt.target.parentNode.parentNode;
-        }
-        target.blur();
-      },
-      chooseDate(type) {
-        this.awb = null
-        this.airCPCode = null
-        if (type === 1) {
-          this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime())
-          this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
-          this.checkButtonOne = 7
-          this.accessDate = []
-        } else if (type === 2) {
-          this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime() - 24 * 60 * 60 * 1000);
-          this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() - 1);
-          this.checkButtonOne = 7
-          this.accessDate = []
-        } else if (type === 3) {
-          this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime() - 7 * 24 * 60 * 60 * 1000);
-          this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
-          this.checkButtonOne = 7
-          this.accessDate = []
-        } else if (type === 4) {
-          this.accessDay[0] = this.format(new Date(new Date().toLocaleDateString()).getTime() - 30 * 24 * 60 * 60 * 1000);
-          this.accessDay[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
-          this.checkButtonOne = 7
-          this.accessDate = []
-        }
-        this.initListSearch()
-        // this.initDetailSearch()
-      },
-      isSupport(type) {
-        if (type === 1) {
-          this.initListSearch(type)
+      }
+    },
+    sortByDate4(obj1, obj2) {
+      let val1 = obj1.rate
+      let val2 = obj2.rate
+      return val1 - val2
+    },
+    companyMethod(keyWord) {
+      this.initCompanySearchByPage(keyWord)
+    },
+    //航司公司
+    initCompanySearchByPage(keyWord) {
+      if (!keyWord) {
+        keyWord = ''
+      }
+      this.$http.get(this.$service.companySearchByPage + '?keyWord=' + keyWord).then((data) => {
+        this.loading = false
+        if (data.code == 200) {
+          this.airCompanyCodeOpt = data.data.records
         } else {
-          this.initListSearch(type)
+          this.$message.error(data.message)
         }
-      },
-      //查询
-      getParam() {
-        var result = '';
-        this.errType.forEach(x => result = result + x + ",")
-        var x = result.substring(0, result.length - 1)
-        return x.length == 0 ? "1,2,3,4" : x
-      },
-      searchClick(isSuccess) {
-
-        if (isSuccess === 1) {
-          this.visible = false
-          this.checkButtonTwo = 9
-        } else if (isSuccess === 0) {
-          this.checkButtonTwo = 10
-        } else if (isSuccess === 2 || isSuccess === 3) {
-          this.visible = false
-          this.checkButtonTwo = 8
-          isSuccess = null
-        }
-        this.isSuccess = isSuccess
-        this.pageSize = 10
-        this.pageNum = 1
-        this.initDetailSearch(null, isSuccess)
-        this.initListSearch()
-
-      },
-      //清空
-      format(date) {
-        //shijianchuo是整数，否则要parseInt转换
-        var time = new Date(date);
-        var y = time.getFullYear();
-        var m = time.getMonth() + 1;
-        var d = time.getDate();
-        var h = time.getHours();
-        var mm = time.getMinutes();
-        var s = time.getSeconds();
-        return y + '-' + m + '-' + d + ' ' + h + ':' + mm + ':' + s;
-      },
-      //清空
-      restClick() {
-        this.airCPCode = null
-        this.awb = null
-        this.accessDate[0] = this.format(new Date(new Date().toLocaleDateString()).getTime())
-        this.accessDate[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
-        this.checkButton = 1
-        this.checkButtonOne = 7
-        this.checkButtonTwo = 8
-        this.pageSize = 10
-        this.pageNum = 1
-        this.tableData=[]
-        this.detailData=[]
-        this.initListSearch()
-      },
-      // 页码跳转
-      handleCurrent(e) {
-        this.pageNum = e
-        this.initDetailSearch(null, this.isSuccess)
-      },
-      handleSize(e) {
-        this.pageSize = e
-        this.initDetailSearch(null, this.isSuccess)
-      },
-      //操作
-      handleClick(row) {
-        // this.airCPCode = row.airCPCode
-        this.checkButtonTwo = 8
-        this.awb = null
-        this.airCPCode = row.airCPCode
-        this.isSuccess = null
-        this.initDetailSearch()
-      },
-      sortByDate1(obj1, obj2) {
-        let val1 = obj1.totalNum
-        let val2 = obj2.totalNum
-        return val1 - val2
-      },
-      sortByDate2(obj1, obj2) {
-        let val1 = obj1.successNum
-        let val2 = obj2.successNum
-        return val1 - val2
-      },
-      sortByDate3(obj1, obj2) {
-        let val1 = obj1.failNum
-        let val2 = obj2.failNum
-        return val1 - val2
-      },
-      tableRowClassName({row, rowIndex}) {
-        if (row.isSupport == '0') {
-          return 'warning-row';
-        } else if (rowIndex % 2 == 0) {
-          return 'row1';
-        } else {
-          return 'row2';
-
-        }
-      },
-      sortByDate4(obj1, obj2) {
-        let val1 = obj1.rate
-        let val2 = obj2.rate
-        return val1 - val2
-      },
-      companyMethod(keyWord) {
-        this.initCompanySearchByPage(keyWord)
-      },
-      //航司公司
-      initCompanySearchByPage(keyWord) {
-        if (!keyWord) {
-          keyWord = ''
-        }
-        this.$http.get(this.$service.companySearchByPage + '?keyWord=' + keyWord).then((data) => {
-          this.loading = false
-          if (data.code == 200) {
-            this.airCompanyCodeOpt = data.data.records
-          } else {
-            this.$message.error(data.message)
-          }
-        })
-      },
->>>>>>> 483d1a9e438cafdf9200f47c1f9da2bdefddffd2
+      })
     },
     //操作
     handleClick(row) {
@@ -666,7 +470,8 @@ export default {
 </script>
 
 <style>
-<<<<<<< HEAD
+
+
 @import url("../../assets/icon/iconfont.css");
 
 .content-wrapper {
@@ -717,25 +522,13 @@ export default {
 .divleft {
   float: left;
   width: 49%;
-  border: 1px solid #fff;
-  height: 660px;
-  background: #FFFFFF;
-  margin-top: 20px;
-  padding: 10px;
-  overflow-y: auto;
-  box-sizing: border-box;
+  border: 1px solid #fff
 }
 
 .divright {
-  box-sizing: border-box;
-  padding: 10px;
-  margin-top: 20px;
   float: right;
   width: 50%;
-  border: 1px solid #fff;
-  height: 660px;
-  overflow-y: auto;
-  background: #FFFFFF;
+  border: 1px solid #fff
 }
 
 .buttonColor1 {
@@ -768,94 +561,6 @@ export default {
   background: #2273ce;
   color: #FFFFFF;
 }
-=======
-  @import url("../../assets/icon/iconfont.css");
-
-  .content-wrapper {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 20px;
-    overflow: hidden;
-    background-color: #f3f6f9 !important;
-  }
-
-  .el-table .warning-row {
-    background: #f28080;
-  }
-
-  .el-table .row1 {
-    background: #ffffff;
-  }
-
-  .el-table .row2 {
-    background: #F9F9F9;
-  }
-
-  .el-form {
-    background-color: #FFF;
-  }
-
-  .el-form--inline .el-form-item {
-    margin-bottom: 0;
-    vertical-align: bottom;
-  }
-
-  .wrapper, .content {
-    width: 100%;
-    background-color: #fff;
-  }
-
-  .content-search-normal {
-    padding: 20px !important;
-    background: #fff;
-  }
-
-  .el-dialog {
-    width: 300px;
-    min-width: 500px !important;
-  }
-
-  .divleft {
-    float: left;
-    width: 49%;
-    border: 1px solid #fff
-  }
-
-  .divright {
-    float: right;
-    width: 50%;
-    border: 1px solid #fff
-  }
-
-  .buttonColor1 {
-    background: #2273ce;
-    color: #FFFFFF;
-  }
-
-  .buttonColor2 {
-    background: #FFFFFF;
-    color: #2273ce
-  }
-
-  /*鼠标点击后移开，恢复本身样式*/
-  .buttonDiv, .buttonDiv:focus:not(.buttonDiv:hover) {
-    color: #FFFFFF;
-    background: #2273ce;
-  }
-
-  /*鼠标悬浮，没有按下；鼠标按下后抬起，没有移开*/
-  .buttonDiv:focus, .buttonDiv:hover {
-    background: #2273ce;
-    border: 1px solid #2794f8 !important;
-    color: #FFFFFF;
-  }
-
-  /*鼠标按下，没有抬起*/
-  .buttonDiv:active {
-    background: #2273ce;
-    color: #FFFFFF;
-  }
 
 
->>>>>>> 483d1a9e438cafdf9200f47c1f9da2bdefddffd2
 </style>
