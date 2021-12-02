@@ -187,7 +187,29 @@ const serviceApi = {
   //查询
   search: pulicWeb + '/t-order-payment/search',
   //导出核销明细对账单
-  exportWriteOffExcel: pulicWeb + '/t-payment-write-off/exportWriteOffExcel'
+  exportWriteOffExcel: pulicWeb + '/t-payment-write-off/exportWriteOffExcel',
+  //应收统计 -查询
+  receivableSearch: pulicWeb + '/t-rcv-records/searchByPage',
+  //应收统计 - 导出列表
+  exportWoListExcel: pulicWeb + '/t-rcv-records/exportWoListExcel',
+   //应收统计 - 数据统计
+   receivableSum: pulicWeb + '/t-rcv-records/sumList',
+  //应收统计 - 核销弹框点击
+  getWoFrameData: pulicWeb + '/t-rcv-records/getWoFrameData',
 
+   // 查询应付信息列表
+   searchWoByPageBill: pulicWeb + '/t-order-payment/searchWoByPage',
+   // 对账导入excel
+   importExcel: pulicWeb + '/t-order-payment/importExcel',
+   //  导出失败对账单
+   exportErrExcel: pulicWeb + '/t-order-payment/exportErrExcel',
+   // 对账单对账接口
+   toReconciliation: pulicWeb + "/t-order-payment/toReconciliation",
+   //  输入对账接口
+   toEnterReconciliation: pulicWeb +'/t-order-payment/toEnterReconciliation',
+   // 核销
+   writeOff: pulicWeb + '/t-payment-write-off/writeOff',
+   //  应付导出excel
+   billExportExcel: pulicWeb + '/t-order-payment/exportExcel',
 }
 export default serviceApi
