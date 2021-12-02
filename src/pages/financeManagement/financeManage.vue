@@ -594,7 +594,7 @@
           :columns="columns1"
           :showSelection="false"
           :operation="operation"
-          :cell-style="dialTableClassName"
+          :cellStyle="dialTableClassName"
           @orderDetails="orderDetails"
         >
         </Table>
@@ -616,7 +616,7 @@
         <Table
           :tableData="apData"
           :columns="columns2"
-          :cell-style="dialTableClassName"
+          :cellStyle="dialTableClassName"
           :showSelection="false"
           :operation="operation"
           @orderDetails="orderDetails"
@@ -942,13 +942,19 @@ export default {
     this.operateData()
   },
   methods: {
-    // dialTableClassName({row,rowIndex}){
-    //   if(true){
-    //     return {position:relative,
-        
-    //     }
-    //   }
-    // },
+    dialTableClassName({row,rowIndex,column,columnIndex}){
+      if(this.orderFinanceStatus ==3 && row.modifyColumn) {
+        if(row.modifyColumn ==-1){
+          return `text-decoration:line-through;text-decoration-color:red;`
+        } 
+        else if(row.modifyColumn == 0) {
+          return 'background-color: #169bd5';
+        }
+        else if (row.modifyColumn.split(",").indexOf(String(columnIndex))>-1){
+          return 'background-color: #169bd5';
+        }
+      }
+    },
      tableRowClassName({row, rowIndex}) {
         // if(row.orderProfit > 0  )
       if (row.orderProfit<0 &&  row.orderProfit>-200 ) {
@@ -1426,9 +1432,7 @@ export default {
 
 <style scoped lang="less">
 @import url("../../assets/icon/iconfont.css");
-.table-cell {
-  background-color: blue;
-}
+
 /deep/.pageSkip {
         padding:3px 5px!important
   }

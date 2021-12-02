@@ -6,8 +6,9 @@
       @sort-change="handleSort"
       @selection-change="handleSelect"
       :data="tableData"
+      :cell-style="cellStyle"
       :header-cell-style="{textAlign:'center'}"
-      :cell-style="{textAlign:'center',fontSize:'12px'}"
+      
 
       style="width: 100% ;"
     >
@@ -74,6 +75,11 @@
                <div>客服：{{ scope.row.operator.split(",")[1] }}</div>
                 <div>销售：{{ scope.row.operator.split(",")[0] }}</div>
                 <div>航线：{{ scope.row.operator.split(",")[2] }}</div>
+            </span>
+             <span v-else-if="column.prop == 'operation' && column.label == '操作人员'" style="text-align:left">
+               <div>售前：{{ scope.row.operation.split(",")[0] }}</div>
+                <div>售中：{{ scope.row.operation.split(",")[1] }}</div>
+                <div>航线：{{ scope.row.operation.split(",")[2] }}</div>
             </span>
               <span v-else-if=" column.label == '汇率'">
               {{ getExchangeRate(scope.row.exchangeRate) }}
@@ -145,6 +151,12 @@
       tableData: {
         type: Array,
         default: () => []
+      },
+      cellStyle:{
+        type:Object,
+        default:()=>{
+          return {textAlign:'center',fontSize:'12px'}
+        }
       },
       //显示选择框
       showSelection:{
