@@ -1856,7 +1856,9 @@
             this.airCompanyCode = data.airCompanyCode
             this.airCompanyName = data.airCompanyName
             this.bookingPrice = data.bookingPrice
-            this.fullLeg = data.fullLeg
+            let fullLeg = data.fullLeg.split(',');
+            this.fullLeg = fullLeg.join('-');
+            // this.fullLeg = data.fullLeg
             this.bubblePoint = data.bubblePoint.toString()
             this.departureDate = data.departureDate
             this.agentId = data.agentId+'#'+data.agentName
