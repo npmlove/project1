@@ -1,751 +1,892 @@
 <template>
   <div class="content-wrapper">
-    <div class="content">
-      <el-form :inline="true" size="medium" class="demo-form-inline">
-        <div class="content-search-normal">
-          <el-form-item>
-            <el-input v-model="orderNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入订单号"></el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-input v-model="waybillNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入运单号"></el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-input v-model="inboundNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入订舱客户"></el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-input v-model="inboundNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入代理上家"></el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入航司" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-date-picker
-              type="daterange"
-              range-separator="至"
-              start-placeholder="航班开始日期"
-              end-placeholder="航班结束日期">
-            </el-date-picker>
-          </el-form-item>
-
-          <el-form-item>
-            <el-date-picker
-              type="daterange"
-              range-separator="至"
-              start-placeholder="交单开始日期"
-              end-placeholder="交单结束日期">
-            </el-date-picker>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="pol" placeholder="起运港三字码" :remote-method="polMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="(item,index) in polOpt"
-                :disabled="pod == item.threeLetterCode"
-                :key="item.threeLetterCode"
-                :value="item.threeLetterCode">
-                <span>{{item.threeLetterCode}}</span>
-                <span style="margin-left: 5px;">{{item.name}}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="pod" placeholder="目的港三字码" :remote-method="podMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in podOpt"
-                :disabled="pol == item.threeLetterCode"
-                :key="item.threeLetterCode"
-                :value="item.threeLetterCode">
-                <span>{{item.threeLetterCode}}</span>
-                <span style="margin-left: 5px;">{{item.name}}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="开票进度" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入客服" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入销售" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入航线" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="agentId" placeholder="请输入操作" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in agentOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-
-          <el-form-item>
-            <el-row>
-              <el-button @click="searchClick" size="medium" type="primary" icon="el-icon-search">查询</el-button>
-              <el-button @click="restClick" size="medium" type="primary">清空</el-button>
-            </el-row>
-          </el-form-item>
-        </div>
-      </el-form>
-      <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData">
-        <el-tab-pane label="全部" name="全部">
-          <el-table
-              :data="tableData"
-              border
-              stripe
-              header
-              class="finance-talbe"
-              style="width: 100%">
-              <template slot="empty">
-                <img class="data-pic" src="../../assets/kong-icon.png"/>
-                <p>暂无数据</p>
-              </template>
-              <el-table-column type="selection" width="50"></el-table-column>
-              <el-table-column prop="date1" label="订单号" min-width="80"></el-table-column>
-              <el-table-column prop="date2" label="运单号" min-width="80"></el-table-column>
-              <el-table-column prop="date3" label="航班日期" min-width="80"></el-table-column>
-              <el-table-column prop="date4" label="交单时间" min-width="80"></el-table-column>
-              <el-table-column prop="date5" label="订舱客户" min-width="80"></el-table-column>
-              <el-table-column prop="date6" label="代理上家" min-width="80"></el-table-column>
-              <el-table-column prop="date7" label="航司" width="50"></el-table-column>
-              <el-table-column prop="date8" label="起运港" width="60"></el-table-column>
-              <el-table-column prop="date9" label="目的港" width="60"></el-table-column>
-              <el-table-column label="货物信息" min-width="80">
-                <template slot-scope="scope">
-                  <div>发动机</div>
-                  <div>1PCS</div>
-                  <div>20CBM</div>
-                  <div>500KGS</div>
-                  <div>1:25</div>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作人员" min-width="80">
-                <template slot-scope="scope">
-                  <div>客服：张三</div>
-                  <div>销售：李四</div>
-                  <div>航线：王五</div>
-                  <div>操作：赵六</div>
-                </template>
-              </el-table-column>
-              <el-table-column label="应收金额">
-                <el-table-column prop="date12" label="人民币" min-width="80"></el-table-column>
-                <el-table-column prop="date13" label="原币" min-width="80"></el-table-column>
-              </el-table-column>
-              <el-table-column label="应付金额">
-                <el-table-column prop="date14" label="人民币" min-width="80"></el-table-column>
-                <el-table-column prop="date15" label="原币" min-width="80"></el-table-column>
-              </el-table-column>
-              <el-table-column prop="date16" label="利润" min-width="150"></el-table-column>
-              <el-table-column prop="date17" label="汇率" width="50"></el-table-column>
-              <el-table-column prop="date18" label="开票进度" min-width="80"></el-table-column>
-              <el-table-column prop="date19" label="开票金额" min-width="80"></el-table-column>
-              <el-table-column prop="date20" label="订单状态" min-width="80"></el-table-column>
-            </el-table>
-        </el-tab-pane>
-        <el-tab-pane label="已交单" name="1">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-        <el-tab-pane label="未交单" name="2">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-        <el-tab-pane label="修改申请" name="3">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-        <el-tab-pane label="修改审核" name="4">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-        <el-tab-pane label="异常" name="5">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-      </el-tabs>
-    </div>
-    <el-dialog title="订单" :visible.sync="dialogFormVisible" width="80%">
-      <el-tabs style="margin: 20px 0;" v-model="typeCode" type="border-card" @tab-click="tabClickData">
-        <el-tab-pane label="全部" name="全部">
-          <div style="font-size: 18px;font-weight: 100;color: #333;padding: 0 20px 10px 20px;">应收账单</div>
-          <Table
-            :tableData='tableData'
-            :columns='columns1'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-          <div class="finance-table-price">
-            <div>账单合计：￥7000+$600</div>
-            <div>人民币合计：￥8625.5</div>
-            <div>结算方式：付款买单</div>
-          </div>
-          <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">应付账单</div>
-          <Table
-            :tableData='tableData'
-            :columns='columns2'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-          <div class="finance-table-price">
-            <div>账单合计：￥7000+$600</div>
-            <div>人民币合计：￥8625.5</div>
-            <div>订单利润：100</div>
-          </div>
-          <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">修改记录</div>
-          <Table
-            :tableData='tableData'
-            :columns='columns3'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-          <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;border-bottom: 1px dashed #999;">操作说明</div>
-          <el-input
-            type="textarea"
-            rows="2"
-            placeholder="请输入操作说明"
-            v-model="textarea2">
-          </el-input>
-        </el-tab-pane>
-        <el-tab-pane label="已交单" name="1">
-          <Table
-            :tableData='tableData'
-            :columns='columns'
-            :operation='operation'
-            :total='total'
-            :currentPage='pageNum'
-            :pageSize='pageSize'
-            @orderDetails="orderDetails"
-            @sizeChange='handleSizeChange'
-            @currentChange='handleCurrentChange'>
-          </Table>
-        </el-tab-pane>
-      </el-tabs>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">返 回</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确认解锁</el-button>
+    <el-form :inline="true" :model="formInline" size="small" class="demo-form-inline">
+      <el-form-item label="订单号">
+        <el-autocomplete
+          class="inline-input"
+          v-model="formInline.orderNo"
+          :fetch-suggestions="querySearch"
+          placeholder="请输入订单号"
+          :trigger-on-focus="false" >
+        </el-autocomplete>
+      </el-form-item>
+      <el-form-item label="运单号">
+        <el-autocomplete
+          class="inline-input"
+          v-model="formInline.waybillNo"
+          :fetch-suggestions="querySearch"
+          placeholder="请输入订单号"
+          :trigger-on-focus="false" >
+        </el-autocomplete>
+      </el-form-item>
+      <el-form-item label="应付对象">
+        <el-input v-model="formInline.customerName" placeholder="请输入应付对象"></el-input>
+      </el-form-item>
+      <el-form-item label="订舱公司">
+        <el-select
+          v-model="formInline.pod"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入订舱公司名称"
+          :remote-method="remoteMethodFour">
+          <el-option
+            v-for="item in optionFour"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="代理上家">
+        <el-select
+          v-model="formInline.agentName"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入订舱代理上家"
+          :remote-method="remoteMethod">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="下单日期">
+         <el-date-picker
+          v-model="formInline.startOrderTime"
+          type="date"
+          :value-format='formatDate'
+          placeholder="开始">
+        </el-date-picker>-
+        <el-date-picker
+          v-model="formInline.endOrderTime"
+          type="date"
+          :value-format='formatDate'
+          placeholder="结束">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="航班日期">
+         <el-date-picker
+          v-model="formInline.startDepartureDate"
+          type="date"
+          :value-format='formatDate'
+          placeholder="开始">
+        </el-date-picker>-
+        <el-date-picker
+          v-model="formInline.endDepartureDate"
+          type="date"
+          :value-format='formatDate'
+          placeholder="结束">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="起运港">
+        <el-select
+          v-model="formInline.pol"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入起运港"
+          :remote-method="remoteMethodTwo">
+          <el-option
+            v-for="item in optionTwo"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="目的港">
+        <el-select
+          v-model="formInline.pod"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入目的港"
+          :remote-method="remoteMethodThree">
+          <el-option
+            v-for="item in optionThree"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="结算方式">
+        <el-select v-model="formInline.payWay" placeholder="请选择">
+          <el-option
+            v-for="item in payWayArray"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="核销状态">
+        <el-select v-model="formInline.payWriteOffStatus" placeholder="请选择">
+          <el-option
+            v-for="item in payWriteOffStatusArray"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="售前客服">
+        <el-select v-model="formInline.pscsId" placeholder="请选择">
+          <el-option
+            v-for="item in preSaleList"
+            :key="item.id"
+            :label="item.loginName"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="航线负责人">
+        <el-select v-model="formInline.principalId" placeholder="请选择">
+          <el-option
+            v-for="item in airLineList"
+            :key="item.id"
+            :label="item.loginName"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="售中客服">
+        <el-select v-model="formInline.mscsId" placeholder="请选择">
+          <el-option
+            v-for="item in onSaleList"
+            :key="item.id"
+            :label="item.loginName"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit">查询</el-button>
+        <el-button type="primary" @click="clearAllData">清空</el-button>
+      </el-form-item>
+    </el-form>
+    <el-row>
+      <el-col :span="12">
+          <el-radio-group v-model="woStatus" size="small" @change="radioEvent" >
+              <el-radio-button  label= '0' >可操作({{(countAuth)}})</el-radio-button>
+              <el-radio-button label= '1'>业务修改中({{countNoAuth}})</el-radio-button>
+              <el-radio-button label= '2'>异常({{(countErr)}})</el-radio-button>
+          </el-radio-group>
+      </el-col>
+      <el-col :span="12">
+          <el-button size="small" @click="fatherReconciliation">对账</el-button>
+          <el-button size="small" @click="fatherVerification">核销</el-button>
+          <el-button size="small" @click="exportBillList">导出列表</el-button>
+      </el-col>
+    </el-row>
+    <el-table
+      :data="tableData"
+      border='true'
+      stripe
+      max-height="600"
+      ref="multipleTable"
+      @select='clckOne'
+      style="width: 100%">
+      <el-table-column
+        type="index"
+        label="序号"
+        fixed
+        :index="indexMethod">
+      </el-table-column>
+      <el-table-column
+        type="selection"
+        fixed
+        width="55">
+      </el-table-column>
+      <el-table-column
+        prop="orderNo"
+        label="订单号"
+        width="140">
+      </el-table-column>
+      <el-table-column
+        prop="waybillNo"
+        label="运单号"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="expenseUnitName"
+        label="应收对象"
+        width="250">
+      </el-table-column>
+      <el-table-column
+        prop="departureDate"
+        label="航班日期"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="presentationTime"
+        label="交单时间"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        label="应收金额"
+        width="200">
+        <el-table-column
+          prop="totalArCny"
+          label="人民币"
+          width="100">
+        </el-table-column>
+        <el-table-column
+          prop="totalApOrgn.amount"
+          label="原币"
+          width="100">
+        </el-table-column>
+      </el-table-column>
+      <el-table-column
+        prop="payCheckAmount"
+        label="已对账金额"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="unreconciledAmount"
+        label="未对账金额"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        label="已核销金额"
+        width="200">
+        <el-table-column
+          prop="payWriteOffAmountRmb"
+          label="人民币"
+          width="100">
+        </el-table-column>
+        <el-table-column
+          prop="exchangeRate"
+          label="原币"
+          width="100">
+        </el-table-column>
+      </el-table-column>
+      <el-table-column
+        label="未核销金额"
+        width="200">
+        <el-table-column
+          prop="unwrittenOffAmountRmb"
+          label="人民币"
+          width="100">
+        </el-table-column>
+        <el-table-column
+          prop="unwrittenOffAmount"
+          label="原币"
+          width="100">
+        </el-table-column>
+      </el-table-column>
+      <el-table-column
+        prop="totalApCny"
+        label="应付总金额"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="orderProfit"
+        label="利润"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="exchangeRate"
+        label="汇率"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        label="结算方式"
+        width="100">
+        <template slot-scope="scope">
+          <span v-if="scope.row.payWay == 0">付款</span>
+          <span v-if="scope.row.payWay == 1">月结</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="核销次数"
+        width="100">
+        <template slot-scope="scope">
+          <span v-if="scope.row.payWriteOffCount > 0" style="cursor:pointer;color:rgb(97,180,120)" @click="recordsBtn(scope.row)">{{scope.row.payWriteOffCount}}</span>
+          <span v-else >{{scope.row.payWriteOffCount}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="核销状态"
+        width="100">
+        <template slot-scope="scope">
+          <span v-if="scope.row.payWriteOffStatus == 0">未核销</span>
+          <span v-if="scope.row.payWriteOffStatus == 1">已核销</span>
+          <span v-if="scope.row.payWriteOffStatus == 2">部分核销</span>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="footer">
+      <div>
+        <el-button  :type= slectAllDataButtonType @click="slectAllData">跨页全选</el-button>
+        <el-button  :type= computedDataType @click="calcSlectData">数据统计</el-button>
       </div>
+      <div>
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          layout="total,  prev, pager, next, jumper"
+          :total="pageTotal">
+        </el-pagination>
+      </div>
+    </div>
+    <div v-show="computedDataStatic" class="calcDataContont" >
+          <span>应付总金额{{dataStaticObj.totalApCny}}</span>
+          <span>应付已核销总金额{{dataStaticObj.totalApWoCny}}</span>
+          <span >
+              <span>应付未核销总金额</span>
+              <span class="fon" v-for="(item,index) in dataStaticObj.totalApWoOrgn" :key="index">               
+                  <span v-if="item.currency == 1"> {{item.amount}}CNY</span>
+                  <span v-if="item.currency == 2"> {{item.amount}}港币</span>
+                  <span v-if="item.currency == 3"> {{item.amount}}美元</span>
+                  <span v-if="item.currency == 4"> {{item.amount}}欧元</span>
+                  <span v-if="item.currency == 5"> {{item.amount}}英镑</span> 
+              </span>
+            </span>    
+          <span >
+            <span>应付原币</span>
+            <span class="fon" v-for='(item,index) in dataStaticObj.totalApOrgn' :key="index">
+                  <span v-if="item.currency == 1"> {{item.amount}}CNY</span>
+                  <span v-if="item.currency == 2"> {{item.amount}}港币</span>
+                  <span v-if="item.currency == 3"> {{item.amount}}美元</span>
+                  <span v-if="item.currency == 4"> {{item.amount}}欧元</span>
+                  <span v-if="item.currency == 5"> {{item.amount}}英镑</span> 
+            </span>
+          </span>
+          <span>应付已核销原币{{dataStaticObj.totalApUnwoCny}}</span>
+          <span  >
+            <span>应付未核销</span>
+            <span class="fon" v-for='(item,index) in dataStaticObj.totalApUnwoOrgn' :key="index">
+                  <span v-if="item.currency == 1"> {{item.amount}}CNY</span>
+                  <span v-if="item.currency == 2"> {{item.amount}}港币</span>
+                  <span v-if="item.currency == 3"> {{item.amount}}美元</span>
+                  <span v-if="item.currency == 4"> {{item.amount}}欧元</span>
+                  <span v-if="item.currency == 5"> {{item.amount}}英镑</span> 
+            </span>
+          </span>  
+    </div>
+    <!-- 对账模态框组件 -->
+    <reconciliation @farhersearch='onSubmit' :multipleselection= childPropsData ref="reconciliationData"/> 
+    <!-- 核销模态框组件 -->
+    <verification  @farhersearch2='onSubmit' :multipleselection= verificationData ref="verificationData" />
+    <!-- 点击核销次数模态框 -->
+    <el-dialog
+      title="应付核销操作记录"
+      :visible.sync="payWriteOffCountBoolen"
+      width="60%"
+      :before-close="handleClose">
+      <div class="diaModalClass">
+        <el-table
+          :data="payWriteOffCountData"
+          >
+          <el-table-column
+            type="index"
+            label="序号"
+            fixed
+            :index="indexMethod">
+          </el-table-column>
+          <el-table-column
+            prop="orderNo"
+            label="订单号"
+            width="140">
+          </el-table-column>
+          <el-table-column
+            prop="waybillNo"
+            label="运单号"
+            width="100">
+          </el-table-column>
+          <el-table-column
+            prop="expenseUnitName"
+            label="应收对象"
+            width="250">
+          </el-table-column>
+          <el-table-column
+            prop="totalArCny"
+            label="应付金额"
+            width="100">
+          </el-table-column>
+          <el-table-column
+            label="记录"
+            width="500">
+            <template slot-scope="scope">
+              <div v-for="(item,index) in scope.row.tempObj" :key="index">
+                <div v-if="item.status == 0 || item.status == -1">
+                  {{`操作${index + 1}:${item.accountName} `}}
+                  <span class="text_color_blue"  >{{item.payCheckAmount > 0 ? "对账" : '核销'}}</span>
+                  该订单，对账金额：
+                  <span v-if="item.currency == 1"> {{item.writeOffAmount}}CNY</span>
+                  <span v-if="item.currency == 2"> {{item.writeOffAmount}}港币</span>
+                  <span v-if="item.currency == 3"> {{item.writeOffAmount}}美元</span>
+                  <span v-if="item.currency == 4"> {{item.writeOffAmount}}欧元</span>
+                  <span v-if="item.currency == 5"> {{item.writeOffAmount}}英镑</span> 
+                {{item.writeOffTime}}
+                </div>
+                <div v-if='item.status == 2'>
+                    {{`操作${index + 1}:${item.accountName} `}}撤销了
+                    <span style="margin-left:100px">{{item.writeOffTime}}</span>
+                </div>
+                
+
+              </div>
+            </template>
+          </el-table-column>
+
+          <el-table-column      
+            label="操作">
+            <template slot-scope="scope">
+              <div v-for="(item,index) in scope.row.tempObj" :key="index">
+                <div>
+                    <span class="text_color_blue"  @click="cheXiao(index)">{{item.status == 0 ? '撤销' : ''}}</span>
+                    <span >{{item.status == -1 ? '已撤销' : ''}}</span>
+                    <span class="opacity" v-show="item.status == 2" >ceshi</span>
+                </div>
+              </div>    
+            </template>        
+          </el-table-column>
+        </el-table>
+      </div>
+
     </el-dialog>
   </div>
 </template>
 
 <script>
-  import Table from '@/components/financeTable'
-  import { toData } from '@/util/assist'
+
+import reconciliation from './components/reconciliation.vue'
+import verification from './components/verification.vue'
+import {exportFile} from '../../util/util'
   export default {
     data() {
-      return {
-        dialogFormVisible: false,
-        //table
-        tableData: [
-          {
-            date1: 'T21082416088448',
-            date2: '123-12345679',
-            date3: '2021-09-04',
-            date4: '2021-09-04',
-            date5: '石家庄XXX有限公司',
-            date6: '上海XXX运输有限公司',
-            date7: 'QW',
-            date8: 'CLT',
-            date9: 'SZX',
-            date10: '发动机',
-            date11: '张三（上海）',
-            date12: '200',
-            date13: '200CNY',
-            date14: '100',
-            date15: '100CNY',
-            date16: '100',
-            date17: '1',
-            date18: '部分开',
-            date19: '100',
-            date20: '正常'
-          },
-          {
-            date1: 'T21082416088448',
-            date2: '123-12345679',
-            date3: '2021-09-04',
-            date4: '2021-09-04',
-            date5: '石家庄XXX有限公司',
-            date6: '上海ZXC运输有限公司',
-            date7: 'QW',
-            date8: 'CLT',
-            date9: 'SZX',
-            date10: '发动机',
-            date11: '张三（上海）',
-            date12: '200',
-            date13: '200CNY',
-            date14: '100',
-            date15: '100CNY',
-            date16: '100',
-            date17: '1',
-            date18: '部分开',
-            date19: '100',
-            date20: '修改审核'
-          },
-          {
-            date1: 'T21082416088448',
-            date2: '123-12345679',
-            date3: '2021-09-04',
-            date4: '2021-09-04',
-            date5: '石家庄XXX有限公司',
-            date6: '上海AQS运输有限公司',
-            date7: 'QW',
-            date8: 'CLT',
-            date9: 'SZX',
-            date10: '发动机',
-            date11: '张三（上海）',
-            date12: '200',
-            date13: '200CNY',
-            date14: '100',
-            date15: '100CNY',
-            date16: '100',
-            date17: '1',
-            date18: '部分开',
-            date19: '100',
-            date20: '修改申请'
-          }
-        ],
-        pageSize: 10,
-        pageNum: 1,
-        total: 0,
-        // 列
-        columns1: [
-          {label: '序号', prop: 'orderNo', show: true, width: '150'},
-          {label: '费用名称', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '收款单位', prop: 'pol', show: true, width: '150'},
-          {label: '单价', prop: 'pod', show: true, width: '100'},
-          {label: '数量', prop: 'continent', show: true, width: '100'},
-          {label: '币种', prop: 'nonStop', show: true, width: '100'},
-          {label: '原币合计', prop: 'legCount', show: true, width: '50'},
-          {label: '汇率', prop: 'continent', show: true, width: '100'},
-          {label: '人民币合计', prop: 'nonStop', show: true, width: '100'},
-          {label: '备注', prop: 'legCount', show: true, width: '50'}
-        ],
-        columns2: [
-          {label: '序号', prop: 'orderNo', show: true, width: '150'},
-          {label: '费用名称', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '付款单位', prop: 'pol', show: true, width: '150'},
-          {label: '单价', prop: 'pod', show: true, width: '100'},
-          {label: '数量', prop: 'continent', show: true, width: '100'},
-          {label: '币种', prop: 'nonStop', show: true, width: '100'},
-          {label: '原币合计', prop: 'legCount', show: true, width: '50'},
-          {label: '汇率', prop: 'continent', show: true, width: '100'},
-          {label: '人民币合计', prop: 'nonStop', show: true, width: '100'},
-          {label: '备注', prop: 'legCount', show: true, width: '50'}
-        ],
-        columns3: [
-          {label: '操作类型', prop: 'orderNo', show: true, width: '150'},
-          {label: '说明', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '操作时间', prop: 'pol', show: true, width: '150'},
-          {label: '操作人', prop: 'pod', show: true, width: '100'}
-        ],
-        // 操作
-        operation: {
-          show: false,
-          label: '操作',
-          width: '180',
-          options: [
-            {label: '编辑', method: 'routeEdit'}
-          ]
+      return {   
+        formInline: {
+          orderNo:'',
+          waybillNo:'',
+          customerName:'',
+          airCompanyCode:'',
+          agentName:'',
+          startDepartureDate:'',
+          endDepartureDate:'',
+          startOrderTime:'',
+          endOrderTime:'',
+          pol:"",
+          pod:"",
+          payWay:'',
+          payWriteOffStatus:'',
+          pscsId:'',
+          principalId:'',
+          mscsId:'',
         },
-        orderNo: '',
-        waybillNo: '',
-        inboundNo: '',
-        agentId: '',
-        agentOpt: [],
-        customerName: '',
-        pol: '',
-        polOpt: [],
-        pod: '',
-        podOpt: [],
-        typeCode: '全部',
-        orderCount: 0
+        payWayArray:[{
+          value: '',
+          label: '全部'
+        }, {
+          value: '0',
+          label: '付款买单'
+        }, {
+          value: '1',
+          label: '月结'
+        }],
+        payWriteOffStatusArray:[{
+          value: '',
+          label: '全部'
+        }, {
+          value: '0',
+          label: '未对账'
+        }, {
+          value: '1',
+          label: '部分对账'
+        }, {
+          value: '2',
+          label: '已对账'
+        }, {
+          value: '4',
+          label: '部分对账部分核销'
+        }, {
+          value: '5',
+          label: '已对账部分核销'
+        }, {
+          value: '8',
+          label: '已对账已核销'
+        }],
+        payWriteOffCountBoolen:false,// 点击核销次数 控制模态框的显示
+        payWriteOffCountData:[],// 模态框展示的数据
+        payWriteOffCountIds:'',//
+        woStatus:0,// 正常0，业务修改中1，异常2
+        tableData: [],
+        slectAllDataArray:[],// 全选后返回的所在状态下的数据 不展示
+        dataStaticObj:{},// 数据统计对象
+        countAuth:"",// 可操作数量
+        countErr:'',// 异常数量
+        countNoAuth:'',//业务修改中数量
+        formatDate:"yyyy-MM-dd",
+        currentPage:1, // 分页当前页默认1
+        pageSize:10,//分页每页数据量默认10
+        pageTotal:100,// 分页总数据量
+        slectAllDataStatic:false,// 跨页全选的状态 默认false
+        slectAllDataButtonType:"",// 跨页全选 点击与不点击之后的样式改变
+        computedDataType:'',// 数据统计样式改变
+        computedDataStatic:false,// 数据统计样式改变
+        multipleSelection:[],// 单选的数组,
+        childPropsData:[], //  传入对账子组件的数组
+        childBoolen:false, // 子组件是否引入 
+        preSaleList:[],// 售前客服数组
+        onSaleList:[],// 售中客服数组
+        airLineList:[],// 航线负责人数组
+        options:[], //
+        optionTwo:[], //
+        optionThree:[],//
+        optionFour:[],//
+        verificationData:[],// 传递给核销组件的数据
+
       }
     },
-    mounted() {
-      this.initData()
-      this.initOrderCountList()
-      this.initAgentList()
-      this.initAirportSearchByPage()
+    async mounted() {
+      await this.onSubmit()
+      await this.getSysInitial()
+      await this.radioEvent(0,false)
+    },
+    components:{
+      reconciliation,
+      verification
     },
     methods: {
-      //tab切换
-      tabClickData() {
-      	this.initData()
-      	this.initOrderCountList()
+      // 撤销
+      async cheXiao(e){
+        let { id } = this.payWriteOffCountData[0].tempObj[e]
+        console.log()
+        
+        this.$confirm(`确认撤销 “操作${e+1}” 吗？`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(async() => {
+            let res = await this.$http.post(this.$service.revokeRecords + '?id=' + id)
+            console.log(res)
+            if(res.code == 200){
+              let res1 = await this.$http.post(this.$service.searchRecords,{ids:e.ids})
+               this.payWriteOffCountData[0].tempObj = res1.data
+              this.$message({
+              type: 'success',
+              message: '撤销成功!'
+            });
+            }
+            
+          }).catch(() => {
+            
+         
+        });
       },
-      //详情
-      orderDetails(scope) {
-        if(scope.row.status == '3' || scope.row.status == '5'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails1',
-            query: {
-              id: scope.row.id
+      handleClose(){
+         this.payWriteOffCountData = []
+         this.payWriteOffCountBoolen = false
+         this.payWriteOffCountIds = ''
+      },
+      async recordsBtn(e){
+        console.log(e)
+        this.payWriteOffCountIds = e.ids
+        this.payWriteOffCountData.push(e)
+        let res = await this.$http.post(this.$service.searchRecords,{ids:e.ids})
+        if(res.code == 200){
+          this.payWriteOffCountData[0].tempObj = res.data
+          this.payWriteOffCountBoolen = true
+        }
+       
+      },
+      // 导出列表
+      async exportBillList(){
+        let {slectAllDataStatic , formInline , woStatus , multipleSelection } = this  ;
+        if(slectAllDataStatic){
+          let params = Object.assign({},formInline,{woStatus,woStatus})
+          let res = await this.$http.post(this.$service.billExportExcel,params)
+          exportFile(res,"application/vnd.ms-excel",'应付统计')
+        }else{
+          if(multipleSelection.length>0){
+            let idArray  =  multipleSelection.map((e)=>{
+              return e.ids
+            })
+            let params = {
+              ids:idArray,
+              woStatus:woStatus,
             }
-          })
-        }else if(scope.row.status == '9'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails2',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '13' || scope.row.status == '17' || scope.row.status == '21'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails3',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '25' || scope.row.status == '27' || scope.row.status == '29' || scope.row.status == '31' || scope.row.status == '33'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails4',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '37' || scope.row.status == '41'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails5',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '43'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails6',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '39'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails7',
-            query: {
-              id: scope.row.id
-            }
-          })
+            let res = await this.$http.post(this.$service.billExportExcel,params)
+            exportFile(res,"application/vnd.ms-excel",'应付统计')
+          }else{
+            this.$message({
+                message: '请先选择数据',
+                type: 'warning'
+            });
+          }
         }
       },
-      //起始港三字码
-      initAirportSearchByPage(keyWord, type) {
-        if (!keyWord) {
-          keyWord = ''
+      async radioEvent(e,initBoolen=true){
+        this.woStatus = e
+        let { formInline, currentPage, woStatus,slectAllDataStatic, countAuth,countErr,countNoAuth} = this
+        let tempTotal = ''
+        if(e == 0){
+          tempTotal =countAuth
+        }else if(e == 1){
+          tempTotal = countNoAuth
+        }else if(e == 2){
+          tempTotal = countErr
         }
-        this.$http.get(this.$service.airportSearchByPage + '?keyWord=' + keyWord).then((data) => {
-          this.loading = false
-          if (data.code == 200) {
-            if (type == '起始港') {
-              this.polOpt = data.data.records
-            } else if (type == '目的港') {
-              this.podOpt = data.data.records
-            } else {
-              this.polOpt = data.data.records
-              this.podOpt = data.data.records
-            }
-          } else {
-            this.$message.error(data.message)
+        let params = Object.assign({},formInline,{pageNum:currentPage,woStatus:woStatus},{pageSize:tempTotal})
+        this.$http.post(this.$service.dataStatistics,params).then(res=>{
+          if(res.code ==200){
+            let tempObj = res.data
+            tempObj.totalApUnwoOrgn = JSON.parse(tempObj.totalApUnwoOrgn)
+            tempObj.totalApOrgn = JSON.parse(tempObj.totalApOrgn)
+            tempObj.totalApWoOrgn = JSON.parse(tempObj.totalApWoOrgn)
+            this.dataStaticObj = tempObj
           }
         })
+        if(initBoolen){
+          await this.getTabelData(formInline,currentPage,woStatus,slectAllDataStatic,tempTotal)
+        } 
       },
-      polMethod(keyWord) {
-        this.loading = true
-        this.initAirportSearchByPage(keyWord, '起始港')
-      },
-      podMethod(keyWord) {
-        this.loading = true
-        this.initAirportSearchByPage(keyWord, '目的港')
-      },
-      //代理公司
-      initAgentList(agentName) {
-        if (!agentName) {
-          agentName = ''
+      // 输入代理上家的时候返回值
+      async remoteMethod(e){
+        if (e !== '') {
+          let res =  await this.$http.post(this.$service.agentList,{agentName:e})
+          this.options = res.data.records.map((item)=>{
+            return {value:item.agentName, label: item.agentName}
+          })
+        } else {
+          this.options = [];
         }
-        var data = {
-          agentName: agentName
+      },
+      // 输入起始港的时候返回值
+      async remoteMethodTwo(e){
+        if(e !== ''){
+            let res = await this.$http.get(this.$service.airportSearchByPage+`?keyWord=${e}`)
+            this.optionTwo = res.data.records.map((item)=>{
+            return {value:item.name, label: item.name}
+          })
+        }else{
+          this.optionTwo =[]
         }
-        this.$http.post(this.$service.agentList, data).then((data) => {
-          this.loading = false
-          if (data.code == 200) {
-            this.agentOpt = data.data.records
-          } else {
-            this.$message.error(data.message)
-          }
+      },
+      // 输入目的港的时候返回值
+      async remoteMethodThree(e){
+        if(e !== ''){
+            let res = await this.$http.get(this.$service.airportSearchByPage+`?keyWord=${e}`)
+            this.optionThree = res.data.records.map((item)=>{
+            return {value:item.name, label: item.name}
+          })
+        }else{
+          this.optionThree =[]
+        }
+      },
+      // 输入航司的时候返回值
+      async remoteMethodFour(e){
+        if(e !== ''){
+            let res = await this.$http.get(this.$service.companySearchByPage+`?keyWord=${e}`)
+            this.optionFour = res.data.records.map((item)=>{
+            return {value:item.name, label: item.name}
+          })
+        }else{
+          this.optionFour =[]
+        }
+      },
+      // 获取搜索条件当中的原始值
+      async getSysInitial(){
+        let res1 = await this.$http.get(this.$service.userSearch+'?roleName=售前客服&pageSize=50000')
+        let res2 = await this.$http.get(this.$service.userSearch+'?roleName=售中客服&pageSize=50000')
+        let res3 = await this.$http.get(this.$service.userSearch+'?roleName=航线负责人&pageSize=50000')
+        Promise.all([res1,res2,res3]).then(res=>{
+          this.preSaleList = res[0].data.records
+          this.onSaleList = res[1].data.records
+          this.airLineList = res[2].data.records
         })
       },
-      agentMethod(agentName) {
-        this.initAgentList(agentName)
+      async onSubmit() {
+        let { formInline, currentPage, woStatus,slectAllDataStatic} = this ;
+        await this.getTabelData(formInline,currentPage,woStatus,slectAllDataStatic)
       },
-      initOrderCountList() {
-        var json = {
-        	orderNo: this.orderNo,
-        	waybillNo: this.waybillNo,
-        	inboundNo: this.inboundNo,
-        	pol: this.pol,
-        	pod: this.pod,
-        	agentId: this.agentId,
-          customerName: this.customerName,
-        	typeCode: 8
-        }
-        json = toData(json)
-        this.$http.get(this.$service.orderCountList+'?'+json).then(data => {
-          if (data.code == 200) {
-            this.orderCount = data.data
-          }else {
-            this.$message.error(data.message)
+      async handleCurrentChange(e){
+        let { formInline, woStatus,slectAllDataStatic} = this ;
+        this.currentPage = e 
+        await this.getTabelData(formInline,e,woStatus,slectAllDataStatic)
+      },
+      // 点击对账
+      fatherReconciliation(){
+        let tempArray = this.multipleSelection
+        if(tempArray.length >= 1){
+          let tempString = tempArray[0].expenseUnitName
+          let a = tempArray.filter((i)=>{
+            if(i.expenseUnitName ==  tempString){
+              return i
+            }
+          })
+          if(tempArray.length !== a.length){
+              this.$message({
+                showClose: true,
+                message: '应付对象不一致，请重新勾选',
+                type: 'warning'
+              });
+          }else{
+            this.childPropsData = tempArray
+            this.$refs.reconciliationData.showModal()
           }
-        }).catch((e) => {
-          console.log(e)
-        })
-      },
-      //航线列表
-      initData() {
-        var json = {
-        	orderNo: this.orderNo,
-        	waybillNo: this.waybillNo,
-        	inboundNo: this.inboundNo,
-        	pol: this.pol,
-        	pod: this.pod,
-        	agentId: this.agentId,
-          customerName: this.customerName,
-        	typeCode: this.typeCode == '全部订单' ? '' : this.typeCode,
-        	pageNum: this.pageNum,
-        	pageSize: this.pageSize
+        }else if(tempArray.length == 0){
+          this.$message({
+            showClose: true,
+            message: '请先勾选一条数据',
+            type: 'warning'
+          });
+            return ;
         }
-        json = toData(json)
-        this.$http.get(this.$service.orderSearchByPage+'?'+json).then(data => {
-          if (data.code == 200) {
-            this.total = data.data.total
-            this.tableData = data.data.records
-          }else {
-            this.$message.error(data.message)
+      },
+      // 核销
+      fatherVerification(){
+        let tempArray = this.multipleSelection
+        if(tempArray.length >= 1){
+          let tempString = tempArray[0].expenseUnitName
+          let a = tempArray.filter((i)=>{
+            if(i.expenseUnitName ==  tempString){
+              return i
+            }
+          })
+          if(tempArray.length !== a.length){
+              this.$message({
+                showClose: true,
+                message: '应付对象不一致，请重新勾选',
+                type: 'warning'
+              });
+          }else{
+            this.verificationData = tempArray
+            this.$refs.verificationData.showModal()
           }
-        }).catch((e) => {
-          console.log(e)
-        })
+        }else if(tempArray.length == 0){
+          this.$message({
+            showClose: true,
+            message: '请先勾选一条数据',
+            type: 'warning'
+          });
+            return ;
+        }
       },
-      //查询
-      searchClick() {
-        this.pageSize = 10
-        this.pageNum = 1
-        this.initData()
-        this.initOrderCountList()
+      // 单选数据
+      async clckOne(selection, row){
+        this.multipleSelection = selection
       },
-      //重置
-      restClick() {
-        this.orderNo = ''
-        this.waybillNo = ''
-        this.inboundNo = ''
-        this.pol = ''
-        this.pod = ''
-        this.agentId = ''
-        this.customerName = ''
-        this.pageNum = 1
-        this.pageSize = 10
-        this.initData()
-        this.initOrderCountList()
+
+      // 跨页全选
+      async slectAllData(){
+        this.slectAllDataStatic = !this.slectAllDataStatic
+        this.slectAllDataButtonType = this.slectAllDataStatic == false ? '' : 'primary'
+        let { formInline, currentPage, woStatus,slectAllDataStatic, pageTotal} = this
+        if(this.slectAllDataStatic){
+          await this.getTabelData(formInline, currentPage, woStatus,slectAllDataStatic, pageTotal)
+        }else{
+          await this.getTabelData(formInline, currentPage, woStatus,slectAllDataStatic)
+        }
+        
       },
-      handleCurrentChange(e) {
-        this.pageNum = e
-        this.initData()
+      // 数据统计
+      async calcSlectData(){
+        this.computedDataStatic = !this.computedDataStatic
+        this.computedDataType = this.computedDataStatic == false ? '' : 'primary'
       },
-      handleSizeChange(e) {
-        this.pageSize = e
-        this.initData()
+      // 默认处理tableData是否全选 
+     async dealSelectAll(e){
+        this.tableData.forEach((item)=>{
+            this.$refs.multipleTable.toggleRowSelection(item,e)
+        }) 
+     },
+      // 处理input的输入选择
+      querySearch(q,cb){
+        let tempQuery = []
+        let arrayt = []
+        q =  q.replace(/，/ig,',').replace(/\s/ig,',').replace(/\//g,',').replace(/-/ig,'')
+        if(q.charAt(q.length - 1) == ','){
+          q = q.slice(0,q.length - 1)
+        }
+        if(q.indexOf(',')){
+          tempQuery = q.split(",")
+        }else{
+          tempQuery[0] = q
+        }
+        for(let i in tempQuery){
+          let newobj = {}
+          newobj.value = tempQuery[i]
+          newobj.label = tempQuery[i]
+          arrayt.push(newobj)
+        }
+        cb(arrayt)
+      },
+      // 获取tabel数据
+      async  getTabelData(formInline,currentPage,woStatus,slectAllDataStatic=false,pageSize=10){
+        let tempObj = Object.assign({},formInline,{pageNum:currentPage,woStatus:woStatus},{pageSize:pageSize})
+        try {
+          let res = await this.$http.post(this.$service.searchWoByPage,tempObj)
+          if(res.code == 200){
+            let resData = res.data.page ;
+            this.countNoAuth = res.data.countNoAuth
+            this.countAuth = res.data.countAuth
+            this.countErr = res.data.countErr
+            if(this.woStatus == 1){
+              this.pageTotal = res.data.countNoAuth
+            }else if(this.woStatus == 2){
+              this.pageTotal = res.data.countErr
+            }else{
+              this.pageTotal = res.data.countAuth
+            }
+            if(pageSize != 10){
+              this.slectAllDataArray = resData.records
+            }else {
+              this.tableData = resData.records
+            }
+            
+            setTimeout(async()=>{
+               await this.dealSelectAll(slectAllDataStatic) 
+            },0)
+          }
+        } catch (error) {
+          console.log(error)
+        }
       },
     },
-    watch: {
-      tableData(idx) {
-        return idx
-      }
-    },
-    components: {
-      Table
-    }
   }
 </script>
 
-
-<style scoped lang="less">
-  @import url("../../assets/icon/iconfont.css");
-
-  .content-wrapper {
-    width: 100%;
-    box-sizing: border-box;
-    /*height: 100%;*/
-    padding: 20px;
-    overflow: hidden;
-    background-color: #f3f6f9 !important;
-  }
-
-  .el-form {
-    background-color: #FFF;
-  }
-
-  .el-form--inline .el-form-item {
-    margin-bottom: 20px;
-    vertical-align: bottom;
-  }
-
-  .parimary_btn {
-    background-color: #9ac143 !important;
-    border-color: #9ac143 !important;
-
-    &:hover {
-      color: #f1e3d5 !important;
-      background-color: #7f9e3c !important;
-      border-color: #7f9e3c !important;
-    }
-  }
-
-  .icon-shouqi {
-    color: #3985ca;
-    margin-right: 2px;
-    font-size: 14px;
-    margin-left: 15px;
-  }
-
-  .shouqi {
-    cursor: pointer;
-    color: #3985ca;
-    position: relative;
-  }
-
-  .shouqi .iconfont {
-    font-size: 2px;
-    position: absolute;
-    height: 20px;
-    line-height: 20px;
-    margin-top: 7px;
-    margin-left: 10px;
-  }
-
-  .wrapper,.content {
-    width: 100%;
-  }
-
-  .el-table .sort-caret.ascending {
-    border-bottom-color: #FFF;
-  }
-
-  .content-search-normal {
-    padding: 20px 20px 0 20px !important;
-    background: #fff;
-  }
-
-  .content-search-high {
-    padding: 0 0 20px 30px;
-  }
-
-  /deep/ .el-dialog {
-    min-width: 480px;
-    border-radius: 6px;
-  }
+<style scoped>
+.content-wrapper{
+  margin: 20px;
+}
+.footer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+.calcDataContont{
+  margin-bottom: 10px;
+  display: flex;
+  
+ 
+}
+.text_color_blue{
+    color: #62a0ed;
+}
+.calcDataContont>span{
+ margin-left: 10px;
+ 
+ 
+}
+.calcDataContont .fon{
+  display: flex;
+  flex-direction: column;
+}
+.diaModalClass{
+  margin-top: 20px;
+  padding-bottom: 20px;
+}
+.opacity{
+  opacity: 0;
+}
 </style>
