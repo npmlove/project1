@@ -30,7 +30,7 @@
                 <img class="data-pic" src="../../assets/kong-icon.png"/>
                 <p>暂无数据</p>
               </template>
-              <el-table-column prop="id" label="序号" min-width="40"></el-table-column>
+              <el-table-column type="index" label="序号" min-width="40"></el-table-column>
               <el-table-column prop="userName" label="户名" min-width="80"></el-table-column>
               <el-table-column prop="accountBank" label="开户行" min-width="80"></el-table-column>
               <el-table-column prop="bankAccount" label="银行账号" min-width="80"></el-table-column>
@@ -135,7 +135,6 @@
       },
          //银行账号列表-编辑&新增
       editAccount(add,message){
-        console.log(message)
         if(add == '1'){
           this.bankMessage = {
             bankAccount:"",
@@ -157,6 +156,16 @@
       },
       //编辑弹框确认
        dialogComfirm(){
+         console.log(this.bankMessage)
+         if(this.bankMessage.bankAccount == "" || this.bankMessage.accountBank == "" || this.bankMessage.userName == "") {
+           this.$message({
+             type:"warning",
+             message:"开户行、户名、账号不能为空"
+           })
+           return
+         }
+        
+        this.bankMessage.bankAccount = this.bankMessage.bankAccount.replace(/[^\d.]/g,'')
         this.$http.post(this.$service.editBankAccount,this.bankMessage).then(
           data =>{
             if(data.code == 200) {

@@ -1,6 +1,8 @@
 //ng开发环境
-// var pulicWeb = '/faw'
 var pulicWeb = '/back/dcErp/faw'
+// var pulicWeb = '/faw'
+// var pulicWeb = '/faw'
+// var pulicWeb = '/back/dcErp/faw'
 
 
 //ng测试环境
@@ -114,6 +116,10 @@ const serviceApi = {
   financeOrderList: pulicWeb + '/t-order/financeOrderList',
 
   orderPriceTable: pulicWeb + '/t-order-price/getOrderPriceTable',
+  //财务订单列表导出列表
+  exportFoExcel: pulicWeb + '/t-order/exportFoExcel',
+  //财务订单列表 数据统计
+  financeOrderCount: pulicWeb + '/t-order/financeOrderCount',
   //财务订单列表查询
   savePresentLog: pulicWeb + '/t-order-present-log/savePresentLog',
   trackList: pulicWeb + '/track/monitorQuery/airCompanyInfo',
@@ -132,7 +138,78 @@ const serviceApi = {
 
   //发票申请页面-查询
   invoiceSearch: pulicWeb + '/t-invoice-apply/searchByPage',
+
   //发票申请页面 -开票确认生成
-  actionInvoice: pulicWeb + '/t-invoice-apply/actionInvoice'
+  actionInvoice: pulicWeb + '/t-invoice-apply/actionInvoice',
+  //发票申请页面 - 订单号运单号查看详情
+  orderInfoShow: pulicWeb + '/t-invoice-apply/orderInfoShow',
+  //生成发票
+  confirmInvoice: pulicWeb + '/t-invoice-apply/confirmInvoice',
+
+  expressInvoices: pulicWeb + '/t-invoice-apply/expressInvoices',
+
+  nullifyInvoiceMore: pulicWeb + '/t-invoice-apply/nullifyInvoiceMore',
+
+  //发票申请页面 - 数据统计
+  invoiceStatistics: pulicWeb +'/t-invoice-apply/dataStatistics',
+  //发票申请页面 - 导出列表
+  exportToExcel: pulicWeb + '/t-invoice-apply/exportToExcel',
+  //发票申请页面 - 上传发票
+  uploadInvoicePDF: pulicWeb + '/t-invoice-apply/uploadInvoicePDF',
+  //应收核销明细列表
+  searchWoDetailByPage: pulicWeb + '/t-rcv-records/searchWoDetailByPage',
+  //核销明细列表查询
+  writeOffSearch: pulicWeb + '/t-payment-write-off/writeOffSearch',
+//应收核销操作记录
+  searchArList: pulicWeb + '/t-write-off-records/searchArWoList',
+//应收核销操作记录
+  arRevoke: pulicWeb + '/t-write-off-records/arRevoke',
+  //应收核销页面，点击订单编号时，查询订单详情及财务记录
+  searchOrderDetail: pulicWeb + '/t-rcv-records/searchOrderDetail',
+  //订单核销页面 - 查询
+  searchWoByPage: pulicWeb +'/t-order/searchWoByPage',
+  //订单核销页面 - 订单号详情
+  searchWoDetail: pulicWeb +'/t-order/searchWoDetail',
+  //订单核销页面 - 数据统计
+  subWoList: pulicWeb +'/t-order/sumWoList' ,
+  //订单核销页面 - 导出列表
+  exportWoExcel: pulicWeb +'/t-order/exportWoExcel' ,
+  //统计应收核销明细数据
+  sumWoDetail: pulicWeb + '/t-rcv-records/sumWoDetail',
+  //订单核销列表导出
+  exportWoDetailExcel: pulicWeb + '/t-rcv-records/exportWoDetailExcel',
+  //查询操作记录
+  searchRecords: pulicWeb + '/t-order-payment/searchRecords',
+  //数据统计
+  dataStatistics: pulicWeb + '/t-order-payment/dataStatistics',
+  //数据统计
+  revokeRecords: pulicWeb + '/t-order-payment/revokeRecords',
+  //查询
+  search: pulicWeb + '/t-order-payment/search',
+  //导出核销明细对账单
+  exportWriteOffExcel: pulicWeb + '/t-payment-write-off/exportWriteOffExcel',
+  //应收统计 -查询
+  receivableSearch: pulicWeb + '/t-rcv-records/searchByPage',
+  //应收统计 - 导出列表
+  exportWoListExcel: pulicWeb + '/t-rcv-records/exportWoListExcel',
+   //应收统计 - 数据统计
+   receivableSum: pulicWeb + '/t-rcv-records/sumList',
+  //应收统计 - 核销弹框点击
+  getWoFrameData: pulicWeb + '/t-rcv-records/getWoFrameData',
+
+   // 查询应付信息列表
+   searchWoByPageBill: pulicWeb + '/t-order-payment/searchWoByPage',
+   // 对账导入excel
+   importExcel: pulicWeb + '/t-order-payment/importExcel',
+   //  导出失败对账单
+   exportErrExcel: pulicWeb + '/t-order-payment/exportErrExcel',
+   // 对账单对账接口
+   toReconciliation: pulicWeb + "/t-order-payment/toReconciliation",
+   //  输入对账接口
+   toEnterReconciliation: pulicWeb +'/t-order-payment/toEnterReconciliation',
+   // 核销
+   writeOff: pulicWeb + '/t-payment-write-off/writeOff',
+   //  应付导出excel
+   billExportExcel: pulicWeb + '/t-order-payment/exportExcel',
 }
 export default serviceApi

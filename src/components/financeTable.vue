@@ -6,8 +6,9 @@
       @sort-change="handleSort"
       @selection-change="handleSelect"
       :data="tableData"
+      :cell-style="cellStyle"
       :header-cell-style="{textAlign:'center'}"
-      :cell-style="{textAlign:'center',fontSize:'12px'}"
+      
 
       style="width: 100% ;"
     >
@@ -15,7 +16,7 @@
         <img class="data-pic" src="../assets/kong-icon.png"/>
         <p>暂无数据</p>
       </template>
-      <el-table-column type="selection" width="50"></el-table-column>
+      <el-table-column type="selection" width="50" v-if="showSelection"></el-table-column>
       <!-- <el-table-column
         v-if="checkbox"
         type="selection"
@@ -33,13 +34,13 @@
         align="left"
       >
         <el-table-column v-if="column.label == '应收金额'" prop="totalArCny" label="人民币" min-width="80"></el-table-column>
-        <el-table-column v-if="column.label == '应收金额'"  label="原币" min-width="80">
+        <el-table-column v-if="column.label == '应收金额'" label="原币" min-width="80">
           <template slot-scope="scope">
             {{ getOrgn(scope.row.totalArOrgn) }}
           </template>
         </el-table-column>
         <el-table-column v-if="column.label == '应付金额'" prop="totalApCny" label="人民币" min-width="80"></el-table-column>
-        <el-table-column v-if="column.label == '应付金额'"  label="原币" min-width="80">
+        <el-table-column v-if="column.label == '应付金额'" label="原币" min-width="80">
           <template slot-scope="scope">
             {{ getOrgn(scope.row.totalApOrgn) }}
           </template>
@@ -75,6 +76,11 @@
                 <div>销售：{{ scope.row.operator.split(",")[0] }}</div>
                 <div>航线：{{ scope.row.operator.split(",")[2] }}</div>
             </span>
+             <span v-else-if="column.prop == 'operation' && column.label == '操作人员'" style="text-align:left">
+               <div>售前：{{ scope.row.operation.split(",")[0] }}</div>
+                <div>售中：{{ scope.row.operation.split(",")[1] }}</div>
+                <div>航线：{{ scope.row.operation.split(",")[2] }}</div>
+            </span>
               <span v-else-if=" column.label == '汇率'">
               {{ getExchangeRate(scope.row.exchangeRate) }}
             </span>
@@ -96,10 +102,12 @@
                             '修改中' : ''
                 }}
             </span>
-<!--              <span v-else-if="column.prop=='orderNo'&& column.label == '订单号'">-->
-              <a v-else-if="column.prop=='orderNo'&& column.label == '订单号'" @click="showFees(scope.row.id,scope.row.payWay,scope.row.financeStatus)" style="font-size: 12px;">{{ scope.row.orderNo }}</a>
-<!--            </span>-->
-<!--            <div v-else >{{// scope[column.prop]}}</div>-->
+            <!--              <span v-else-if="column.prop=='orderNo'&& column.label == '订单号'">-->
+              <a v-else-if="column.prop=='orderNo'&& column.label == '订单号'"
+                 @click="showFees(scope.row.id,scope.row.payWay,scope.row.financeStatus)"
+                 style="font-size: 12px;">{{ scope.row.orderNo }}</a>
+            <!--            </span>-->
+            <!--            <div v-else >{{// scope[column.prop]}}</div>-->
             <span v-else v-html="getDataName(scope.row, column)"></span>
           </span>
         </template>
@@ -143,6 +151,17 @@
       tableData: {
         type: Array,
         default: () => []
+      },
+      cellStyle:{
+        type:Object,
+        default:()=>{
+          return {textAlign:'center',fontSize:'12px'}
+        }
+      },
+      //显示选择框
+      showSelection:{
+        type:Boolean,
+        default:true
       },
       //选择
       xuanzhong: {
@@ -239,6 +258,9 @@
         }
       },
       getExchangeRate(exchangeRate) {
+        if (typeof (exchangeRate) == "undefined") {
+          return "";
+        }
         var totalOrgn = ''
         var value1 = 0
         var value2 = 0
@@ -302,7 +324,7 @@
         return totalOrgn;
       },
       showFees(val) {
-        this.$emit('showFees',val)
+        this.$emit('showFees', val)
       },
       // 页码跳转
       handleCurrent(val) {
@@ -354,11 +376,13 @@
   span.gary {
     color: #bcbcbc;
   }
-  .caiwu{
+
+  .caiwu {
     color: #bcbcbc;
 
     font-size: 12px;
   }
+
   .tupian {
     width: 30px;
     height: auto;
