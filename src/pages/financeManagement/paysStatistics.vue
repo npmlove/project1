@@ -823,7 +823,7 @@ import {exportFile} from '../../util/util'
       async  getTabelData(formInline,currentPage,woStatus,slectAllDataStatic=false,pageSize=10){
         let tempObj = Object.assign({},formInline,{pageNum:currentPage,woStatus:woStatus},{pageSize:pageSize})
         try {
-          let res = await this.$http.post(this.$service.searchWoByPage,tempObj)
+          let res = await this.$http.post(this.$service.searchWoByPageBill,tempObj)
           if(res.code == 200){
             let resData = res.data.page ;
             this.countNoAuth = res.data.countNoAuth
