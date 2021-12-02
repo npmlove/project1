@@ -11,6 +11,7 @@
               type="date"
               :picker-options="pickerOptionsStartOne"
               value-format="yyyy-MM-dd"
+              @change="clearDate()"
               placeholder="选择日期">
             </el-date-picker >-
             <el-date-picker
@@ -19,6 +20,7 @@
               type="date"
               :picker-options="pickerOptionsEndOne"
               value-format="yyyy-MM-dd"
+              @change="clearDate()"
               placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
@@ -131,7 +133,7 @@
           <img class="data-pic" src="../../assets/kong-icon.png"/>
           <p>暂无数据</p>
         </template>
-        <el-table-column type="selection" width="50"></el-table-column>
+<!--        <el-table-column type="selection" width="50"></el-table-column>-->
         <el-table-column prop="airCPCode" label="航司" min-width="80"></el-table-column>
         <el-table-column prop="totalNum" label="访问次数" min-width="80" sortable
                          :sort-method="sortByDate1"></el-table-column>
@@ -209,7 +211,7 @@
           <img class="data-pic" src="../../assets/kong-icon.png"/>
           <p>暂无数据</p>
         </template>
-        <el-table-column type="selection" width="50"></el-table-column>
+<!--        <el-table-column type="selection" width="50"></el-table-column>-->
         <el-table-column prop="airCompany" label="航司" min-width="80"></el-table-column>
         <el-table-column prop="awb" label="运单号" min-width="80"></el-table-column>
         <el-table-column prop="errMessage" label="查询结果" min-width="80">
@@ -311,7 +313,8 @@
         },
         startAccessDate:'',
         endAccessDate:'',
-        accessDay: [],
+        startAccessDay:'',
+        endAccessDay:'',
         support: null,
         labelPosition: 'right',
         dialogTitle: '',
@@ -319,8 +322,8 @@
       }
     },
     mounted() {
-      this.startAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime())
-      this.endAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
+      this.startAccessDay = this.format(new Date(new Date().toLocaleDateString()).getTime())
+      this.endAccessDay = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
       // this.checkButton = 1
       // this.checkButtonOne = 7
       // this.checkButtonTwo = 8
@@ -334,8 +337,8 @@
         this.tableData = []
 
         var params = {
-          fromDate: this.startAccessDate==''||this.startAccessDate==null ? this.startAccessDate : this.startAccessDate + " 00:00:00",
-          toDate: this.endAccessDate==''||this.endAccessDate==null ? this.endAccessDate : this.endAccessDate + " 23:59:59",
+          fromDate: !(this.startAccessDate==''||this.startAccessDate==null) ?this.startAccessDate + " 00:00:00":this.startAccessDay=='' ||this.startAccessDay==null ?null : this.startAccessDay + " 00:00:00",
+          toDate: !(this.endAccessDate==''||this.endAccessDate==null) ?this.endAccessDate + " 23:59:59": this.endAccessDay=='' ||this.endAccessDay==null?null:this.endAccessDay+ " 23:59:59",
         }
         this.$http.post(this.$service.trackList, params).then(data => {
           if (data.code == 200) {
@@ -353,11 +356,17 @@
           }
         })
       },
+      clearDate(){
+        this.checkButton=0;
+        this.endAccessDay='';
+        this.startAccessDay='';
+
+      },
       initDetailSearch(airCPCode, isSuccess) {
 
         var params = {
-          fromDate: this.startAccessDate==''||this.startAccessDate==null ? this.startAccessDate : this.startAccessDate + " 00:00:00",
-          toDate: this.endAccessDate==''||this.endAccessDate==null ? this.endAccessDate : this.endAccessDate + " 23:59:59",
+          fromDate: !(this.startAccessDate==''||this.startAccessDate==null) ?this.startAccessDate + " 00:00:00":this.startAccessDay=='' ||this.startAccessDay==null ?null : this.startAccessDay + " 00:00:00",
+          toDate: !(this.endAccessDate==''||this.endAccessDate==null) ?this.endAccessDate + " 23:59:59": this.endAccessDay=='' ||this.endAccessDay==null?null:this.endAccessDay+ " 23:59:59",
           awb: airCPCode == null ? this.awb == "" ? null : this.awb : null,
           airCPCode: airCPCode != null ? airCPCode : this.airCPCode == "" ? null : this.airCPCode,
           isSuccess: isSuccess == null ? this.isSuccess : isSuccess,
@@ -397,25 +406,21 @@
         this.awb = null
         this.airCPCode = null
         if (type === 1) {
-          this.startAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime())
-          this.endAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
+          this.startAccessDay = this.format(new Date(new Date().toLocaleDateString()).getTime())
+          this.endAccessDay = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
           this.checkButtonOne = 7
-          this.accessDate = []
         } else if (type === 2) {
-          this.startAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() - 24 * 60 * 60 * 1000);
-          this.endAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() - 1);
+          this.startAccessDay = this.format(new Date(new Date().toLocaleDateString()).getTime() - 24 * 60 * 60 * 1000);
+          this.endAccessDay = this.format(new Date(new Date().toLocaleDateString()).getTime() - 1);
           this.checkButtonOne = 7
-          this.accessDate = []
         } else if (type === 3) {
-          this.startAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() - 7 * 24 * 60 * 60 * 1000);
-          this.endAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
+          this.startAccessDay = this.format(new Date(new Date().toLocaleDateString()).getTime() - 7 * 24 * 60 * 60 * 1000);
+          this.endAccessDay = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
           this.checkButtonOne = 7
-          this.accessDate = []
         } else if (type === 4) {
-          this.startAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() - 30 * 24 * 60 * 60 * 1000);
-          this.endAccessDate = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
+          this.startAccessDay = this.format(new Date(new Date().toLocaleDateString()).getTime() - 30 * 24 * 60 * 60 * 1000);
+          this.endAccessDay = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
           this.checkButtonOne = 7
-          this.accessDate = []
         }
         this.initListSearch()
         // this.initDetailSearch()
@@ -471,8 +476,10 @@
       restClick() {
         this.airCPCode = null
         this.awb = null
-        this.accessDate[0] = this.format(new Date(new Date().toLocaleDateString()).getTime())
-        this.accessDate[1] = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
+        this.startAccessDay = this.format(new Date(new Date().toLocaleDateString()).getTime())
+        this.endAccessDay = this.format(new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1);
+        this.startAccessDate = ''
+        this.endAccessDate = ''
         this.checkButton = 1
         this.checkButtonOne = 7
         this.checkButtonTwo = 8
@@ -480,6 +487,7 @@
         this.pageNum = 1
         this.tableData = []
         this.detailData = []
+
         this.initListSearch()
       },
       // 页码跳转

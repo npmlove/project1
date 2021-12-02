@@ -178,7 +178,7 @@
             <el-button size='mini' type="primary" @click="invoicing()">开票</el-button>
             <el-button size='mini' type="primary" @click="delInvoice()">作废</el-button>
             <el-button size='mini' type="primary" @click="delivery()">快递</el-button>
-            <el-upload
+            <!-- <el-upload
               style="width:100px;height:28px;margin-right:10px"
               action="#"
               accept=".zip"
@@ -187,7 +187,7 @@
               :on-change="handleChange"
               :auto-upload="false">
               <el-button type="primary" size="medium">上传发票</el-button>
-            </el-upload>
+            </el-upload> -->
             <el-button size='mini' type="primary" @click="exportList">导出列表</el-button>
             <el-button @click="drawer = true" type="primary" size='mini'>选择表格列</el-button>
           </div>

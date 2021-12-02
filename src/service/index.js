@@ -196,7 +196,7 @@ const serviceApi = {
    receivableSum: pulicWeb + '/t-rcv-records/sumList',
   //应收统计 - 核销弹框点击
   getWoFrameData: pulicWeb + '/t-rcv-records/getWoFrameData',
-   
+
    // 查询应付信息列表
    searchWoByPageBill: pulicWeb + '/t-order-payment/searchWoByPage',
    // 对账导入excel
