@@ -946,7 +946,13 @@
         if(this.selectTableData.length == 0) {
           this.$message({type:"warning",message:"请选择数据"})
           return false
-      }
+      } else if(Boolean(this.selectTableData.some(item=>item.ifChild == true))){
+          this.$message({
+            message: '必须选择主信息进行导出哦',
+            type: 'warning'
+          });
+          return false
+        }
         let requestData = {}
         if(this.pageSkipChecked == true) {
           requestData.overPageCheck = true
