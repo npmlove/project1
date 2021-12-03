@@ -182,7 +182,7 @@ const serviceApi = {
   searchRecords: pulicWeb + '/t-order-payment/searchRecords',
   //数据统计
   dataStatistics: pulicWeb + '/t-order-payment/dataStatistics',
-  //数据统计
+  //撤销记录
   revokeRecords: pulicWeb + '/t-order-payment/revokeRecords',
   //查询
   search: pulicWeb + '/t-order-payment/search',

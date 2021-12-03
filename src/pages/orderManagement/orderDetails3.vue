@@ -882,7 +882,6 @@
         mscsName: '',
         agentName: '',
         activityCodeDoing: '',
-        activityCodeDoing: '',
         updateTime: '',
         timeOut: '',
         h: '',
@@ -1834,7 +1833,6 @@
           if(data.code == 200){
             this.detailsArr = data.data
             var data = data.data
-
             this.statusDesc = data.statusDesc
             this.status = data.status
             this.pscsName = data.pscsName
@@ -1858,7 +1856,9 @@
             this.airCompanyCode = data.airCompanyCode
             this.airCompanyName = data.airCompanyName
             this.bookingPrice = data.bookingPrice
-            this.fullLeg = data.fullLeg
+            let fullLeg = data.fullLeg.split(',');
+            this.fullLeg = fullLeg.join('-');
+            // this.fullLeg = data.fullLeg
             this.bubblePoint = data.bubblePoint.toString()
             this.departureDate = data.departureDate
             this.agentId = data.agentId+'#'+data.agentName

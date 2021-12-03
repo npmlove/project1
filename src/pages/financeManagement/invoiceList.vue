@@ -427,7 +427,6 @@
               <el-checkbox v-for="choose in tableOptions" :label="choose" :key="choose" style="display:block;margin-left:20px">{{choose}}</el-checkbox>
         </el-checkbox-group>
       </el-drawer>
-
       <!-- 订单号&运单号弹框 -->
       <el-dialog
           width="80%"
@@ -709,7 +708,6 @@
           {label:"未寄出",value:"0"}
         ],
         getExpressState:["未寄出","已寄出"],
-
         //航班日期选择器
          // 限制结束日期大于开始日期
         pickerOptionsStartOne: {
@@ -813,12 +811,10 @@
         selectTableData:[],
 
         //点击/按钮弹框
-
         //开票信息弹框是否显示
         invoiceDialog:false,
         //开票信息查看表格数据
         invoiceTableData:[],
-
         invoiceFootOne:'',
         invoiceFootTwo:'',
         invoiceFootThree:'',
@@ -920,7 +916,6 @@
             _t = [],
             // 临时的变量
             _tmp;
-
         // 按照特定的参数将数组排序将具有相同值得排在一起
         arr = arr.sort(function(a, b) {
             var s = a[str],
@@ -1178,6 +1173,20 @@
           this.invoicingLeft.id = ""
           this.invoicingDial = true
         }
+        // 将最后的内容推出新数组
+        _arr.push( _t );
+        return _arr;
+      },
+      //导出列表
+      exportList (){
+           const aLink = document.createElement("a");
+            let blob = new Blob([], {
+              type: "application/vnd.ms-excel"
+            })
+            aLink.href = URL.createObjectURL(blob)
+            aLink.setAttribute('download', '航线价格表' + '.xlsx') // 设置下载文件名称
+            aLink.click()
+            document.body.appendChild(aLink)
       },
       //开票弹框左侧确认生成
       invoiceLeftConfirm() {
@@ -1591,7 +1600,6 @@
   /deep/.el-tag.el-tag--info {
     max-width: 120px;
   }
-
   //表格单元格设置
   .el-table{
     /deep/.cell{
@@ -1614,7 +1622,6 @@
       height: 35px;
     }
   }
-
   .content-wrapper {
     width: 100%;
     box-sizing: border-box;
