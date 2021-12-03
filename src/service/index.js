@@ -194,9 +194,16 @@ const serviceApi = {
   exportWoListExcel: pulicWeb + '/t-rcv-records/exportWoListExcel',
    //应收统计 - 数据统计
    receivableSum: pulicWeb + '/t-rcv-records/sumList',
-  //应收统计 - 核销弹框点击
+  //应收统计 - 核销弹框数据
   getWoFrameData: pulicWeb + '/t-rcv-records/getWoFrameData',
-
+  //应收统计 - 核销按钮弹框收款账户信息
+  searchByAccount:pulicWeb + '/t-bank-account/searchByAccount',
+  //应收统计 - 核销按钮弹框确认核销
+  arWriteOff :pulicWeb + '/t-write-off-records/arWriteOff',
+  //应收统计 - 生成对账单按钮
+  getAccountStatement :pulicWeb + '/t-rcv-records/getAccountStatement',
+  //应收统计 - 导出对账单
+  exportCheckPdf :pulicWeb +'/t-rcv-records/exportCheckPdf',
    // 查询应付信息列表
    searchWoByPageBill: pulicWeb + '/t-order-payment/searchWoByPage',
    // 对账导入excel
