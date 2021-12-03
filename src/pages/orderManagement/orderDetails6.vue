@@ -1172,6 +1172,10 @@
             data.orderCargoDetailList.push(this.orderCargoDetailList[j])
           }
         }
+        if (data.order.fullLeg) {
+          let fullLeg = data.order.fullLeg.split('-');
+          data.order.fullLeg = fullLeg.join(',');
+        }
         if(type == '保存'){
           this.$http.post(this.$service.orderSaveOrder,data).then((data) => {
             if(data.code == 200){
