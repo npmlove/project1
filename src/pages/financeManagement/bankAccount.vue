@@ -50,15 +50,15 @@
         <el-form label-position="left" :inline="true" size="medium" class="dialog-demo">
         <div class="rest-style" style="margin-top: 20px;">
           <el-form-item label="开户行" label-width="120px" required>
-            <el-input v-model="bankMessage.accountBank" placeholder="请选择开户行" style="width:300px" maxlength="30">
+            <el-input v-model.trim="bankMessage.accountBank" placeholder="请选择开户行" style="width:300px" maxlength="30">
             </el-input>
           </el-form-item>
           <el-form-item label="户名" label-width="120px" required>
-            <el-input size="medium"  v-model="bankMessage.userName" placeholder="请输入户名" maxlength="30"  style="width:300px">
+            <el-input size="medium"  v-model.trim="bankMessage.userName" placeholder="请输入户名" maxlength="30"  style="width:300px">
             </el-input>
           </el-form-item>
           <el-form-item label="账号" label-width="120px" required>
-            <el-input size="medium"  v-model="bankMessage.bankAccount" placeholder="请输入账号" maxlength="19" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:300px">
+            <el-input size="medium"  v-model.trim="bankMessage.bankAccount" placeholder="请输入账号" maxlength="19" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:300px">
             </el-input>
           </el-form-item>
         </div>
@@ -156,7 +156,6 @@
       },
       //编辑弹框确认
        dialogComfirm(){
-         console.log(this.bankMessage)
          if(this.bankMessage.bankAccount == "" || this.bankMessage.accountBank == "" || this.bankMessage.userName == "") {
            this.$message({
              type:"warning",
