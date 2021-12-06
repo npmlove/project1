@@ -231,6 +231,7 @@
               type="selection"
               width="40"
               label="序号"
+              fixed="left"
               :selectable="ifDisabled"
               v-if="checkedTable.indexOf('序号') !== -1"
             ></el-table-column>

@@ -134,4 +134,13 @@ export default {
   .el-submenu.is-active .el-submenu__title .iconfont {
     color: #fff !important;
   }
+
+/deep/.el-submenu.is-active {
+        .el-submenu__title {
+          img {
+            filter:drop-shadow(#2273ce 0px 0)
+          }
+      }
+    }
+   
 </style>
