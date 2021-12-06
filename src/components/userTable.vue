@@ -169,7 +169,7 @@ export default {
     getCreditTerm(creditTerm){
       console.log(creditTerm)
     if (typeof (creditTerm)=='undefined'||creditTerm==null){
-      return '请设置账期'
+      return ''
     }
     creditTerm= JSON.parse(creditTerm)
       var unit=creditTerm.unit == 0?"天":"个月";
