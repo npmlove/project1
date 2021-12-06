@@ -171,7 +171,10 @@ export default {
     if (typeof (creditTerm)=='undefined'||creditTerm==null){
       return ''
     }
-    creditTerm= JSON.parse(creditTerm)
+      creditTerm= JSON.parse(creditTerm)
+      if (creditTerm.creditTerm==''){
+        return ''
+      }
       var unit=creditTerm.unit == 0?"天":"个月";
       return creditTerm.creditTerm+unit;
     },
