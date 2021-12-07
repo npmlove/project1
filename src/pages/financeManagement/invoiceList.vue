@@ -178,7 +178,7 @@
             <el-button size='mini' type="primary" @click="invoicing()">开票</el-button>
             <el-button size='mini' type="primary" @click="delInvoice()">作废</el-button>
             <el-button size='mini' type="primary" @click="delivery()">快递</el-button>
-            <!-- <el-upload
+            <el-upload
               style="width:100px;height:28px;margin-right:10px"
               action="#"
               accept=".zip"
@@ -187,7 +187,7 @@
               :on-change="handleChange"
               :auto-upload="false">
               <el-button type="primary" size="medium">上传发票</el-button>
-            </el-upload> -->
+            </el-upload>
             <el-button size='mini' type="primary" @click="exportList">导出列表</el-button>
             <el-button @click="drawer = true" type="primary" size='mini'>选择表格列</el-button>
           </div>
@@ -212,7 +212,7 @@
                 <img class="data-pic" src="../../assets/kong-icon.png"/>
                 <p>暂无数据</p>
               </template>
-              <el-table-column type="selection" width="50" :selectable="ifDisabled" :key="Math.random()"></el-table-column>
+              <el-table-column type="selection" width="50" :selectable="ifDisabled" fixed="left" :key="Math.random()" ></el-table-column>
               <el-table-column label="订单号" min-width="160"  type="" v-if="checkedTable.indexOf('订单号')!==-1">
                 <template slot-scope="scope">
                   <div v-if="scope.row.hasChild">
@@ -883,12 +883,41 @@
       },
       // 导入文件的上传
       handleChange(file) {
-        console.log(this)
-        console.log(file)
+        if(this.ifMainFold(this.selectTableData)){
+           this.$message({
+            message: '主数据和折叠数据不能同时存在',
+            type: 'warning'
+          });
+          return
+        }
+        
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isLt2M) {
           this.$message.error('');
           return
+        }
+        //选中行调接口数据处理
+        let requestData = {}
+        if(this.pageSkipChecked == true) {
+            requestData.overPageCheck = true
+            requestData.financePageDTO = this.selectResultData()
+            requestData.uploadInvoAppMap = null
+        } else {
+          requestData.overPageCheck = false
+          requestData.financePageDTO = null
+          let copyTabless = JSON.parse(JSON.stringify(this.selectTableData))
+          if(this.selectTableData.some(item=>item.ifChild == true)){
+            let result = this.sortArr(copyTabless,"iaId")
+            requestData.uploadInvoAppMap ={}
+            result.forEach((item,index)=>{
+              requestData.uploadInvoAppMap[item[0].iaId] = item.map(item2=>item2.id)
+            })
+          } else {
+            requestData.uploadInvoAppMap ={}
+            copyTabless.forEach(item=>{
+              requestData.uploadInvoAppMap[item.id] = item.invoiceInfos.map(item2=>item2.id)
+            })
+          }
         }
         // this.importExcel(file.raw)
         // console.log(formdate)
@@ -898,7 +927,22 @@
           reader.onload = function() {
             const fileFormData = new FormData();
             fileFormData.append('image', file.raw)
-            vm.$http.post(vm.$service.uploadInvoicePDF, fileFormData).then(res => {})
+            vm.$http.post(vm.$service.uploadInvoicePDF, fileFormData).then(res => {
+              if(res.code == 200) {
+                vm.$http.post(vm.$service.uploadInvoBody,requestData,{
+            responseType: 'arraybuffer'
+          }).then(res1=>{
+                   const aLink = document.createElement("a");
+                    let blob = new Blob([res1], {
+                      type: "application/zip"
+                    })
+                    aLink.href = URL.createObjectURL(blob)
+                    aLink.setAttribute('download', '上传发票' + '.zip') // 设置下载文件名称
+                    aLink.click()
+                    document.body.appendChild(aLink)
+                        })
+              }
+            })
             };
       },
 

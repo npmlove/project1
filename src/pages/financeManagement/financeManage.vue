@@ -329,7 +329,7 @@
               label="序号"
               v-if="checkedTable.indexOf('序号') !== -1"
             ></el-table-column>
-            <el-table-column type="selection" width="50" :selectable="ifDisabled"></el-table-column>
+            <el-table-column type="selection" width="50" :selectable="ifDisabled" fixed="left"></el-table-column>
             <el-table-column
               label="订单号"
               min-width="160"

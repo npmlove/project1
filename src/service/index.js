@@ -218,5 +218,12 @@ const serviceApi = {
    writeOff: pulicWeb + '/t-payment-write-off/writeOff',
    //  应付导出excel
    billExportExcel: pulicWeb + '/t-order-payment/exportExcel',
+   // 发票列表页面 - 上传发票
+   uploadInvoBody :  pulicWeb +'/t-invoice-apply/uploadInvoBody',
+   toCheckAmount : pulicWeb + '/t-order-payment/toCheckAmount',
+   //  核销统计接口
+   toWriteOffAmountCount: pulicWeb + '/t-order-payment/toWriteOffAmountCount',
+   //工单-工单数据统计
+   sumWorkOrderData: pulicWeb + '/t-work-order/sumWorkOrderData'
 }
 export default serviceApi

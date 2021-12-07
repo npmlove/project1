@@ -102,6 +102,16 @@
                             '修改中' : ''
                 }}
             </span>
+             <span v-else-if=" column.label == '币种'">
+                 {{
+                  scope.row.currency == 1 ?
+                    '人民币' : scope.row.currency == 2 ?
+                    '港币' : scope.row.currency == 3 ?
+                      '美元' : scope.row.currency == 4 ?
+                        '欧元' : scope.row.currency == 5 ?
+                          '英镑' :  ''
+                }}
+            </span>
             <!--              <span v-else-if="column.prop=='orderNo'&& column.label == '订单号'">-->
               <a v-else-if="column.prop=='orderNo'&& column.label == '订单号'"
                  @click="showFees(scope.row.id,scope.row.payWay,scope.row.financeStatus)"

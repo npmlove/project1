@@ -560,6 +560,60 @@ const courseManagement = [{
   ]
 }]
 
+// 工单
+const workOrder = [{
+  path: '/workOrder',
+  component: Layout,
+  name: 'workOrder',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title:"工单",
+    img: require("../assets/gongdan.svg"),
+    breadcrumb: false
+  },
+  children: [
+    {
+      path: 'adverCenter',
+      component: () => import('@/pages/workOrder/serviceWorkOrder.vue'),
+      name: 'adverCenter',
+      meta: {
+        title: '客服工单提交',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'adverAdd',
+      component: () => import('@/pages/workOrder/airlineWorkOrder.vue'),
+      name: 'adverAdd',
+      meta: {
+        title: '航线工单审核',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'bannerNew',
+      component: () => import('@/pages/workOrder/workOrderStatistics.vue'),
+      name: 'bannerNew',
+      meta: {
+        title: '工单数据统计',
+        keepAlive: false,
+        needLogin: true
+      },
+    },{
+      path: 'bannerNew',
+      component: () => import('@/pages/workOrder/overAllStatistics.vue'),
+      name: 'bannerNew',
+      meta: {
+        title: '统计',
+        keepAlive: false,
+        needLogin: true
+      }
+    }
+  ]
+}]
 
 
 const routes = [
@@ -574,8 +628,8 @@ const routes = [
   ...userManagementCenter,
   ...adminUserCenter,
   ...courseManagement,
-  ...cargoTrackingManage
-
+  ...cargoTrackingManage,
+  ...workOrder
 ]
 
 export default routes
