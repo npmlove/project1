@@ -901,7 +901,7 @@
         if(this.pageSkipChecked == true) {
             requestData.overPageCheck = true
             requestData.financePageDTO = this.selectResultData()
-            requestData.uploadInvoAppMap = ""
+            requestData.uploadInvoAppMap = null
         } else {
           requestData.overPageCheck = false
           requestData.financePageDTO = null
@@ -929,7 +929,18 @@
             fileFormData.append('image', file.raw)
             vm.$http.post(vm.$service.uploadInvoicePDF, fileFormData).then(res => {
               if(res.code == 200) {
-                vm.$http.post(vm.$service.uploadInvoBody,requestData).then(res=>{})
+                vm.$http.post(vm.$service.uploadInvoBody,requestData,{
+            responseType: 'arraybuffer'
+          }).then(res1=>{
+                   const aLink = document.createElement("a");
+                    let blob = new Blob([res1], {
+                      type: "application/zip"
+                    })
+                    aLink.href = URL.createObjectURL(blob)
+                    aLink.setAttribute('download', '上传发票' + '.zip') // 设置下载文件名称
+                    aLink.click()
+                    document.body.appendChild(aLink)
+                        })
               }
             })
             };
