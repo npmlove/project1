@@ -452,19 +452,19 @@
             </el-form-item>
             <div v-if="inboundPiece && (status != '13') && priceItem.status == '1'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
               <div>账单已发送，等待客户确认</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
+              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;" @click="changeSecondBill">修改账单</div>
             </div>
             <div v-if="inboundPiece && (status != '13') && priceItem.status == '2'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
               <div>账单已确认</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
+              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;" @click="changeSecondBill" >修改账单</div>
             </div>
             <div v-if="inboundPiece && (status != '13') && priceItem.status == '3'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
               <div>账单已确认，开票已申请</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
+              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;" @click="changeSecondBill" >修改账单</div>
             </div>
             <div v-if="inboundPiece && (status != '13') && priceItem.status == '4'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
               <div>账单已确认，发票开具￥{{priceItem.invoiceAmount}}</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
+              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;" @click="changeSecondBill" >修改账单</div>
             </div>
           </div>
         </div>
@@ -1005,6 +1005,10 @@
       }
     },
     methods: {
+      // 修改账单
+      changeSecondBill(){
+        
+      },
       newZhangDan() {
         var json = {
           id: '',
