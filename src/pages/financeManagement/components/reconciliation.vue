@@ -3,6 +3,7 @@
     <el-dialog
         title="应付对账信息"
         :visible.sync="dialogVisible"
+        :before-close="handleClose"
         top="20vh"
         width="50%">
             <el-dialog
@@ -126,8 +127,20 @@
         </div>
         <div class="cont">
             <div>订单应付总金额：{{totalApCny}}  </div>
-            <div>未对账金额：{{unreconciledAmount}}    </div>
-            <div>已对账金额：{{payCheckAmount}}   </div>
+            <div>未对账金额：{{unreconciledAmount}} 
+                <span v-if="value == 1">￥</span>
+                <span v-if="value == 2">HK$</span>
+                <span v-if="value == 3">$</span>
+                <span v-if="value == 4">€</span>
+                <span v-if="value == 5">￡</span>
+            </div>
+            <div>已对账金额：{{payCheckAmount}}  
+                <span v-if="value == 1">￥</span>
+                <span v-if="value == 2">HK$</span>
+                <span v-if="value == 3">$</span>
+                <span v-if="value == 4">€</span>
+                <span v-if="value == 5">￡</span>    
+             </div>
         </div>
         <div class=" footer"  slot="footer">
             <el-button type="primary" @click="comfire">确认对账</el-button>
@@ -141,10 +154,11 @@
 </template>
 
 <script>
-import { postImage ,exportFile} from '../../../util/util'
+
+import { postImage ,exportFile,moneyList} from '../../../util/util'
 export default {
     name:'reconciliation',
-    props:['multipleselection'],
+    props:['childPropsObj'],
     data() {
         return {
             dialogVisible: false,
@@ -154,47 +168,66 @@ export default {
             totalApCny:0,// 应付总金额
             unreconciledAmount:0,// 未对账金额
             payCheckAmount:0,// 已对账金额
-            options: [{
-                value: '1',
-                label: 'CNY'
-                }, {
-                value: '2',
-                label: '港币'
-                }, {
-                value: '3',
-                label: '美元'
-                }, {
-                value: '4',
-                label: '欧元'
-                }, {
-                value: '5',
-                label: '英镑'
-                }
-            ],
+            options: [],
             file:'',//附件
             innerVisible: false,// 内层模态框
             tableData:[],//
             dialogData:{},//
             opIds:[] ,// 确认对账的参数 
+            totalApUnwoOrgnString:"",// 返回未对账金额 jsonArray
+            totalApWoOrgnString:"",// 返回对账金额显示 jsonArray
+            
         };
     },
+    
     watch:{
-        multipleselection(newValue,oldValue){
-            let { totalApCny ,unreconciledAmount, payCheckAmount, opIds} = this;
-            for(let i in newValue){
-                 totalApCny =   newValue[i].totalApCny + totalApCny
-                 unreconciledAmount = newValue[i].unreconciledAmount + unreconciledAmount
-                 payCheckAmount = newValue[i].payCheckAmount + payCheckAmount
-                 opIds.push(newValue[i].ids)
+        value(newValue){
+            this.unreconciledAmount = this.setOne(this.totalApUnwoOrgnString)
+            this.payCheckAmount = this.setOne(this.totalApWoOrgnString)
+        },
+        childPropsObj:{
+            deep:true,
+            immediate:true,
+            handler(newValue,oldValue){
+                let {totalApCny,totalApUnwoOrgn,totalApWoOrgn} = newValue ;
+                if(totalApCny){      
+                    this.totalApCny = totalApCny
+                    this.totalApUnwoOrgnString = totalApUnwoOrgn
+                    this.totalApWoOrgnString = totalApWoOrgn
+                    this.options = this.setOptionArray(totalApUnwoOrgn)
+                    this.unreconciledAmount = this.setOne(this.totalApUnwoOrgnString)
+                    this.payCheckAmount = this.setOne(this.totalApWoOrgnString)
+                }
             }
-            this.payCheckAmount = payCheckAmount
-            this.totalApCny = totalApCny
-            this.unreconciledAmount = unreconciledAmount
-        
         }
     },
-
     methods: {
+        async handleClose(){
+            await this.cancle()
+        },
+        setOne(t){
+            // 获取 当前币种下的未对账金额
+            let tempArray = JSON.parse(t)
+            let a = ''
+            for(let u in tempArray){
+                if(tempArray[u].currency == this.value){
+                    a = tempArray[u].amount  
+                }
+            }
+            return a
+        },
+        setOptionArray(tempJsonArray){
+            let tempArray = JSON.parse(tempJsonArray)
+            let temp = []
+            for(let i in tempArray){
+                for(let j in moneyList){
+                    if(tempArray[i].currency == moneyList[j].value){
+                        temp.push(moneyList[j])
+                    }
+                }
+            }
+            return temp
+        },
         showModal(){
             this.dialogVisible = true
         },
