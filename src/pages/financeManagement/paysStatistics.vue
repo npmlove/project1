@@ -169,7 +169,7 @@
         <el-button type="primary" @click="clearAllData">清空</el-button>
       </el-form-item>
     </el-form>
-    <el-row>
+    <el-row type='flex' >
       <el-col :span="12">
           <el-radio-group v-model="woStatus" size="small" @change="radioEvent" >
               <el-radio-button  label= '0' >可操作({{(countAuth)}})</el-radio-button>
@@ -177,10 +177,10 @@
               <el-radio-button label= '2'>异常({{(countErr)}})</el-radio-button>
           </el-radio-group>
       </el-col>
-      <el-col :span="12">
-          <el-button size="small" @click="fatherReconciliation">对账</el-button>
-          <el-button size="small" @click="fatherVerification">核销</el-button>
+      <el-col :span="12" class="rightFlex" >
           <el-button size="small" @click="exportBillList">导出列表</el-button>
+          <el-button size="small" @click="fatherVerification">核销</el-button>
+          <el-button size="small" @click="fatherReconciliation">对账</el-button>
       </el-col>
     </el-row>
     <el-table
@@ -371,9 +371,9 @@
           </span>  
     </div>
     <!-- 对账模态框组件 -->
-    <reconciliation @farhersearch='onSubmit' :multipleselection= childPropsData ref="reconciliationData"/> 
+    <reconciliation @farhersearch='onSubmit'  :childPropsObj = childPropsObj ref="reconciliationData"/> 
     <!-- 核销模态框组件 -->
-    <verification  @farhersearch2='onSubmit' :multipleselection= verificationData ref="verificationData" />
+    <verification  @farhersearch2='onSubmit' :childPropsObj= verificationObj ref="verificationData" />
     <!-- 点击核销次数模态框 -->
     <el-dialog
       title="应付核销操作记录"
@@ -402,7 +402,7 @@
           </el-table-column>
           <el-table-column
             prop="expenseUnitName"
-            label="应收对象"
+            label="应付对象"
             width="250">
           </el-table-column>
           <el-table-column
@@ -533,6 +533,7 @@ import {exportFile} from '../../util/util'
         computedDataStatic:false,// 数据统计样式改变
         multipleSelection:[],// 单选的数组,
         childPropsData:[], //  传入对账子组件的数组
+        childPropsObj:{}, //
         childBoolen:false, // 子组件是否引入 
         preSaleList:[],// 售前客服数组
         onSaleList:[],// 售中客服数组
@@ -542,6 +543,8 @@ import {exportFile} from '../../util/util'
         optionThree:[],//
         optionFour:[],//
         verificationData:[],// 传递给核销组件的数据
+        verificationObj:{},// 传递给核销组件的对象
+
 
       }
     },
@@ -713,7 +716,7 @@ import {exportFile} from '../../util/util'
         await this.getTabelData(formInline,e,woStatus,slectAllDataStatic)
       },
       // 点击对账
-      fatherReconciliation(){
+      async fatherReconciliation(){
         let tempArray = this.multipleSelection
         if(tempArray.length >= 1){
           let tempString = tempArray[0].expenseUnitName
@@ -730,7 +733,20 @@ import {exportFile} from '../../util/util'
               });
           }else{
             this.childPropsData = tempArray
-            this.$refs.reconciliationData.showModal()
+            let idsArray = tempArray.map((item)=>{
+              return item.ids
+            })
+            let {formInline} = this
+            let params= Object.assign({},formInline,{ids:idsArray})
+            let res = await this.$http.post(this.$service.toCheckAmount,params)
+            if(res.code == 200){
+              this.childPropsObj = res.data
+              setTimeout(()=>{
+                  this.$refs.reconciliationData.showModal()
+              },0)
+              
+            }
+            
           }
         }else if(tempArray.length == 0){
           this.$message({
@@ -742,7 +758,7 @@ import {exportFile} from '../../util/util'
         }
       },
       // 核销
-      fatherVerification(){
+      async fatherVerification(){
         let tempArray = this.multipleSelection
         if(tempArray.length >= 1){
           let tempString = tempArray[0].expenseUnitName
@@ -758,8 +774,19 @@ import {exportFile} from '../../util/util'
                 type: 'warning'
               });
           }else{
-            this.verificationData = tempArray
-            this.$refs.verificationData.showModal()
+            let {formInline} = this
+            let idsArray = tempArray.map((item)=>{
+              return item.ids
+            })
+            let params= Object.assign({},formInline,{ids:idsArray})
+            let res = await this.$http.post(this.$service.toWriteOffAmountCount,params)
+            if(res.code == 200){
+              this.verificationObj = res.data
+              setTimeout(()=>{
+                this.$refs.verificationData.showModal()
+              },0)
+            }
+            
           }
         }else if(tempArray.length == 0){
           this.$message({
@@ -774,7 +801,6 @@ import {exportFile} from '../../util/util'
       async clckOne(selection, row){
         this.multipleSelection = selection
       },
-
       // 跨页全选
       async slectAllData(){
         this.slectAllDataStatic = !this.slectAllDataStatic
@@ -867,16 +893,12 @@ import {exportFile} from '../../util/util'
 .calcDataContont{
   margin-bottom: 10px;
   display: flex;
-  
- 
 }
 .text_color_blue{
     color: #62a0ed;
 }
 .calcDataContont>span{
  margin-left: 10px;
- 
- 
 }
 .calcDataContont .fon{
   display: flex;
@@ -888,5 +910,12 @@ import {exportFile} from '../../util/util'
 }
 .opacity{
   opacity: 0;
+}
+.rightFlex{
+  /* display: flex; */
+  /* justify-content: end; */
+  /* flex-shrink: 0; */
+  /* flex-wrap: wrap; */
+  /* direction: rtl; */
 }
 </style>

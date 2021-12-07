@@ -3,6 +3,7 @@
         <el-dialog
             title="应付核销信息"
             :visible.sync="dialogVisible"
+            :before-close="handleClose"
             width="50%">
             <div class="contont">
                 <div class="cont">
@@ -89,8 +90,20 @@
                 </div>
                 <div class="flex_line"> 
                     <span>订单应付总金额：{{totalApCny}}</span>
-                    <span>未核销金额：{{unwrittenOffAmountRmb}}</span>
-                    <span>已核销金额：{{payWriteOffAmountRmb}} </span>
+                    <span>未核销金额：{{unwrittenOffAmountRmb}}
+                            <span v-if="currency == 1">￥</span>
+                            <span v-if="currency == 2">HK$</span>
+                            <span v-if="currency == 3">$</span>
+                            <span v-if="currency == 4">€</span>
+                            <span v-if="currency == 5">￡</span>    
+                    </span>
+                    <span>已核销金额：{{payWriteOffAmountRmb}} 
+                            <span v-if="currency == 1">￥</span>
+                            <span v-if="currency == 2">HK$</span>
+                            <span v-if="currency == 3">$</span>
+                            <span v-if="currency == 4">€</span>
+                            <span v-if="currency == 5">￡</span>    
+                    </span>
                 </div>
                 <div class="fo" >
                     <el-button type="primary" size="small" @click="onSubmit">确认核销</el-button>
@@ -103,8 +116,9 @@
 </template>
 
 <script>
+import { moneyList} from '../../../util/util'
 export default {
-    props:['multipleselection'],
+    props:['childPropsObj'],
     data() {
         return {
             dialogVisible: false,
@@ -116,7 +130,9 @@ export default {
             payWay:'', //0=付款买单 1=月结
             totalApCny:0,// 应付总金额
             unwrittenOffAmountRmb:0,// 未核销金额
+            unwrittenOffAmountRmbString:0,// 未核销金额 jsonArray
             payWriteOffAmountRmb:0,// 已核销金额
+            payWriteOffAmountRmbString:0,// 已核销金额jsonArray
             payWayArray:[
                 {
                     value:'',
@@ -138,44 +154,65 @@ export default {
                     label:"应付对冲"
                 }
             ],
-            options: [{
-                value: '1',
-                label: 'CNY'
-                }, {
-                value: '2',
-                label: '港币'
-                }, {
-                value: '3',
-                label: '美元'
-                }, {
-                value: '4',
-                label: '欧元'
-                }, {
-                value: '5',
-                label: '英镑'
-                }
-            ],
+            options: [],
             tempArray:[],
             allData:[],
         };
     },
 
     watch:{
-        multipleselection(newValue,oldValue){
-            let { totalApCny ,unwrittenOffAmountRmb, payWriteOffAmountRmb } = this;
-            for(let i in newValue){
-                 totalApCny =   newValue[i].totalApCny + totalApCny
-                 unwrittenOffAmountRmb = newValue[i].unwrittenOffAmountRmb + unwrittenOffAmountRmb
-                 payWriteOffAmountRmb = newValue[i].payWriteOffAmountRmb + payWriteOffAmountRmb
+        currency(newValue){
+            this.unwrittenOffAmountRmb = this.setOne( this.unwrittenOffAmountRmb)
+            this.payWriteOffAmountRmb  = this.setOne(this.payWriteOffAmountRmb)
+        },
+        childPropsObj:{
+            deep:true,
+            immediate:true,
+            handler(newValue,oldValue){
+                console.log(newValue)
+                let {totalApCny,totalApUnwoOrgn,totalApWoOrgn} = newValue
+                if(totalApCny){
+                    this.totalApCny = totalApCny
+                    this.unwrittenOffAmountRmbString = totalApWoOrgn
+                    this.payWriteOffAmountRmbString = totalApUnwoOrgn
+                    console.log(totalApWoOrgn)
+                    this.options = this.setOptionArray(totalApUnwoOrgn)
+                    this.unwrittenOffAmountRmb = this.setOne(totalApWoOrgn)
+                    this.payWriteOffAmountRmb  = this.setOne(totalApUnwoOrgn)
+                }
+                
+
             }
-            this.payWriteOffAmountRmb = payWriteOffAmountRmb
-            this.totalApCny = totalApCny
-            this.unwrittenOffAmountRmb = unwrittenOffAmountRmb
-            this.allData = newValue
-        
         }
+
     },
     methods:{
+        async handleClose(){
+            await this.cancle()
+        },
+        setOne(t){
+            // 获取 当前币种下的金额
+            let tempArray = JSON.parse(t)
+            let a = ''
+            for(let u in tempArray){
+                if(tempArray[u].currency == this.currency){
+                    a = tempArray[u].amount  
+                }
+            }
+            return a
+        },
+        setOptionArray(tempJsonArray){
+            let tempArray = JSON.parse(tempJsonArray)
+            let temp = []
+            for(let i in tempArray){
+                for(let j in moneyList){
+                    if(tempArray[i].currency == moneyList[j].value){
+                        temp.push(moneyList[j])
+                    }
+                }
+            }
+            return temp
+        },
         // 输入收款账户信息的返回值
         async remoteMethod(e){
             if (e !== '') {
