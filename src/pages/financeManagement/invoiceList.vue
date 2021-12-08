@@ -179,14 +179,14 @@
             <el-button size='mini' type="primary" @click="delInvoice()">作废</el-button>
             <el-button size='mini' type="primary" @click="delivery()">快递</el-button>
             <el-upload
+              :disabled="ifMainFold(this.selectTableData) || this.selectTableData.length==0"
               style="width:100px;height:28px;margin-right:10px"
               action="#"
               accept=".zip"
               class="upLoad"
               :multiple = "true"
-              :on-change="handleChange"
               :auto-upload="false">
-              <el-button type="primary" size="medium">上传发票</el-button>
+              <el-button type="primary" size="medium" @click="uploadResolve">上传发票</el-button>
             </el-upload>
             <el-button size='mini' type="primary" @click="exportList">导出列表</el-button>
             <el-button @click="drawer = true" type="primary" size='mini'>选择表格列</el-button>
@@ -881,8 +881,7 @@
           return true
         }
       },
-      // 导入文件的上传
-      handleChange(file) {
+      uploadResolve(){
         if(this.ifMainFold(this.selectTableData)){
            this.$message({
             message: '主数据和折叠数据不能同时存在',
@@ -890,7 +889,17 @@
           });
           return
         }
+        else if(this.selectTableData.length==0){
+           this.$message({
+            message: '请选择数据进行操作',
+            type: 'warning'
+          });
+          return
+        }
         
+      },
+      // 导入文件的上传
+      handleChange(file) {
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isLt2M) {
           this.$message.error('');
@@ -1217,21 +1226,8 @@
           this.invoicingLeft.id = ""
           this.invoicingDial = true
         }
-        // 将最后的内容推出新数组
-        _arr.push( _t );
-        return _arr;
       },
-      //导出列表
-      exportList (){
-           const aLink = document.createElement("a");
-            let blob = new Blob([], {
-              type: "application/vnd.ms-excel"
-            })
-            aLink.href = URL.createObjectURL(blob)
-            aLink.setAttribute('download', '航线价格表' + '.xlsx') // 设置下载文件名称
-            aLink.click()
-            document.body.appendChild(aLink)
-      },
+     
       //开票弹框左侧确认生成
       invoiceLeftConfirm() {
         console.log(this.invoicingLeft)
