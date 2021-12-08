@@ -1,3 +1,4 @@
+
 <template>
   <div class="content-wrapper">
     <div class="content">
@@ -452,19 +453,19 @@
             </el-form-item>
             <div v-if="inboundPiece && (status != '13') && priceItem.status == '1'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
               <div>账单已发送，等待客户确认</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
+              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;" @click="changeSecondBill" >修改账单</div>
             </div>
             <div v-if="inboundPiece && (status != '13') && priceItem.status == '2'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
               <div>账单已确认</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
+              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;" @click="changeSecondBill" >修改账单</div>
             </div>
             <div v-if="inboundPiece && (status != '13') && priceItem.status == '3'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
               <div>账单已确认，开票已申请</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
+              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;"  >修改账单</div>
             </div>
             <div v-if="inboundPiece && (status != '13') && priceItem.status == '4'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
               <div>账单已确认，发票开具￥{{priceItem.invoiceAmount}}</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
+              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;" >修改账单</div>
             </div>
           </div>
         </div>
@@ -540,9 +541,6 @@
               </div>
             </div>
           </div>
-          <!-- <el-form-item label="">
-            <el-button @click="newZhangDan" style="width: auto;" size="medium" type="primary">新建账单</el-button>
-          </el-form-item> -->
         </div>
 
         <!-- 账单信息-应付账单 -->
@@ -628,10 +626,10 @@
           </div>
           <div>
             <el-form-item v-if="inboundPiece && (status != '13') && financeStatus == '0'" label="">
-              <el-button @click="jiaoDanClick" style="width: auto;" size="medium" type="primary">交单</el-button>
+              <el-button @click="jiaoDanClick(0)" style="width: auto;" size="medium" type="primary">交单</el-button>
             </el-form-item>
             <el-form-item v-if="inboundPiece && (status != '13') && financeStatus == '1'" label="">
-              <el-button @click="jiaoDanClick" style="width: auto;" size="medium" type="primary">申请解锁</el-button>
+              <el-button @click="jiaoDanClick(1)" style="width: auto;" size="medium" type="primary">申请解锁</el-button>
             </el-form-item>
             <!-- <div v-if="inboundPiece && (status != '13') && statusPrice.status == '1'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
               <div>账单已发送，等待客户确认</div>
@@ -649,8 +647,8 @@
       <el-form v-if="orderStatus.indexOf(status) > -1" :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
         <div class="rest-style" style="padding-left: 20px;">
           <el-form-item label=" " label-width="150px">
-            <el-button @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
-            <el-button @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >取消订单</el-button>
+            <el-button @click="submitClick('保存')"  type="primary" >保存</el-button>
+            <el-button @click="submitClick('失败')"  type="primary" >取消订单</el-button>
             <el-button v-if="status == '13'" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0 20px;width: auto;" type="primary" >进仓数据填写完成</el-button>
             <el-button v-if="status == '17'" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0 20px;width: auto;" type="primary" >进仓数据已确认</el-button>
             <el-button v-if="status == '21'" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0 20px;width: auto;" type="primary" >操作完成</el-button>
@@ -663,6 +661,8 @@
 
 <script>
   import {toData} from '@/util/assist'
+
+  
   export default {
     data() {
       return {
@@ -933,6 +933,7 @@
         newZhangDanArr: []
       }
     },
+
     created() {
       this.orderId = this.$route.query.id
       this.initPrincipal()
@@ -1005,6 +1006,18 @@
       }
     },
     methods: {
+      // 修改账单
+      changeSecondBill(){
+        let id = this.arOrderPriceList[0].list[0].billId
+
+        console.log(id) 
+        this.$http.post(this.$service.modifyBill,{billId:id}).then(res=>{
+          console.log(res)
+          if(res.code ==200){
+            this.$router.push('/orderManagement/orderManage')
+          }
+        })
+      },
       newZhangDan() {
         var json = {
           id: '',
@@ -1034,61 +1047,99 @@
         }
         this.newZhangDanArr.push(json)
       },
-      jiaoDanClick() {
-        this.$confirm('确定交单?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          var data = {
-            financeStatus: this.financeStatus,
-            operationType: 0,
-            orderId: this.orderId,
-            info: ''
-          }
-          this.$http.post(this.$service.presentSavePresentLog, data).then(res => {
-            if (res.code == 200) {
-              this.initDetails()
-            }else{
-              this.$message.error(res.message)
-            }
-          })
-        }).catch(() => {
+      jiaoDanClick(e) {
+        if(e==0){
+          this.$confirm('确定交单?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                  }).then(() => {
+                    var data = {
+                      financeStatus: e,
+                      operationType: 0,
+                      orderId: this.orderId,
+                      info: ''
+                    }
+                    this.$http.post(this.$service.presentSavePresentLog, data).then(res => {
+                      if (res.code == 200) {
+                        this.initDetails()
+                      }else{
+                        this.$message.error(res.message)
+                      }
+                    })
+                  })
+        }else if(e == 1){
+          this.$prompt('请输入内容', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+          }).then(({ value }) => {
+            console.log(value)
+                this.$confirm('确定申请解锁?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                  }).then(() => {
+                    var data = {
+                      financeStatus: e,
+                      operationType: 0,
+                      orderId: this.orderId,
+                      info: value
+                    }
+                    this.$http.post(this.$service.presentSavePresentLog, data).then(res => {
+                      if (res.code == 200) {
+                        this.initDetails()
+                      }else{
+                        this.$message.error(res.message)
+                      }
+                    })
+                })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '取消输入'
+            });       
+          });
 
-        })
+        }
+        
       },
       duiZhangClick() {
-        this.$confirm('该账单存在两个收款单位，已生成两张账单，请确认发送?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
+        // this.$confirm('该账单存在两个收款单位，已生成两张账单，请确认发送?', '提示', {
+        //   confirmButtonText: '确定',
+        //   cancelButtonText: '取消',
+        //   type: 'warning'
+        // }).then(() => {
+ 
+        // }).catch(() => {
+
+        // })
           var newOrderArr = []
           if(this.arOrderPriceList.length > 0){
             for(var y = 0; y < this.arOrderPriceList.length; y++){
               for(var p = 0; p < this.arOrderPriceList[y].list.length; p++){
+                
                 newOrderArr.push(this.arOrderPriceList[y].list[p])
               }
             }
           }
+
           var data = {
             departureDate: this.departureDate,
             fullLeg: this.fullLeg,
             orderId: this.orderId,
             orderNo: this.orderNo,
             waybillNo: this.waybillNo,
-            prices: newOrderArr
+            prices: newOrderArr,
+            userId:sessionStorage.getItem('userId')
           }
           this.$http.post(this.$service.priceSendBill, data).then(res => {
             if (res.code == 200) {
+              console.log(res)
               this.$router.push('/orderManagement/orderManage')
             }else{
               this.$message.error(res.message)
             }
           })
-        }).catch(() => {
-
-        })
       },
       pirceBlurInput(){
         var reg = /(^[1-9][0-9]{0,5}$)|(^[0-9]{0,6}[\.][0-9]{1,4}$)/
@@ -1686,7 +1737,7 @@
               this.podOpt = data.data.records
             } else {
               this.polOpt = data.data.records
-              this.podOpt = data.data.records
+              // this.podOpt = data.data.records
             }
           } else {
             this.$message.error(data.message)
@@ -1788,13 +1839,17 @@
         this.totalPriceType('应收')
       },
       addArOrderPriceList(priceIndex,childerIndex) {
+        console.log(12312313132)
+        let tempId = this.arOrderPriceList[0].list[0].billId
+        let expenseUnitName = this.arOrderPriceList[0].list[0].expenseUnitName
+        console.log(this.arOrderPriceList)
         var json = {
           currency: '1',
           exchangeRate: 1,
           expenseName: '',
           expenseType: 1,
           expenseUnitId: '',
-          expenseUnitName: '',
+          expenseUnitName: expenseUnitName,
           id: '',
           orderId: this.orderId,
           price: '',
@@ -1802,6 +1857,7 @@
           remark: '',
           totalCny: '',
           totalOrgn: '',
+          billId:tempId
         }
         this.arOrderPriceList[priceIndex].list.push(json)
       },
@@ -1832,7 +1888,7 @@
         this.$http.get(this.$service.orderSearchDetail+'?orderId='+this.orderId).then((data) => {
           if(data.code == 200){
             this.detailsArr = data.data
-            var data = data.data
+            var data = data.data  
             this.statusDesc = data.statusDesc
             this.status = data.status
             this.pscsName = data.pscsName
@@ -1941,7 +1997,6 @@
             this.financeStatus = data.financeStatus
             this.initAirlineSearchByPage()
             this.totalPriceType('应收')
-
           }else{
             this.$message.error(data.message)
           }
