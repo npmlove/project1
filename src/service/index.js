@@ -224,6 +224,8 @@ const serviceApi = {
    //  核销统计接口
    toWriteOffAmountCount: pulicWeb + '/t-order-payment/toWriteOffAmountCount',
    //工单-工单数据统计
-   sumWorkOrderData: pulicWeb + '/t-work-order/sumWorkOrderData'
+   sumWorkOrderData: pulicWeb + '/t-work-order/sumWorkOrderData',
+   //工单-客服工单查询
+   searchByPageForCst:  pulicWeb + '/t-work-order/searchByPageForCst'
 }
 export default serviceApi
