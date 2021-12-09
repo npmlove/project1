@@ -108,6 +108,7 @@ const serviceApi = {
   orderExecuteOrder:pulicWeb+'/t-order/executeOrder',
   //上传附件
   attachmentUpload:pulicWeb+'/t-order-attachment/upload',
-
+  trackList: pulicWeb + '/track/monitorQuery/airCompanyInfo',
+  trackDetail: pulicWeb + '/track/monitorQuery/getData',
 }
 export default serviceApi
