@@ -226,6 +226,8 @@ const serviceApi = {
    //工单-工单数据统计
    sumWorkOrderData: pulicWeb + '/t-work-order/sumWorkOrderData',
    //工单-客服工单查询
-   searchByPageForCst:  pulicWeb + '/t-work-order/searchByPageForCst'
+   searchByPageForCst:  pulicWeb + '/t-work-order/searchByPageForCst',
+
+  modifyBill: pulicWeb + '/t-bill/modifyBill'
 }
 export default serviceApi
