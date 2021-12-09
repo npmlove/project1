@@ -128,7 +128,7 @@ export default {
 
         color: #2273CE;
         .el-submenu__title {
-          background-color: #ffffff !important;
+          background-color: #22282e !important;
           color: #2273CE;
           .icon {
             color: #2273CE !important;
@@ -145,10 +145,12 @@ export default {
           height: 40px;
           line-height: 40px;
           padding-left: 42px !important;
+          background-color:#22282e;
+          color: #FFFFFF;
           &.is-active {
             // background: #2273CE;
-            background: rgba(34, 115, 206, 0.05000000074505806);
-            color: #000000;
+            background-color:#2273CE;
+            color: #ffffff;
             border-right: 4px solid #2273CE;
           }
         }
