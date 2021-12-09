@@ -1,9 +1,9 @@
 <template>
   <div class="sidebar-wrapper">
-    <el-scrollbar style="height: 100%">
+    <el-scrollbar style="height: 100%;width: 150px">
       <aside class="menu-expanded">
         <!--导航菜单-->
-        <el-menu :default-active="activePath">
+        <el-menu :default-active="activePath" :unique-opened="true">
           <sidebar-item
             style="color:#fff"
             v-for="route in routes"
@@ -142,5 +142,5 @@ export default {
           }
       }
     }
-   
+
 </style>

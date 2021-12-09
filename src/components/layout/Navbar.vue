@@ -1,11 +1,15 @@
 <template>
-  <div class="header-container" style="background: #2273CE">
+  <div class="header-container" style="background: #ffffff">
     <div class="logo">
       <!-- <img src="../../assets/logo.png" style="width: 157px;height: 28px;" /> -->
       <div class="img-url"></div>
       <!-- <div class="hongying">logo</div> -->
     </div>
     <div class="user-info">
+      <div>
+        <img src="../../assets/openSide.png" />
+        <span>管理员</span>
+      </div>
       <div class="user">{{userName}}</div>
       <!-- <div @click="restPas" class="out-user1">修改密码</div> -->
       <div @click="outClick" class="out-user">退出</div>
@@ -74,7 +78,7 @@ export default {
       this.dialogFormVisible = false
     },
     dialogComfirm() {
-      
+
     }
   },
   mounted () {
@@ -95,14 +99,17 @@ export default {
     min-width: 500px;
   }
   .header-container {
-    padding: 0 30px;
 		display: flex;
 		height: 64px;
+    width: 100%;
     justify-content: space-between;
 	}
   .logo{
     display: flex;
     align-items: center;
+    width: 150px;
+    background: #2273CE;
+    opacity: 1;
   }
   .logo img{
     width: 94px;
@@ -117,13 +124,24 @@ export default {
     background-position: center;
   }
   .user-info{
+    flex: 1;
     font-size: 14px;
-    color: #FFF;
+    color: #000000;
     display: flex;
     align-items: center;
   }
+  .user-info  img{
+    margin: 0 25px 0 15px;
+    cursor: pointer;
+  }
   .user-info .user{
     margin-right: 20px;
+    margin-left: auto;
+  }
+  .user-info span{
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.25)
   }
   .user-info .out-user{
     width:60px;
