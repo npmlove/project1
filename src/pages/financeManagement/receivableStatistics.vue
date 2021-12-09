@@ -597,7 +597,7 @@
               <el-table-column width="100" label="操作">
                 <template slot-scope="scope">
                   <div v-for="(item,index) in scope.row.records" :key="index">
-                      <div v-if="item.status == 0" style="color:skyblue" @click="confirmReset(index,item.id)">撤销</div>
+                      <div v-if="item.status == 0" style="color:skyblue" @click="confirmReset(index,item.id,scope.row.copyId)">撤销</div>
                       <div v-else-if="item.status ==2" style="opacity:0;">撤销</div>
                       <div v-else-if="item.status ==-1" >已撤销</div>
                   </div>
@@ -1165,6 +1165,7 @@
           } else {
             this.$message.error(res.message)
           }
+          this.initData(this.searchDataDeal())
           this.dialogFormVisibleThree =false
         })
       },
@@ -1190,18 +1191,37 @@
           })
           copyData[0].records = data
           this.receiveOperate = copyData
+          this.receiveOperate[0].copyId = row.id
         })
+        
       },
        //核销次数列确认核销
-        confirmReset(index,id){
+        confirmReset(index,id,rowId){
           this.$confirm(`确定核销"操作${index+1}"`, "提示", {
             confirmButtonText: "确定",
             cancelButtonText: "取消",
             type: "warning"
           }).then(() => {
             this.$http.get(this.$service.arRevoke+'?woId='+id).then(data => {
-              
+              if(data.code==200){
+                   this.$http.get(this.$service.searchArList+'?rcvId='+rowId).then(res=>{
+                      let data =res.data
+                      data.forEach((item,index)=>{
+                        if(item.status == -1 ){
+                          data.forEach((item2,index2)=>{
+                            if(item2.id == item.id && index2 != index) {
+                              item2.deleteId = index+1
+                            }
+                          })
+                        }
+                      })
+                     console.log(res.data)
+                     this.$set(this.receiveOperate[0],"records",res.data)
+                     this.$forceUpdate()
+                  })
+              }
             })
+            this.initData(this.searchDataDeal())
           }).catch(() => {
             console.log('取消')
           })

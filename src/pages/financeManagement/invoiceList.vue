@@ -589,11 +589,11 @@
             </el-input>
           </el-form-item>
           <el-form-item label="开票首张号码" label-width="120px" required >
-            <el-input size="medium"  v-model.number="invoicingLeft.invoiceNum" clearable placeholder="请输入开票首张号码" maxlength="8"style="width:170px">
+            <el-input size="medium"  v-model.number.trim="invoicingLeft.invoiceNum" clearable placeholder="请输入开票首张号码" maxlength="8"style="width:170px">
             </el-input>
           </el-form-item>
           <el-form-item label="开票张数" label-width="120px" required>
-            <el-input size="medium"  v-model.number="invoicingLeft.invoiceCount" clearable placeholder="请输入开票张数" maxlength="2"  style="width:170px">
+            <el-input size="medium"  v-model.number.trim="invoicingLeft.invoiceCount" clearable placeholder="请输入开票张数" maxlength="2"  style="width:170px">
             </el-input>
           </el-form-item>
           <el-form-item label-width="120px" label="开票日期" required>
@@ -1236,7 +1236,9 @@
             message: '开票张数不能大于50',
             type: 'warning'
           });
-        } else if(this.invoicingRight.length+this.invoicingLeft.invoiceCount>50) {
+        } 
+      
+         else if(this.invoicingRight.length+this.invoicingLeft.invoiceCount>50) {
           this.$message({
             message: '右侧发票张数不能大于50',
             type: 'warning'
@@ -1247,6 +1249,18 @@
             message: '请填写左侧全部信息后进行操作',
             type: 'warning'
           });
+        }
+          else if(!Number(this.invoicingLeft.invoiceCount) || !Number(this.invoicingLeft.invoiceNum) || !Number(this.invoicingLeft.invoiceAmount)){
+          this.$message({
+            message: '开票金额/首张号码/张数必须是数字',
+            type: 'warning'
+          })
+        }
+        else if (this.invoicingLeft.invoiceNum<10000000){
+          this.$message({
+            message: '开票首张号码必须是八位数字',
+            type: 'warning'
+          })
         }
         else {
           const copyData = JSON.parse(JSON.stringify(this.copyTable))
