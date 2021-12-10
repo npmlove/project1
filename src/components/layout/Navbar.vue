@@ -1,13 +1,14 @@
 <template>
   <div class="header-container" style="background: #ffffff">
-    <div class="logo">
+    <div class="logo" :style="{width:leftWidth?'150px':'60px'}">
       <!-- <img src="../../assets/logo.png" style="width: 157px;height: 28px;" /> -->
       <div class="img-url"></div>
       <!-- <div class="hongying">logo</div> -->
     </div>
     <div class="user-info">
       <div>
-        <img src="../../assets/openSide.png" />
+        <img src="../../assets/openSide.png" v-if="leftWidth" @click="changeNav" />
+        <img src="../../assets/closeSide.png" v-else @click="changeNav" />
         <span>管理员</span>
       </div>
       <div class="user">{{userName}}</div>
@@ -49,6 +50,12 @@
 
 <script>
 export default {
+  props: {
+    leftWidth:{
+      type:Boolean,
+      default:()=>false
+    }
+  },
   data () {
     return {
       userName: '',
@@ -67,6 +74,9 @@ export default {
     }
   },
   methods:{
+    changeNav(){
+      this.$emit("changeNav",!this.leftWidth)
+    },
     outClick(){
       this.$router.push('/')
       sessionStorage.clear()
@@ -100,16 +110,16 @@ export default {
   }
   .header-container {
 		display: flex;
-		height: 64px;
+		height: 50px;
     width: 100%;
     justify-content: space-between;
 	}
   .logo{
     display: flex;
     align-items: center;
-    width: 150px;
     background: #2273CE;
     opacity: 1;
+    transition: width 1s;
   }
   .logo img{
     width: 94px;

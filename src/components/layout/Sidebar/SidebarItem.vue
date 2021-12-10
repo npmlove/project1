@@ -1,23 +1,26 @@
 <template>
   <div v-if="!item.hidden" class="menu-wrapper">
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
-      <router-link :to="resolvePath(onlyOneChild.path)">
-        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
-          <item :meta="Object.assign({},item.meta,onlyOneChild.meta)" />
+      <router-link :to="resolvePath(onlyOneChild.path)" style="height: 40px;display: flex;flex-direction: column">
+        <el-menu-item style="height: 40px;line-height: 40px" :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
+          <item :meta="Object.assign({},item.meta,onlyOneChild.meta)" :leftWidth="leftWidth" :isTop="isTop" />
         </el-menu-item>
       </router-link>
     </template>
 
     <el-submenu v-else ref="subMenu"
+                :class="isTop?'leftWidth':''"
                 :index="resolvePath(item.path)"
                 popper-append-to-body>
       <template slot="title">
-        <item :meta="item.meta"/>
+        <item :meta="item.meta" :leftWidth="leftWidth" :isTop="isTop" />
       </template>
       <sidebar-item
         v-for="child in item.children"
         :is-nest="true"
         :item="child"
+        :leftWidth="leftWidth"
+        :isTop="false"
         :key="child.path"
         :base-path="resolvePath(child.path)"
       />
@@ -34,6 +37,14 @@ export default {
   components: { Item },
   props: {
     // route object
+    leftWidth:{
+      type:Boolean,
+      default:()=>false
+    },
+    isTop:{
+      type:Boolean,
+      default:()=>false
+    },
     item: {
       type: Object,
       required: true
@@ -86,3 +97,8 @@ export default {
   }
 }
 </script>
+<style scoped lang="less">
+.leftWidth /deep/ .el-submenu__icon-arrow{
+  display: none !important;
+}
+</style>
