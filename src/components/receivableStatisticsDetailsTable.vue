@@ -8,6 +8,7 @@
       :header-cell-style="{textAlign:'center'}"
       :cell-style="{textAlign:'center',fontSize:'14px'}"
       :row-class-name="tableRowClassName"
+      :selectable="ifDisabled"
       style="width: 100% ;"
     >
       <template slot="empty">

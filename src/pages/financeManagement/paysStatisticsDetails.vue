@@ -1,34 +1,34 @@
 <template>
   <div class="content-wrapper">
     <div class="content">
-      <el-form :inline="true" size="medium" class="demo-form-inline">
+      <el-form :inline="true" size="medium" class="demo-form-inline" label-position="left">
         <div class="content-search-normal">
-          <el-form-item>
+          <el-form-item label="订单号:" class="formItem" label-width="80px">
             <el-input v-model="orderNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入订单号"></el-input>
           </el-form-item>
 
-          <el-form-item>
+          <el-form-item label="运单号:" class="formItem" label-width="80px">
             <el-input v-model="waybillNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入运单号"></el-input>
           </el-form-item>
 
-          <el-form-item>
-            <el-input v-model="reconciliationUnit" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
+          <el-form-item label="应付对象:" class="formItem" label-width="80px">
+            <el-input v-model="reconciliationUnit" style="width: 230px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入应付对象"></el-input>
           </el-form-item>
 
-          <el-form-item>
+          <el-form-item label="开户行:" class="formItem" label-width="80px">
             <el-input v-model="accountBank" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入开户行"></el-input>
           </el-form-item>
-          <el-form-item>
+          <el-form-item label="户名:" class="formItem" label-width="80px">
             <el-input v-model="accountName" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入户名"></el-input>
           </el-form-item>
 
 
-          <el-form-item>
+<!--          <el-form-item>
             <el-date-picker
               v-model="payTime"
               type="daterange"
@@ -48,10 +48,11 @@
               start-placeholder="核销开始日期"
               end-placeholder="核销结束日期">
             </el-date-picker>
-          </el-form-item>
+          </el-form-item>-->
 
 
-          <el-form-item>
+
+          <el-form-item label="付款方式:" class="formItem" label-width="80px">
             <el-select v-model="writeOffWay" placeholder="付款方式" :loading="loading" clearable filterable remote
                        reserve-keyword style="width: 200px;">
               <el-option
@@ -62,7 +63,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
+          <el-form-item label="结算方式:" class="formItem" label-width="80px">
             <el-select v-model="payWay" placeholder="结算方式" :remote-method="agentMethod" :loading="loading" clearable
                        filterable remote reserve-keyword style="width: 200px;">
               <el-option
@@ -73,7 +74,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
+          <el-form-item label="核销状态:" class="formItem" label-width="80px">
             <el-select v-model="rcvWriteOffStatus" placeholder="核销状态" multiple collapse-tags @change="dealAllChange" :loading="loading"
                        clearable filterable remote reserve-keyword style="width: 230px;">
               <el-option
@@ -84,12 +85,70 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            <el-row>
-              <el-button @click="searchClick" size="medium" type="primary" icon="el-icon-search">查询</el-button>
-              <el-button @click="restClick" size="medium" type="primary">清空</el-button>
-            </el-row>
+          <el-form-item
+            label="付款日期:"
+            style="width: 480px"
+            label-width="80px"
+          >
+            <el-date-picker
+              style="width: 180px"
+              value-format="yyyy-MM-dd"
+              v-model="startPayTime"
+              type="date"
+              :picker-options="pickerOptionsStartOne"
+              placeholder="选择日期"
+            >
+            </el-date-picker
+            >-
+            <el-date-picker
+              style="width: 180px"
+              value-format="yyyy-MM-dd"
+              v-model="endPayTime"
+              type="date"
+              :picker-options="pickerOptionsEndOne"
+              placeholder="选择日期"
+            >
+            </el-date-picker>
           </el-form-item>
+
+
+          <el-form-item
+            label="核销日期:"
+            style="width: 480px"
+            label-width="80px"
+          >
+            <el-date-picker
+              style="width: 180px"
+              value-format="yyyy-MM-dd"
+              v-model="startWriteOffTime"
+              type="date"
+              :picker-options="pickerOptionsStartTwo"
+              placeholder="选择日期"
+            >
+            </el-date-picker
+            >-
+            <el-date-picker
+              style="width: 180px"
+              value-format="yyyy-MM-dd"
+              v-model="endWriteOffTime"
+              type="date"
+              :picker-options="pickerOptionsEndTwo"
+              placeholder="选择日期"
+            >
+            </el-date-picker>
+          </el-form-item>
+          <div class="operateButton">
+            <el-button
+              @click="searchClick"
+              size="mini"
+              type="primary"
+              icon="el-icon-search"
+            >查询</el-button
+            >
+            <el-button @click="restClick" size="mini" type="primary"
+            >清空</el-button
+            >
+          </div>
           <div class="operateButton">
             <el-button size='mini' type="primary" @click="exportList">导出列表</el-button>
           </div>
@@ -352,8 +411,43 @@
             value: '0'
           },
         ],
-        payTime: [],
-        writeOffTime: [],
+        startPayTime: null,
+        endPayTime: null,
+        startWriteOffTime: null,
+        endWriteOffTime: null,
+        // 限制结束日期大于开始日期
+        pickerOptionsStartOne: {
+          disabledDate: time => {
+            let endDateVal = this.endPayTime
+            if (endDateVal) {
+              return time.getTime() > new Date(endDateVal).getTime()
+            }
+          }
+        },
+        pickerOptionsEndOne: {
+          disabledDate: time => {
+            let beginDateVal = this.startPayTime
+            if (beginDateVal) {
+              return time.getTime() < new Date(beginDateVal).getTime()
+            }
+          }
+        },
+        pickerOptionsStartTwo: {
+          disabledDate: time => {
+            let endDateVal = this.endWriteOffTime
+            if (endDateVal) {
+              return time.getTime() > new Date(endDateVal).getTime()
+            }
+          }
+        },
+        pickerOptionsEndTwo: {
+          disabledDate: time => {
+            let beginDateVal = this.startWriteOffTime
+            if (beginDateVal) {
+              return time.getTime() < new Date(beginDateVal).getTime()
+            }
+          }
+        },
         payWay: '',
         rcvWriteOffStatus: '',
         payWayOpt: [
@@ -490,10 +584,10 @@
           reconciliationUnit: this.reconciliationUnit,
           accountBank: this.accountBank,
           accountName: this.accountName,
-          startPayTime: this.payTime.length === 0 ? '' : this.payTime[0],
-          endPayTime: this.payTime.length === 0 ? '' : this.payTime[1],
-          startWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[0],
-          endWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[1],
+          startPayTime: this.startPayTime,
+          endPayTime: this.startPayTime,
+          startWriteOffTime: this.startWriteOffTime,
+          endWriteOffTime: this.endWriteOffTime,
           writeOffWay: this.writeOffWay,
           payWay: this.payWay,
           payWriteOffStatusList: this.rcvWriteOffStatus.length==0||this.rcvWriteOffStatus.indexOf("")!=-1?null:this.rcvWriteOffStatus,
@@ -613,10 +707,10 @@
           reconciliationUnit: this.reconciliationUnit,
           accountBank: this.accountBank,
           accountName: this.accountName,
-          startPayTime: this.payTime.length === 0 ? '' : this.payTime[0],
-          endPayTime: this.payTime.length === 0 ? '' : this.payTime[1],
-          startWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[0],
-          endWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[1],
+          startPayTime: this.startPayTime,
+          endPayTime: this.endPayTime,
+          startWriteOffTime: this.startWriteOffTime,
+          endWriteOffTime: this.endWriteOffTime,
           writeOffWay: this.writeOffWay,
           payWay: this.payWay,
           payWriteOffStatusList:this.rcvWriteOffStatus.length==0||this.rcvWriteOffStatus.indexOf("")!=-1?null:this.rcvWriteOffStatus,
@@ -687,10 +781,10 @@
         this.reconciliationUnit=''
         this.accountBank=''
         this.accountName=''
-        this.payTime=[]
-        this.payTime=[]
-        this.writeOffTime =[]
-        this.writeOffTime=[]
+        this.startWriteOffTime=null
+        this.endWriteOffTime=null
+        this.startPayTime=null
+        this.endPayTime=null
         this.writeOffWay=''
         this.payWay=''
         this.rcvWriteOffStatus=['']
@@ -720,10 +814,10 @@
           reconciliationUnit: this.reconciliationUnit,
           accountBank: this.accountBank,
           accountName: this.accountName,
-          startPayTime: this.payTime.length === 0 ? '' : this.payTime[0],
-          endPayTime: this.payTime.length === 0 ? '' : this.payTime[1],
-          startWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[0],
-          endWriteOffTime: this.writeOffTime.length === 0 ? '' : this.writeOffTime[1],
+          startPayTime: this.startPayTime,
+          endPayTime: this.endPayTime,
+          startWriteOffTime: this.startWriteOffTime,
+          endWriteOffTime: this.endWriteOffTime,
           writeOffWay: this.writeOffWay,
           payWay: this.payWay,
           payWriteOffStatusList: this.rcvWriteOffStatus.length==0||this.rcvWriteOffStatus.indexOf("")!=-1?null:this.rcvWriteOffStatus,
