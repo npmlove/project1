@@ -169,7 +169,6 @@ export default {
             deep:true,
             immediate:true,
             handler(newValue,oldValue){
-                console.log(newValue)
                 let {totalApCny,totalApUnwoOrgn,totalApWoOrgn} = newValue
                 if(totalApCny){
                     this.totalApCny = totalApCny

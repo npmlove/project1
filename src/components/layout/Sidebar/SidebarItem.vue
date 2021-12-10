@@ -8,9 +8,11 @@
       </router-link>
     </template>
 
-    <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
+    <el-submenu v-else ref="subMenu"
+                :index="resolvePath(item.path)"
+                popper-append-to-body>
       <template slot="title">
-        <item :meta="item.meta" />
+        <item :meta="item.meta"/>
       </template>
       <sidebar-item
         v-for="child in item.children"
@@ -49,7 +51,9 @@ export default {
     // To fix https://github.com/PanJiaChen/vue-admin-template/issues/237
     // TODO: refactor with render function
     this.onlyOneChild = null
-    return {}
+    return {
+
+    }
   },
   methods: {
     hasOneShowingChild(children = [], parent) {

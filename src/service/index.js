@@ -242,6 +242,18 @@ const serviceApi = {
    //客服工单任务数
    countDealingWork4Cst : pulicWeb +'/t-work-order/countDealingWork4Cst',
    //客服工单 -滚动公告
-   searchRollList: pulicWeb +'/t-work-order/searchRollList'
+   searchRollList: pulicWeb +'/t-work-order/searchRollList',
+   //工单-客服工单查询
+   searchByPageForCst:  pulicWeb + '/t-work-order/searchByPageForCst',
+    //  对账统计接口
+   toCheckAmount : pulicWeb + '/t-order-payment/toCheckAmount',
+  //  核销统计接口
+  toWriteOffAmountCount: pulicWeb + '/t-order-payment/toWriteOffAmountCount',
+  // 修改账单
+  modifyBill: pulicWeb + '/t-bill/modifyBill',
+  // 获取订单的汇率
+  getExchangeRatesForOrder:   '/faw/t-order/getExchangeRatesForOrde',
+
+  modifyBill: pulicWeb + '/t-bill/modifyBill'
 }
 export default serviceApi
