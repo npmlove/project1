@@ -371,8 +371,8 @@
         v-if="checkedIndex17"
         width="100">
         <template slot-scope="scope">
-          <span v-if="scope.row.payWriteOffCount > 0" style="cursor:pointer;color:rgb(97,180,120)" @click="recordsBtn(scope.row)">{{scope.row.payWriteOffCount}}</span>
-          <span v-else >{{scope.row.payWriteOffCount}}</span>
+          <span v-if="scope.row.payCheckAmount > 0" style="cursor:pointer;color:rgb(97,180,120)" @click="recordsBtn(scope.row)">{{scope.row.payWriteOffCount}}</span>
+          <span v-else  >{{scope.row.payWriteOffCount}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -530,7 +530,7 @@ import {exportFile} from '../../util/util'
     data() {
       return {   
         activeName:'0',
-        drawer:"", // 右侧表格状态
+        drawer:false, // 右侧表格状态
         formInline: {
           orderNo:'',
           waybillNo:'',
