@@ -23,6 +23,7 @@ export function postImage(url, data) {
   ****** type blob的类型
 
   "application/vnd.ms-excel"
+  application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
   "application/pdf"
   ****** name 下载文件的名字
   */
@@ -32,7 +33,7 @@ export function exportFile(res,type,name) {
     type: type
   })
   a.href = URL.createObjectURL(blob)
-  a.setAttribute('download', name + '.xlsx')
+  a.setAttribute('download', name + '.xls')
   a.click()
 }
 // 常用的几个国家的货币及符号

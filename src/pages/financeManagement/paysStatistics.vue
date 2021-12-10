@@ -1,7 +1,7 @@
 <template>
   <div class="content-wrapper">
-    <el-form :inline="true" :model="formInline" size="small" class="demo-form-inline">
-      <el-form-item label="订单号">
+    <el-form :inline="true" :model="formInline" size="small"  class="demo-form-inline">
+      <el-form-item class="test" label="订单号" >
         <el-autocomplete
           class="inline-input"
           v-model="formInline.orderNo"
@@ -20,21 +20,24 @@
         </el-autocomplete>
       </el-form-item>
       <el-form-item label="应付对象">
-        <el-input v-model="formInline.customerName" placeholder="请输入应付对象"></el-input>
+        <el-input v-model="formInline.expenseUnitName" placeholder="请输入应付对象"></el-input>
       </el-form-item>
       <el-form-item label="订舱公司">
+        <el-input v-model="formInline.customerName" placeholder="请输入应付对象"></el-input>
+      </el-form-item>
+      <el-form-item label="航司">
         <el-select
-          v-model="formInline.pod"
+          v-model="formInline.airCompanyCode"
           filterable
           remote
           reserve-keyword
-          placeholder="请输入订舱公司名称"
+          placeholder="请输入航司名称"
           :remote-method="remoteMethodFour">
           <el-option
             v-for="item in optionFour"
-            :key="item.value"
+            :key="item.airCompanyCode"
             :label="item.label"
-            :value="item.value">
+            :value="item.airCompanyCode">
           </el-option>
         </el-select>
       </el-form-item>
@@ -154,7 +157,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="售中客服">
+      <el-form-item label="售中客服" class="endItem">
         <el-select v-model="formInline.mscsId" placeholder="请选择">
           <el-option
             v-for="item in onSaleList"
@@ -165,29 +168,60 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">查询</el-button>
-        <el-button type="primary" @click="clearAllData">清空</el-button>
+        
       </el-form-item>
     </el-form>
-    <el-row type='flex' >
-      <el-col :span="12">
-          <el-radio-group v-model="woStatus" size="small" @change="radioEvent" >
-              <el-radio-button  label= '0' >可操作({{(countAuth)}})</el-radio-button>
-              <el-radio-button label= '1'>业务修改中({{countNoAuth}})</el-radio-button>
-              <el-radio-button label= '2'>异常({{(countErr)}})</el-radio-button>
-          </el-radio-group>
-      </el-col>
-      <el-col :span="12" class="rightFlex" >
+    <el-row type='flex' style="direction: rtl;" >
           <el-button size="small" @click="exportBillList">导出列表</el-button>
           <el-button size="small" @click="fatherVerification">核销</el-button>
           <el-button size="small" @click="fatherReconciliation">对账</el-button>
-      </el-col>
+          <el-button size="small" @click="drawer = true" type="primary" >选择表格列</el-button>
+          <el-button size="small" type="primary" @click="clearAllData">清空</el-button>
+          <el-button size="small" type="primary" @click="onSubmit">查询</el-button>
     </el-row>
+      <el-drawer
+        size='15%'
+        title="确认表格列"
+        :visible.sync="drawer"
+        :with-header="false">
+        <div class="drawerTip">
+          
+             <el-checkbox  v-model="checkedIndex0">全选</el-checkbox>
+             <el-checkbox class="mycheckbox"  v-model="checkedIndex1">订单号</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex2">运单号</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex3">应收对象</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex4">航班日期</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex5">交单时间</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex6">应收总金额</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex7">利润</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex8">应付费用名称</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex9">应付金额</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex10">已对账金额</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex11">未对账金额</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex12">已核销金额</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex13">未核销金额</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex14">应付总金额</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex15">汇率</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex16">结算方式</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex17">核销次数</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex18">核销状态</el-checkbox>
+             
+             
+          
+        </div>
+        
+      </el-drawer>
+      <el-tabs v-model="activeName" class="el_tabs" type="card" @tab-click="handleClick">
+      <el-tab-pane :label="'可操作'+ countAuth" name="0"></el-tab-pane>
+      <el-tab-pane :label="'业务修改中'+ countNoAuth" name="1"></el-tab-pane>
+      <el-tab-pane :label="'异常'+ countErr" name="2"></el-tab-pane>
+    </el-tabs>
     <el-table
       :data="tableData"
       border='true'
       stripe
       max-height="600"
+      
       ref="multipleTable"
       @select='clckOne'
       style="width: 100%">
@@ -200,59 +234,87 @@
       <el-table-column
         type="selection"
         fixed
+        :selectable='judgeAllSelect'
         width="55">
       </el-table-column>
       <el-table-column
         prop="orderNo"
         label="订单号"
+        v-if="checkedIndex1"
         width="140">
       </el-table-column>
       <el-table-column
         prop="waybillNo"
+         v-if="checkedIndex2"
         label="运单号"
         width="100">
       </el-table-column>
       <el-table-column
         prop="expenseUnitName"
+         v-if="checkedIndex3"
         label="应收对象"
         width="250">
       </el-table-column>
       <el-table-column
         prop="departureDate"
         label="航班日期"
+         v-if="checkedIndex4"
         width="100">
       </el-table-column>
       <el-table-column
         prop="presentationTime"
         label="交单时间"
+         v-if="checkedIndex5"
         width="100">
       </el-table-column>
       <el-table-column
-        label="应收金额"
-        width="200">
+        label="应收总金额"
+         v-if="checkedIndex6"
+         prop="totalArCny">
+        
+      </el-table-column>
+      <el-table-column
+        prop="orderProfit"
+         v-if="checkedIndex7"
+        label="利润"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="expenseName"
+         v-if="checkedIndex8"
+        label="应付费用名称"
+        width="100">
+      </el-table-column>
+      <el-table-column
+       v-if="checkedIndex9"
+      label="应付金额" >
         <el-table-column
-          prop="totalArCny"
-          label="人民币"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="totalApOrgn.amount"
-          label="原币"
-          width="100">
-        </el-table-column>
+            prop="totalApCny"
+            label="人民币"
+            width="100">
+          </el-table-column>
+          <el-table-column
+            prop="totalApOrgn"
+            label="原币"
+            width="100">
+          </el-table-column>
       </el-table-column>
       <el-table-column
         prop="payCheckAmount"
         label="已对账金额"
+        v-if="checkedIndex10"
         width="100">
+
       </el-table-column>
       <el-table-column
         prop="unreconciledAmount"
         label="未对账金额"
+        v-if="checkedIndex11"
         width="100">
       </el-table-column>
       <el-table-column
         label="已核销金额"
+        v-if="checkedIndex12"
         width="200">
         <el-table-column
           prop="payWriteOffAmountRmb"
@@ -260,13 +322,15 @@
           width="100">
         </el-table-column>
         <el-table-column
-          prop="exchangeRate"
+          prop="payWriteOffAmounts"
+        
           label="原币"
           width="100">
         </el-table-column>
       </el-table-column>
       <el-table-column
         label="未核销金额"
+        v-if="checkedIndex13"
         width="200">
         <el-table-column
           prop="unwrittenOffAmountRmb"
@@ -274,7 +338,8 @@
           width="100">
         </el-table-column>
         <el-table-column
-          prop="unwrittenOffAmount"
+          prop="unwrittenOffAmounts"
+   
           label="原币"
           width="100">
         </el-table-column>
@@ -282,20 +347,19 @@
       <el-table-column
         prop="totalApCny"
         label="应付总金额"
+        v-if="checkedIndex14"
         width="100">
       </el-table-column>
+
       <el-table-column
-        prop="orderProfit"
-        label="利润"
-        width="100">
-      </el-table-column>
-      <el-table-column
-        prop="exchangeRate"
+        prop="exchangeRates"
         label="汇率"
+        v-if="checkedIndex15"
         width="100">
       </el-table-column>
       <el-table-column
         label="结算方式"
+        v-if="checkedIndex16"
         width="100">
         <template slot-scope="scope">
           <span v-if="scope.row.payWay == 0">付款</span>
@@ -304,6 +368,7 @@
       </el-table-column>
       <el-table-column
         label="核销次数"
+        v-if="checkedIndex17"
         width="100">
         <template slot-scope="scope">
           <span v-if="scope.row.payWriteOffCount > 0" style="cursor:pointer;color:rgb(97,180,120)" @click="recordsBtn(scope.row)">{{scope.row.payWriteOffCount}}</span>
@@ -312,6 +377,7 @@
       </el-table-column>
       <el-table-column
         label="核销状态"
+        v-if="checkedIndex18"
         width="100">
         <template slot-scope="scope">
           <span v-if="scope.row.payWriteOffStatus == 0">未核销</span>
@@ -386,7 +452,7 @@
           >
           <el-table-column
             type="index"
-            label="序号"
+            label="序号"    
             fixed
             :index="indexMethod">
           </el-table-column>
@@ -407,6 +473,7 @@
           </el-table-column>
           <el-table-column
             prop="totalArCny"
+            
             label="应付金额"
             width="100">
           </el-table-column>
@@ -435,7 +502,6 @@
               </div>
             </template>
           </el-table-column>
-
           <el-table-column      
             label="操作">
             <template slot-scope="scope">
@@ -463,6 +529,8 @@ import {exportFile} from '../../util/util'
   export default {
     data() {
       return {   
+        activeName:'0',
+        drawer:"", // 右侧表格状态
         formInline: {
           orderNo:'',
           waybillNo:'',
@@ -544,20 +612,88 @@ import {exportFile} from '../../util/util'
         optionFour:[],//
         verificationData:[],// 传递给核销组件的数据
         verificationObj:{},// 传递给核销组件的对象
+        checkedIndex0:true ,// 默认全选  
+        checkedIndex1:true ,  
+        checkedIndex2:true ,  
+        checkedIndex3:true ,  
+        checkedIndex4:true ,  
+        checkedIndex5:true ,  
+        checkedIndex6:true ,  
+        checkedIndex7:true ,  
+        checkedIndex8:true ,  
+        checkedIndex9:true ,  
+        checkedIndex10:true ,  
+        checkedIndex11:true ,  
+        checkedIndex12:true ,  
+        checkedIndex13:true ,  
+        checkedIndex14:true ,  
+        checkedIndex15:true ,  
+        checkedIndex16:true ,  
+        checkedIndex17:true ,  
+        checkedIndex18:true ,  
 
-
+      }
+    },
+    watch:{
+      checkedIndex0(newValue){
+        if(newValue == true){
+          this.checkedIndex1 = true
+          this.checkedIndex2 = true
+          this.checkedIndex3 = true
+          this.checkedIndex4 = true
+          this.checkedIndex5 = true
+          this.checkedIndex6 = true
+          this.checkedIndex7 = true
+          this.checkedIndex8 = true
+          this.checkedIndex9 = true
+          this.checkedIndex10 = true
+          this.checkedIndex11 = true
+          this.checkedIndex12 = true
+          this.checkedIndex13 = true
+          this.checkedIndex14 = true
+          this.checkedIndex15 = true
+          this.checkedIndex16 = true
+          this.checkedIndex17 = true
+          this.checkedIndex18 = true
+        }else {
+          this.checkedIndex1 = false
+          this.checkedIndex2 = false
+          this.checkedIndex3 = false
+          this.checkedIndex4 = false
+          this.checkedIndex5 = false
+          this.checkedIndex6 = false
+          this.checkedIndex7 = false
+          this.checkedIndex8 = false
+          this.checkedIndex9 = false
+          this.checkedIndex10 = false
+          this.checkedIndex11 = false
+          this.checkedIndex12 = false
+          this.checkedIndex13 = false
+          this.checkedIndex14 = false
+          this.checkedIndex15 = false
+          this.checkedIndex16 = false
+          this.checkedIndex17 = false
+          this.checkedIndex18 = false
+        }
       }
     },
     async mounted() {
       await this.onSubmit()
       await this.getSysInitial()
-      await this.radioEvent(0,false)
+      await this.handleClick({index:0},false)
+
     },
     components:{
       reconciliation,
       verification
     },
     methods: {
+
+      // 跨页之后禁止单选
+      judgeAllSelect(){
+        
+        return !this.slectAllDataStatic
+      },
       // 撤销
       async cheXiao(e){
         let { id } = this.payWriteOffCountData[0].tempObj[e]
@@ -579,10 +715,7 @@ import {exportFile} from '../../util/util'
             });
             }
             
-          }).catch(() => {
-            
-         
-        });
+          })
       },
       handleClose(){
          this.payWriteOffCountData = []
@@ -605,8 +738,8 @@ import {exportFile} from '../../util/util'
         let {slectAllDataStatic , formInline , woStatus , multipleSelection } = this  ;
         if(slectAllDataStatic){
           let params = Object.assign({},formInline,{woStatus,woStatus})
-          let res = await this.$http.post(this.$service.billExportExcel,params)
-          exportFile(res,"application/vnd.ms-excel",'应付统计')
+          let res = await this.$http.post(this.$service.billExportExcel,params,{responseType: 'arraybuffer'})
+          exportFile(res,"application/x-xls",'应付统计')
         }else{
           if(multipleSelection.length>0){
             let idArray  =  multipleSelection.map((e)=>{
@@ -616,8 +749,8 @@ import {exportFile} from '../../util/util'
               ids:idArray,
               woStatus:woStatus,
             }
-            let res = await this.$http.post(this.$service.billExportExcel,params)
-            exportFile(res,"application/vnd.ms-excel",'应付统计')
+            let res = await this.$http.post(this.$service.billExportExcel,params,{responseType: 'arraybuffer'})
+            exportFile(res,"application/x-xls",'应付统计')
           }else{
             this.$message({
                 message: '请先选择数据',
@@ -626,7 +759,9 @@ import {exportFile} from '../../util/util'
           }
         }
       },
-      async radioEvent(e,initBoolen=true){
+
+      async  handleClick(tab, initBoolen=true ) {
+        let e = Number(tab.index)
         this.woStatus = e
         let { formInline, currentPage, woStatus,slectAllDataStatic, countAuth,countErr,countNoAuth} = this
         let tempTotal = ''
@@ -650,6 +785,11 @@ import {exportFile} from '../../util/util'
         if(initBoolen){
           await this.getTabelData(formInline,currentPage,woStatus,slectAllDataStatic,tempTotal)
         } 
+     
+
+      },
+      async radioEvent(e,){
+
       },
       // 输入代理上家的时候返回值
       async remoteMethod(e){
@@ -688,6 +828,7 @@ import {exportFile} from '../../util/util'
       async remoteMethodFour(e){
         if(e !== ''){
             let res = await this.$http.get(this.$service.companySearchByPage+`?keyWord=${e}`)
+            console.log(res.data.records)
             this.optionFour = res.data.records.map((item)=>{
             return {value:item.name, label: item.name}
           })
@@ -740,7 +881,8 @@ import {exportFile} from '../../util/util'
             let params= Object.assign({},formInline,{ids:idsArray})
             let res = await this.$http.post(this.$service.toCheckAmount,params)
             if(res.code == 200){
-              this.childPropsObj = res.data
+              let testObj = Object.assign({},res.data,{expenseUnitName:tempString},{ids:idsArray})
+              this.childPropsObj = testObj
               setTimeout(()=>{
                   this.$refs.reconciliationData.showModal()
               },0)
@@ -855,6 +997,11 @@ import {exportFile} from '../../util/util'
             this.countNoAuth = res.data.countNoAuth
             this.countAuth = res.data.countAuth
             this.countErr = res.data.countErr
+            for(let i in resData.records){
+              resData.records[i].totalApOrgn = await this.dealApString(resData.records[i].totalApOrgn)
+              resData.records[i].payWriteOffAmounts = await this.dealApString(resData.records[i].payWriteOffAmounts)
+              resData.records[i].unwrittenOffAmounts = await this.dealApString(resData.records[i].unwrittenOffAmounts)
+            }
             if(this.woStatus == 1){
               this.pageTotal = res.data.countNoAuth
             }else if(this.woStatus == 2){
@@ -867,7 +1014,9 @@ import {exportFile} from '../../util/util'
             }else {
               this.tableData = resData.records
             }
-            
+            // console.log('已经选择的数据')
+            // console.log(this.multipleSelection)
+            this.multipleSelection = []
             setTimeout(async()=>{
                await this.dealSelectAll(slectAllDataStatic) 
             },0)
@@ -876,13 +1025,50 @@ import {exportFile} from '../../util/util'
           console.log(error)
         }
       },
+      // 处理返回的原币string
+      async dealApString(tempString){
+
+        if(typeof(tempString) == 'string'){
+          let st =    JSON.parse(tempString) 
+          let ss = st.map(res=>{
+            if(res.currency == 1){
+              return res.amount + '￥'
+            }else if(res.currency == 2){
+              return res.amount + 'HK$'
+            }else if(res.currency == 3){
+              return res.amount + '$'
+            }else if(res.currency == 4){
+              return res.amount + '€'
+            }else if(res.currency == 5){
+              return res.amount + '￡'
+            }
+          })
+          return ss[0]
+        }else {
+          return null
+        }
+
+      }
     },
   }
 </script>
 
 <style scoped>
+.demo-form-inline {
+  /* width: 80%; */
+  display: flex; 
+  justify-content: space-between;
+  flex-wrap: wrap;
+ 
+}
+.endItem{
+  position: relative;
+  right: -88px;
+}
+
 .content-wrapper{
   margin: 20px;
+  
 }
 .footer{
   display: flex;
@@ -899,6 +1085,7 @@ import {exportFile} from '../../util/util'
 }
 .calcDataContont>span{
  margin-left: 10px;
+ 
 }
 .calcDataContont .fon{
   display: flex;
@@ -911,11 +1098,16 @@ import {exportFile} from '../../util/util'
 .opacity{
   opacity: 0;
 }
-.rightFlex{
-  /* display: flex; */
-  /* justify-content: end; */
-  /* flex-shrink: 0; */
-  /* flex-wrap: wrap; */
-  /* direction: rtl; */
+.el_tabs{
+  border-top: 1px solid #d5d5d5;
+}
+.drawerTip{
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  margin-top: 10vh;
+}
+.drawerTip>.mycheckbox{
+  margin-top: 10px;
 }
 </style>

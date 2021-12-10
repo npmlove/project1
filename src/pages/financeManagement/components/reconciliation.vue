@@ -16,7 +16,8 @@
                     border
                     stripe
                     :cell-style='backStyle'
-                    style="width: 100%;margin-top:20px">
+                    max-height="350"
+                    style="width: 100%;margin-top:20px;">
                     <el-table-column
                         prop="waybillNumber"
                         label="对账单运单号" >
@@ -69,7 +70,7 @@
                 </div>
                 <div class="footer"  slot="footer" >
                     <el-button type="primary" style="width:210px" @click="btnInsert">确认对账并导出全部对账单</el-button>
-                    <el-button  @click="btnInsert">取消</el-button>
+                    <el-button  @click="btnCancle">取消</el-button>
                 </div>
                  
             </el-dialog>
@@ -163,7 +164,7 @@ export default {
         return {
             dialogVisible: false,
             input3:'', //对账金额
-            expenseUnitName:'上海美凯航空服务有限公司', //应付对象 测试数据
+            expenseUnitName:'', //应付对象 
             value: '1', // 默认选择CNY
             totalApCny:0,// 应付总金额
             unreconciledAmount:0,// 未对账金额
@@ -189,8 +190,10 @@ export default {
             deep:true,
             immediate:true,
             handler(newValue,oldValue){
-                let {totalApCny,totalApUnwoOrgn,totalApWoOrgn} = newValue ;
+                let {totalApCny,totalApUnwoOrgn,totalApWoOrgn,expenseUnitName,ids} = newValue ;
                 if(totalApCny){      
+                    this.opIds = ids
+                    this.expenseUnitName = expenseUnitName
                     this.totalApCny = totalApCny
                     this.totalApUnwoOrgnString = totalApUnwoOrgn
                     this.totalApWoOrgnString = totalApWoOrgn
@@ -259,7 +262,16 @@ export default {
         },
         comfire(){
             let { input3 , unreconciledAmount } = this 
-            if(input3 > unreconciledAmount){
+            console.log(input3)
+            console.log(unreconciledAmount)
+            if(Number(input3) == ''){
+                this.$message({
+                        message: '对账金额不能为空',
+                        type: 'warning'
+                    });
+               return ;
+            }
+            if(Number(input3)  > unreconciledAmount){
                 this.$message({
                         message: '对账金额> 未对账金额，请重新输入',
                         type: 'warning'
@@ -286,10 +298,18 @@ export default {
                 })
             }
         },
-        btnInsert(){
-            let res = this.$http.post(this.$service.toReconciliation,this.tableData)
-            exportFile(res,"application/vnd.ms-excel",'全部对账单')
+        btnCancle(){
             this.innerVisible = false
+        },
+        async btnInsert(){
+
+            let res = await this.$http.post(this.$service.toReconciliation,{orderPaymentBills:this.tableData})
+            if(res.code == 200){
+                this.exportErrExcel()
+            }
+            
+            
+            this.innerVisible = false 
         },
         backStyle({row, columnIndex}){
  
@@ -305,8 +325,13 @@ export default {
             }
         },
         async exportErrExcel(){
-            let res =  this.$http.post(this.$service.exportErrExcel,this.tableData)
-            exportFile(res,"application/vnd.ms-excel",'全部对账单')
+            if(this.expenseUnitName == ''){
+                this.$message.error('应付对象不能为空')
+            }else{
+                let res = await this.$http.post(this.$service.exportErrExcel,{orderPaymentBills:this.tableData},{responseType: 'arraybuffer'})
+                exportFile(res,"application/vnd.ms-excel",'全部对账单')
+            }
+            
         },
         
 
