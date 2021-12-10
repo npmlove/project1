@@ -281,7 +281,7 @@
             >
           </div>
           <div class="operateButton">
-            <el-button size="mini" type="primary" @click="showFees(false)" v-if="this.typeCode == '修改申请' || this.typeCode == '已交单'"
+            <el-button size="mini" type="primary" @click="showFees(false)" v-if="this.typeCode == '修改申请'"
               >修改</el-button
             >
             <el-button size="mini" type="primary" @click="showFees(false)" v-if="this.typeCode == '修改审核'"
@@ -507,7 +507,7 @@
               v-if="checkedTable.indexOf('订单状态') !== -1"
             >
             <template slot-scope="scope">
-                <div :style="{'color':scope.row.financeStatus ==2 || scope.row.financeStatus ==3 ? 'skyblue' : 'black' }" @click="showFees(scope.row.id,scope.row.payWay,scope.row.financeStatus,false)">
+                <div :style="{'color':scope.row.financeStatus ==2 || scope.row.financeStatus ==3 ? 'skyblue' : 'black' }" @click="scope.row.financeStatus ==2 || scope.row.financeStatus ==3?showFees(scope.row.id,scope.row.payWay,scope.row.financeStatus,false):''">
                   {{scope.row.financeStatus == 0 || scope.row.financeStatus == 1 ?
                     '正常' : scope.row.financeStatus == 2 ?
                       '修改申请' : scope.row.financeStatus == 3 ?
@@ -1283,6 +1283,7 @@ export default {
         .post(this.$service.financeOrderList, copyDate)
         .then((data) => {
           if (data.code == 200) {
+            this.statistDataShow = false
             // this.total = data.data.total;
             this.tabNum = [data.data.totalCount,data.data.notCommitCount,data.data.commitCount,data.data.applyCount,data.data.changeCount,data.data.checkCount,data.data.errorCount]
             console.log(this.tabNum)

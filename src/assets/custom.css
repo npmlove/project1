@@ -27,17 +27,17 @@ body{
 .el-button--default{
 	width: 100px;
 }
-.el-button{
+/* .el-button{
   color: #2273CE;
   border-color: #2273CE;
   background-color: #FFF;
   min-width: 50px;
-}
-.el-button:hover {
+} */
+/* .el-button:hover {
   color: #2273CE !important;
   border-color: #2273CE !important;
   background-color: #FFF !important;
-}
+} */
 .el-button--primary{
   width: 100px;
   background-color: #2273CE !important;
