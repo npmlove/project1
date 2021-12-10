@@ -2,7 +2,7 @@
   <div v-if="!item.hidden" class="menu-wrapper">
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <router-link :to="resolvePath(onlyOneChild.path)" style="height: 40px;display: flex;flex-direction: column">
-        <el-menu-item style="height: 40px;line-height: 40px" :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
+        <el-menu-item style="height: 40px;line-height: 40px;min-width: 50px;" :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
           <item :meta="Object.assign({},item.meta,onlyOneChild.meta)" :leftWidth="leftWidth" :isTop="isTop" />
         </el-menu-item>
       </router-link>

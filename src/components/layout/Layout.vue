@@ -4,7 +4,7 @@
 <!--      <img :src="srcImg" alt="">-->
 <!--    </div>-->
     <navbar @changeNav="changeNav" :leftWidth="leftWidth"/>
-    <div style="display: flex;width: 100%;">
+    <div style="display: flex;width: 100%;height: calc(100vh - 50px)">
       <sidebar :class="['sidebar-container', leftWidth ? 'sidebar-width' : '']" :leftWidth="leftWidth"/>
       <div class="main-container" :style="{width:leftWidth?'calc(100vw - 150px)':'100vw'}">
         <crumb/>
@@ -127,7 +127,7 @@ export default {
           font-size: 14px;
           height: 40px;
           line-height: 40px;
-          padding-left: 42px !important;
+          //padding-left: 42px !important;
           background-color:#22282e;
           color: #FFFFFF;
           &.is-active {
