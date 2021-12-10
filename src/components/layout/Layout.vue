@@ -6,7 +6,7 @@
     <navbar @changeNav="changeNav" :leftWidth="leftWidth"/>
     <div style="display: flex;width: 100%;height: calc(100vh - 50px)">
       <sidebar :class="['sidebar-container', leftWidth ? 'sidebar-width' : '']" :leftWidth="leftWidth"/>
-      <div class="main-container" :style="{width:!leftWidth?'calc(100vw - 70px)':'100vw'}">
+      <div class="main-container" :style="{width:!leftWidth?'calc(100vw - 70px)':'calc(100vw - 150px)'}">
         <crumb/>
         <router-view v-if="!$route.meta.keepAlive"/>
         <keep-alive>
