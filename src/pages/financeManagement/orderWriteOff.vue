@@ -813,6 +813,7 @@
       //tab切换
       tabClickData() {
         this.pageNum =1
+          this.statistDataShow = false
         this.pageSkipChecked = false
       	this.initData()
       },
@@ -965,6 +966,7 @@
           this.errorStatist = false
           this.$http.post(this.$service.searchWoByPage,copyData).then(data => {
           if (data.code == 200) {
+          this.statistDataShow = false
             this.tableData = data.data.page.records
             this.tabNum = [data.data.countAuth?data.data.countAuth:0,data.data.countNoAuth?data.data.countNoAuth:0,data.data.countErr?data.data.countErr:0]
             this.total = data.data.page.total

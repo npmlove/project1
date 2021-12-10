@@ -574,7 +574,7 @@ const workOrder = [{
   },
   children: [
     {
-      path: 'adverCenter',
+      path: 'serviceWorkOrder',
       component: () => import('@/pages/workOrder/serviceWorkOrder.vue'),
       name: 'adverCenter',
       meta: {
@@ -584,7 +584,7 @@ const workOrder = [{
       }
     },
     {
-      path: 'adverAdd',
+      path: 'airlineWorkOrder',
       component: () => import('@/pages/workOrder/airlineWorkOrder.vue'),
       name: 'adverAdd',
       meta: {
@@ -594,16 +594,16 @@ const workOrder = [{
       }
     },
     {
-      path: 'bannerNew',
+      path: 'workOrderStatistics',
       component: () => import('@/pages/workOrder/workOrderStatistics.vue'),
       name: 'bannerNew',
       meta: {
-        title: '工单数据统计',
+        title: '工单目的港可视化',
         keepAlive: false,
         needLogin: true
       },
     },{
-      path: 'bannerNew',
+      path: 'overAllStatistics',
       component: () => import('@/pages/workOrder/overAllStatistics.vue'),
       name: 'bannerNew',
       meta: {

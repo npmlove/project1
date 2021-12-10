@@ -179,11 +179,12 @@
             <el-button size='mini' type="primary" @click="delInvoice()">作废</el-button>
             <el-button size='mini' type="primary" @click="delivery()">快递</el-button>
             <el-upload
-              :disabled="ifMainFold(this.selectTableData) || this.selectTableData.length==0"
+              :disabled="ifMainFold(this.selectTableData) || this.selectTableData.length==0 || uploadDisable()"
               style="width:100px;height:28px;margin-right:10px"
               action="#"
               accept=".zip"
               class="upLoad"
+              :on-change="handleChange"
               :multiple = "true"
               :auto-upload="false">
               <el-button type="primary" size="medium" @click="uploadResolve">上传发票</el-button>
@@ -215,69 +216,73 @@
               <el-table-column type="selection" width="50" :selectable="ifDisabled" fixed="left" :key="Math.random()" ></el-table-column>
               <el-table-column label="订单号" min-width="160"  type="" v-if="checkedTable.indexOf('订单号')!==-1">
                 <template slot-scope="scope">
-                  <div v-if="scope.row.hasChild">
+                  <div v-if="scope.row.orderInfos &&scope.row.orderInfos.length >0 ">
                      <el-popover
                         placement="bottom-start"
                         width="100"
                         trigger="hover"
+                        popper-class="invoicePopper"
                         >
                         <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.orderNo}}</div>
-                        <div slot="reference" @click="showOrderWayBill(scope.row.id)" style="color:skyblue">{{scope.row.orderNo}}</div>
+                        <div slot="reference" @click="showOrderWayBill(scope.row)" style="color:skyblue">{{scope.row.orderNo}}</div>
                      </el-popover>
                   </div>
-                    <div v-else-if="!scope.row.hasChild">
-                        <div@click="showOrderWayBill(scope.row.id)" style="color:skyblue">{{scope.row.orderNo}}</div>
+                    <div v-else>
+                        <div@click="showOrderWayBill(scope.row)" style="color:skyblue">{{scope.row.orderNo}}</div>
                     </div>
                 </template>
               </el-table-column>
               <el-table-column label="运单号" min-width="160"  type="" v-if="checkedTable.indexOf('运单号')!==-1">
                 <template slot-scope="scope">
-                  <div  v-if="scope.row.hasChild">
+                  <div  v-if="scope.row.orderInfos &&scope.row.orderInfos.length >0">
                     <el-popover
                         placement="bottom-start"
                         width="90"
                         trigger="hover"
+                        popper-class="invoicePopper"
                         >
                         <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.waybillNo}}</div>
-                        <div slot="reference" @click="showOrderWayBill(scope.row.id)" style="color:skyblue">{{scope.row.waybillNo}}</div>
+                        <div slot="reference" @click="showOrderWayBill(scope.row)" style="color:skyblue">{{scope.row.waybillNo}}</div>
                      </el-popover>
                   </div>
-                  <div v-else-if="!scope.row.hasChild">
-                    <div @click="showOrderWayBill(scope.row.id)" style="color:skyblue">{{scope.row.waybillNo}}</div>
+                  <div v-else>
+                    <div @click="showOrderWayBill(scope.row)" style="color:skyblue">{{scope.row.waybillNo}}</div>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column prop="customerName" label="订舱公司" min-width="160"  type="" v-if="checkedTable.indexOf('订舱公司')!==-1"></el-table-column>
               <el-table-column prop="departureDate" label="航班日期" min-width="100"  type="" v-if="checkedTable.indexOf('航班日期')!==-1">
                 <template slot-scope="scope">
-                  <div  v-if="scope.row.hasChild">
+                  <div v-if="scope.row.orderInfos &&scope.row.orderInfos.length >0">
                     <el-popover
                         placement="bottom-start"
                         width="60"
                         trigger="hover"
+                        popper-class="invoicePopper"
                         >
                         <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.departureDate}}</div>
                         <div slot="reference">{{scope.row.departureDate}}</div>
                      </el-popover>
                   </div>
-                  <div  v-else-if="!scope.row.hasChild">
+                  <div  v-else>
                       <div>{{scope.row.departureDate}}</div>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column prop="presentationTime" label="交单时间" min-width="100"  type="" v-if="checkedTable.indexOf('交单时间')!==-1">
                 <template slot-scope="scope">
-                  <div  v-if="scope.row.hasChild">
+                  <div v-if="scope.row.orderInfos &&scope.row.orderInfos.length >0">
                     <el-popover
                         placement="bottom-start"
                         width="60"
                         trigger="hover"
+                        popper-class="invoicePopper"
                         >
                         <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.presentationTime}}</div>
                         <div slot="reference">{{scope.row.presentationTime}}</div>
                      </el-popover>
                   </div>
-                  <div v-else-if="!scope.row.hasChild">
+                  <div v-else>
                         <div>{{scope.row.presentationTime}}</div>
                   </div>
                 </template>
@@ -338,7 +343,7 @@
                               placement="bottom-start"
                               width="40"
                               trigger="hover"
-                              class = "popoverShow"
+                              popper-class="invoicePopper"
                               >
                               <div v-for="(item,index) in scope.row.invoiceInfos" :key ="index">{{item.invoiceNum}}</div>
                               <div slot="reference">{{scope.row.invoiceNum}}</div>
@@ -362,6 +367,7 @@
                          <el-popover
                               placement="bottom-start"
                               width="40"
+                              popper-class="invoicePopper"
                               trigger="hover"
                               >
                               <div v-for="(item,index) in scope.row.invoiceInfos" :key ="index">{{item.invoicingTime}}</div>
@@ -389,8 +395,8 @@
             </el-table>
              <div style="display:flex;justify-content:space-between">
                <div>
-                 <el-button size="mini" class="pageSkip"><el-checkbox v-model="pageSkipChecked" @change="selectAllTable">跨页全选</el-checkbox></el-button>
-                 <el-button  size="mini" @click="getStatistData">数据统计</el-button>
+                 <el-button size="mini" class="pageSkip"><el-checkbox v-model="pageSkipChecked" @change="selectAllTable" >跨页全选</el-checkbox></el-button>
+                 <el-button  size="mini" type="primary" @click="getStatistData">数据统计</el-button>
                  <div style="margin-top:15px" v-if="statistDataShow">
                    <span>应收总金额:{{statistData.shouldGet.toLocaleString('en-US')}}</span>
                    <span style="margin-left:15px">申请开票金额: {{statistData.applyInvoice.toLocaleString('en-US')}}</span>
@@ -872,7 +878,9 @@
         this.searchClick(true)
     },
     methods: {
-
+      uploadDisable(){
+        return this.selectTableData.some(item=>item.invoiceInfos== null) 
+      },
       //跨页全选禁用
       ifDisabled(row) {
         if(this.pageSkipChecked == true) {
@@ -895,6 +903,9 @@
             type: 'warning'
           });
           return
+        }
+        else if (this.selectTableData.some(item=>item.invoiceInfos== null)){
+          this.$message.warning("所选数据存在未开票,不允许上传发票")
         }
         
       },
@@ -924,7 +935,11 @@
           } else {
             requestData.uploadInvoAppMap ={}
             copyTabless.forEach(item=>{
-              requestData.uploadInvoAppMap[item.id] = item.invoiceInfos.map(item2=>item2.id)
+              if(item.invoiceInfos){
+                requestData.uploadInvoAppMap[item.id] = item.invoiceInfos.map(item2=>item2.id)
+              } else {
+                 requestData.uploadInvoAppMap = null
+              }
             })
           }
         }
@@ -1069,9 +1084,10 @@
         }
       },
       //表格运单号&订单号弹框
-      showOrderWayBill(id){
+      showOrderWayBill(data){
+        let request = data.orderInfos.map(item=>item.id)
         this.orderTableData = []
-        this.$http.post(this.$service.orderInfoShow,[id]).then(item=>{
+        this.$http.post(this.$service.orderInfoShow,request).then(item=>{
           this.orderTableData = item.data
         })
         this.orderWayBillFrame = true
@@ -1519,6 +1535,7 @@
               }
             })
             this.tableData = getData
+            this.statistDataShow = false
             //控制跨页全选
             if(self) this.pageSkipChecked = false
             this.selectAllTable()
@@ -1612,17 +1629,17 @@
     }
   }
 </script>
-
 <style lang="less">
-  .el-popover{
-      max-height: 200px;
+  .invoicePopper{
+      max-height: 200px!important;
       overflow: scroll;
   }
 </style>
 <style scoped lang="less">
   @import url("../../assets/icon/iconfont.css");
-
+   
   /deep/.pageSkip {
+        color:#fff;
         padding:3px 5px!important
   }
   /deep/.el-table{

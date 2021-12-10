@@ -981,6 +981,11 @@
       this.operateData()
     },
     methods:{
+      //表格列全选控制
+      handleCheckAllChange(val) {
+      this.checkedTable = val ? this.tableOptions : [];
+      this.isIndeterminate = false;
+    },
        tableRowClassName({row, rowIndex}) {
         if(row.abnormalFlag > 1){
           return 'background-color: #e55f5f';
@@ -1171,6 +1176,9 @@
       },
       //核销次数列点击事件
        getRcvWrite (row){
+         if(row.rcvWriteOffCount == 0) {
+           return 
+         }
         this.receiveOperate= [{}]
         this.dialogFormVisibleTwo = true
         const copyData = [{}]
@@ -1431,6 +1439,7 @@
       },
       //查询接口
       initData (useData) {
+        this.statistDataShow = false
         this.$http.post(this.$service.receivableSearch,useData).then(res=>{
           this.tableData = res.data.page.records
           this.tabNum = [res.data.countAuth,res.data.countNoAuth,res.data.countErr]
@@ -1512,6 +1521,7 @@
         return totalOrgn;
       },
       getExchangeRate(exchangeRate) {
+        let copy = JSON.parse(exchangeRate)
         if (typeof (exchangeRate) == "undefined") {
           return "";
         }
@@ -1521,17 +1531,17 @@
         var value3 = 0
         var value4 = 0
         var value5 = 0
-        for (var i = 0; i < exchangeRate.length; i++) {
-          if (exchangeRate[i].currency == '1') {
-            value1 += exchangeRate[i].exchangeRate
-          } else if (exchangeRate[i].currency == '2') {
-            value2 += exchangeRate[i].exchangeRate
-          } else if (exchangeRate[i].currency == '3') {
-            value3 += exchangeRate[i].exchangeRate
-          } else if (exchangeRate[i].currency == '4') {
-            value4 += exchangeRate[i].exchangeRate
-          } else if (exchangeRate[i].currency == '5') {
-            value5 += exchangeRate[i].exchangeRate
+        for (var i = 0; i < copy.length; i++) {
+          if (copy[i].currency == '1') {
+            value1 += copy[i].amount
+          } else if (copy[i].currency == '2') {
+            value2 += copy[i].amount
+          } else if (copy[i].currency == '3') {
+            value3 += copy[i].amount
+          } else if (copy[i].currency == '4') {
+            value4 += copy[i].amount
+          } else if (copy[i].currency == '5') {
+            value5 += copy[i].amount
           }
         }
         totalOrgn = ''
