@@ -134,7 +134,7 @@ export default {
             // background: #2273CE;
             background-color:#1a1e22;
             color: #2273ce;
-            border-right: 4px solid #2273CE;
+            //border-right: 4px solid #2273CE;
           }
         }
 
