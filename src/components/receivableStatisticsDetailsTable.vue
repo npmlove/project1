@@ -8,14 +8,13 @@
       :header-cell-style="{textAlign:'center'}"
       :cell-style="{textAlign:'center',fontSize:'14px'}"
       :row-class-name="tableRowClassName"
-      :selectable="ifDisabled"
       style="width: 100% ;"
     >
       <template slot="empty">
         <img class="data-pic" src="../assets/kong-icon.png"/>
         <p>暂无数据</p>
       </template>
-      <el-table-column v-if="select===0" type="selection" width="50"></el-table-column>
+      <el-table-column v-if="select===0" type="selection" :selectable="ifDisabled" width="50"></el-table-column>
       <!-- <el-table-column
         v-if="checkbox"
         type="selection"
@@ -24,7 +23,7 @@
       <!--列-->
       <el-table-column
         v-for="(column, index) in columns"
-        v-if="column.show"
+        v-if="column.show&&checkedTable.indexOf(column.label) !== -1"
         :key="index"
         :sortable="column.sort"
         :prop="column.prop"
@@ -271,6 +270,10 @@
         type: Array,
         default: () => []
       },
+      checkedTable:{
+        type: Array,
+        default: () => []
+      },
       //选择
       xuanzhong: {
         type: Array,
@@ -286,6 +289,10 @@
         type: Object,
         default: () => {
         }
+      },
+      pageSkipChecked:{
+        type:Boolean,
+        default: () => false
       },
       // 总条数
       total: {
@@ -494,6 +501,13 @@
       handleCurrent(val) {
         // this.rowSelect()
         this.$emit('currentChange', val)
+      },
+      ifDisabled(row) {
+        if(this.pageSkipChecked == true) {
+          return false
+        } else {
+          return true
+        }
       },
       // 展示条数
       handleSize(val) {

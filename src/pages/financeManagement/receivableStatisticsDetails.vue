@@ -154,6 +154,8 @@
           </div>
           <div class="operateButton">
             <el-button size='mini' type="primary" @click="exportList">导出列表</el-button>
+            <el-button @click="drawer = true" type="primary" size="mini"
+          >选择表格列</el-button>
           </div>
         </div>
       </el-form>
@@ -162,6 +164,8 @@
           <Table
             ref="child"
             :tableData='tableData'
+            :checkedTable='checkedTable'
+            :pageSkipChecked="pageSkipChecked"
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -178,6 +182,8 @@
         <el-tab-pane :label="'业务修改中'+'('+countNoAuth+')'" name="1">
           <Table
             :tableData='tableData'
+            :checkedTable='checkedTable'
+            :pageSkipChecked="pageSkipChecked"
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -192,6 +198,8 @@
         <el-tab-pane :label="'异常'+'('+countErr+')'" name="2">
           <Table
             :tableData='tableData'
+            :checkedTable='checkedTable'
+            :pageSkipChecked="pageSkipChecked"
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -204,6 +212,30 @@
           </Table>
         </el-tab-pane>
       </el-tabs>
+
+      <el-drawer
+        title="表格列控制"
+        :visible.sync="drawer"
+        size="200px"
+        :direction="direction"
+      >
+        <el-checkbox
+          :indeterminate="isIndeterminate"
+          v-model="checkAll"
+          @change="handleCheckAllChange"
+          style="margin: 0 0 20px 20px"
+        >全选</el-checkbox
+        >
+        <el-checkbox-group v-model="checkedTable" :min="0" :max="20">
+          <el-checkbox
+            v-for="choose in tableOptions"
+            :label="choose"
+            :key="choose"
+            style="display: block; margin-left: 20px"
+          >{{ choose }}</el-checkbox
+          >
+        </el-checkbox-group>
+      </el-drawer>
       <div style="display:flex;justify-content:space-between">
         <div>
           <el-button size="mini" class="pageSkip">
@@ -296,6 +328,49 @@
         dialogFormVisible: false,
         logDialogVisible: false,
         statistDataShow: false,
+        //表格控制列drawer
+        drawer: false,
+        direction: "rtl",
+        isIndeterminate: true,
+        checkAll: false,
+        checkedTable: [
+          "序号",
+          "订单号",
+          "运单号",
+          "应收对象",
+          "应收金额",
+          "对账金额",
+          "核销金额",
+          "开户行",
+          "户名",
+          "银行账户",
+          "汇率",
+          "收款方式",
+          "到账时间",
+          "核销时间",
+          "结算方式",
+          "核销次数",
+          "核销状态",
+        ],
+        tableOptions: [
+          "序号",
+          "订单号",
+          "运单号",
+          "应收对象",
+          "应收金额",
+          "对账金额",
+          "核销金额",
+          "开户行",
+          "户名",
+          "银行账户",
+          "汇率",
+          "收款方式",
+          "到账时间",
+          "核销时间",
+          "结算方式",
+          "核销次数",
+          "核销状态",
+        ],
         //table
         tableData: [],
         arData: [],
@@ -542,6 +617,12 @@
       this.initAgentList()
     },
     methods: {
+      //表格选择列显示drawer -全选
+      handleCheckAllChange(val) {
+        this.checkedTable = val ? this.tableOptions : [];
+        this.isIndeterminate = false;
+      },
+
       ifDisabled(row) {
         if(this.overPageCheck == true) {
           return false
@@ -731,7 +812,6 @@
       },
       //航线列表
       initData() {
-        console.log(this.rcvWriteOffStatus)
 
         var json = {
           orderNo: this.orderNo,
