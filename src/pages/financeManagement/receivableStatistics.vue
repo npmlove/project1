@@ -1176,9 +1176,7 @@
       },
       //核销次数列点击事件
        getRcvWrite (row){
-         if(row.rcvWriteOffCount == 0) {
-           return 
-         }
+         
         this.receiveOperate= [{}]
         this.dialogFormVisibleTwo = true
         const copyData = [{}]

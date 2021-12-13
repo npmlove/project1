@@ -357,7 +357,41 @@ const financeManagementCenter = [{
     }
   ]
 }]
-
+// 账单总览
+const billOverview = [{
+  path: '/billOverview',
+  component: Layout,
+  name: 'billOverview',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title: '账单总览',
+    icon: 'icon iconfont icon-kucun',
+    breadcrumb: false
+  },
+  children: [
+    {
+      path: 'financeManage',
+      component: () => import('@/pages/billOverview/userBill.vue'),
+      name: 'financeManage',
+      meta: {
+        title: '用户账单',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'invoiceList',
+      component: () => import('@/pages/billOverview/shopBill.vue'),
+      name: 'invoiceList',
+      meta: {
+        title: '供应商账单',
+        keepAlive: false,
+        needLogin: true
+      }
+    }
+  ]
+}]
 // 订单管理
 const orderManagementCenter = [{
   path: '/orderManagement',
@@ -621,6 +655,7 @@ const routes = [
   ...orderManagementCenter,
   ...routeManagementCenter,
   ...financeManagementCenter,
+  ...billOverview,
   ...adverManagementCenter,
   ...agentManagement,
   ...expenseManagement,

@@ -1,7 +1,7 @@
 <template>
   <div class="content-wrapper">
     <div class="content">
-      <el-form :inline="true" size="medium" class="demo-form-inline" label-position="left">
+      <el-form :inline="true" size="medium" :model="selectResult" class="demo-form-inline" label-position="left">
         <div class="content-search-normal">
           <div class="formItem">
           <el-form-item label="订单号:" label-width="80px">
@@ -196,206 +196,10 @@
       </el-form>
       <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData" value="全部">
         <el-tab-pane v-for="(item,index) in tabName" :key="index" :label="item+'( '+tabNum[index]+' )'" :name="item">
-          <el-table
-              ref="multipleTable"
-              :data="tableData"
-              border
-              stripe
-              header
-              :key="tableKey"
-              class="finance-table"
-              row-key="copyId"
-              max-height="800px"
-              :tree-props="{children: 'invoiceInfos'}"
-              @selection-change="handleSelectionChange"
-              style="width: 100%">
-              <template slot="empty">
-                <img class="data-pic" src="../../assets/kong-icon.png"/>
-                <p>暂无数据</p>
-              </template>
-              <el-table-column type="selection" width="50" :selectable="ifDisabled" fixed="left" :key="Math.random()" ></el-table-column>
-              <el-table-column label="订单号" min-width="160"  type="" v-if="checkedTable.indexOf('订单号')!==-1">
-                <template slot-scope="scope">
-                  <div v-if="scope.row.orderInfos &&scope.row.orderInfos.length >0 ">
-                     <el-popover
-                        placement="bottom-start"
-                        width="100"
-                        trigger="hover"
-                        popper-class="invoicePopper"
-                        >
-                        <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.orderNo}}</div>
-                        <div slot="reference" @click="showOrderWayBill(scope.row)" style="color:skyblue">{{scope.row.orderNo}}</div>
-                     </el-popover>
-                  </div>
-                    <div v-else>
-                        <div@click="showOrderWayBill(scope.row)" style="color:skyblue">{{scope.row.orderNo}}</div>
-                    </div>
-                </template>
-              </el-table-column>
-              <el-table-column label="运单号" min-width="160"  type="" v-if="checkedTable.indexOf('运单号')!==-1">
-                <template slot-scope="scope">
-                  <div  v-if="scope.row.orderInfos &&scope.row.orderInfos.length >0">
-                    <el-popover
-                        placement="bottom-start"
-                        width="90"
-                        trigger="hover"
-                        popper-class="invoicePopper"
-                        >
-                        <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.waybillNo}}</div>
-                        <div slot="reference" @click="showOrderWayBill(scope.row)" style="color:skyblue">{{scope.row.waybillNo}}</div>
-                     </el-popover>
-                  </div>
-                  <div v-else>
-                    <div @click="showOrderWayBill(scope.row)" style="color:skyblue">{{scope.row.waybillNo}}</div>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="customerName" label="订舱公司" min-width="160"  type="" v-if="checkedTable.indexOf('订舱公司')!==-1"></el-table-column>
-              <el-table-column prop="departureDate" label="航班日期" min-width="100"  type="" v-if="checkedTable.indexOf('航班日期')!==-1">
-                <template slot-scope="scope">
-                  <div v-if="scope.row.orderInfos &&scope.row.orderInfos.length >0">
-                    <el-popover
-                        placement="bottom-start"
-                        width="60"
-                        trigger="hover"
-                        popper-class="invoicePopper"
-                        >
-                        <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.departureDate}}</div>
-                        <div slot="reference">{{scope.row.departureDate}}</div>
-                     </el-popover>
-                  </div>
-                  <div  v-else>
-                      <div>{{scope.row.departureDate}}</div>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="presentationTime" label="交单时间" min-width="100"  type="" v-if="checkedTable.indexOf('交单时间')!==-1">
-                <template slot-scope="scope">
-                  <div v-if="scope.row.orderInfos &&scope.row.orderInfos.length >0">
-                    <el-popover
-                        placement="bottom-start"
-                        width="60"
-                        trigger="hover"
-                        popper-class="invoicePopper"
-                        >
-                        <div v-for="(item,index) in scope.row.orderInfos" :key ="index">{{item.presentationTime}}</div>
-                        <div slot="reference">{{scope.row.presentationTime}}</div>
-                     </el-popover>
-                  </div>
-                  <div v-else>
-                        <div>{{scope.row.presentationTime}}</div>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="invoiceTitle" label="发票抬头" min-width="160"  type="" v-if="checkedTable.indexOf('发票抬头')!==-1"></el-table-column>
-              <el-table-column  label="开票信息" min-width="80" type="" v-if="checkedTable.indexOf('开票信息')!==-1">
-                  <template slot-scope="scope" v-if="!scope.row.ifChild">
-                    <div @click="showInvoice(scope.row)" style="color:skyblue">查看</div>
-                  </template>
-              </el-table-column>
-              <el-table-column prop="totalArCny" label="应收费用总金额" min-width="120"  type="" v-if="checkedTable.indexOf('应收费用总金额')!==-1"></el-table-column>
-              <el-table-column prop="applyAmount" label="申请开票金额" min-width="120"  type="" v-if="checkedTable.indexOf('申请开票金额')!==-1">
-                <template slot-scope="scope" v-if="!scope.row.ifChild">
-                  <div>
-                    {{scope.row.applyAmount}}CNY
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="invoiceType" label="发票种类" min-width="140"  type="" v-if="checkedTable.indexOf('发票种类')!==-1">
-                <template slot-scope="scope">
-                  <div v-if="!scope.row.ifChild">
-                      {{getBillType[scope.row.invoiceType]}}
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="applicant" label="申请人" min-width="80"  type="" v-if="checkedTable.indexOf('申请人')!==-1"></el-table-column>
-              <el-table-column prop="applyTime" label="申请时间" min-width="100"  type="" v-if="checkedTable.indexOf('申请时间')!==-1"></el-table-column>
-              <el-table-column prop="invoicingStatus" label="开票进度" min-width="80"  type="" v-if="checkedTable.indexOf('开票进度')!==-1">
-                <template slot-scope="scope">
-                  <div>
-                    {{getBillProgress[scope.row.invoicingStatus]}}
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="invoicedAmount" label="已开票金额" min-width="80"  type="" v-if="checkedTable.indexOf('已开票金额')!==-1">
-                  <template slot-scope="scope">
-                    <template v-if="scope.row.ifChild">
-                         <div>{{scope.row.invoiceAmount}}</div>
-                     </template>
-                    <template v-else>
-                        <div>
-                          <div>{{scope.row.invoicedAmount}}</div>
-                        </div>
-                    </template>
-                  </template>
-              </el-table-column>
-              <el-table-column label="发票号码" min-width="100"  v-if="checkedTable.indexOf('发票号码')!==-1">
-                <template slot-scope="scope">
-                  <div>
-                    <template v-if="scope.row.ifChild || !scope.row.hasChild">
-                       <div>
-                         <div>{{scope.row.invoiceNum}}</div>
-                       </div>
-                     </template>
-                    <template v-else>
-                        <div>
-                          <el-popover
-                              placement="bottom-start"
-                              width="40"
-                              trigger="hover"
-                              popper-class="invoicePopper"
-                              >
-                              <div v-for="(item,index) in scope.row.invoiceInfos" :key ="index">{{item.invoiceNum}}</div>
-                              <div slot="reference">{{scope.row.invoiceNum}}</div>
-                          </el-popover>
-                        </div>
-                    </template>
-
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="invoicingTime" label="开票时间" min-width="120" v-if="checkedTable.indexOf('开票时间')!==-1">
-                <template slot-scope="scope">
-                  <div>
-                    <template v-if="scope.row.ifChild  || !scope.row.hasChild">
-                        <div>
-                         <div>{{scope.row.invoicingTime}}</div>
-                        </div>
-                      </template>
-                     <template v-else>
-                       <div>
-                         <el-popover
-                              placement="bottom-start"
-                              width="40"
-                              popper-class="invoicePopper"
-                              trigger="hover"
-                              >
-                              <div v-for="(item,index) in scope.row.invoiceInfos" :key ="index">{{item.invoicingTime}}</div>
-                              <div slot="reference">{{scope.row.invoicingTime}}</div>
-                          </el-popover>
-                       </div>
-                     </template>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column label="快递信息" min-width="120" v-if="checkedTable.indexOf('快递信息')!==-1" prop="expressInfo">
-                 <template slot-scope="scope">
-                  <div v-html="dealExpress(scope.row.expressInfo)" style="white-space:pre-line;text-align:left;width:100%"></div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="expressStatus" label="快递状态" min-width="80" v-if="checkedTable.indexOf('快递状态')!==-1">
-                <template slot-scope="scope">
-                  <div @click="openPost(scope.row)">
-                    {{scope.row.expressStatus}}
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="invoiceStatus" label="发票状态" min-width="80" v-if="checkedTable.indexOf('发票状态')!==-1"></el-table-column>
-              <el-table-column prop="upload" label="是否上传" min-width="80" v-if="checkedTable.indexOf('是否上传')!==-1"></el-table-column>
-            </el-table>
+      <foldTable :tableData="tableData" :pageSkipAll="pageSkipChecked" @changeCheckBox="handleSelectionChange" @showOrderWayBill="showOrderWayBill" @showInvoice="showInvoice" @openPost="openPost"></foldTable>
              <div style="display:flex;justify-content:space-between">
                <div>
-                 <el-button size="mini" class="pageSkip"><el-checkbox v-model="pageSkipChecked" @change="selectAllTable" >跨页全选</el-checkbox></el-button>
+                 <el-button size="mini" class="pageSkip"><el-checkbox v-model="pageSkipChecked" @change="selectAllTable" style="color:white">跨页全选</el-checkbox></el-button>
                  <el-button  size="mini" type="primary" @click="getStatistData">数据统计</el-button>
                  <div style="margin-top:15px" v-if="statistDataShow">
                    <span>应收总金额:{{statistData.shouldGet.toLocaleString('en-US')}}</span>
@@ -429,8 +233,8 @@
         <el-checkbox-group
           v-model="checkedTable"
           :min="0"
-          :max="20">
-              <el-checkbox v-for="choose in tableOptions" :label="choose" :key="choose" style="display:block;margin-left:20px">{{choose}}</el-checkbox>
+          :max="21">
+              <el-checkbox v-for="choose in tableOptions" :label="choose" @change="tableKey = tableKey == 1? 2:1" :key="choose" style="display:block;margin-left:20px">{{choose}}</el-checkbox>
         </el-checkbox-group>
       </el-drawer>
       <!-- 订单号&运单号弹框 -->
@@ -651,8 +455,12 @@
 
 <script>
   import { toData } from '@/util/assist'
+  import foldTable from './components/foldTable.vue'
 // import Axios from '../../../static/axios.min.js'
   export default {
+    components:{
+      foldTable
+    },
     data() {
       return {
         tableKey :1,
@@ -663,6 +471,7 @@
         isIndeterminate: true,
         direction: 'rtl',
         checkedTable:['序号','订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票信息','应收费用总金额','申请开票金额','发票种类','申请人','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','快递状态','发票状态','是否上传'],
+        
         tableOptions:['序号','订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票信息','应收费用总金额','申请开票金额','发票种类','申请人','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','快递状态','发票状态','是否上传'],
         //表格tab页
         tabName:["全部","合并开票","单独开票","异常"],
@@ -878,8 +687,9 @@
         this.searchClick(true)
     },
     methods: {
+      
       uploadDisable(){
-        return this.selectTableData.some(item=>item.invoiceInfos== null) 
+        return this.selectTableData.some(item=>item.invoiceNum== "") || this.selectTableData.some(item=>item.invoiceType==2) || this.ifMainFold(this.selectTableData) || this.selectTableData.length==0
       },
       //跨页全选禁用
       ifDisabled(row) {
@@ -904,8 +714,11 @@
           });
           return
         }
-        else if (this.selectTableData.some(item=>item.invoiceInfos== null)){
+        else if (this.selectTableData.some(item=>item.invoiceNum== "")){
           this.$message.warning("所选数据存在未开票,不允许上传发票")
+        }
+        else if (this.selectTableData.some(item=>item.invoiceType==2)){
+          this.$message.warning("所选数据存在电子发票，不允许上传发票")
         }
         
       },
@@ -1067,7 +880,6 @@
       //表格选中事件
      handleSelectionChange(e){
        console.log(e)
-
        this.selectTableData = e
      },
       //查看开票信息
@@ -1421,7 +1233,8 @@
         console.log(this.tableData)
         this.statistDataShow = !this.statistDataShow
         this.statistData = {shouldGet:0,applyInvoice:0,invoicedMoney:0}
-        this.$http.post(this.$service.invoiceStatistics,this.selectResultData()).then(res=>{
+        let request = {financePageDTO:this.selectResultData()}
+        this.$http.post(this.$service.invoiceStatistics,request).then(res=>{
           this.statistData.shouldGet = res.data.totalArCny;
           this.statistData.applyInvoice =res.data.applyAmount;
           this.statistData.invoicedMoney = res.data.invoicedAmount;
@@ -1429,18 +1242,7 @@
       },
       //跨页全选按钮
       selectAllTable(){
-        for(let i=0;i<this.$refs.multipleTable.length;i++){
-          this.$refs.multipleTable[i].clearSelection();
-          // this.pageSkipChecked ?  this.$refs.multipleTable[i].toggleAllSelection() : this.$refs.multipleTable[i].clearSelection()
-          for(let j=0;j<this.tableData.length;j++){
-            if(this.pageSkipChecked == true ) {
-							this.$refs.multipleTable[i].toggleRowSelection(this.tableData[j]);
-						} else {
-              this.$refs.multipleTable[i].clearSelection();
-            }
-
-          }
-        }
+        
       },
       //tab切换
       tabClickData(tab,event) {
@@ -1468,35 +1270,20 @@
       },
       //查询
       searchClick(self) {
-        let arrayCopy = JSON.parse(JSON.stringify(this.selectResult))
-        //搜索框选择全部 删除属性
-        if(arrayCopy.expressStatus == "") delete arrayCopy.expressStatus;
-        if(arrayCopy.invoiceStatus == "") delete arrayCopy.invoiceStatus;
-        if(arrayCopy.upload == "") delete arrayCopy.upload;
-        if(arrayCopy.invoiceType.length == 1 && (arrayCopy.invoiceType)[0]=="" ) delete arrayCopy.invoiceType;
-        if(arrayCopy.invoicingStatus.length == 1 && arrayCopy.invoicingStatus[0]=="" ) delete arrayCopy.invoicingStatus;
-        //调接口 判断当前tab页
-        if(this.typeCode == "合并开票") {arrayCopy.merge = 0}
-        else if(this.typeCode == "单独开票") {arrayCopy.merge = 1}
-        else if (this.typeCode == "异常") {arrayCopy.abnormalFlag = 1}
+        let arrayCopy = this.selectResultData()
+        
         //当前页数和每页显示个数
         arrayCopy.pageNum = this.pageNum
         arrayCopy.pageSize = this.pageSize
-        //搜索框多选情况
-        if(arrayCopy.invoiceType) arrayCopy.invoiceType = arrayCopy.invoiceType.join()
-        if(arrayCopy.invoicingStatus) arrayCopy.invoicingStatus = arrayCopy.invoicingStatus.join()
-        // console.log(arrayCopy)
+        
         this.$http.post(this.$service.invoiceSearch,arrayCopy).then((data) => {
-          this.loading = false
+          let dData = data.data
           if (data.code == 200) {
             //获取信息总数，及表格tab页的数据数量
-            this.total = data.data.pageInfo.total
-            this.tabNum[0] = data.data.totalCount
-            this.tabNum[1] = data.data.mergeCount
-            this.tabNum[2] = data.data.notMergeCount
-            this.tabNum[3] = data.data.abNormalCount
+            this.total = dData.pageInfo.total
+            this.tabNum = [dData.totalCount,dData.mergeCount,dData.notMergeCount,dData.abNormalCount]
             //用于后续调接口操作
-            this.copyTable = JSON.parse(JSON.stringify(data.data.pageInfo.records))
+            this.copyTable = JSON.parse(JSON.stringify(dData.pageInfo.records))
             //处理数据后在表格上显示
             let getData = JSON.parse(JSON.stringify(data.data.pageInfo.records))
             getData.forEach((item,index)=>{
@@ -1506,9 +1293,10 @@
               if(item.invoiceInfos && item.invoiceInfos.length>=1){
                 //判断是否是主数据
                 item.hasChild = true
+                item.ifFold = false
                 item.invoiceInfos.forEach((item2,index)=>{
                   item2.invoiceType =item.invoiceType
-                  //判断是否是折叠数据
+                  //标记是折叠数据
                   item2.ifChild = true
                   //作为element table 折叠表格的row-key使用
                   item2.copyId = String(item.id)+'-'+String(index)
@@ -1518,17 +1306,19 @@
                   item2.upload = this.getUpLoad[item2.upload]
                 })
               }
-              //从invoiceInfos和orderInfos中取数据
+              // 从invoiceInfos和orderInfos中取数据
               item.invoiceNum = (item.invoiceInfos && item.invoiceInfos[0] && item.invoiceInfos[0].invoiceNum) || ""
               item.invoicingTime = (item.invoiceInfos && item.invoiceInfos[0] && item.invoiceInfos[0].invoicingTime) || ""
               item.expressStatus = this.getExpressState[item.expressStatus] || ""
               item.invoiceStatus = this.getBillState[item.invoiceStatus] ||  ""
               item.upload = this.getUpLoad[item.upload] || ""
-              item.orderNo = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].orderNo) || ""
-              item.waybillNo = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].waybillNo) || ""
-              item.departureDate = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].departureDate) || ""
-              item.presentationTime = (item.orderInfos && item.orderInfos[0] && item.orderInfos[0].presentationTime) || ""
-              //折叠操作控制
+              if(item.orderInfos&& item.orderInfos[0]){
+                item.orderNo =item.orderInfos[0].orderNo
+                item.waybillNo =item.orderInfos[0].waybillNo
+                item.departureDate =item.orderInfos[0].departureDate
+                item.presentationTime =item.orderInfos[0].presentationTime
+              }
+               //折叠操作控制
               if(item.invoiceInfos && item.invoiceInfos.length == 1) {
                 item.hasChild = false
                 delete item.invoiceInfos
@@ -1585,6 +1375,7 @@
         this.pageSize = e
         this.searchClick()
       },
+      //控制快递信息列显示内容  
       dealExpress(express) {
         if(!express) express =""
         let data = express.split(",")
@@ -1630,19 +1421,24 @@
   }
 </script>
 <style lang="less">
+
   .invoicePopper{
       max-height: 200px!important;
       overflow: scroll;
+      
   }
 </style>
 <style scoped lang="less">
   @import url("../../assets/icon/iconfont.css");
-   
+   /deep/ .el-checkbox__label {
+     color:#000
+   }
   /deep/.pageSkip {
         color:#fff;
         padding:3px 5px!important
   }
   /deep/.el-table{
+    width:97%!important;
     .cell {
       white-space: normal!important;
     }

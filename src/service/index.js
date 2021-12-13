@@ -254,6 +254,15 @@ const serviceApi = {
   // 获取订单的汇率
   getExchangeRatesForOrder:   '/faw/t-order/getExchangeRatesForOrde',
 
-  modifyBill: pulicWeb + '/t-bill/modifyBill'
+  modifyBill: pulicWeb + '/t-bill/modifyBill',
+  // 用户账单页面
+  userList: pulicWeb + '/t-bill/userBill',
+// 导出用户账单
+  userListExport: pulicWeb + '/t-bill/userBillExport',
+// 供应商账单页面
+agentBill: pulicWeb + '/t-bill/agentBill',
+// 导出供应商账单
+  agentListExport:pulicWeb +'/t-bill/agentBillExport'
+
 }
 export default serviceApi
