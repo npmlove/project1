@@ -21,12 +21,13 @@ body{
 .borderIpt textarea {
 	border-color: #dc2424 !important;
 }
-.ruleFormLabel .el-form-item > label{
+/* .ruleFormLabel .el-form-item > label{
 	color: #666;
-}
-.el-button--default{
+} */
+/* .el-button--default{
 	width: 100px;
 }
+} */
 /* .el-button{
   color: #2273CE;
   border-color: #2273CE;
@@ -43,7 +44,7 @@ body{
   background-color: #2273CE !important;
   border-color: #2273CE !important;
   color: #FFF;
-}
+} */
 .shouqi .iconfont{
 	font-size: 12px !important;
 }
@@ -123,14 +124,14 @@ body{
 .icon-xiazai {
   margin-right: 10px;
 }
-.el-form-item {
+/* .el-form-item {
   margin-bottom: 20px;
-}
+} */
 .rest-style .el-form-item{
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
 }
 .el-form-item.noRequired label {
-  padding-left: 9.44px;
+  /* padding-left: 9.44px; */
 }
 .el-input__inner,
 .el-textarea__inner {
@@ -156,7 +157,7 @@ body{
   text-overflow: inherit;
   padding-right: 0;
 }
-.el-pagination__sizes .el-input .el-input__inner,
+.el-pagination__sizes .el-input__inner,
 .el-pagination button, .el-pagination span:not([class*=suffix]) {
   font-size: 14px !important;
 }
@@ -186,14 +187,14 @@ body{
   height: 40px !important;
   line-height: 40px !important;
 }
-.el-input--mini .el-input__inner {
+/* .el-input--mini .el-input__inner {
   color: #999 !important;
   width: 120px !important;
   height: 40px !important;
 }
 .el-input__inner {
   line-height: 36px !important;
-}
+} */
 .content-wrapper {
   height: calc(100vh - 134px);
   overflow: auto;
@@ -205,8 +206,8 @@ body{
   background-color: #2273CE !important;
 }
 .el-form-item__content {
-  height: 36px;
-  line-height: 36px;
+  /* height: 36px;
+  line-height: 36px; */
 }
 .el-input__inner,.el-textarea__inner
 {
@@ -237,7 +238,7 @@ body{
 	color: #2273CE !important;
 	/*border: 1px #3985ca solid;*/
 }
-.el-pagination__editor.el-input .el-input__inner {
+.el-pagination__editor .el-input__inner {
 	height: 40px;
 }
 .el-table .cell.el-tooltip{
@@ -291,7 +292,7 @@ body{
   height: 16px;
 }
 .resources_input .el-form-item__content{
-	height: auto;
+	/* height: auto; */
 }
 /* 时间选择器-时间段选择样式调整 */
 .el-input__icon.el-range__close-icon {
@@ -326,7 +327,7 @@ textarea {
 .workClass .el-dialog__body{
 	height: 320px !important;
 }
-.list_form .el-input--medium .el-input__inner{
+.list_form  .el-input__inner{
 	width: 170px !important;
 }
 .subForm .el-checkbox__label{
@@ -339,9 +340,9 @@ textarea {
 	background-color: #0e4670 !important;
 	border-color: #0e4670 !important;
 }
-.subForm .el-form-item > label{
+/* .subForm .el-form-item > label{
 	color: #FFF;
-}
+} */
 .subForm .el-checkbox__input.is-checked .el-checkbox__inner, .subForm .el-checkbox__input.is-indeterminate .el-checkbox__inner{
 	color: #1451db !important;
 }
@@ -352,8 +353,8 @@ textarea {
   padding: 15px 0 0 0;
 }
 .list-img-type .el-form-item__content{
-  height: auto;
-  line-height: initial;
+  /* height: auto;
+  line-height: initial; */
 }
 
 .table-list .el-input__inner{
@@ -629,7 +630,7 @@ textarea {
     background-color: #2273CE;
   }
 .re-form .el-form-item__content{
-  height: auto;
+  /* height: auto; */
 }
 .ecr-textarea .el-textarea__inner{
   height: 88px !important;

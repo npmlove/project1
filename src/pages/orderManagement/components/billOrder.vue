@@ -1,7 +1,10 @@
 <template>
   <div class="contont">
     <div>
-      <h1 class="title">应收账单</h1>
+      <h1 class="title flex">
+          <span>{{title}}</span> 
+          <span class="calcSome"><span>原币合计{{totalOrgnStr}}</span><span>人民币合计：{{totalCnyStr}}</span></span> 
+          </h1>
         <el-table
           :data="tableData"
           border
@@ -18,7 +21,14 @@
             label="费用名称"
             >
             <template slot-scope="scope">
-                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.expenseName" clearable></el-input>    
+                <el-select v-model="scope.row.expenseName" :disabled="scope.row.ingStatic"  placeholder="请选择">
+                  <el-option
+                    v-for="item in  expenseCodeOpt "
+                    :key="item.sortNo"
+                    :label="item.label"
+                    :value="item.expenseName">
+                  </el-option>
+                </el-select>
             </template>
           </el-table-column>
           <el-table-column
@@ -32,6 +42,12 @@
             label="数量">
             <template slot-scope="scope">
                 <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.quantity" clearable></el-input>    
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="单价">
+            <template slot-scope="scope">
+                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.price" clearable></el-input>    
             </template>
           </el-table-column>
           <el-table-column
@@ -63,7 +79,8 @@
             label="操作">
             <template slot-scope="scope">
               <div >
-                <span @click="deleOneTableObj(scope)" >删除</span>
+                 <span v-if="tableData.length - 1 == scope.$index" @click="addOneTableObj()">新增</span>
+                <span @click="deleOneTableObj()" >删除</span>
               </div>
             </template>
           </el-table-column>
@@ -73,19 +90,15 @@
           </el-table-column>
         </el-table>
          <div class="operate">
-            <el-button  style="width:200px"  @click="addOneTableObj()"  >新增</el-button>
-            <el-button  style="width:200px" type="primary" >发起客户对账</el-button>
+            <el-button  style="width:200px"  @click="ttt()"  >ceshi</el-button>
          </div>
-        <div class="line"></div>
-
-
-
+        
     </div>
     <div class="ccc"></div>
   </div>
 </template>
 <script>
-import {moneyList} from './../../../util/util'
+  import {toData} from '@/util/assist'
 // expenseName      费用名称
 // expenseType      费用类型 1=应收 2=应付
 //  expenseUnitId   费用源单位id
@@ -98,8 +111,9 @@ import {moneyList} from './../../../util/util'
 // currency         币种
 // exchangeRate     汇率
 // ingStatic        修改当前数据状态 主要是为了初始化第一条数据
+// billId           订单的id
 class tableObj{
-  constructor(expenseName , expenseUnitName , quantity, price , currency  , exchangeRate = 1, remark, ingStatic = false){
+  constructor(expenseName , expenseUnitName , quantity, price , currency  , exchangeRate = 1, remark, ingStatic = false,billId){
     this.expenseName = expenseName
     this.expenseUnitName = expenseUnitName
     this.price = price
@@ -108,88 +122,229 @@ class tableObj{
     this.exchangeRate = exchangeRate
     this.remark = remark
     this.ingStatic = ingStatic
+    this.billId = billId
     this.totalOrgn = this.countTotalOrgn()
     this.totalCny = this.countTotalCny()
-    
+    // console
   }
   countTotalOrgn(){
     return isNaN(Number(this.quantity) * Number(this.price)) ? '' : Number(this.quantity) * Number(this.price)
   }
   countTotalCny(){
-    console.log(this.exchangeRate)
-    return isNaN(Number(this.quantity) * Number(this.price) * Number(this.exchangeRate)) ? '' : Number(this.quantity) * Number(this.price) * Number(this.exchangeRate) 
+    return  isNaN(Number(this.quantity) * Number(this.price) * Number(this.exchangeRate)) ? '' : Number(this.quantity) * Number(this.price)  * Number(this.exchangeRate) 
+    // 
   }
 }
 export default {
+  props:['getList'],
   data() {
     return {
-      tableData: [], // 应收
-      moneyList:moneyList
+      tableData: [], // 
+      title:'',
+      expenseType:1,
+      orderId:'',// 订单id
+      rates:[], // 汇率数组
+      expenseCodeOpt:[] ,// 选择费用 
+      totalOrgnArr:[],// 原币合并数组
+      totalOrgnStr:'',// 原币合并字符串
+      totalCnyStr:"",//人民币合计字符串
+      moneyList:[{
+        value: 1,
+        label: 'CNY',
+        symbol:'￥'
+      }, {
+        value: 2,
+        label: '港币',
+        symbol:"HK$"
+      }, {
+        value: 3,
+        label: '美元',
+        symbol:'$'
+      }, {
+        value: 4,
+        label: '欧元',
+        symbol:'€'
+      }, {
+        value: 5,
+        label: '英镑',
+        symbol:'￡',
+      }]
     };
   },
   async mounted(){
     // 初始化table 
+    await this.getRates()
+    
+    await this.initExpenseCode()
     await this.initTabelData()
+
+  },
+  watch:{
+    tableData:{
+      deep:true,
+      handler(newValue){
+        for(let i in newValue){
+          newValue[i].exchangeRate = this.getCurrentRate(newValue[i].currency)
+          newValue[i].totalOrgn = isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)
+          newValue[i].totalCny =  isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) * Number(newValue[i].exchangeRate)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * Number(newValue[i].exchangeRate) 
+        }
+        this.totalCnyStr =this.calcTotalCny(newValue)
+        let {temArray,tempStr} =  this.calcTotalOrgn(newValue)
+        this.totalOrgnArr = temArray
+        this.totalOrgnStr = tempStr
+      }
+    }
   },
   methods:{
+    // 处理原始传入数据
+    dealOriginData(newValue){
+        for(let i in newValue){
+          newValue[i].exchangeRate = this.getCurrentRate(newValue[i].currency)
+          newValue[i].totalOrgn = isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)
+          newValue[i].totalCny =  isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) * Number(newValue[i].exchangeRate)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * Number(newValue[i].exchangeRate) 
+        }
+        this.totalCnyStr =this.calcTotalCny(newValue)
+        let {temArray,tempStr} =  this.calcTotalOrgn(newValue)
+        this.totalOrgnArr = temArray
+        this.totalOrgnStr = tempStr
+  
+    },
+    async getRates(){ // 获取当前订单的汇率
+      let res = await this.$http.get(this.$service.getExchangeRatesForOrder+'?orderId='+this.orderId)
+      if(res.code == 200){
+        this.rates = res.data 
+      }
+    },
+    // 获取指定币种的汇率
+    getCurrentRate(a){
+      let tempArray = this.rates
+      for(let i in tempArray){
+        if(i == a){
+          return tempArray[i]
+          break ;
+        }
+      }
+    },
+
+    //费用名称 除了空运费
+    async  initExpenseCode() {
+        var json = {
+          pageSize: 50000,
+        }
+        json = toData(json)
+        this.$http.get(this.$service.expenseSearchExcludeAirFee+'?'+json).then((data) => {
+          if(data.code == 200){
+            this.expenseCodeOpt = data.data.records
+          }
+        })
+      },
     async initTabelData(){
-      let tempObj = new tableObj('空运费','苏州乐尚代理有限公司','37.5','200','1','1','',true)
-    
-      this.tableData.push(tempObj)
-    
+      let a = this.getList
+      a.map((res)=>{
+         res.ingStatic = true
+      })
+      let  {expenseType ,orderId}  = a[0]
+      this.orderId = orderId
+      this.expenseType = expenseType
+      this.title =  expenseType == 1 ? '应收账单' : '应付账单'
+      
+      // this.dealOriginData(this.tableData)
+      this.tableData = a
+      console.log(this.getList)
+      console.log(this.tableData)
+      
     },
-    // 应收
+    // 计算人民币合计
+    calcTotalCny(array){
+      return  array.reduce((total, cur) => { return total += cur.totalCny}, 0);
+    },
+    // 计算原币合计
+    calcTotalOrgn(arr){
+  　　var map = {},dest = [];
+  　　for(var i = 0; i < arr.length; i++){
+  　　　　var ai = arr[i];
+  　　　　if(!map[ai.currency]){
+            let symbol = ''
+            if(ai.currency == 1){
+              symbol = '￥'
+            }else if(ai.currency == 2){
+              symbol = 'HK$'
+            }else if(ai.currency == 3){
+              symbol = '$'
+            }else if(ai.currency == 4){
+              symbol = '€'
+            }else if(ai.currency == 5){
+              symbol = '￡'
+            }
+  　　　　　　dest.push({
+                currency:ai.currency,
+                symbol:symbol,
+                totalOrgn:ai.totalOrgn
+  　　　　　　});
+  　　　　　　map[ai.currency] = ai;
+  　　　　}else{
+  　　　　　　for(var j = 0; j < dest.length; j++){
+  　　　　　　　　var dj = dest[j];
+  　　　　　　　　if(dj.currency == ai.currency){
+  　　　　　　　　　　dj.totalOrgn +=   ai.totalOrgn
+  　　　　　　　　　　break;
+  　　　　　　　　}
+  　　　　　　}
+  　　　　}
+  　　};
+    let str = ''
+    for(let i in dest){
+          str += dest[i].symbol +  dest[i].totalOrgn + '+'
+        }
+    return {temArray : dest,tempStr:str.substr(0, str.length - 1)}
+    },
+
     addOneTableObj(){
-      let tempObj = new tableObj()
+      let { expenseUnitName  }  = this.tableData[0]
+      let tempObj = new tableObj('',expenseUnitName)
       this.tableData.push(tempObj)
     },
-    
     deleOneTableObj(e){
       let index = e.$index
       console.log(index)
-      if(index == 0){
+      if(index == 0 || this.tableData[index].ingStatic){
         this.$message({
-          message: '第一条数据不能删除',
+          message: '这条数据不能删除',
           type: 'warning'
         });
       }else{
         this.tableData.splice(index,1)
       }
     },
-    // 应付
-    addOneTableObjTwo(){
-      let tempObj = new tableObj()
-      this.tableDataTwo.push(tempObj)
-    },
   }  
 }
 </script>
 <style scoped>
-.ccc{
-  height: 60vh;
 
-}
 .contont{
-  height: 100vh;
+
   margin: 0 20px;
   padding: 20px 0;
 }
 .title{
   font-size: 20px;
   font-weight: 800;
+  display: flex;
+  justify-content: space-between;
 }
 .inData{
   margin-top: 10px;
 }
 .operate{
   margin-top: 20px;
-  display: flex;
-  justify-content: end;
+  display: flex; 
 }
-.line{
-  width: 100%;
-  margin: 20px 0;
-  /* background: #000; */
-  border: 1px dashed black;
+.calcSome{
+  font-size: 16px;
+  
+  color: rgb(213,49,22);
+}
+.calcSome>span:nth-child(1){
+  margin-right: 100px;
 }
 </style>
