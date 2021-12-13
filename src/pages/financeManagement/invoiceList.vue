@@ -753,7 +753,7 @@
               if(item.invoiceInfos){
                 requestData.uploadInvoAppMap[item.id] = item.invoiceInfos.map(item2=>item2.id)
               } else {
-                  requestData.uploadInvoAppMap[item.id] = []
+                  requestData.uploadInvoAppMap[item.id] = [item.firstId]
               }
             })
           }
@@ -1354,6 +1354,7 @@
               }
                //折叠操作控制
               if(item.invoiceInfos && item.invoiceInfos.length == 1) {
+                item.firstId = item.invoiceInfos[0].id
                 item.hasChild = false
                 delete item.invoiceInfos
               }
