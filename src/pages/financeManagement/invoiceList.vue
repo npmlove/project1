@@ -689,7 +689,7 @@
     methods: {
       
       uploadDisable(){
-        return this.selectTableData.some(item=>item.invoiceNum== "") || this.selectTableData.some(item=>item.invoiceType==2) || this.ifMainFold(this.selectTableData) || this.selectTableData.length==0
+        return this.selectTableData.some(item=>item.invoiceNum== "") || this.selectTableData.some(item=>item.invoiceType!=2) || this.ifMainFold(this.selectTableData) || this.selectTableData.length==0
       },
       //跨页全选禁用
       ifDisabled(row) {
@@ -717,8 +717,8 @@
         else if (this.selectTableData.some(item=>item.invoiceNum== "")){
           this.$message.warning("所选数据存在未开票,不允许上传发票")
         }
-        else if (this.selectTableData.some(item=>item.invoiceType==2)){
-          this.$message.warning("所选数据存在电子发票，不允许上传发票")
+        else if (this.selectTableData.some(item=>item.invoiceType!=2)){
+          this.$message.warning("所选数据存在非电子发票，不允许上传发票")
         }
         
       },
@@ -829,7 +829,7 @@
           return false
       } else if(Boolean(this.selectTableData.some(item=>item.ifChild == true))){
           this.$message({
-            message: '必须选择主信息进行导出哦',
+            message: '必须选择主信息进行导出',
             type: 'warning'
           });
           return false
@@ -1030,19 +1030,19 @@
         //  if(this.pageSkipChecked) this.selectTableData = JSON.parse(JSON.stringify(this.copyTable))
         else if(this.selectTableData.length != 1) {
           this.$message({
-            message: '只能选择一条信息进行开票哦',
+            message: '只能选择一条信息进行开票',
             type: 'warning'
           });
         }
         else if(Boolean(this.selectTableData.some(item=>item.ifChild == true))){
           this.$message({
-            message: '必须选择主信息进行开票哦',
+            message: '必须选择主信息进行开票',
             type: 'warning'
           });
         }
         else if (this.selectTableData[0].invoicingStatus == 2) {
           this.$message({
-            message: '不能选择已开票的发票哦',
+            message: '不能选择已开票的发票',
             type: 'warning'
           });
         }
@@ -1147,7 +1147,7 @@
         }
          else if(Boolean(this.selectTableData.some(item=>item.ifChild == true))){
            this.$message({
-            message: '只能选择主数据进行快递哦',
+            message: '只能选择主数据进行快递',
             type: 'warning'
           });
         }
@@ -1160,13 +1160,13 @@
 
         else if (Boolean(this.selectTableData.some(item=>item.invoiceType == 2))){
           this.$message({
-            message: '电子发票不需要邮寄哦,请重新勾选',
+            message: '电子发票不需要邮寄,请重新勾选',
             type: 'warning'
           });
         }
         else if (Boolean(this.selectTableData.some(item=>item.recipient != this.selectTableData[0].recipient|| item.recipientAddress != this.selectTableData[0].recipientAddress || item.recipientTel != this.selectTableData[0].recipientTel))) {
           this.$message({
-            message: '邮寄信息不一致哦,请重新勾选',
+            message: '邮寄信息不一致,请重新勾选',
             type: 'warning'
           });
         }

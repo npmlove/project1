@@ -271,6 +271,13 @@ export default {
     
   },
   watch:{
+    tableData () {
+      console.log()
+      this.selectResult=[];
+      for(let i = 0;i<this.tableData.length;i++){
+           this.$set(this.checked,i,false)
+          }
+    },
     pageSkipAll(){
         for(let i = 0;i<this.tableData.length;i++){
           if(this.pageSkipAll == true){
@@ -279,7 +286,7 @@ export default {
           } else {
            this.$set(this.checked,i,false)
             this.checkAll=false 
-                     }
+            }
         }
     }
   },
