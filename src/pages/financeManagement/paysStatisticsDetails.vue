@@ -162,6 +162,7 @@
             ref="child"
             :tableData='tableData'
             :checkedTable="checkedTable"
+            :selectionTable="true"
             :pageSkipChecked="pageSkipChecked"
             :columns='columns'
             :operation='operation'
@@ -179,6 +180,7 @@
           <Table
             :tableData='tableData'
             :checkedTable='checkedTable'
+            :selectionTable="true"
             :pageSkipChecked="pageSkipChecked"
             :columns='columns'
             :operation='operation'
@@ -195,6 +197,7 @@
           <Table
             :tableData='tableData'
             :checkedTable='checkedTable'
+            :selectionTable="true"
             :pageSkipChecked="pageSkipChecked"
             :columns='columns'
             :operation='operation'
@@ -253,6 +256,7 @@
     <el-dialog title="应收核销操作记录" :visible.sync="logDialogVisible" width="80%">
       <Table
         :tableData='logData'
+        :selectionTable="false"
         :columns='columns1'
         :operation='operation1'
         :select=1
@@ -269,6 +273,7 @@
       <td style="font-size: 18px;font-weight: 100;color: #333333;padding: 10px 20px 10px 0px;">订单详情</td>
       <Table
         :tableData='orderData'
+        :selectionTable="false"
         :columns='columns2'
         :select=1
         :operation='operation'
@@ -282,6 +287,7 @@
       <td style="font-size: 18px;font-weight: 100;color: #333333;padding: 10px 20px 10px 0px;">应付账单</td>
       <Table
         :tableData='arData'
+        :selectionTable="false"
         :columns='columns3'
         :select=1
         :operation='operation'
@@ -299,6 +305,7 @@
       <Table
         :tableData='orderLogs'
         :columns='columns4'
+        :selectionTable="false"
         :select=1
         :operation='operation'
         :currentPage='pageNum'

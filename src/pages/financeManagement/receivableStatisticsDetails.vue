@@ -165,6 +165,7 @@
             ref="child"
             :tableData='tableData'
             :checkedTable='checkedTable'
+            :selectionTable="true"
             :pageSkipChecked="pageSkipChecked"
             :columns='columns'
             :operation='operation'
@@ -183,6 +184,7 @@
           <Table
             :tableData='tableData'
             :checkedTable='checkedTable'
+            :selectionTable="true"
             :pageSkipChecked="pageSkipChecked"
             :columns='columns'
             :operation='operation'
@@ -199,6 +201,7 @@
           <Table
             :tableData='tableData'
             :checkedTable='checkedTable'
+            :selectionTable="true"
             :pageSkipChecked="pageSkipChecked"
             :columns='columns'
             :operation='operation'
@@ -258,6 +261,7 @@
       <Table
         :tableData='logData'
         :columns='columns1'
+        :selectionTable="false"
         :operation='operation1'
         :select=1
         :currentPage='pageNum'
@@ -274,6 +278,7 @@
       <Table
         :tableData='orderData'
         :columns='columns2'
+        :selectionTable="false"
         :select=1
         :operation='operation'
         :currentPage='pageNum'
@@ -287,6 +292,7 @@
       <Table
         :tableData='arData'
         :columns='columns3'
+        :selectionTable="false"
         :select=1
         :operation='operation'
         :currentPage='pageNum'
@@ -305,6 +311,7 @@
       <Table
         :tableData='orderLogs'
         :columns='columns4'
+        :selectionTable="false"
         :select=1
         :operation='operation'
         :currentPage='pageNum'

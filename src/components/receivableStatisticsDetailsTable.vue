@@ -23,7 +23,7 @@
       <!--列-->
       <el-table-column
         v-for="(column, index) in columns"
-        v-if="column.show&&checkedTable.indexOf(column.label) !== -1"
+        v-if="column.show&&(selectionTable?checkedTable.indexOf(column.label) !== -1:true)"
         :key="index"
         :sortable="column.sort"
         :prop="column.prop"
@@ -303,6 +303,11 @@
       select: {
         type: Number,
         default: () => 0
+      },
+      // 总条数
+      selectionTable: {
+        type: Boolean,
+        default: () => false
       },
       biaoshishu: {
         type: Number,
