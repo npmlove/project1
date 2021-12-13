@@ -1,12 +1,12 @@
 <template>
   <div class="app-wrapper">
-    <div class="arrowsImg" v-if="isShow" @click="switchover">
-      <img :src="srcImg" alt="">
-    </div>
-    <navbar/>
-    <div style="display: flex;width: 100%;" @mouseover="mouseOver">
-      <sidebar :class="['sidebar-container', leftWidth ? 'sidebar-width' : '']"/>
-      <div class="main-container" :style="{width:leftWidth?'calc(100vw - 150px)':'100vw'}">
+<!--    <div class="arrowsImg" v-if="isShow" @click="switchover">-->
+<!--      <img :src="srcImg" alt="">-->
+<!--    </div>-->
+    <navbar @changeNav="changeNav" :leftWidth="leftWidth"/>
+    <div style="display: flex;width: 100%;height: calc(100vh - 50px)">
+      <sidebar :class="['sidebar-container', leftWidth ? 'sidebar-width' : '']" :leftWidth="leftWidth"/>
+      <div class="main-container" :style="{width:!leftWidth?'calc(100vw - 70px)':'calc(100vw - 150px)'}">
         <crumb/>
         <router-view v-if="!$route.meta.keepAlive"/>
         <keep-alive>
@@ -36,27 +36,9 @@ export default {
     }
   },
   methods: {
-    mouseOver(event) {
-      if (event.clientX < 230) {
-        this.isShow = true;
-        if (this.leftWidth) {
-          this.srcImg = require('../../assets/shou.png');
-        } else {
-          this.srcImg = require('../../assets/zankai.png');
-        }
-
-      } else {
-        this.isShow = false;
-      }
+    changeNav(data){
+      this.leftWidth = data;
     },
-    switchover() {
-      this.leftWidth = !this.leftWidth;
-      if (this.leftWidth) {
-        this.srcImg = require('../../assets/shou.png');
-      } else {
-        this.srcImg = require('../../assets/zankai.png');
-      }
-    }
   }
 }
 </script>
@@ -91,7 +73,7 @@ export default {
         overflow-x: auto;
       }
     }
-    flex: 0 0 0;
+    flex: 0 0 60px;
     // width: 230px;
     transition: flex 1s;
     overflow: hidden;
@@ -104,6 +86,7 @@ export default {
     .el-menu {
       border-right: none !important;
     }
+
     /deep/
     .el-submenu {
       .el-submenu__title {
@@ -128,7 +111,7 @@ export default {
 
         color: #2273CE;
         .el-submenu__title {
-          background-color: #22282e !important;
+          background-color: #2B333B !important;
           color: #2273CE;
           .icon {
             color: #2273CE !important;
@@ -144,19 +127,20 @@ export default {
           font-size: 14px;
           height: 40px;
           line-height: 40px;
-          padding-left: 42px !important;
+          //padding-left: 42px !important;
           background-color:#22282e;
           color: #FFFFFF;
           &.is-active {
             // background: #2273CE;
-            background-color:#2273CE;
-            color: #ffffff;
-            border-right: 4px solid #2273CE;
+            background-color:#1a1e22;
+            color: #2273ce;
+            //border-right: 4px solid #2273CE;
           }
         }
 
       }
     }
+
   }
   .main-container {
     // width: calc(100% - 230px);
@@ -165,5 +149,6 @@ export default {
     // margin-left: 230px;
 
   }
+
 }
 </style>

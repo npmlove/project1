@@ -1,14 +1,16 @@
 <template>
   <div class="sidebar-wrapper">
-    <el-scrollbar style="height: 100%;width: 150px">
+    <el-scrollbar style="height: 100%;">
       <aside class="menu-expanded">
         <!--导航菜单-->
-        <el-menu :default-active="activePath" :unique-opened="false">
+        <el-menu :default-active="activePath" :unique-opened="false"  mode="vertical" :collapse="!leftWidth"   >
           <sidebar-item
             style="color:#fff"
             v-for="route in routes"
             :key="route.path"
             :item="route"
+            :leftWidth="leftWidth"
+            :isTop="true"
             :base-path="route.path"/>
         </el-menu>
       </aside>
@@ -21,6 +23,12 @@ import SidebarItem from './SidebarItem'
 
 export default {
   components: { SidebarItem },
+  props: {
+    leftWidth:{
+      type:Boolean,
+      default:()=>false
+    }
+  },
   data() {
     return {
       activePath: ''
@@ -142,5 +150,6 @@ export default {
           }
       }
     }
+
 
 </style>

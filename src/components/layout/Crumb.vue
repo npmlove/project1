@@ -3,7 +3,10 @@
     <!-- 面包屑导航 展开的tabs-->
     <div class="menu-list">
       <ul class="ul-list">
-        <li :class="{active: isUrl == item.path}" @click.prevent="handleLink(item,index)" v-for="(item,index) in urlArr" :key="item.path">{{ item.meta.title }}<img v-if="item.path != '/adminUser/homePage'" @click.stop="guanbiClick(item,index)" src="../../assets/gaungbi.png"/></li>
+        <li :class="{active: isUrl == item.path}" @click.prevent="handleLink(item,index)" v-for="(item,index) in urlArr" :key="item.path">
+          {{ item.meta.title }}
+          <img v-if="item.path != '/adminUser/homePage'" @click.stop="guanbiClick(item,index)" src="../../assets/close.png"/>
+        </li>
       </ul>
     </div>
 
@@ -200,8 +203,8 @@ export default {
 }
 
 .menu-list{
-  height: 55px;
-  line-height: 55px;
+  height: 30px;
+  line-height: 30px;
   background-color: #fff;
   font-size: 14px;
   color: #333333;
@@ -222,7 +225,8 @@ export default {
 }
 .ul-list li img{
   font-size: 15px;
-  width: 30px;
+  width: 12px;
+  height: 12px;
   margin-left: 10px;
 }
 .ul-list li.active{
