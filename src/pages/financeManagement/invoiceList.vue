@@ -190,7 +190,7 @@
               <el-button type="primary" size="medium" @click="uploadResolve">上传发票</el-button>
             </el-upload>
             <el-button size='mini' type="primary" @click="exportList">导出列表</el-button>
-            <el-button @click="drawer = true" type="primary" size='mini'>选择表格列</el-button>
+            <!-- <el-button @click="drawer = true" type="primary" size='mini'>选择表格列</el-button> -->
           </div>
         </div>
       </el-form>
@@ -504,8 +504,8 @@
         billProgress:[
           {label:"全部",value:""},
           {label:"未开",value:"0"},
-          {label:"部分开",value:"2"},
-          {label:"已开",value:"1"},
+          {label:"部分开",value:"1"},
+          {label:"已开",value:"2"},
         ],
         getBillProgress:["未开","部分开","已开"],
         //发票状态
@@ -714,6 +714,9 @@
           return
         }
         else if (this.selectTableData.some(item=>item.invoiceNum== "")){
+          this.$message.warning("所选数据无发票号码，不允许上传发票")
+        }
+        else if (this.selectTableData.some(item=>item.invoiceNum== "")){
           this.$message.warning("所选数据存在未开票,不允许上传发票")
         }
         else if (this.selectTableData.some(item=>item.invoiceType!=2)){
@@ -725,7 +728,7 @@
       handleChange(file) {
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isLt2M) {
-          this.$message.error('');
+          this.$message.error('文件过大,请重新上传');
           return
         }
         //选中行调接口数据处理
@@ -750,7 +753,7 @@
               if(item.invoiceInfos){
                 requestData.uploadInvoAppMap[item.id] = item.invoiceInfos.map(item2=>item2.id)
               } else {
-                 requestData.uploadInvoAppMap = null
+                  requestData.uploadInvoAppMap[item.id] = []
               }
             })
           }
@@ -766,17 +769,27 @@
             vm.$http.post(vm.$service.uploadInvoicePDF, fileFormData).then(res => {
               if(res.code == 200) {
                 vm.$http.post(vm.$service.uploadInvoBody,requestData,{
-            responseType: 'arraybuffer'
-          }).then(res1=>{
-                   const aLink = document.createElement("a");
-                    let blob = new Blob([res1], {
-                      type: "application/zip"
-                    })
-                    aLink.href = URL.createObjectURL(blob)
-                    aLink.setAttribute('download', '上传发票' + '.zip') // 设置下载文件名称
-                    aLink.click()
-                    document.body.appendChild(aLink)
-                        })
+                   responseType: 'arraybuffer'
+                    }).then(res1=>{
+                      let enc = new TextDecoder("utf-8");
+                      let uint8_msg = new Uint8Array(res1);
+                      let str=enc.decode(uint8_msg);
+         
+                    if(str.indexOf("code")!= -1 ){
+                      let data = JSON.parse(enc.decode(uint8_msg));
+                      console.log(data.message)
+                      vm.$message.error(data.message)
+                      return;}
+                      const aLink = document.createElement("a");
+                      let blob = new Blob([res1], {
+                        type: "application/zip"
+                      })
+                      aLink.href = URL.createObjectURL(blob)
+                      aLink.setAttribute('download', '上传发票' + '.zip') // 设置下载文件名称
+                      aLink.click()
+                      document.body.appendChild(aLink)
+                    
+                  })
               }
             })
             };
@@ -939,10 +952,14 @@
             //判断是否是主数据 是就将折叠数据放入数组
             if(item.hasChild) {
               item.invoiceInfos.forEach(item2=>{
-                rubbishArray.push(item2.invoiceNum)
+                if(item2.invoiceNum){
+                  rubbishArray.push(item2.invoiceNum)
+                }
               })
             } else {
+              if(item.invoiceNum) {
                 rubbishArray.push(item.invoiceNum)
+              }
             }
             })
           this.rubbishInvoice = rubbishArray.join("、")
@@ -1178,8 +1195,13 @@
               type: 'warning'
             });
           }
+          else {
+          this.postMessage = {postOne:"",postTwo:"",postThree:""};
+          this.postMessageDial = true;
+        }
         }
         else {
+          this.postMessage = {postOne:"",postTwo:"",postThree:""};
           this.postMessageDial = true;
         }
       },
@@ -1251,12 +1273,15 @@
       },
       //跨页全选按钮
       selectAllTable(){
-        
+        if(this.pageSkipChecked == false) {
+          this.selectTableData = []
+        }
       },
       //tab切换
       tabClickData(tab,event) {
         this.pageNum = 1
         this.pageSkipChecked = false
+        this.statistDataShow = false
         this.searchClick()
       },
       //查询条件数据
