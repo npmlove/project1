@@ -399,7 +399,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="开票首张号码" label-width="120px" required >
-            <el-input size="medium"  v-model.number.trim="invoicingLeft.invoiceNum" clearable placeholder="请输入开票首张号码" maxlength="8"style="width:170px">
+            <el-input size="medium"  v-model.number.trim="invoicingLeft.invoiceNum" clearable placeholder="请输入开票首张号码" maxlength="8" style="width:170px">
             </el-input>
           </el-form-item>
           <el-form-item label="开票张数" label-width="120px" required>

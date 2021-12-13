@@ -211,12 +211,18 @@
         </div>
         
       </el-drawer>
-      <el-tabs v-model="activeName" class="el_tabs" type="card" @tab-click="handleClick">
-      <el-tab-pane :label="'可操作'+ countAuth" name="0"></el-tab-pane>
-      <el-tab-pane :label="'业务修改中'+ countNoAuth" name="1"></el-tab-pane>
-      <el-tab-pane :label="'异常'+ countErr" name="2"></el-tab-pane>
-    </el-tabs>
+      <!-- <el-tabs v-model="activeName" class="el_tabs" type="card"  @tab-click="handleClick">
+        <el-tab-pane :label="'可操作'+ countAuth" name="0"></el-tab-pane>
+        <el-tab-pane :label="'业务修改中'+ countNoAuth" name="1"></el-tab-pane>
+        <el-tab-pane :label="'异常'+ countErr" name="2"></el-tab-pane>
+      </el-tabs> -->
+      <div class="el_tabs">
+        <el-button :class="{tip: woStatus == 0}" @click="handleClick(0,initBoolen=true)" >可操作({{countAuth}})</el-button>
+        <el-button :class="{tip: woStatus == 1}" @click="handleClick(1,initBoolen=true)">业务修改中({{countNoAuth}})</el-button>
+        <el-button :class="{tip: woStatus == 2}" @click="handleClick(2,initBoolen=true)">异常({{countErr}})</el-button>
+      </div>
     <el-table
+
       :data="tableData"
       border='true'
       stripe
@@ -294,9 +300,11 @@
             width="100">
           </el-table-column>
           <el-table-column
-            prop="totalApOrgn"
             label="原币"
             width="100">
+            <template slot-scope="scope">
+              <div v-for="(item,index) in scope.row.totalApOrgn" :key="index">{{item}}</div>
+            </template>
           </el-table-column>
       </el-table-column>
       <el-table-column
@@ -322,10 +330,11 @@
           width="100">
         </el-table-column>
         <el-table-column
-          prop="payWriteOffAmounts"
-        
           label="原币"
           width="100">
+          <template slot-scope="scope">
+              <div v-for="(item,index) in scope.row.payWriteOffAmounts" :key="index">{{item}}</div>
+          </template>
         </el-table-column>
       </el-table-column>
       <el-table-column
@@ -338,10 +347,11 @@
           width="100">
         </el-table-column>
         <el-table-column
-          prop="unwrittenOffAmounts"
-   
           label="原币"
           width="100">
+          <template slot-scope="scope">
+              <div v-for="(item,index) in scope.row.unwrittenOffAmounts" :key="index">{{item}}</div>
+          </template>
         </el-table-column>
       </el-table-column>
       <el-table-column
@@ -586,7 +596,7 @@ import {exportFile} from '../../util/util'
         payWriteOffCountIds:'',//
         woStatus:0,// 正常0，业务修改中1，异常2
         tableData: [],
-        slectAllDataArray:[],// 全选后返回的所在状态下的数据 不展示
+        // slectAllDataArray:[],// 全选后返回的所在状态下的数据 不展示
         dataStaticObj:{},// 数据统计对象
         countAuth:"",// 可操作数量
         countErr:'',// 异常数量
@@ -680,7 +690,7 @@ import {exportFile} from '../../util/util'
     async mounted() {
       await this.onSubmit()
       await this.getSysInitial()
-      await this.handleClick({index:0},false)
+      await this.handleClick(0,false)
 
     },
     components:{
@@ -688,7 +698,29 @@ import {exportFile} from '../../util/util'
       verification
     },
     methods: {
-
+      // 清空搜索数据
+      clearAllData(){
+        this.formInline= {
+          orderNo:'',
+          waybillNo:'',
+          customerName:'',
+          airCompanyCode:'',
+          agentName:'',
+          startDepartureDate:'',
+          endDepartureDate:'',
+          startOrderTime:'',
+          endOrderTime:'',
+          pol:"",
+          pod:"",
+          payWay:'',
+          payWriteOffStatus:'',
+          pscsId:'',
+          principalId:'',
+          mscsId:'',
+        }
+        this.woStatus = 0
+        this.currentPage = 1
+      },
       // 跨页之后禁止单选
       judgeAllSelect(){
         
@@ -760,9 +792,10 @@ import {exportFile} from '../../util/util'
         }
       },
 
-      async  handleClick(tab, initBoolen=true ) {
-        let e = Number(tab.index)
+      async  handleClick(e,initBoolen = true) {
+ 
         this.woStatus = e
+        this.currentPage = 1
         let { formInline, currentPage, woStatus,slectAllDataStatic, countAuth,countErr,countNoAuth} = this
         let tempTotal = ''
         if(e == 0){
@@ -783,7 +816,8 @@ import {exportFile} from '../../util/util'
           }
         })
         if(initBoolen){
-          await this.getTabelData(formInline,currentPage,woStatus,slectAllDataStatic,tempTotal)
+  
+          await this.getTabelData(formInline,currentPage,woStatus,slectAllDataStatic,this.pageSize)
         } 
      
 
@@ -848,6 +882,7 @@ import {exportFile} from '../../util/util'
         })
       },
       async onSubmit() {
+        this.currentPage = 1
         let { formInline, currentPage, woStatus,slectAllDataStatic} = this ;
         await this.getTabelData(formInline,currentPage,woStatus,slectAllDataStatic)
       },
@@ -875,13 +910,28 @@ import {exportFile} from '../../util/util'
           }else{
             this.childPropsData = tempArray
             let idsArray = tempArray.map((item)=>{
-              return item.ids
+               return item.ids
             })
+
+            let tempAds = []
+            for(let j in idsArray){
+              if(idsArray[j] == null){
+                
+              }else{
+                if(idsArray[j].indexOf(',') == -1){
+                  tempAds.push(idsArray[j])
+                }else{
+                  let te = idsArray[j].split(',')
+                  tempAds =  tempAds.concat(te)
+
+                }
+              }
+            }
             let {formInline} = this
-            let params= Object.assign({},formInline,{ids:idsArray})
+            let params= Object.assign({},formInline,{ids:tempAds})
             let res = await this.$http.post(this.$service.toCheckAmount,params)
             if(res.code == 200){
-              let testObj = Object.assign({},res.data,{expenseUnitName:tempString},{ids:idsArray})
+              let testObj = Object.assign({},res.data,{expenseUnitName:tempString},{ids:tempAds})
               this.childPropsObj = testObj
               setTimeout(()=>{
                   this.$refs.reconciliationData.showModal()
@@ -947,9 +997,9 @@ import {exportFile} from '../../util/util'
       async slectAllData(){
         this.slectAllDataStatic = !this.slectAllDataStatic
         this.slectAllDataButtonType = this.slectAllDataStatic == false ? '' : 'primary'
-        let { formInline, currentPage, woStatus,slectAllDataStatic, pageTotal} = this
+        let { formInline, currentPage, woStatus,slectAllDataStatic} = this
         if(this.slectAllDataStatic){
-          await this.getTabelData(formInline, currentPage, woStatus,slectAllDataStatic, pageTotal)
+          await this.getTabelData(formInline, currentPage, woStatus,slectAllDataStatic)
         }else{
           await this.getTabelData(formInline, currentPage, woStatus,slectAllDataStatic)
         }
@@ -997,29 +1047,32 @@ import {exportFile} from '../../util/util'
             this.countNoAuth = res.data.countNoAuth
             this.countAuth = res.data.countAuth
             this.countErr = res.data.countErr
-            for(let i in resData.records){
-              resData.records[i].totalApOrgn = await this.dealApString(resData.records[i].totalApOrgn)
-              resData.records[i].payWriteOffAmounts = await this.dealApString(resData.records[i].payWriteOffAmounts)
-              resData.records[i].unwrittenOffAmounts = await this.dealApString(resData.records[i].unwrittenOffAmounts)
-            }
-            if(this.woStatus == 1){
-              this.pageTotal = res.data.countNoAuth
-            }else if(this.woStatus == 2){
-              this.pageTotal = res.data.countErr
+            if(resData){
+                for(let i in resData.records){
+                  resData.records[i].totalApOrgn = await this.dealApString(resData.records[i].totalApOrgn)
+                  resData.records[i].payWriteOffAmounts = await this.dealApString(resData.records[i].payWriteOffAmounts)
+                  resData.records[i].unwrittenOffAmounts = await this.dealApString(resData.records[i].unwrittenOffAmounts)
+                }
+                if(this.woStatus == 1){
+                  this.pageTotal = res.data.countNoAuth
+                }else if(this.woStatus == 2){
+                  this.pageTotal = res.data.countErr
+                }else{
+                  this.pageTotal = res.data.countAuth
+                }
+                  this.tableData = resData.records
+                if(slectAllDataStatic){
+                  this.multipleSelection = resData.records
+                }else{
+                  this.multipleSelection = []
+                }    
+                setTimeout(async()=>{
+                  await this.dealSelectAll(slectAllDataStatic) 
+                },0)
             }else{
-              this.pageTotal = res.data.countAuth
+               this.tableData = []
             }
-            if(pageSize != 10){
-              this.slectAllDataArray = resData.records
-            }else {
-              this.tableData = resData.records
-            }
-            // console.log('已经选择的数据')
-            // console.log(this.multipleSelection)
-            this.multipleSelection = []
-            setTimeout(async()=>{
-               await this.dealSelectAll(slectAllDataStatic) 
-            },0)
+            
           }
         } catch (error) {
           console.log(error)
@@ -1043,7 +1096,8 @@ import {exportFile} from '../../util/util'
               return res.amount + '￡'
             }
           })
-          return ss[0]
+         
+          return ss
         }else {
           return null
         }
@@ -1068,7 +1122,7 @@ import {exportFile} from '../../util/util'
 
 .content-wrapper{
   margin: 20px;
-  
+  width: calc(100% - 100px);
 }
 .footer{
   display: flex;
@@ -1099,7 +1153,18 @@ import {exportFile} from '../../util/util'
   opacity: 0;
 }
 .el_tabs{
+  display: flex;
+  justify-content: start;
   border-top: 1px solid #d5d5d5;
+}
+.el_tabs .el-button{
+  margin-left: 0;
+  border-radius: 0;
+}
+.tip{
+  color: #409EFF;
+  border-color: #c6e2ff;
+  background-color: #ecf5ff;
 }
 .drawerTip{
   display: flex;

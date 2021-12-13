@@ -252,7 +252,7 @@ const serviceApi = {
   // 修改账单
   modifyBill: pulicWeb + '/t-bill/modifyBill',
   // 获取订单的汇率
-  getExchangeRatesForOrder:   '/faw/t-order/getExchangeRatesForOrde',
+  getExchangeRatesForOrder: pulicWeb +  '/t-order/getExchangeRatesForOrder',
 
   modifyBill: pulicWeb + '/t-bill/modifyBill',
   // 用户账单页面

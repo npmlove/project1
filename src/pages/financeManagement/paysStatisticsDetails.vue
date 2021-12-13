@@ -151,6 +151,8 @@
           </div>
           <div class="operateButton">
             <el-button size='mini' type="primary" @click="exportList">导出列表</el-button>
+            <el-button @click="drawer = true" type="primary" size="mini"
+            >选择表格列</el-button>
           </div>
         </div>
       </el-form>
@@ -159,6 +161,9 @@
           <Table
             ref="child"
             :tableData='tableData'
+            :checkedTable="checkedTable"
+            :selectionTable="true"
+            :pageSkipChecked="pageSkipChecked"
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -174,6 +179,9 @@
         <el-tab-pane :label="'业务修改中'+'('+countNoAuth+')'" name="1">
           <Table
             :tableData='tableData'
+            :checkedTable='checkedTable'
+            :selectionTable="true"
+            :pageSkipChecked="pageSkipChecked"
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -188,6 +196,9 @@
         <el-tab-pane :label="'异常'+'('+countErr+')'" name="2">
           <Table
             :tableData='tableData'
+            :checkedTable='checkedTable'
+            :selectionTable="true"
+            :pageSkipChecked="pageSkipChecked"
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -200,6 +211,30 @@
           </Table>
         </el-tab-pane>
       </el-tabs>
+
+      <el-drawer
+        title="表格列控制"
+        :visible.sync="drawer"
+        size="200px"
+        :direction="direction"
+      >
+        <el-checkbox
+          :indeterminate="isIndeterminate"
+          v-model="checkAll"
+          @change="handleCheckAllChange"
+          style="margin: 0 0 20px 20px"
+        >全选</el-checkbox
+        >
+        <el-checkbox-group v-model="checkedTable" :min="0" :max="20">
+          <el-checkbox
+            v-for="choose in tableOptions"
+            :label="choose"
+            :key="choose"
+            style="display: block; margin-left: 20px"
+          >{{ choose }}</el-checkbox
+          >
+        </el-checkbox-group>
+      </el-drawer>
       <div style="display:flex;justify-content:space-between">
         <div>
           <el-button size="mini" class="pageSkip">
@@ -221,6 +256,7 @@
     <el-dialog title="应收核销操作记录" :visible.sync="logDialogVisible" width="80%">
       <Table
         :tableData='logData'
+        :selectionTable="false"
         :columns='columns1'
         :operation='operation1'
         :select=1
@@ -237,6 +273,7 @@
       <td style="font-size: 18px;font-weight: 100;color: #333333;padding: 10px 20px 10px 0px;">订单详情</td>
       <Table
         :tableData='orderData'
+        :selectionTable="false"
         :columns='columns2'
         :select=1
         :operation='operation'
@@ -250,6 +287,7 @@
       <td style="font-size: 18px;font-weight: 100;color: #333333;padding: 10px 20px 10px 0px;">应付账单</td>
       <Table
         :tableData='arData'
+        :selectionTable="false"
         :columns='columns3'
         :select=1
         :operation='operation'
@@ -267,6 +305,7 @@
       <Table
         :tableData='orderLogs'
         :columns='columns4'
+        :selectionTable="false"
         :select=1
         :operation='operation'
         :currentPage='pageNum'
@@ -290,6 +329,11 @@
         dialogFormVisible: false,
         logDialogVisible: false,
         statistDataShow: false,
+        //表格控制列drawer
+        drawer: false,
+        direction: "rtl",
+        isIndeterminate: true,
+        checkAll: false,
         //table
         tableData: [],
         arData: [],
@@ -525,6 +569,46 @@
           totalArCny: '',
 
         }],
+        checkedTable: [
+          "序号",
+          "订单号",
+          "运单号",
+          "应付对象",
+          "应付费用名称",
+          "应付金额",
+          "对账金额",
+          "核销金额",
+          "开户行",
+          "户名",
+          "银行账户",
+          "汇率",
+          "付款方式",
+          "付款日期",
+          "核销时间",
+          "结算方式",
+          "核销次数",
+          "核销状态",
+        ],
+        tableOptions: [
+          "序号",
+          "订单号",
+          "运单号",
+          "应付对象",
+          "应付费用名称",
+          "应付金额",
+          "对账金额",
+          "核销金额",
+          "开户行",
+          "户名",
+          "银行账户",
+          "汇率",
+          "付款方式",
+          "付款日期",
+          "核销时间",
+          "结算方式",
+          "核销次数",
+          "核销状态",
+        ],
         countNoAuth: 0,
         countAuth: 0,
         countErr: 0
@@ -535,6 +619,11 @@
       this.initAgentList()
     },
     methods: {
+      //表格选择列显示drawer -全选
+      handleCheckAllChange(val) {
+        this.checkedTable = val ? this.tableOptions : [];
+        this.isIndeterminate = false;
+      },
       //tab切换
       tabClickData() {
         this.initData()
