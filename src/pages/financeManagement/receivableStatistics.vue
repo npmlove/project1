@@ -697,9 +697,9 @@
         <!-- 底部按钮 -->
       <div slot="footer" class="dialog-footer">
         <div style="text-align: center;padding-top:20px;">
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+          <el-button size="medium" type="primary"
             @click="confirmReceive">确认核销</el-button>
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" @click="dialogFormVisibleThree = false">取 消
+          <el-button size="medium" @click="dialogFormVisibleThree = false">取 消
           </el-button>
         </div>
       </div>

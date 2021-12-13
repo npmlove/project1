@@ -179,7 +179,7 @@
             <el-button size='mini' type="primary" @click="delInvoice()">作废</el-button>
             <el-button size='mini' type="primary" @click="delivery()">快递</el-button>
             <el-upload
-              :disabled="ifMainFold(this.selectTableData) || this.selectTableData.length==0 || uploadDisable()"
+              :disabled="uploadDisable()"
               style="width:100px;height:28px;margin-right:10px"
               action="#"
               accept=".zip"
@@ -365,9 +365,9 @@
         <!-- 底部按钮 -->
       <div slot="footer" class="dialog-footer">
         <div style="text-align: center;padding-top:20px;">
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+          <el-button size="medium" type="primary"
             @click="confirmPost">确认邮寄</el-button>
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" @click="postMessageDial = false">取 消
+          <el-button size="medium" @click="postMessageDial = false">取 消
           </el-button>
         </div>
       </div>
@@ -382,9 +382,9 @@
           <!-- 底部按钮 -->
       <div slot="footer" class="dialog-footer">
         <div style="text-align: center;padding-top:20px;">
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+          <el-button size="medium" type="primary"
             @click="comfirmDele">确定</el-button>
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" @click="delRequestDial = false">取 消
+          <el-button size="medium" @click="delRequestDial = false">取 消
           </el-button>
         </div>
       </div>
@@ -443,9 +443,9 @@
           <!-- 底部按钮 -->
       <div slot="footer" class="dialog-footer">
         <div style="text-align: center;padding-top:20px;">
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+          <el-button size="medium" type="primary"
             @click="confirmInvoice">确认开票</el-button>
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" @click="invoicingDial = false">取 消
+          <el-button  size="medium" @click="invoicingDial = false">取 消
           </el-button>
         </div>
       </div>
@@ -689,18 +689,17 @@
     methods: {
       
       uploadDisable(){
-        return this.selectTableData.some(item=>item.invoiceNum== "") || this.selectTableData.some(item=>item.invoiceType!=2) || this.ifMainFold(this.selectTableData) || this.selectTableData.length==0
-      },
-      //跨页全选禁用
-      ifDisabled(row) {
-        if(this.pageSkipChecked == true) {
+        if(this.pageSkipChecked == true){
           return false
-        } else {
-          return true
+        }
+        else {
+          return this.selectTableData.some(item=>item.invoiceNum== "") || this.selectTableData.some(item=>item.invoiceType!=2) || this.ifMainFold(this.selectTableData) || this.selectTableData.length==0
         }
       },
+      
       uploadResolve(){
-        if(this.ifMainFold(this.selectTableData)){
+        if(this.pageSkipChecked == false) {
+          if(this.ifMainFold(this.selectTableData)){
            this.$message({
             message: '主数据和折叠数据不能同时存在',
             type: 'warning'
@@ -720,7 +719,7 @@
         else if (this.selectTableData.some(item=>item.invoiceType!=2)){
           this.$message.warning("所选数据存在非电子发票，不允许上传发票")
         }
-        
+        }
       },
       // 导入文件的上传
       handleChange(file) {
@@ -824,7 +823,8 @@
 
       //导出列表
       exportList (){
-        if(this.selectTableData.length == 0) {
+        if(this.pageSkipChecked == false){
+          if(this.selectTableData.length == 0) {
           this.$message({type:"warning",message:"请选择数据"})
           return false
       } else if(Boolean(this.selectTableData.some(item=>item.ifChild == true))){
@@ -833,6 +833,7 @@
             type: 'warning'
           });
           return false
+        }
         }
         let requestData = {}
         if(this.pageSkipChecked == true) {
@@ -1095,11 +1096,17 @@
           let data = copyData.filter(item=>item.id==this.selectTableData[0].id)[0]
           data.toBeInvoiceList = this.invoicingRight
           this.$http.post(this.$service.actionInvoice,{firstInvoiceInfo:this.invoicingLeft,tInvoiceAppListVos:data}).then(data=>{
-            this.invoicingRight.push(...data.data)
-            let totalMoney = 0
-            this.invoicingRight.forEach(item=> {
-            totalMoney+=item.invoiceAmount})
-            this.invoiceFootThree = totalMoney
+            if(data.code == 200) {
+              this.invoicingRight.push(...data.data)
+              let totalMoney = 0
+              this.invoicingRight.forEach(item=> {
+              totalMoney+=item.invoiceAmount})
+              this.invoiceFootThree = totalMoney
+              this.$message.success("生成发票成功")
+            } else {
+              this.$message.error(data.message)
+            }
+            
           })
 
         }
@@ -1139,36 +1146,38 @@
       //快递按钮
       delivery(){
         // if(this.pageSkipChecked) this.selectTableData = JSON.parse(JSON.stringify(this.copyTable))
-        if (this.selectTableData.length == 0) {
-          this.$message({
-            message: '请至少选择1条信息',
-            type: 'warning'
-          });
-        }
-         else if(Boolean(this.selectTableData.some(item=>item.ifChild == true))){
-           this.$message({
-            message: '只能选择主数据进行快递',
-            type: 'warning'
-          });
-        }
-        else if (Boolean(this.selectTableData.some(item=>item.invoicingStatus ==0))) {
-          this.$message({
-            message: '选项中存在暂未开票的信息,请重新勾选',
-            type: 'warning'
-          });
-        }
+        if(this.pageSkipChecked == false) {
+          if (this.selectTableData.length == 0) {
+            this.$message({
+              message: '请至少选择1条信息',
+              type: 'warning'
+            });
+          }
+          else if(Boolean(this.selectTableData.some(item=>item.ifChild == true))){
+            this.$message({
+              message: '只能选择主数据进行快递',
+              type: 'warning'
+            });
+          }
+          else if (Boolean(this.selectTableData.some(item=>item.invoicingStatus ==0))) {
+            this.$message({
+              message: '选项中存在暂未开票的信息,请重新勾选',
+              type: 'warning'
+            });
+          }
 
-        else if (Boolean(this.selectTableData.some(item=>item.invoiceType == 2))){
-          this.$message({
-            message: '电子发票不需要邮寄,请重新勾选',
-            type: 'warning'
-          });
-        }
-        else if (Boolean(this.selectTableData.some(item=>item.recipient != this.selectTableData[0].recipient|| item.recipientAddress != this.selectTableData[0].recipientAddress || item.recipientTel != this.selectTableData[0].recipientTel))) {
-          this.$message({
-            message: '邮寄信息不一致,请重新勾选',
-            type: 'warning'
-          });
+          else if (Boolean(this.selectTableData.some(item=>item.invoiceType == 2))){
+            this.$message({
+              message: '电子发票不需要邮寄,请重新勾选',
+              type: 'warning'
+            });
+          }
+          else if (Boolean(this.selectTableData.some(item=>item.recipient != this.selectTableData[0].recipient|| item.recipientAddress != this.selectTableData[0].recipientAddress || item.recipientTel != this.selectTableData[0].recipientTel))) {
+            this.$message({
+              message: '邮寄信息不一致,请重新勾选',
+              type: 'warning'
+            });
+          }
         }
         else {
           this.postMessageDial = true;
@@ -1425,7 +1434,6 @@
   .invoicePopper{
       max-height: 200px!important;
       overflow: scroll;
-      
   }
 </style>
 <style scoped lang="less">

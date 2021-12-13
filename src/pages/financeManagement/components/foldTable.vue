@@ -110,7 +110,7 @@
                 <div>{{item2.invoiceType==0?"增值税普通发票":item2.invoiceType==1?"增值税专用发票":item2.invoiceType==2?"增值税电子普通发票":""}}</div>
               </div>
               <div v-else-if="item.key=='invoicingStatus'">
-                <div>{{item2.invoicingStatus==0?"未开":item2.invoicingStatus==1?"部分开":item2.invoicingStatus==1?"已开":""}}</div>
+                <div>{{item2.invoicingStatus==0?"未开":item2.invoicingStatus==1?"部分开":item2.invoicingStatus==2?"已开":""}}</div>
               </div>
               <div v-else-if="item.key=='invoiceNum'">
                 <el-popover
