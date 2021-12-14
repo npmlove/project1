@@ -774,21 +774,26 @@
                       let enc = new TextDecoder("utf-8");
                       let uint8_msg = new Uint8Array(res1);
                       let str=enc.decode(uint8_msg);
-                    if(JSON.parse(str).code != 200 ){
-                      let data = JSON.parse(enc.decode(uint8_msg));
-                      console.log(data.message)
-                      vm.$message.error(data.message)
-                      return;}
-                      const aLink = document.createElement("a");
-                      let blob = new Blob([res1], {
-                        type: "application/zip"
-                      })
+                      if(str.indexOf("code")>-1) {
+                        vm.$message.success('导入成功')
+                      }
+                      else{
+                        const aLink = document.createElement("a");
+                        let blob = new Blob([res1], {
+                          type: "application/zip"
+                        })
+                        aLink.href = URL.createObjectURL(blob)
+                        aLink.setAttribute('download', '导入失败文件' + '.zip')
+                        aLink.click()
+                        document.body.appendChild(aLink)
+                      }
+                  })
+              } else {
                       aLink.href = URL.createObjectURL(blob)
                       aLink.setAttribute('download', '上传发票' + '.zip') // 设置下载文件名称
                       aLink.click()
                       document.body.appendChild(aLink)
                       vm.searchClick(true)
-                  })
               }
             })
             };

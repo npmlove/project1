@@ -9,24 +9,41 @@
       >
         <div class="content-search-normal">
           <el-form-item label="订单号:" class="formItem" label-width="80px">
-            <el-autocomplete
-              style="width: 190px"
-               v-model="selectResult.orderNos"
-               :fetch-suggestions="querySearch"
-               placeholder="请输入订单号"
-               clearable
-               :trigger-on-focus="false" >
-            </el-autocomplete>
+            <el-popover
+               placement="right"
+               width="200"
+               trigger="click">
+               <div v-for="(item,index) in selectResult.orderNos.split(/[,，/' ']/).splice(0,20)" :key="index">
+                 {{index==19?"...":item}}
+               </div>
+            <el-input
+                style="width: 190px"
+                slot="reference"
+                v-model="selectResult.orderNos"
+                placeholder="请输入订单号"
+                clearable
+                  >
+              </el-input>
+          </el-popover>
+            
           </el-form-item>
           <el-form-item label="运单号:" class="formItem" label-width="80px">
-           <el-autocomplete
-              style="width: 190px"
+            <el-popover
+               placement="right"
+               width="200"
+               trigger="click">
+               <div v-for="(item,index) in selectResult.waybillNos.split(/[,，/' ']/).splice(0,20)" :key="index">
+                 {{index==19?"...":item}}
+               </div>
+           <el-input
+              slot="reference"
+               style="width: 190px"
                v-model="selectResult.waybillNos"
-               :fetch-suggestions="querySearch"
                placeholder="请输入运单号"
                clearable
-               :trigger-on-focus="false" >
-            </el-autocomplete>
+               >
+            </el-input>
+          </el-popover>
           </el-form-item>
           <el-form-item label="应收对象:" class="formItem" label-width="80px">
             <el-input
@@ -1003,7 +1020,7 @@
       querySearch(q,cb){
         let tempQuery = []
         let arrayt = []
-        q =  q.replace(/，/ig,',').replace(/\s/ig,',').replace(/\//g,',').replace(/-/ig,'')
+        q =  q.replace(/，/ig,',').replace(/\s/ig,',').replace(/\//g,',').replace(/-/ig,'').replace(/,/ig,',')
         if(q.charAt(q.length - 1) == ','){
           q = q.slice(0,q.length - 1)
         }
@@ -1565,7 +1582,13 @@
   }
 </script>
 
-
+<style lang="less">
+    .orderNoReceive {
+      width:200px!important;
+      height:200px!important;
+      overflow:scroll!important
+    }
+</style>
 <style scoped lang="less">
 
 .statist {
