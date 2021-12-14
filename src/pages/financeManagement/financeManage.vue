@@ -958,12 +958,12 @@ export default {
      tableRowClassName({row, rowIndex}) {
         // if(row.orderProfit > 0  )
       if (row.orderProfit<0 &&  row.orderProfit>-200 ) {
-        return 'background-color: #ffff66';
+        return 'background-color: #FFDEAD';
       }
         else if (row.orderProfit<=-200 && row.orderProfit>-500) {
-          return 'background-color: pink';
+          return 'background-color: #F4A460';
         } else if (row.orderProfit<=-500 ) {
-        return 'background-color: #e55f5f';
+        return 'background-color: #FA8072';
       }
       },
     getExportExcel () {
@@ -1393,7 +1393,7 @@ export default {
         totalOrgn += value2 ? value2 + 'HKD' + '+' : ''
         totalOrgn += value3 ? value3 + 'USD' + '+' : ''
         totalOrgn += value4 ? value4 + 'EUR' + '+' : ''
-        totalOrgn += value5 ? value5 + 'GBP' : ''
+        totalOrgn += value5 ? value5 + 'GBP' + '+': ''
         totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
         return totalOrgn;
       },

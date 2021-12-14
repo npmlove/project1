@@ -774,8 +774,7 @@
                       let enc = new TextDecoder("utf-8");
                       let uint8_msg = new Uint8Array(res1);
                       let str=enc.decode(uint8_msg);
-         
-                    if(str.indexOf("code")!= -1 ){
+                    if(JSON.parse(str).code != 200 ){
                       let data = JSON.parse(enc.decode(uint8_msg));
                       console.log(data.message)
                       vm.$message.error(data.message)
@@ -788,7 +787,7 @@
                       aLink.setAttribute('download', '上传发票' + '.zip') // 设置下载文件名称
                       aLink.click()
                       document.body.appendChild(aLink)
-                    
+                      vm.searchClick(true)
                   })
               }
             })
@@ -1360,6 +1359,7 @@
               }
             })
             this.tableData = getData
+            console.log(this.tableData)
             this.statistDataShow = false
             //控制跨页全选
             if(self) this.pageSkipChecked = false

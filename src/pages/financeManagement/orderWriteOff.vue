@@ -754,15 +754,15 @@
         },
       tableRowClassName({row, rowIndex}) {
         if(row.abnormalFlag > 1){
-          return 'background-color: #e55f5f';
+          return 'background-color:#CD5C5C ';
         }
       else if (row.orderProfit<0 &&  row.orderProfit>-200 ) {
-        return 'background-color: #ffff66';
+        return 'background-color: #FFDEAD';
       }
         else if (row.orderProfit<=-200 && row.orderProfit>-500) {
-          return 'background-color: pink';
+          return 'background-color: #F4A460';
         } else if (row.orderProfit<=-500 ) {
-        return 'background-color: red';
+        return 'background-color: #FA8072';
       }
       },
        //搜索表单中多选框控制
@@ -1060,7 +1060,7 @@
         totalOrgn += value2 ? value2.toLocaleString('en-US') + 'HKD' + '+' : ''
         totalOrgn += value3 ? value3.toLocaleString('en-US') + 'USD' + '+' : ''
         totalOrgn += value4 ? value4.toLocaleString('en-US') + 'EUR' + '+' : ''
-        totalOrgn += value5 ? value5.toLocaleString('en-US') + 'GBP' : ''
+        totalOrgn += value5 ? value5.toLocaleString('en-US') + 'GBP' + '+' : ''
         totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
         return totalOrgn;
       }
