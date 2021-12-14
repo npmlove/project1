@@ -52,7 +52,7 @@
                      </el-popover>
                   </div>
                     <div v-else>
-                        <div@click="$emit('showOrderWayBill',item2)" style="color:skyblue">{{scope.row.orderNo}}</div>
+                        <div@click="$emit('showOrderWayBill',item2)" style="color:skyblue">{{item2.orderNo}}</div>
                     </div>
               </div>
               <div v-else-if="item.key =='waybillNo'">
@@ -68,7 +68,7 @@
                      </el-popover>
                   </div>
                     <div v-else>
-                        <div@click="$emit('showOrderWayBill',item2)" style="color:skyblue">{{scope.row.waybillNo}}</div>
+                        <div@click="$emit('showOrderWayBill',item2)" style="color:skyblue">{{item2.waybillNo}}</div>
                     </div>
               </div>
               <div v-else-if="item.key =='departureDate'">
@@ -163,7 +163,6 @@
               <div v-else :style="styleObject(item, item2)" class="tb-span" >
                 {{ item2[item.key] }}{{item.unit?item.unit:''}}
               </div>
-              
             </div>
           </div>
           <div style="min-width:3255px;height:300px;overflow-y:scroll;" v-if="item2.ifFold && item2.hasChild" class="tb-son">
@@ -294,7 +293,11 @@ export default {
   methods: {
     //控制快递信息列显示内容  
       dealExpress(express) {
-        if(!express) express =""
+        if(!express) 
+        {
+          express =""
+          return ""
+        }
         let data = express.split(",")
         return `<div>公司:${data[0]?data[0]:""}\n单号:${data[1]?data[1]:""}\n日期:${data[2]?data[2]:""}</div>`
       },
