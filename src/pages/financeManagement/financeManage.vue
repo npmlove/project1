@@ -304,7 +304,7 @@
         <el-tab-pane
           v-for="(item, index) in tabName"
           :key="index"
-          :label="item + '( ' + tabNum[index] + ' )'"
+          :label="item + '(' + tabNum[index] + ')'"
           :name="item"
         >
           <el-table

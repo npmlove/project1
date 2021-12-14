@@ -987,7 +987,7 @@
       this.isIndeterminate = false;
     },
        tableRowClassName({row, rowIndex}) {
-        if(row.abnormalFlag > 1){
+        if(row.abnormalFlag == 1){
           return 'background-color: #e55f5f';
         }
       else if (row.orderProfit<0 &&  row.orderProfit>-200 ) {
@@ -1512,7 +1512,7 @@
           }
         }
         totalOrgn = ''
-        totalOrgn += value1 || value1 == 0 ? value1.toLocaleString('en-US') + 'CNY' + '+' : ''
+        totalOrgn += value1 ? value1.toLocaleString('en-US') + 'CNY' + '+' : ''
         totalOrgn += value2 ? value2.toLocaleString('en-US') + 'HKD' + '+' : ''
         totalOrgn += value3 ? value3.toLocaleString('en-US') + 'USD' + '+' : ''
         totalOrgn += value4 ? value4.toLocaleString('en-US') + 'EUR' + '+' : ''

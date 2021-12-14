@@ -195,7 +195,7 @@
         </div>
       </el-form>
       <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData" value="全部">
-        <el-tab-pane v-for="(item,index) in tabName" :key="index" :label="item+'( '+tabNum[index]+' )'" :name="item">
+        <el-tab-pane v-for="(item,index) in tabName" :key="index" :label="item+'('+tabNum[index]+')'" :name="item">
       <foldTable :tableData="tableData" :pageSkipAll="pageSkipChecked" @changeCheckBox="handleSelectionChange" @showOrderWayBill="showOrderWayBill" @showInvoice="showInvoice" @openPost="openPost"></foldTable>
              <div style="display:flex;justify-content:space-between">
                <div>
