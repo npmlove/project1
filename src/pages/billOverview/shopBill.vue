@@ -278,7 +278,7 @@ export default {
             type: "application/vnd.ms-excel",
           });
           aLink.href = URL.createObjectURL(blob);
-          aLink.setAttribute("download", "应收统计" + ".xlsx");
+          aLink.setAttribute("download", "供应商账单" + ".xlsx");
           aLink.click();
           document.body.appendChild(aLink);
         });
