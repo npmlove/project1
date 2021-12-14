@@ -1103,6 +1103,7 @@
             aLink.setAttribute('download', '应收统计对账单' + '.pdf') 
             aLink.click()
             document.body.appendChild(aLink)
+            this.dialogFormVisibleFour = false
         })
       },
       //核销按钮
@@ -1242,6 +1243,7 @@
                      this.$set(this.receiveOperate[0],"records",res.data)
                      this.$forceUpdate()
                   })
+                  this.initData(this.searchDataDeal())
               }
             })
             this.initData(this.searchDataDeal())
@@ -1566,7 +1568,7 @@
         totalOrgn += value2 ? 'HKD:' + value2 + '+' : ''
         totalOrgn += value3 ? 'USD:' + value3 + '+' : ''
         totalOrgn += value4 ? 'EUR:' + value4 + '+' : ''
-        totalOrgn += value5 ? 'GBP:' + value5 : ''
+        totalOrgn += value5 ? 'GBP:' + value5 + '+': ''
         totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
         return totalOrgn;
       },

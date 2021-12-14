@@ -337,7 +337,7 @@
               v-if="checkedTable.indexOf('订单号') !== -1"
             >
             <template slot-scope="scope">
-              <div style="color:skyblue" @click="showFees(scope.row.id,scope.row.payWay,scope.row.financeStatus,true)">
+              <div style="color:skyblue" @click="showFees(scope.row,true)">
                   {{scope.row.orderNo}}
               </div>
             </template>
@@ -507,7 +507,7 @@
               v-if="checkedTable.indexOf('订单状态') !== -1"
             >
             <template slot-scope="scope">
-                <div :style="{'color':scope.row.financeStatus ==2 || scope.row.financeStatus ==3 ? 'skyblue' : 'black' }" @click="scope.row.financeStatus ==2 || scope.row.financeStatus ==3?showFees(scope.row.id,scope.row.payWay,scope.row.financeStatus,false):''">
+                <div :style="{'color':scope.row.financeStatus ==2 || scope.row.financeStatus ==3 ? 'skyblue' : 'black' }" @click="scope.row.financeStatus ==2 || scope.row.financeStatus ==3?showFees(scope.row,false):''">
                   {{scope.row.financeStatus == 0 || scope.row.financeStatus == 1 ?
                     '正常' : scope.row.financeStatus == 2 ?
                       '修改申请' : scope.row.financeStatus == 3 ?
@@ -525,12 +525,12 @@
                 >数据统计</el-button
               >
               <div style="margin-top: 15px" v-if="statistDataShow">
-                <span>应收总金额:{{ statistData.totalArCny.toLocaleString('en-US') }}</span>
+                <span>应收总金额:{{ statistData.totalArCny?statistData.totalArCny.toLocaleString('en-US'):0 }}</span>
                 <span style="margin-left: 15px"
-                  >应付总金额: {{ statistData.totalApCny.toLocaleString('en-US') }}</span
+                  >应付总金额: {{  statistData.totalApCny?statistData.totalApCny.toLocaleString('en-US'):0 }}</span
                 >
                 <span style="margin-left: 15px"
-                  >利润:{{ statistData.orderProfit.toLocaleString('en-US') }}</span
+                  >利润:{{ statistData.orderProfit?statistData.orderProfit.toLocaleString('en-US'):0 }}</span
                 >
               </div>
             </div>
@@ -578,7 +578,7 @@
         </el-checkbox-group>
       </el-drawer>
     </div>
-    <el-dialog :visible.sync="dialogFormVisible"  width="80%">
+    <el-dialog :visible.sync="dialogFormVisible" :title="dialogTitle" width="80%">
         <div
           style="
             font-size: 18px;
@@ -781,6 +781,7 @@ export default {
       tabNum: [0, 0, 0, 0,0,0,0],
       detailTabs: [],
       //弹框数据
+      dialogTitle:"",
       dialPage:1,
       dialogFormVisible: false,
       showFeesPage: false,
@@ -1153,7 +1154,11 @@ export default {
         });
         this.dialogFormVisible =false
     },
-    showFees(orderId, payWay, financeStatus,onlyShow,pageSkip) {
+    showFees(linedata,onlyShow,pageSkip) {
+      this.dialogTitle = linedata.orderNo
+      let orderId = linedata.id
+      let payWay = linedata.payWay
+      let financeStatus = linedata.financeStatus
       if (this.pageSkipChecked == true) {
         this.$message({
           type:"warning",
@@ -1162,7 +1167,7 @@ export default {
         return
       }
       this.showFeesPage = false
-      if(orderId == false){
+      if(linedata == false){
         if(this.selectTableData.length == 0 || this.selectTableData.length > 20) {
            this.$message({
             message: '请选择1到20条信息',
@@ -1343,7 +1348,7 @@ export default {
     },
     handleDialChange (e) {
       console.log(e,this.selectTableData)
-      this.showFees(this.selectTableData[e-1].id,this.selectTableData[e-1].payWay,this.selectTableData[e-1].financeStatus,false,true)
+      this.showFees(this.selectTableData[e-1],false,true)
     },
      handleCurrentChange(e) {
       this.pageNum = e;
@@ -1422,7 +1427,7 @@ export default {
       totalOrgn += value2 ? "HKD:" + value2 + "+" : "";
       totalOrgn += value3 ? "USD:" + value3 + "+" : "";
       totalOrgn += value4 ? "EUR:" + value4 + "+" : "";
-      totalOrgn += value5 ? "GBP:" + value5 : "";
+      totalOrgn += value5 ? "GBP:" + value5 + "+" : "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return totalOrgn;
     },
