@@ -359,7 +359,7 @@
               v-if="checkedTable.indexOf('订单号') !== -1"
             >
             <template slot-scope="scope">
-              <div @click="showData(scope.row.id)" style="color:skyBlue">
+              <div @click="showData(scope.row.id,scope.row.orderNo)" style="color:skyBlue">
                 {{scope.row.orderNo}}
               </div>
             </template>
@@ -537,8 +537,7 @@
             </el-pagination>
         </el-tab-pane>
       </el-tabs>
-      <el-dialog title="应收订单详情" :visible.sync="dialogFormVisibleOne" width="80%">
-        <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">应付账单</div>
+      <el-dialog :title="dialogTitleOne+' 订单详情'" :visible.sync="dialogFormVisibleOne" width="80%">
           <Table
             :tableData='tableDataTwo'
             :operation="operation"
@@ -855,6 +854,7 @@
     pageNum: 1,
     total: 0,
     //弹框控制
+    dialogTitleOne:"",
     dialogFormVisibleOne:false,
     dialogFormVisibleTwo:false,
     dialogFormVisibleThree:false,
@@ -879,7 +879,7 @@
         { label: "数量", prop: "quantity", show: true, width: "100" },
         { label: "币种", prop: "currency", show: true, width: "100" },
         { label: "原币合计", prop: "totalOrgn", show: true, width: "100" },
-        { label: "汇率", prop: "exchangeRate", show: true, width: "100" },
+        { label: "汇率", prop: "exchangeRateOnly", show: true, width: "100" },
         { label: "人民币合计", prop: "totalCny", show: true, width: "100" },
         { label: "备注", prop: "remark", show: true, width: "50" },
       ],
@@ -1292,7 +1292,9 @@
       },
       
       //订单号详情
-      showData(id){
+      showData(id,orderNo){
+        this.dialogTitleOne = ""
+        this.dialogTitleOne = orderNo
         this.dialogFormVisibleOne = true
         this.$http.get(this.$service.searchOrderDetail+`?orderId=${id}`).then(data=>{
             this.tableDataOne = data.data.arOrderPriceList

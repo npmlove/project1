@@ -81,6 +81,9 @@
                 <div>售中：{{ scope.row.operation.split(",")[1] }}</div>
                 <div>航线：{{ scope.row.operation.split(",")[2] }}</div>
             </span>
+            <span v-else-if="column.label == '汇率' && column.prop == 'exchangeRateOnly'">
+              {{currencyType[scope.row.currency-1]+":"+scope.row.exchangeRate}}
+            </span>
               <span v-else-if=" column.label == '汇率'">
               {{ getExchangeRate(scope.row.exchangeRate) }}
             </span>
@@ -211,6 +214,7 @@
     },
     data() {
       return {
+        currencyType:['CNY','HKD','USD','EUR','GBP'],
         seletArr: [],
         userName: '',
         arr: [],
@@ -289,7 +293,7 @@
           } else if (exchangeRate[i].currency == '5') {
             value5 += exchangeRate[i].exchangeRate
           }
-        }
+        }  
         totalOrgn = ''
         totalOrgn += value1 || value1 == 0 ? 'CNY:' + value1 + '+' : ''
         totalOrgn += value2 ? 'HKD:' + value2 + '+' : ''
