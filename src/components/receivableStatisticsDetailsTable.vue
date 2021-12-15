@@ -52,42 +52,50 @@
             </span>
                         <div v-else-if=" column.label == '核销金额'">
  <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
-      :style="{'background':(optIndex%2===0?'':'')}">{{
+      :style="{'background':(optIndex%2===0?'':'')}" v-if="optItem.status!=-1">{{
      optItem.writeOffAmount
    }}{{ getCurrency(optItem.currency) }}</div>
             </div>
             <div v-else-if=" column.label == '开户行'">
               <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
-                   :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.accountBank }}</div>
+                   :style="{'background':(optIndex%2===0?'':'')}" v-if="optItem.status!=-1">{{ optItem.accountBank }}</div>
             </div>
             <div v-else-if=" column.label == '户名'">
               <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
-                   :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.accountName }}</div>
+                   :style="{'background':(optIndex%2===0?'':'')}" v-if="optItem.status!=-1">{{ optItem.accountName }}</div>
             </div>
             <div v-else-if=" column.label == '银行账户'">
               <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
-                   :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.bankAccount }}</div>
+                   :style="{'background':(optIndex%2===0?'':'')}" v-if="optItem.status!=-1">{{ optItem.bankAccount }}</div>
             </div>
             <div v-else-if=" column.label == '汇率'&&column.prop == 'exchangeRate'">
               <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
-                   :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.exchangeRate }}</div>
+                   :style="{'background':(optIndex%2===0?'':'')}" v-if="optItem.status!=-1">{{ optItem.exchangeRate }}</div>
             </div>
             <div v-else-if=" column.label == '收款方式'">
               <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
-                   :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.payWay === 0 ? "银行转账" : "应付对冲" }}</div>
+                   :style="{'background':(optIndex%2===0?'':'')}" >{{ optItem.writeOffWay === 0 ? "银行转账" : "应付对冲" }}</div>
+            </div>
+            <div v-else-if=" column.label == '付款方式'">
+              <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
+                   :style="{'background':(optIndex%2===0?'':'')}" v-if="optItem.status!=-1">{{ optItem.writeOffWay === 0 ? "银行转账" : "应付对冲" }}</div>
+            </div>
+             <div v-else-if=" column.label == '付款日期'">
+              <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
+                   :style="{'background':(optIndex%2===0?'':'')}" v-if="optItem.status!=-1">{{ optItem.payDate  }}</div>
             </div>
             <div v-else-if=" column.label == '到账时间'">
               <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
                    :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.payDate }}</div>
             </div>
-           <div v-else-if=" column.label == '开户行'">
+<!--           <div v-else-if=" column.label == '开户行'">
  <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
       :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.accountBank }}
         </div>
-            </div>
+            </div>-->
            <div v-else-if=" column.label == '核销时间'">
  <div v-for="(optItem,optIndex) in scope.row.writeOffList" :key="optIndex"
-      :style="{'background':(optIndex%2===0?'':'')}">{{ optItem.writeOffTime }}
+      :style="{'background':(optIndex%2===0?'':'')}" v-if="optItem.status!=-1">{{ optItem.writeOffTime }}
         </div>
             </div>
             <div v-else-if=" column.label == '记录'&&column.prop == 'log'">
@@ -161,12 +169,10 @@
               }}
             </span>
                <span v-else-if="column.prop == 'rcvWriteOffCount' && column.label == '核销次数'">
-              <a v-if="scope.row.rcvWriteOffCount>0" @click="showWOLogs(scope.row)">{{ scope.row.rcvWriteOffCount }}</a><div
-                 v-if="scope.row.rcvWriteOffCount==0">0</div>
+              <a  @click="showWOLogs(scope.row)">{{ scope.row.rcvWriteOffCount }}</a>
             </span>
                <span v-else-if="column.prop == 'payWriteOffCount' && column.label == '核销次数'">
-              <a v-if="scope.row.payWriteOffCount>0" @click="showWOLogs(scope.row)">{{ scope.row.payWriteOffCount }}</a><div
-                 v-if="scope.row.payWriteOffCount==0">0</div>
+              <a  @click="showWOLogs(scope.row)">{{ scope.row.payWriteOffCount }}</a>
             </span>
             <span v-else-if="column.prop == 'operationType' && column.label == '操作类型'">
               {{
