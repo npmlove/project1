@@ -371,9 +371,9 @@ const billOverview = [{
   },
   children: [
     {
-      path: 'financeManage',
+      path: 'userBill',
       component: () => import('@/pages/billOverview/userBill.vue'),
-      name: 'financeManage',
+      name: 'userBill',
       meta: {
         title: '用户账单',
         keepAlive: false,
@@ -381,9 +381,9 @@ const billOverview = [{
       }
     },
     {
-      path: 'invoiceList',
+      path: 'shopBill',
       component: () => import('@/pages/billOverview/shopBill.vue'),
-      name: 'invoiceList',
+      name: 'shopBill',
       meta: {
         title: '供应商账单',
         keepAlive: false,

@@ -1226,7 +1226,7 @@
             cancelButtonText: "取消",
             type: "warning"
           }).then(() => {
-            this.$http.get(this.$service.arRevoke+'?woId='+id).then(data => {
+            this.$http.post(this.$service.arRevoke+'?woId='+id).then(data => {
               if(data.code==200){
                    this.$http.get(this.$service.searchArList+'?rcvId='+rowId).then(res=>{
                       let data =res.data

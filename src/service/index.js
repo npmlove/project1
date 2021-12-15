@@ -243,8 +243,27 @@ const serviceApi = {
    countDealingWork4Cst : pulicWeb +'/t-work-order/countDealingWork4Cst',
    //客服工单 -滚动公告
    searchRollList: pulicWeb +'/t-work-order/searchRollList',
+
    //工单-客服工单查询
    searchByPageForCst:  pulicWeb + '/t-work-order/searchByPageForCst',
+   //工单 - 待我确认 查询
+   searchDealing: pulicWeb + '/t-work-order/searchDealingWork4Cst',
+   airOrder: pulicWeb + '/t-work-order/searchAllWork4PrcpByPage',
+   // 导出航线工单审核全部工单
+   airOrderExport: pulicWeb + '/t-work-order/exportPrcpAllWorkListExcel',
+   // 航线工单点击详情
+   detailsSearch: pulicWeb + '/t-work-order/searchWorkOrderDetailById',
+   //航线工单 - 转单
+   setOrder:pulicWeb + '/t-work-order/transfer',
+ // 航线工单 - 交单
+   handleOrder: pulicWeb + '/t-work-order/askAgain',
+   //航线工单 - 待我处理数量
+   countWork4Prcp: pulicWeb + '/t-work-order/countWork4Prcp',
+
+   // 工单 - 统计
+  orderStatistics: pulicWeb + '/t-work-order/sumUserWorkData',
+  //工单 - 统计 导出统计数据
+  exportList: pulicWeb+ '/t-work-order/exportUserWorkListExcel',
     //  对账统计接口
    toCheckAmount : pulicWeb + '/t-order-payment/toCheckAmount',
   //  核销统计接口
