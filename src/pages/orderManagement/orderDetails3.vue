@@ -265,13 +265,13 @@
           <billOrder  :getList= "initData.arOrderPriceList[0].list" :propDate= "typeOneProp" :changeBill= 'changeBillOne' :billId= 'billIdOne' ref="typeOne" />
           <div v-if="creatNewBillBoolen" >
             <!-- 新建账单内容 -->
-              <billOrder ref="typeFour" :getList='[]'  :changeBill= 'changeBillFour' :propDate= 'typeFourProp' :billId='0' />
+              <billOrder ref="typeFour" :getList='[]'  :changeBill= 'changeBillFour' :propDate= 'typeFourProp' :billId='0 ' />
               <el-button   style="margin-left:20px;width:200px"   @click="fatherNewFour()" >新增</el-button>
               <el-button   style="margin-left:20px;width:200px" type="primary" @click="reconciliationClient(4)" >发起客户对账</el-button>
           </div>
          
           <div >
-              <el-button v-if="initData.arOrderPriceList[0].status == 3 && creatNewBillBoolen == false" type="primary" @click="creatNewBill" style="width:200px;margin-left:20px;" >新增账单</el-button>
+              <el-button v-if="initData.arOrderPriceList[0].status == 3 && creatNewBillBoolen == false" type="primary" @click="creatNewBill" style="width:200px;margin-left:20px;" >新建账单</el-button>
               <el-button  v-if="initData.arOrderPriceList[0].status == 0" style="width:200px"  @click="fatherNewOne()"  >新增</el-button>
               <el-button  v-if="initData.arOrderPriceList[0].status == 0"  style="margin-left:20px;width:200px" type="primary" @click="reconciliationClient(1)" >发起客户对账</el-button>
           </div>
@@ -428,7 +428,7 @@ export default {
     // 创建一个新账单
     creatNewBill(){
       this.typeFourProp ={
-          orderId:this.id,
+          orderId:this.orderId,
           expenseType:1,
           orderNo:this.initData.orderNo,
           expenseUnitName:this.initData.expenseUnitName
