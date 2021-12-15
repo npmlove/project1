@@ -512,13 +512,13 @@
                 <div v-if="item.status == 0 || item.status == -1">
                   {{`操作${index + 1}:${item.writeOffOperator} `}}
                   <span class="text_color_blue"  >{{item.payCheckAmount > 0 ? "对账" : '核销'}}</span>
-                  该订单，对账金额：
-                  <span v-if="item.currency == 1"> {{item.writeOffAmount}}CNY</span>
-                  <span v-if="item.currency == 2"> {{item.writeOffAmount}}港币</span>
-                  <span v-if="item.currency == 3"> {{item.writeOffAmount}}美元</span>
-                  <span v-if="item.currency == 4"> {{item.writeOffAmount}}欧元</span>
-                  <span v-if="item.currency == 5"> {{item.writeOffAmount}}英镑</span> 
-                {{item.writeOffTime}}
+                  该订单，对账金额：{{item.payCheckAmount > 0 ? item.payCheckAmount : item.writeOffAmount}}
+                  <span v-if="item.currency == 1"> CNY</span>
+                  <span v-if="item.currency == 2"> 港币</span>
+                  <span v-if="item.currency == 3"> 美元</span>
+                  <span v-if="item.currency == 4"> 欧元</span>
+                  <span v-if="item.currency == 5"> 英镑</span> 
+                
                 </div>
                 <div v-if='item.status == 2'>
                     {{`操作${index + 1}:${item.writeOffOperator} `}}撤销了

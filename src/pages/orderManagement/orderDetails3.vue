@@ -265,7 +265,7 @@
           <billOrder  :getList= "initData.arOrderPriceList[0].list" :propDate= "typeOneProp" :changeBill= 'changeBillOne' :billId= 'billIdOne' ref="typeOne" />
           <div v-if="creatNewBillBoolen" >
             <!-- 新建账单内容 -->
-              <billOrder ref="typeFour" :getList='[]'  :changeBill= 'changeBillFour' :propDate= 'typeFourProp' :billId='0 ' />
+              <billOrder ref="typeFour" :getList='[]'  :changeBill= 'changeBillFour' :propDate= 'typeFourProp' :billId='0' />
               <el-button   style="margin-left:20px;width:200px"   @click="fatherNewFour()" >新增</el-button>
               <el-button   style="margin-left:20px;width:200px" type="primary" @click="reconciliationClient(4)" >发起客户对账</el-button>
           </div>
@@ -297,6 +297,8 @@
           
           <div class="line"></div>
           <billOrder  :getList= "initData.apOrderPriceList" :propDate= "typeTwoProp" :changeBill= 'changeBillTwo' :billId= 'billIdTwo' ref="typeTwo" />
+          <el-button style="margin-left:20px;width:200px" v-if="isChangeJiaoDan" @click="commitionBill">交单</el-button>
+          <el-button style="margin-left:20px;width:200px;backround:red;color:white" v-if="!isChangeJiaoDan" >申请解锁</el-button>
           <div class="line"></div>
           <div class="paddingBottom"></div>
         </div>
@@ -314,6 +316,7 @@ export default {
       input: '',
       radio1:'1',
       isDataDone:false,// 已经获取到数据在渲染界面
+      isChangeJiaoDan:true, // 交单是否显示出来
       orderNo:'',// 运单号
       orderId:'',// 账单id
       changeBillOne:false, // 是否修改应收changeBill账单状态 默认false
@@ -332,6 +335,7 @@ export default {
       typeFourProp:{}, //传递给typeFour 对象
       billIdTwo:'',//传递给账单id
       initData:{}, // 初始化返回对象
+      billFourArray:[], // 账单
       bubblePointArray:[
         {
           value:1,
@@ -425,6 +429,28 @@ export default {
     billOrder
   },
   methods:{
+    // 交单
+    commitionBill(){
+      // 账单暂时已经定 确认
+      var data = {
+        financeStatus: 0,
+        operationType: 0,
+        orderId: this.orderId,
+        info: ''
+      }
+      this.$http.post(this.$service.presentSavePresentLog, data).then(res => {
+        if (res.code == 200) {
+          this.$alert('交单成功', {
+            confirmButtonText: '确定',
+            callback: () => {
+
+            }
+          });
+        }else{
+          this.$message.error(res.message)
+        }
+      })
+    },
     // 创建一个新账单
     creatNewBill(){
       this.typeFourProp ={
