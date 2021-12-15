@@ -4,15 +4,17 @@
       <el-form-item class="test" label="订单号" >
         <el-autocomplete
           class="inline-input"
-          v-model="formInline.orderNo"
+          v-model="formInline.orderNos"
           :fetch-suggestions="querySearch"
           placeholder="请输入订单号"
+          clearable
           :trigger-on-focus="false" >
         </el-autocomplete>
       </el-form-item>
       <el-form-item label="运单号">
         <el-autocomplete
           class="inline-input"
+          clearable
           v-model="formInline.waybillNo"
           :fetch-suggestions="querySearch"
           placeholder="请输入订单号"
@@ -20,16 +22,17 @@
         </el-autocomplete>
       </el-form-item>
       <el-form-item label="应付对象">
-        <el-input v-model="formInline.expenseUnitName" placeholder="请输入应付对象"></el-input>
+        <el-input v-model="formInline.expenseUnitName" clearable placeholder="请输入应付对象"></el-input>
       </el-form-item>
       <el-form-item label="订舱公司">
-        <el-input v-model="formInline.customerName" placeholder="请输入应付对象"></el-input>
+        <el-input v-model="formInline.customerName" clearable placeholder="请输入应付对象"></el-input>
       </el-form-item>
       <el-form-item label="航司">
         <el-select
           v-model="formInline.airCompanyCode"
           filterable
           remote
+          clearable
           reserve-keyword
           placeholder="请输入航司名称"
           :remote-method="remoteMethodFour">
@@ -46,6 +49,7 @@
           v-model="formInline.agentName"
           filterable
           remote
+          clearable
           reserve-keyword
           placeholder="请输入订舱代理上家"
           :remote-method="remoteMethod">
@@ -61,12 +65,14 @@
          <el-date-picker
           v-model="formInline.startOrderTime"
           type="date"
+          clearable
           :value-format='formatDate'
           placeholder="开始">
         </el-date-picker>-
         <el-date-picker
           v-model="formInline.endOrderTime"
           type="date"
+          clearable
           :value-format='formatDate'
           placeholder="结束">
         </el-date-picker>
@@ -75,12 +81,14 @@
          <el-date-picker
           v-model="formInline.startDepartureDate"
           type="date"
+          clearable
           :value-format='formatDate'
           placeholder="开始">
         </el-date-picker>-
         <el-date-picker
           v-model="formInline.endDepartureDate"
           type="date"
+          clearable
           :value-format='formatDate'
           placeholder="结束">
         </el-date-picker>
@@ -90,6 +98,7 @@
           v-model="formInline.pol"
           filterable
           remote
+          clearable
           reserve-keyword
           placeholder="请输入起运港"
           :remote-method="remoteMethodTwo">
@@ -106,6 +115,7 @@
           v-model="formInline.pod"
           filterable
           remote
+          clearable
           reserve-keyword
           placeholder="请输入目的港"
           :remote-method="remoteMethodThree">
@@ -118,7 +128,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="结算方式">
-        <el-select v-model="formInline.payWay" placeholder="请选择">
+        <el-select v-model="formInline.payWay"  placeholder="请选择">
           <el-option
             v-for="item in payWayArray"
             :key="item.value"
@@ -128,7 +138,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="核销状态">
-        <el-select v-model="formInline.payWriteOffStatus" placeholder="请选择">
+        <el-select v-model="formInline.payWriteOffStatus"  placeholder="请选择">
           <el-option
             v-for="item in payWriteOffStatusArray"
             :key="item.value"
@@ -138,7 +148,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="售前客服">
-        <el-select v-model="formInline.pscsId" placeholder="请选择">
+        <el-select v-model="formInline.pscsId" clearable placeholder="请选择">
           <el-option
             v-for="item in preSaleList"
             :key="item.id"
@@ -148,7 +158,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="航线负责人">
-        <el-select v-model="formInline.principalId" placeholder="请选择">
+        <el-select v-model="formInline.principalId" clearable placeholder="请选择">
           <el-option
             v-for="item in airLineList"
             :key="item.id"
@@ -157,8 +167,8 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="售中客服" class="endItem">
-        <el-select v-model="formInline.mscsId" placeholder="请选择">
+      <el-form-item label="售中客服" >
+        <el-select v-model="formInline.mscsId" clearable placeholder="请选择">
           <el-option
             v-for="item in onSaleList"
             :key="item.id"
@@ -224,10 +234,9 @@
     <el-table
 
       :data="tableData"
-      border='true'
-      stripe
+      border
       max-height="600"
-      
+      :cell-style= backStyle
       ref="multipleTable"
       @select='clckOne'
       style="width: 100%">
@@ -281,7 +290,7 @@
       </el-table-column>
       <el-table-column
         prop="orderProfit"
-         v-if="checkedIndex7"
+        v-if="checkedIndex7"
         label="利润"
         width="100">
       </el-table-column>
@@ -382,7 +391,7 @@
         width="100">
         <template slot-scope="scope">
           <span v-if="scope.row.payCheckAmount > 0" style="cursor:pointer;color:rgb(97,180,120)" @click="recordsBtn(scope.row)">{{scope.row.payWriteOffCount}}</span>
-          <span v-else  >{{scope.row.payWriteOffCount}}</span>
+          <span v-else style="cursor:pointer;" @click="recordsBtn(scope.row)" >{{scope.row.payWriteOffCount}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -390,9 +399,15 @@
         v-if="checkedIndex18"
         width="100">
         <template slot-scope="scope">
-          <span v-if="scope.row.payWriteOffStatus == 0">未核销</span>
-          <span v-if="scope.row.payWriteOffStatus == 1">已核销</span>
-          <span v-if="scope.row.payWriteOffStatus == 2">部分核销</span>
+          <span v-if="scope.row.payWriteOffStatus == 0">未对账未核销</span>
+          <span v-if="scope.row.payWriteOffStatus == 1">部分对账未核销</span>
+          <span v-if="scope.row.payWriteOffStatus == 2">已对账未核销</span>
+          <span v-if="scope.row.payWriteOffStatus == 3">未对账部分核销</span>
+          <span v-if="scope.row.payWriteOffStatus == 4">部分对账部分核销</span>
+          <span v-if="scope.row.payWriteOffStatus == 5">对账部分核销</span>
+          <span v-if="scope.row.payWriteOffStatus == 6">未对账已核销</span>
+          <span v-if="scope.row.payWriteOffStatus == 7">部分对账已核销</span>
+          <span v-if="scope.row.payWriteOffStatus == 8">已对账已核销</span>
         </template>
       </el-table-column>
     </el-table>
@@ -449,15 +464,17 @@
     <!-- 对账模态框组件 -->
     <reconciliation @farhersearch='onSubmit'  :childPropsObj = childPropsObj ref="reconciliationData"/> 
     <!-- 核销模态框组件 -->
-    <verification  @farhersearch2='onSubmit' :childPropsObj= verificationObj ref="verificationData" />
+    <verification  @farhersearch2='onSubmit' :childPropsObj= verificationObj :verificationArr= 'verificationArr' ref="verificationData" />
     <!-- 点击核销次数模态框 -->
     <el-dialog
       title="应付核销操作记录"
       :visible.sync="payWriteOffCountBoolen"
       width="60%"
+      
       :before-close="handleClose">
       <div class="diaModalClass">
         <el-table
+          max-height='500'
           :data="payWriteOffCountData"
           >
           <el-table-column
@@ -493,7 +510,7 @@
             <template slot-scope="scope">
               <div v-for="(item,index) in scope.row.tempObj" :key="index">
                 <div v-if="item.status == 0 || item.status == -1">
-                  {{`操作${index + 1}:${item.accountName} `}}
+                  {{`操作${index + 1}:${item.writeOffOperator} `}}
                   <span class="text_color_blue"  >{{item.payCheckAmount > 0 ? "对账" : '核销'}}</span>
                   该订单，对账金额：
                   <span v-if="item.currency == 1"> {{item.writeOffAmount}}CNY</span>
@@ -504,7 +521,7 @@
                 {{item.writeOffTime}}
                 </div>
                 <div v-if='item.status == 2'>
-                    {{`操作${index + 1}:${item.accountName} `}}撤销了
+                    {{`操作${index + 1}:${item.writeOffOperator} `}}撤销了
                     <span style="margin-left:100px">{{item.writeOffTime}}</span>
                 </div>
                 
@@ -539,7 +556,7 @@ import {exportFile} from '../../util/util'
   export default {
     data() {
       return {   
-        activeName:'0',
+        // activeName:'0',
         drawer:false, // 右侧表格状态
         formInline: {
           orderNo:'',
@@ -620,8 +637,8 @@ import {exportFile} from '../../util/util'
         optionTwo:[], //
         optionThree:[],//
         optionFour:[],//
-        verificationData:[],// 传递给核销组件的数据
         verificationObj:{},// 传递给核销组件的对象
+        verificationArr:[], //传递给核销组件的数组
         checkedIndex0:true ,// 默认全选  
         checkedIndex1:true ,  
         checkedIndex2:true ,  
@@ -698,6 +715,7 @@ import {exportFile} from '../../util/util'
       verification
     },
     methods: {
+      // 
       // 清空搜索数据
       clearAllData(){
         this.formInline= {
@@ -741,10 +759,12 @@ import {exportFile} from '../../util/util'
             if(res.code == 200){
               let res1 = await this.$http.post(this.$service.searchRecords,{ids:e.ids})
                this.payWriteOffCountData[0].tempObj = res1.data
-              this.$message({
-              type: 'success',
-              message: '撤销成功!'
-            });
+                this.$message({
+                type: 'success',
+                message: '撤销成功!'
+              });
+              this.handleClose()
+              this.onSubmit()
             }
             
           })
@@ -822,9 +842,6 @@ import {exportFile} from '../../util/util'
      
 
       },
-      async radioEvent(e,){
-
-      },
       // 输入代理上家的时候返回值
       async remoteMethod(e){
         if (e !== '') {
@@ -841,8 +858,9 @@ import {exportFile} from '../../util/util'
         if(e !== ''){
             let res = await this.$http.get(this.$service.airportSearchByPage+`?keyWord=${e}`)
             this.optionTwo = res.data.records.map((item)=>{
-            return {value:item.name, label: item.name}
+            return {value:item.threeLetterCode, label: item.name}
           })
+          
         }else{
           this.optionTwo =[]
         }
@@ -852,7 +870,7 @@ import {exportFile} from '../../util/util'
         if(e !== ''){
             let res = await this.$http.get(this.$service.airportSearchByPage+`?keyWord=${e}`)
             this.optionThree = res.data.records.map((item)=>{
-            return {value:item.name, label: item.name}
+            return {value:item.threeLetterCode, label: item.name}
           })
         }else{
           this.optionThree =[]
@@ -927,6 +945,7 @@ import {exportFile} from '../../util/util'
                 }
               }
             }
+            
             let {formInline} = this
             let params= Object.assign({},formInline,{ids:tempAds})
             let res = await this.$http.post(this.$service.toCheckAmount,params)
@@ -968,9 +987,28 @@ import {exportFile} from '../../util/util'
           }else{
             let {formInline} = this
             let idsArray = tempArray.map((item)=>{
-              return item.ids
+               return item.ids
             })
-            let params= Object.assign({},formInline,{ids:idsArray})
+
+            let tempAds = []
+            for(let j in idsArray){
+              if(idsArray[j] == null){
+                
+              }else{
+                if(idsArray[j].indexOf(',') == -1){
+                  tempAds.push(idsArray[j])
+                }else{
+                  let te = idsArray[j].split(',')
+                  tempAds =  tempAds.concat(te)
+
+                }
+              }
+            }
+            let test = tempArray.map(res=>{
+              return{orderId:res.orderId,ids:res.ids}
+            })
+            this.verificationArr = test
+            let params= Object.assign({},formInline,{ids:tempAds})
             let res = await this.$http.post(this.$service.toWriteOffAmountCount,params)
             if(res.code == 200){
               this.verificationObj = res.data
@@ -1016,6 +1054,7 @@ import {exportFile} from '../../util/util'
             this.$refs.multipleTable.toggleRowSelection(item,e)
         }) 
      },
+  
       // 处理input的输入选择
       querySearch(q,cb){
         let tempQuery = []
@@ -1031,10 +1070,12 @@ import {exportFile} from '../../util/util'
         }
         for(let i in tempQuery){
           let newobj = {}
-          newobj.value = tempQuery[i]
+          newobj.value = tempQuery[i] 
           newobj.label = tempQuery[i]
           arrayt.push(newobj)
         }
+        console.log(arrayt)
+        this.arrayOne = this.arrayOne
         cb(arrayt)
       },
       // 获取tabel数据
@@ -1078,6 +1119,18 @@ import {exportFile} from '../../util/util'
           console.log(error)
         }
       },
+      // 处理利润异常样式
+      backStyle({row,rowIndex}){
+        if (0 <= row.orderProfit && row.orderProfit <=200 ) {
+          return 'background-color: #FFDEAD';
+        }else if (200 < row.orderProfit && row.orderProfit <= 500) {
+          return 'background-color: #F4A460';
+        }else if (500 < row.orderProfit ) {
+          return 'background-color: #FA8072';
+        }else if(row.orderProfit < 0 ){
+          return 'background-color: #CD5C5C'
+        }
+        },
       // 处理返回的原币string
       async dealApString(tempString){
 
