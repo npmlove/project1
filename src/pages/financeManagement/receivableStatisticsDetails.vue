@@ -422,7 +422,7 @@
           {label: '运单号', prop: 'waybillNo', show: true, width: '150'},
           {label: '应收对象', prop: 'reconciliationUnit', show: true, width: '100'},
           {label: '应收金额', show: true, width: '100'},
-          {label: '对账金额', prop: 'payCheckAmount', show: true, width: '80'},
+          {label: '对账金额', prop: 'rcvCheckAmount', show: true, width: '80'},
           {label: '核销金额', prop: 'writeOffAmount', show: true, width: '100'},
           {label: '开户行', prop: 'accountBank', show: true, width: '100'},
           {label: '户名', prop: 'accountName', show: true, width: '100'},
