@@ -1004,7 +1004,7 @@
       this.isIndeterminate = false;
     },
        tableRowClassName({row, rowIndex}) {
-        if(row.abnormalFlag == 1){
+        if(row.abnormalFlag == 1 && row.orderProfit>=0){
           return 'background-color: #CD5C5C';
         }
       else if (row.orderProfit<0 &&  row.orderProfit>-200 ) {
