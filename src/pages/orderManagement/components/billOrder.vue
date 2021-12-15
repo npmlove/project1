@@ -3,7 +3,7 @@
     <div>
       <h1 class="title flex">
           <span>{{title}}</span> 
-          <span class="calcSome"><span>原币合计{{totalOrgnStr}}</span><span>人民币合计：{{totalCnyStr}}</span></span> 
+          <span class="calcSome"><span>原币合计{{totalOrgnStr}}</span><span>人民币合计:{{totalCnyStr}}</span></span> 
           </h1>
         <el-table
           :data="tableData"
@@ -79,19 +79,20 @@
             label="操作">
             <template slot-scope="scope">
               <div >
-                 <span v-if="tableData.length - 1 == scope.$index" @click="addOneTableObj()">新增</span>
-                <span @click="deleOneTableObj()" >删除</span>
+                <span @click="deleOneTableObj(scope)" >删除</span>
               </div>
             </template>
           </el-table-column>
           <el-table-column
-            prop="remark"
             label="备注">
+            <template slot-scope="scope">
+                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.remark" clearable></el-input>    
+            </template>
           </el-table-column>
         </el-table>
-         <div class="operate">
-            <el-button  style="width:200px"  @click="ttt()"  >ceshi</el-button>
-         </div>
+         <!-- <div class="operate" v-if="changeBill">
+           
+         </div> -->
         
     </div>
     <div class="ccc"></div>
@@ -113,7 +114,7 @@
 // ingStatic        修改当前数据状态 主要是为了初始化第一条数据
 // billId           订单的id
 class tableObj{
-  constructor(expenseName , expenseUnitName , quantity, price , currency  , exchangeRate = 1, remark, ingStatic = false,billId){
+  constructor(expenseName , expenseUnitName , quantity, price , currency  , exchangeRate = 1, remark, ingStatic = false,){
     this.expenseName = expenseName
     this.expenseUnitName = expenseUnitName
     this.price = price
@@ -122,7 +123,6 @@ class tableObj{
     this.exchangeRate = exchangeRate
     this.remark = remark
     this.ingStatic = ingStatic
-    this.billId = billId
     this.totalOrgn = this.countTotalOrgn()
     this.totalCny = this.countTotalCny()
     // console
@@ -136,9 +136,11 @@ class tableObj{
   }
 }
 export default {
-  props:['getList'],
+  props:['getList','propDate','billId','changeBill'],
   data() {
     return {
+      // changeBillSec:
+      changeBill:this.changeBill,
       tableData: [], // 
       title:'',
       expenseType:1,
@@ -171,20 +173,39 @@ export default {
       }]
     };
   },
+  computed: {
+      getBoolen: function () {
+        return this.changeBill
+      },
+  },
   async mounted(){
-    // 初始化table 
-    await this.getRates()
-    
+    // 初始化table  
     await this.initExpenseCode()
     await this.initTabelData()
+    await this.getRates()
 
   },
   watch:{
+    changeBill(newValue){
+      if(newValue){
+        for(let i in this.tableData){
+            let temp = this.tableData[i] 
+            temp.ingStatic = false
+            this.$set(this.tableData,i,temp)
+        }
+      }else{
+        for(let i in this.tableData){
+            let temp = this.tableData[i] 
+            temp.ingStatic = true
+            this.$set(this.tableData,i,temp)
+        }
+      }
+    },
     tableData:{
       deep:true,
       handler(newValue){
         for(let i in newValue){
-          newValue[i].exchangeRate = this.getCurrentRate(newValue[i].currency)
+          newValue[i].exchangeRate = newValue[i].exchangeRate == null ? this.getCurrentRate(newValue[i].currency) : newValue[i].exchangeRate
           newValue[i].totalOrgn = isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)
           newValue[i].totalCny =  isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) * Number(newValue[i].exchangeRate)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * Number(newValue[i].exchangeRate) 
         }
@@ -196,10 +217,11 @@ export default {
     }
   },
   methods:{
+
     // 处理原始传入数据
     dealOriginData(newValue){
         for(let i in newValue){
-          newValue[i].exchangeRate = this.getCurrentRate(newValue[i].currency)
+           newValue[i].exchangeRate = newValue[i].exchangeRate == null ? this.getCurrentRate(newValue[i].currency) : newValue[i].exchangeRate
           newValue[i].totalOrgn = isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)
           newValue[i].totalCny =  isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) * Number(newValue[i].exchangeRate)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * Number(newValue[i].exchangeRate) 
         }
@@ -210,7 +232,7 @@ export default {
   
     },
     async getRates(){ // 获取当前订单的汇率
-      let res = await this.$http.get(this.$service.getExchangeRatesForOrder+'?orderId='+this.orderId)
+      let res = await this.$http.get(this.$service.getExchangeRatesForOrder+'?orderId='+this.propDate.orderId)
       if(res.code == 200){
         this.rates = res.data 
       }
@@ -239,20 +261,21 @@ export default {
         })
       },
     async initTabelData(){
+      if(this.getList.length > 0){
       let a = this.getList
-      a.map((res)=>{
-         res.ingStatic = true
-      })
-      let  {expenseType ,orderId}  = a[0]
-      this.orderId = orderId
-      this.expenseType = expenseType
-      this.title =  expenseType == 1 ? '应收账单' : '应付账单'
-      
-      // this.dealOriginData(this.tableData)
+        a.map((res)=>{
+            res.ingStatic = true
+          delete res.createTime
+          delete res.updateTime
+        })
       this.tableData = a
-      console.log(this.getList)
-      console.log(this.tableData)
+      this.dealOriginData(this.tableData)
+      }else{
+        this.addOneTableObj()
+      }
       
+      let  {expenseType }  = this.propDate
+      this.title =  expenseType == 1 ? '应收账单' : '应付账单'
     },
     // 计算人民币合计
     calcTotalCny(array){
@@ -276,6 +299,7 @@ export default {
             }else if(ai.currency == 5){
               symbol = '￡'
             }
+
   　　　　　　dest.push({
                 currency:ai.currency,
                 symbol:symbol,
@@ -298,23 +322,24 @@ export default {
         }
     return {temArray : dest,tempStr:str.substr(0, str.length - 1)}
     },
-
+    // 添加
     addOneTableObj(){
-      let { expenseUnitName  }  = this.tableData[0]
-      let tempObj = new tableObj('',expenseUnitName)
-      this.tableData.push(tempObj)
+      let tempObj = new tableObj('')
+      let a = Object.assign({},tempObj,this.propDate,{billId:this.billId})
+      this.tableData.push(a)
     },
+    // 删除
     deleOneTableObj(e){
       let index = e.$index
-      console.log(index)
-      if(index == 0 || this.tableData[index].ingStatic){
-        this.$message({
-          message: '这条数据不能删除',
-          type: 'warning'
-        });
-      }else{
+      // console.log(index)
+      // if(index == 0){
+      //   this.$message({
+      //     message: '这条数据不能删除',
+      //     type: 'warning'
+      //   });
+      // }else{
         this.tableData.splice(index,1)
-      }
+      // }
     },
   }  
 }

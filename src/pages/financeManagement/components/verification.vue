@@ -118,7 +118,7 @@
 <script>
 import { moneyList} from '../../../util/util'
 export default {
-    props:['childPropsObj'],
+    props:['childPropsObj','verificationArr'],
     data() {
         return {
             dialogVisible: false,
@@ -156,9 +156,10 @@ export default {
             ],
             options: [],
             tempArray:[],
-            allData:[],
+            allData:this.getArray(),
         };
     },
+
 
     watch:{
         currency(newValue){
@@ -174,7 +175,6 @@ export default {
                     this.totalApCny = totalApCny
                     this.unwrittenOffAmountRmbString = totalApWoOrgn
                     this.payWriteOffAmountRmbString = totalApUnwoOrgn
-                    console.log(totalApWoOrgn)
                     this.options = this.setOptionArray(totalApUnwoOrgn)
                     this.unwrittenOffAmountRmb = this.setOne(totalApWoOrgn)
                     this.payWriteOffAmountRmb  = this.setOne(totalApUnwoOrgn)
@@ -186,6 +186,9 @@ export default {
 
     },
     methods:{
+        getArray(){
+            return this.verificationArr
+        },
         async handleClose(){
             await this.cancle()
         },
@@ -230,7 +233,7 @@ export default {
             this.$emit('farhersearch2');
         },
         async onSubmit(){
-            let { bankAccount, currency ,writeOffAmount , unwrittenOffAmountRmb , writeOffWay ,paymentTime,payWay,allData} = this;
+            let { bankAccount, currency ,writeOffAmount , unwrittenOffAmountRmb , writeOffWay ,paymentTime,payWay} = this;
             if(bankAccount == ''){
                 this.$message({ showClose: true, message: '请输入付款账户信息',type: 'error',duration:2})
                 return ;
@@ -250,10 +253,9 @@ export default {
                 paymentTime:paymentTime,
                 writeOffAmount:writeOffAmount,
                 writeOffWay:writeOffWay,
-                orderPaymentVOS:allData
+                orderPaymentVOS:this.verificationArr
             }
             let res = await this.$http.post(this.$service.writeOff,params);
-            console.log(res)
             if(res.code == 200){
                 this.$message({ showClose: true, message: '成功',type: 'success',duration:2})
                 await this.cancle()

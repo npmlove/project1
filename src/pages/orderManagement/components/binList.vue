@@ -136,7 +136,12 @@ export default {
         console.log(this.childData  )
         this.id = id
         this.orderId = orderId
-        this.tableData =this.childData
+        let tempIndata = this.childData
+        for(let i in tempIndata){
+            delete tempIndata[i].createTime
+            delete tempIndata[i].updateTime
+        }
+        this.tableData = tempIndata
         // this.addOneTableObj()
     },
 

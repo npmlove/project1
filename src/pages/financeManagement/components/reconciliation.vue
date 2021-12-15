@@ -181,6 +181,7 @@ export default {
         };
     },
     
+    
     watch:{
         value(newValue){
             this.unreconciledAmount = this.setOne(this.totalApUnwoOrgnString)
@@ -198,6 +199,7 @@ export default {
                     this.totalApUnwoOrgnString = totalApUnwoOrgn
                     this.totalApWoOrgnString = totalApWoOrgn
                     this.options = this.setOptionArray(totalApUnwoOrgn)
+                    this.value = this.setOptionArray(totalApUnwoOrgn)[0].value
                     this.unreconciledAmount = this.setOne(this.totalApUnwoOrgnString)
                     this.payCheckAmount = this.setOne(this.totalApWoOrgnString)
                 }
@@ -229,6 +231,7 @@ export default {
                     }
                 }
             }
+            console.log(temp)
             return temp
         },
         showModal(){
@@ -253,6 +256,15 @@ export default {
                     this.tableData = res.data.orderPaymentBillList
                     this.dialogData = res.data
                     this.innerVisible = true
+                    this.$message({
+                        message: '导入成功',
+                        type: 'success'
+                    });
+                }else{
+                    this.$message({
+                        message: '导入失败',
+                        type: 'error'
+                    });
                 }
             })
         },
