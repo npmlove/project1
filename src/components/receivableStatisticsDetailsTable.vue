@@ -526,8 +526,18 @@
       },
       tableRowClassName({row, rowIndex}) {
         if (row.abnormalFlag === 1) {
-          return 'warning-row';
-        } else if(rowIndex%2==0){
+          return 'abnormalFlag';
+        }else if(row.orderProfit>=-200&&row.orderProfit<0){
+          return 'orderProfit-level1';
+
+        }else if(row.orderProfit>=-500&&row.orderProfit<-200){
+          return 'orderProfit-level2';
+
+        }else if(row.orderProfit<-500){
+          return 'orderProfit-level3';
+
+        }
+        else if(rowIndex%2==0){
           return 'row1';
         }else{
           return 'row2';
@@ -560,8 +570,17 @@
   }
 </script>
 <style>
-  .el-table .warning-row {
-    background: #f28080;
+  .el-table .abnormalFlag {
+    background: #CD5C5C;
+  }
+  .el-table .orderProfit-level1 {
+    background: #FFDEAD;
+  }
+  .el-table .orderProfit-level2 {
+    background: #F4A460;
+  }
+  .el-table .orderProfit-level3 {
+    background: #FA8072;
   }
 
   .el-table .row1 {
