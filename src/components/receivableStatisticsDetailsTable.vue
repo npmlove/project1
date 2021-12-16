@@ -527,13 +527,13 @@
       tableRowClassName({row, rowIndex}) {
         if (row.abnormalFlag === 1) {
           return 'abnormalFlag';
-        }else if(row.orderProfit>=-200&&row.orderProfit<0){
+        }else if(row.orderProfit>-200&&row.orderProfit<0){
           return 'orderProfit-level1';
 
-        }else if(row.orderProfit>=-500&&row.orderProfit<-200){
+        }else if(row.orderProfit>-500&&row.orderProfit<=-200){
           return 'orderProfit-level2';
 
-        }else if(row.orderProfit<-500){
+        }else if(row.orderProfit<=-500){
           return 'orderProfit-level3';
 
         }
