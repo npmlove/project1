@@ -143,7 +143,7 @@ export default {
       expenseType:1,
       expenseUnitName:'',
       billId:0,
-      orderId:this.orderId,// 订单id
+      orderId:this.orderId  ,// 订单id
       orderNo:this.orderNo,//
       rates:[], // 汇率数组
       expenseCodeOpt:[] ,// 选择费用 
@@ -173,17 +173,12 @@ export default {
       }]
     };
   },
-  computed: {
-      getBoolen: function () {
-        return this.changeBill
-      },
-  },
   async mounted(){
     // 初始化table
     await this.initTabelData()  
     await this.initExpenseCode()
     
-    await this.getRates()
+   
 
   },
   watch:{
@@ -249,7 +244,7 @@ export default {
       if(this.getList.length > 0){
       let a = this.getList
       let {orderId,expenseType,orderNo,expenseUnitName,billId} = a[0]
-      console.log(expenseType)
+      console.log(a[0])
         a.map((res)=>{
             res.ingStatic = true
           delete res.createTime
@@ -264,9 +259,10 @@ export default {
       this.title =  expenseType == 1 ? '应收账单' : '应付账单'
       this.dealOriginData(this.tableData)
       }else{
+ 
         this.addOneTableObj()
       }
-      
+       await this.getRates()
    
      
     },

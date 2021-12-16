@@ -427,9 +427,9 @@ export default {
   },
 
    created(){
-    this.orderId = this.$route.query.id
-     this.getOriganData()
-     this.initSysSetTing()
+      this.orderId = this.$route.query.id
+      this.getOriganData()
+      this.initSysSetTing()
   },
   components:{
     binList,
@@ -679,6 +679,7 @@ export default {
            tempObj.arOrderPriceList[i].changeBillAddOne = false
           }
           this.orderNo = tempObj.orderNo
+          console.log(tempObj.orderNo)
           this.initData = tempObj 
           this.isDataDone = true
       }
