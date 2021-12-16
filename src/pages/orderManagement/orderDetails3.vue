@@ -10,10 +10,12 @@
           </div>
           <div>
             <el-button  type="danger">操作异常，取消订单</el-button>
-          </div>
+          </div> 操作完成
       </div> -->
       <el-button type="danger" @click="saveOrder" >保存</el-button>
-      <el-button type="danger" @click="ceshi">ceshi</el-button>
+      <el-button type="primary" @click="exdeOrder" >操作完成</el-button>
+      <el-button type="primary" @click="cancleOrder" >取消订单</el-button>
+
       <div class="common">
           <div>
             <span>订单号</span>
@@ -220,7 +222,7 @@
                       <div>分泡比例</div>
                       <div>计费重</div>
                   </div>
-                  <binList class="mtop_10" ref="typeThree" :childData= "initData.orderCargoDetailList" />
+                  <binList class="mtop_10" ref="typeThree" :orderId= "orderId" :childData= "initData.orderCargoDetailList" />
               </div>
               <h1 class="title">其他服务</h1>
               <div class="inData" style="background:rgb(240,240,240);padding-left:20px">
@@ -262,43 +264,54 @@
               
         </div>
         <div v-show="radio1=='2'" class="details">
-          <billOrder  :getList= "initData.arOrderPriceList[0].list" :propDate= "typeOneProp" :changeBill= 'changeBillOne' :billId= 'billIdOne' ref="typeOne" />
+          <!-- 应付账单可以最多有5个 做个循环 循环组件ref -->
+          <div v-for="(item,index) in initData.arOrderPriceList"   :key="index">
+            <!-- 组件部分 -->
+            <bill-order  :getList = item.list  :ref="`typeBill${index}`" />
+            <!-- 操作部分 -->
+            <div style="margin-left:20px;" v-if="item.status == 0 || item.changeBillAddOne" >
+              <el-button  style="width:200px"   @click="fatherAddOneItem(index)" >添加费用</el-button>
+              <el-button  style="width:200px"  type="primary" @click="reconciliationClient(index)" >发起客户对账</el-button>
+            </div>
+            <div  >
+              <p class="pTips" v-if="item.status == 1 && item.changeBillAddOne ==false ">
+                  <span>账单已发送，等待客户确认....（倒计时：{{item.billCreateTime}}）</span>
+                  <span @click="reWriteBill(index)">修改账单</span>
+              </p>
+              <p class="pTips" v-if="item.status == 2">
+                  <span>账单已确认</span>
+                  <span @click="reWriteBill(index)">修改账单</span>
+              </p>
+              <p class="pTips" v-if="item.status == 3">
+                  <span>账单已确认，开票已申请</span>
+                  <span >修改账单</span>
+              </p>
+              <p class="pTips" v-if="item.status == 4">
+                  <span>账单已确认，发票开具￥{{item.invoiceAmount}}</span>
+                  <span >修改账单</span>
+              </p>
+            </div>
+            <!-- 新增账单 -->
+            <div>
+                <el-button v-if="(index == initData.arOrderPriceList.length - 1 && index !== 4) && item.status == 3" type="primary" @click="creatNewBill(index)" style="width:200px;margin-left:20px;margin-top:20px  " >新建账单</el-button>
+            </div>
+          </div>
           <div v-if="creatNewBillBoolen" >
-            <!-- 新建账单内容 -->
-              <billOrder ref="typeFour" :getList='[]'  :changeBill= 'changeBillFour' :propDate= 'typeFourProp' :billId='0' />
-              <el-button   style="margin-left:20px;width:200px"   @click="fatherNewFour()" >新增</el-button>
-              <el-button   style="margin-left:20px;width:200px" type="primary" @click="reconciliationClient(4)" >发起客户对账</el-button>
+              <billOrder    ref="typeNewBill" :getList='[]' :orderId='orderId' :orderNo='orderNo' />
+              <el-button   style="margin-left:20px;width:200px"   @click="fatherAddOneItem(100)" >添加费用</el-button>
+              <el-button   style="margin-left:20px;width:200px" type="primary" @click="reconciliationClient(100)" >发起客户对账</el-button>
           </div>
-         
-          <div >
-              <el-button v-if="initData.arOrderPriceList[0].status == 3 && creatNewBillBoolen == false" type="primary" @click="creatNewBill" style="width:200px;margin-left:20px;" >新建账单</el-button>
-              <el-button  v-if="initData.arOrderPriceList[0].status == 0" style="width:200px"  @click="fatherNewOne()"  >新增</el-button>
-              <el-button  v-if="initData.arOrderPriceList[0].status == 0"  style="margin-left:20px;width:200px" type="primary" @click="reconciliationClient(1)" >发起客户对账</el-button>
-          </div>
-          
-          <div  >
-            <p class="pTips" v-if="initData.arOrderPriceList[0].status == 1">
-                <span>账单已发送，等待客户确认....（倒计时：{{initData.billCreateTime}}）</span>
-                <span @click="reWriteBill">修改账单</span>
-            </p>
-            <p class="pTips" v-if="initData.arOrderPriceList[0].status == 2">
-                <span>账单已确认</span>
-                <span @click="reWriteBill">修改账单</span>
-            </p>
-            <p class="pTips" v-if="initData.arOrderPriceList[0].status == 3">
-                <span>账单已确认，开票已申请</span>
-                <span >修改账单</span>
-            </p>
-            <p class="pTips" v-if="initData.arOrderPriceList[0].status == 4">
-                <span>账单已确认，发票开具￥</span>
-                <span >修改账单</span>
-            </p>
-          </div>
-          
           <div class="line"></div>
-          <billOrder  :getList= "initData.apOrderPriceList" :propDate= "typeTwoProp" :changeBill= 'changeBillTwo' :billId= 'billIdTwo' ref="typeTwo" />
-          <el-button style="margin-left:20px;width:200px" v-if="isChangeJiaoDan" @click="commitionBill">交单</el-button>
-          <el-button style="margin-left:20px;width:200px;backround:red;color:white" v-if="!isChangeJiaoDan" >申请解锁</el-button>
+          <billOrder  :getList= "initData.apOrderPriceList"  ref="typeTwo" />
+            <span style="margin-left:20px;" v-if="initData.financeStatus == 0">未交单</span>
+            <span style="margin-left:20px;" v-if="initData.financeStatus == 1">已交单</span>
+            <span style="margin-left:20px;" v-if="initData.financeStatus == 2">请解锁</span>
+            <span style="margin-left:20px;" v-if="initData.financeStatus == 3">交单待审核</span>
+            <span style="margin-left:20px;" v-if="initData.financeStatus == 4">修改中</span>
+            <el-button style="margin-left:20px;width:200px" v-if="initData.financeStatus == 0" @click="commitionBill">交单</el-button>
+            <el-button style="margin-left:20px;width:200px;" v-if="initData.financeStatus == 1 || initData.financeStatus == 2" @click="recommiter" >申请解锁</el-button>
+            <el-button style="margin-left:20px;width:200px;" v-if="initData.financeStatus == 3 " @click="recommiter" >解锁已申请，等待审核</el-button>
+            
           <div class="line"></div>
           <div class="paddingBottom"></div>
         </div>
@@ -319,9 +332,6 @@ export default {
       isChangeJiaoDan:true, // 交单是否显示出来
       orderNo:'',// 运单号
       orderId:'',// 账单id
-      changeBillOne:false, // 是否修改应收changeBill账单状态 默认false
-      changeBillTwo:false, // 是否修改应付changeBill账单状态
-      changeBillFour:false,
       creatNewBillBoolen:false, // 新建账单的状态
       preSaleList:[] ,// 售前客服初始数组
       pscsId:'', // 售前客服id
@@ -329,10 +339,7 @@ export default {
       mscsId:"",// 售中客服id
       airLineList:[] ,// 航线负责人初始数组
       principalId:'', // 航线负责人ID
-      typeOneProp:{}, //传递给typeone 对象
-      billIdOne:'',//传递给账单id
       typeTwoProp:{}, //传递给typeTwo 对象
-      typeFourProp:{}, //传递给typeFour 对象
       billIdTwo:'',//传递给账单id
       initData:{}, // 初始化返回对象
       billFourArray:[], // 账单
@@ -429,69 +436,183 @@ export default {
     billOrder
   },
   methods:{
+    // 申请解锁
+    recommiter(){
+      this.$prompt('申请解锁', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /^(\s|\S){0,200}$/,
+          inputErrorMessage: '限制200字'
+        }).then(({ value }) => {
+              var data = {
+                financeStatus: this.initData.financeStatus,
+                operationType: 1,
+                orderId: this.orderId,
+                info: value
+              }
+              this.$http.post(this.$service.presentSavePresentLog, data).then(res => {
+                if (res.code == 200) {
+                  this.$alert('申请成功', {
+                    confirmButtonText: '确定',
+                    callback: () => {
+                      this.$router.push('/orderManagement/orderManage')
+                    }
+                  });
+                }else{
+                  this.$message.error(res.message)
+                }
+              })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });       
+        });
+ 
+
+    },
+    // 操作完成 推进订单进程 不然没法对账
+    exdeOrder(){
+      // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
+      let arrayTypeOne = this.$refs.typeBill0[0].tableData
+      let arrayTypeTwo = this.$refs.typeTwo.tableData
+      let order = this.initData
+        delete order.arOrderPriceList
+        delete order.apOrderPriceList
+        delete order.orderCargoDetailList
+        delete order.orderPriceList
+        delete order.trayDetail
+        delete order.createTime
+        delete order.updateTime
+       let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
+       let orderCargoDetailList = this.$refs.typeThree.tableData
+
+
+      let params = {
+        order:order,
+        orderPriceList:orderPriceList,
+        orderCargoDetailList:orderCargoDetailList,
+        ctrlMap:{
+          ctrlFlag:1
+        }
+        
+      }
+     this.$http.post(this.$service.orderExecuteOrder,params).then((data) => {
+            if(data.code == 200){
+              this.$message('成功')
+              this.$router.push('/orderManagement/orderManage')
+            } else {
+              this.$message.error(data.message)
+            }
+      })
+
+    },
     // 交单
     commitionBill(){
       // 账单暂时已经定 确认
-      var data = {
-        financeStatus: 0,
-        operationType: 0,
-        orderId: this.orderId,
-        info: ''
-      }
-      this.$http.post(this.$service.presentSavePresentLog, data).then(res => {
-        if (res.code == 200) {
-          this.$alert('交单成功', {
-            confirmButtonText: '确定',
-            callback: () => {
 
-            }
-          });
-        }else{
-          this.$message.error(res.message)
-        }
+     
+
+      let tempArr = this.initData.arOrderPriceList
+      let isBoo  = tempArr.filter(item=>{
+        return    item.status <3
       })
+      if(isBoo.length > 0){
+         this.$message.error('存在账单未对账');
+      }else{
+        var data = {
+          financeStatus: 0,
+          operationType: 0,
+          orderId: this.orderId,
+          info: ''
+        }
+        this.$http.post(this.$service.presentSavePresentLog, data).then(res => {
+          if (res.code == 200) {
+            this.$alert('交单成功', {
+              confirmButtonText: '确定',
+              callback: () => {
+                this.$router.push('/orderManagement/orderManage')
+              }
+            });
+          }else{
+            this.$message.error(res.message)
+          }
+        })
+      }
+
+
     },
     // 创建一个新账单
-    creatNewBill(){
-      this.typeFourProp ={
-          orderId:this.orderId,
-          expenseType:1,
-          orderNo:this.initData.orderNo,
-          expenseUnitName:this.initData.expenseUnitName
-      }
+    creatNewBill(e){
+      console.log(e)
       this.creatNewBillBoolen = true
+
     },
 
     // Four组件的新增放到父组件触发
-    fatherNewFour(){
-      this.$refs.typeFour.addOneTableObj()
+    fatherAddOneItem(e){
+      if(e == 0){
+        this.$refs.typeBill0[0].addOneTableObj()
+      }else if(e == 1){
+        this.$refs.typeBill1[0].addOneTableObj()
+      }else if(e == 2){
+        this.$refs.typeBill2[0].addOneTableObj()
+      }else if(e == 3){
+        this.$refs.typeBill3[0].addOneTableObj()
+      }else if(e == 4){
+        this.$refs.typeBill4[0].addOneTableObj()
+      }else if(e == 100){
+        // 这里是新增账单
+        this.$refs.typeNewBill.addOneTableObj()
+      }
+     
     },
     // 组件的新增放到父组件触发
     fatherNewOne(){
       this.$refs.typeOne.addOneTableObj()
     },
     // 修改账单
-    reWriteBill(){
-      let arrayTypeOne = this.$refs.typeOne.tableData
-      let {billId} = arrayTypeOne[0]
-      console.log(billId)
+    reWriteBill(e){
+      this.initData.arOrderPriceList[e].changeBillAddOne = true
+      let  tempArray = []
+      if(e == 0){
+        tempArray = this.$refs.typeBill0[0].tableData
+       
+      }else if(e == 1){
+        tempArray = this.$refs.typeBill1[0].tableData
+       
+      }else if(e == 2){
+        tempArray = this.$refs.typeBill2[0].tableData
+       
+      }else if(e == 3){
+        tempArray = this.$refs.typeBill3[0].tableData
+       
+      }else if(e == 4){
+        tempArray = this.$refs.typeBill4[0].tableData 
+        
+      }
+      tempArray.map(res=>{
+        if(res.expenseName == '空运费'){
+          res.ingStatic = true
+        }else{
+          res.ingStatic = false
+        }
+      })
+      let {billId} = tempArray[0]
       this.$http.post(this.$service.modifyBill,{billId:billId}).then(res=>{
         if(res.code == 200){
             this.$message({
               message: '修改账单成功',
               type: 'success'
             })
-          this.changeBillOne = !this.changeBillOne
         }
       })
-      
     },
     // 保存账单
     saveOrder(){
-      let arrayTypeOne = this.$refs.typeOne.tableData
+      // 在修改账单的过程中不允许保存
+      let arrayTypeOne = this.$refs.typeBill0[0].tableData
       let arrayTypeTwo = this.$refs.typeTwo.tableData
-      // console.log(arrayTypeOne)
-      // console.log(arrayTypeTwo)
       let order = this.initData
         delete order.arOrderPriceList
         delete order.apOrderPriceList
@@ -509,7 +630,8 @@ export default {
       }
      this.$http.post(this.$service.orderSaveOrder,params).then((data) => {
             if(data.code == 200){
-              this.$router.push('/orderManagement/orderManage')
+              this.$message('保存成功')
+              // this.$router.push('/orderManagement/orderManage')
             } else {
               this.$message.error(data.message)
             }
@@ -552,63 +674,68 @@ export default {
       let res = await  this.$http.get(this.$service.orderSearchDetail+`?orderId=${this.orderId}`)
       if(res.code == 200){
         let tempObj = res.data
-        tempObj.trayDetail = JSON.parse(tempObj.trayDetail)
-        this.initData = tempObj
-        
-        let { id , orderNo ,expenseUnitName} = tempObj
-        if(tempObj.arOrderPriceList[0].list.length > 0){
-          this.billIdOne = tempObj.arOrderPriceList[0].list[0].billId
-        }
-        if(tempObj.apOrderPriceList.length > 0 ){
-          this.billIdTwo = tempObj.apOrderPriceList[0].billId
-        }
-        this.changeBillOne = tempObj.arOrderPriceList[0].status == 1 ? false : true
-        this.typeOneProp = {
-          orderId:id,
-          expenseType:1,
-          orderNo:orderNo,
-          expenseUnitName:expenseUnitName
-        }
-        this.typeTwoProp = {
-          orderId:id,
-          expenseType:2,
-          orderNo:orderNo,
-          expenseUnitName:expenseUnitName
-        }
-        this.isDataDone = true
+          tempObj.trayDetail = JSON.parse(tempObj.trayDetail)
+          for(let i in tempObj.arOrderPriceList){
+           tempObj.arOrderPriceList[i].changeBillAddOne = false
+          }
+          this.orderNo = tempObj.orderNo
+          this.initData = tempObj 
+          this.isDataDone = true
       }
     },
     // 客户发起对账
-    async reconciliationClient(type){
+    async reconciliationClient(e){
       let {departureDate , fullLeg  ,orderNo ,waybillNo} = this.initData ;
       let userId = sessionStorage.getItem('userId')
-      let tempArray  = type == 1 ? this.$refs.typeOne.tableData :  this.$refs.typeFour.tableData;
-      let totalCny = type == 1 ?  this.$refs.typeOne.totalCnyStr : this.$refs.typeFour.totalCnyStr ;
+      let  tempArray = []
+      let  totalCny = 0
+      if(e == 0){
+        tempArray = this.$refs.typeBill0[0].tableData
+        totalCny = this.$refs.typeBill0[0].totalCnyStr
+      }else if(e == 1){
+        tempArray = this.$refs.typeBill1[0].tableData
+        totalCny = this.$refs.typeBill1[0].totalCnyStr
+      }else if(e == 2){
+        tempArray = this.$refs.typeBill2[0].tableData
+        totalCny = this.$refs.typeBill2[0].totalCnyStr
+      }else if(e == 3){
+        tempArray = this.$refs.typeBill3[0].tableData
+        totalCny = this.$refs.typeBill3[0].totalCnyStr
+      }else if(e == 4){
+        tempArray = this.$refs.typeBill4[0].tableData 
+        totalCny = this.$refs.typeBill4[0].totalCnyStr
+      }else if(e == 100){
+        tempArray = this.$refs.typeNewBill.tableData 
+        totalCny = this.$refs.typeNewBill.totalCnyStr
+      }
+      
+      
       if(totalCny > 0){
         let params = {
           departureDate:departureDate,
           fullLeg:fullLeg,
           orderNo:orderNo,
           waybillNo:waybillNo,
-          orderId:this.orderId,
+          orderId:this.orderId ,
           userId:userId,
           prices:tempArray,
         }
-        console.log(params)
+
         this.$http.post(this.$service.priceSendBill, params).then(res => {
-            if (res.code == 200) {
               console.log(res)
+            if (res.code == 200) {
+             
               this.$router.push('/orderManagement/orderManage')
             }else{
               this.$message.error(res.message)
             }
+          }).catch(err=>{
+            console.log(err)
           })
       }else{
         this.$message.error(`${this.initData.customerName}，账单金额异常，发起对账失败`)
         return
       }
-
-
     },
   }
 }

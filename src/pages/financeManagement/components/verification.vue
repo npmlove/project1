@@ -127,17 +127,13 @@ export default {
             writeOffAmount:0,//输入的核销金额
             writeOffWay:'1', //核销方式 0=银行转账 1=应付对冲
             paymentTime:'',
-            payWay:'', //0=付款买单 1=月结
+            payWay:'1', //0=付款买单 1=月结
             totalApCny:0,// 应付总金额
             unwrittenOffAmountRmb:0,// 未核销金额
             unwrittenOffAmountRmbString:0,// 未核销金额 jsonArray
             payWriteOffAmountRmb:0,// 已核销金额
             payWriteOffAmountRmbString:0,// 已核销金额jsonArray
-            payWayArray:[
-                {
-                    value:'',
-                    label:"全部"
-                },{
+            payWayArray:[{
                     value:'0',
                     label:"付款买单"
                 },{
