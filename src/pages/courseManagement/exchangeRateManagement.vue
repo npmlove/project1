@@ -200,7 +200,12 @@
                 this.tableData.push(data.data[i])
                 i++;
               } else {
-                this.tableData.push({monthNo: month})
+                this.tableData.push(
+                {
+                  yearNo: this.form.recentYear,
+                  monthNo: month
+                }
+                )
               }
               month++;
             }
@@ -249,8 +254,9 @@
       },
       //操作
       handleClick(scope) {
-        if (!this.checkEdit(scope.row.createTime)){
-          this.$message.error("汇率设置已超过24小时")
+        let cheResult=this.checkEdit(scope.row);
+        if (cheResult!=true){
+          this.$message.error(cheResult)
           return;
         }
         if (scope.method == 'editExpense') {
@@ -267,12 +273,18 @@
           this.id = scope.row.id
         }
       },
-      checkEdit(date) {
-        var today = new Date();
-        date = new Date(date)
+      checkEdit(row) {
+        var today = new Date(2022,1,27);
+        var date = new Date(row.createTime)
+        var oneDay=1000*60*60*24;
+        var currentMonth=row.monthNo;
+        var start=new Date(new Date(row.yearNo,currentMonth-1,1)-7*oneDay);
+        var end=new Date(new Date(row.yearNo,currentMonth,1)-oneDay);
         date.setDate(date.getDate()+1)
-        if (today>date) {
-          return false;
+        if (today > date) {
+          return '汇率设置已超过24小时';
+        }else if(!(today>=start&&today<=end)){
+          return '该月汇率暂不能设置';
         } else {
           return true;
         }

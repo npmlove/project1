@@ -63,7 +63,7 @@
         <template slot-scope="scope">
           <a v-for="(item, index) in operation.options" @click.prevent="handleClick(item.method, scope.row, $event)">
 <!--            <span style="color: #2273CE;">{{ item.label }}</span>-->
-            <span :style="{'color':(!!checkEdit(scope.row.createTime)||item.method!=='editExpense'?'#2273CE':'#808080')}">{{ item.label }}</span>
+            <span :style="{'color':(checkEdit(scope.row)||item.method!=='editExpense'?'#2273CE':'#808080')}">{{ item.label }}</span>
           </a>
         </template>
       </el-table-column>
@@ -165,19 +165,41 @@
       }
     },
     methods: {
-      checkEdit(date) {
+/*      checkEdit(row) {
         var today = new Date();
-        date = new Date(date)
+        var date = new Date(row.createTime)
+        var oneDay=1000*60*60*24;
+        var currentMonth=row.monthNo;
+        var start=new Date(new Date(row.yearNo,currentMonth-1,1)-7*oneDay);
+        var end=new Date(new Date(row.yearNo,currentMonth,1)-oneDay);
         date.setDate(date.getDate()+1)
         if (today > date) {
+          return false;
+        }else if(!(today>=start&&today<=end)){
           return false;
         } else {
           return true;
         }
-      },
+      },*/
       // 排序
       handleSort(column) {
         this.$emit('sortChange', column)
+      },
+      checkEdit(row) {
+        var today = new Date(2022,1,27);
+        var date = new Date(row.createTime)
+        var oneDay=1000*60*60*24;
+        var currentMonth=row.monthNo;
+        var start=new Date(new Date(row.yearNo,currentMonth-1,1)-7*oneDay);
+        var end=new Date(new Date(row.yearNo,currentMonth,1)-oneDay);
+        date.setDate(date.getDate()+1)
+        if (today > date) {
+          return false;
+        }else if(!(today>=start&&today<=end)){
+          return false;
+        } else {
+          return true;
+        }
       },
       // 操作，将操作类型和当前row数据作为参数传递
       handleClick(method, row, e) {
