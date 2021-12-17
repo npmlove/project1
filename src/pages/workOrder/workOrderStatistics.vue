@@ -1,213 +1,162 @@
 <template>
   <div class="content-wrapper">
-    <div class="content">
-      <el-form :inline="true" size="medium" class="demo-form-inline">
-        <div class="content-search-normal">
-          <el-form-item style="float:left">
-            开户行:
-            <el-input v-model="searchParm.accountBank" style="width: 200px;" size="medium" :maxlength="30" clearable placeholder="请输入开户行"></el-input>
-          </el-form-item>
-          <el-form-item style="float:left;margin-left:20px">
-            户名：
-            <el-input v-model="searchParm.userName" style="width: 200px;" size="medium" :maxlength="30" clearable placeholder="请输入户名"></el-input>
-          </el-form-item>
-          <el-form-item style="float:right">
-            <el-row>
-              <el-button @click="searchBankAccount" size="medium" type="primary">搜索</el-button>
-              <el-button @click="editAccount(1)" size="medium" type="primary">新增</el-button>
-            </el-row>
-          </el-form-item>
-        </div>
-      </el-form>
-          <el-table
-              :data="tableData"
-              border
-              stripe
-              header
-              class="finance-talbe"
-              style="width: 100%">
-              <template slot="empty">
-                <img class="data-pic" src="../../assets/kong-icon.png"/>
-                <p>暂无数据</p>
-              </template>
-              <el-table-column type="index" label="序号" min-width="40"></el-table-column>
-              <el-table-column prop="userName" label="户名" min-width="80"></el-table-column>
-              <el-table-column prop="accountBank" label="开户行" min-width="80"></el-table-column>
-              <el-table-column prop="bankAccount" label="银行账号" min-width="80"></el-table-column>
-              <el-table-column prop="createTime" label="添加时间" min-width="80"></el-table-column>
-              <el-table-column  label="操作" min-width="80">
-                 <template slot-scope="scope">
-                  <el-button @click="editAccount(2,scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="deleteBankAccount(scope.row)" type="text" size="small">删除</el-button>
-                </template>  
-              </el-table-column>  
-            </el-table>
+     <div class='totalBox'>
+       <div class="statistBox">
+         <div class="boxTitle">目的港总览-周统计</div>
+         <div v-for="(item,index) in statistBoxData" :key="index" class="boxMessage">{{item.title}}: <span :style="{color: (item.colorShow?'#d8220b':'black'),fontWeight:(item.bolderShow ? '900':'400')}">{{item.value}}{{item.unit && item.value?item.unit:""}}</span>
+           <img src="../../assets/guanjunjiangbei.png" alt="" v-if="item.showNo">
+           <img src="../../assets/upArrow.png" alt="" v-if="item.value>0 && item.showImg">
+           <img src="../../assets/downArrow.png" alt="" v-if="item.value<0 && item.showImg">
+         </div>
+       </div>
+      <echartsCategory :series="categorySeries" :yAxis="categoryYAxis" cid="category"></echartsCategory>
+    </div>
+    <div style="display:flex;justify-content:space-around;margin-top:80px">
+      <echartsPie v-for="(item,index) in chartTitle" :key="index" :cid="`cid+${index}`" :chartTitle="chartTitle[index]" :centerTitle="centerTitle(index)" :data="pieData(index)"></echartsPie>
     </div>
    
-    <el-dialog :title="this.buttonType==1 ? '新增银行账户':'修改银行账户'" :visible.sync="dialogFormVisible" style="width:60%;margin-left:20%">
-      
-      <div slot="footer" class="dialog-footer">
-        <el-form label-position="left" :inline="true" size="medium" class="dialog-demo">
-        <div class="rest-style" style="margin-top: 20px;">
-          <el-form-item label="开户行" label-width="120px" required>
-            <el-input v-model.trim="bankMessage.accountBank" placeholder="请选择开户行" style="width:300px" maxlength="30">
-            </el-input>
-          </el-form-item>
-          <el-form-item label="户名" label-width="120px" required>
-            <el-input size="medium"  v-model.trim="bankMessage.userName" placeholder="请输入户名" maxlength="30"  style="width:300px">
-            </el-input>
-          </el-form-item>
-          <el-form-item label="账号" label-width="120px" required>
-            <el-input size="medium"  v-model.trim="bankMessage.bankAccount" placeholder="请输入账号" maxlength="19" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:300px">
-            </el-input>
-          </el-form-item>
-        </div>
-      </el-form>
-        <!-- 底部按钮 -->
-      <div slot="footer" class="dialog-footer">
-        <div style="text-align: center;padding-top:20px;">
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
-            @click="dialogComfirm">确 定</el-button>
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" @click="dialogFormVisible = false">取 消
-          </el-button>
-        </div>
-      </div>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
+import echartsPie from '../../components/echartsPie.vue'
+import echartsCategory from '../../components/echartsCategory.vue'
   export default {
-    data() {
+    components:{
+      echartsPie,
+      echartsCategory
+    },
+    mounted(){
+      this.getSumData();
+      this.interval = setInterval(()=>{
+        this.getSumData();
+      clearInterval(this.intervalWeek)
+      clearInterval(this.intervalMonth)},300000)
+    },
+    data(){
       return {
-        //判断新增和编辑按钮
-        buttonType:1,
-        //新增和编辑按钮弹框的信息
-        bankMessage:{
-          bankAccount:"",
-          accountBank:"",
-          userName:"",
-        },
-        //搜索参数
-        searchParm:{
-          accountBank:"",
-          userName:""
-        },
-        //删除操作参数
-        deleteId:{id:0},
-        dialogFormVisible: false,
-        //table
-        tableData: [],
-        pageSize: 10,
-        pageNum: 1,
-        total: 0,
-        orderNo: '',
-        waybillNo: '',
-        inboundNo: '',
-        agentId: '',
-        agentOpt: [],
-        customerName: '',
-        pol: '',
-        polOpt: [],
-        pod: '',
-        podOpt: [],
-        typeCode: '全部',
-        orderCount: 0
-      }
+        //定时器
+        interval:"",
+        intervalWeek:"",
+        intervalMonth:"",
+
+        chartTitle:["日工单统计","周工单统计","月工单统计"], //饼图标题
+        statistBoxData:[
+          {title:"目的港",value:"",colorShow:true,bolderShow:true,showNo:true},
+          {title:"周询次",value:""},
+          {title:"周增长",value:"",unit:"%",showImg:true,colorShow:true,bolderShow:true}
+          ], //目的港总览
+          categorySeries: [{},{}],//柱状图图形数据
+          categoryYAxis:[{},{}],//柱状图坐标轴数据
+
+          //工单统计饼图
+          centerTitle1:"",
+          centerTitle2:"",
+          centerTitle3:"",
+          pieData1: [
+            { value: "", name: "已处理", color: "#eecb5f" },
+            { value: "", name: "待处理", color: "#61a5e8" },
+            { value: "", name: "超时", color: "#7ecf51" }],
+          pieData2: [
+            { value: "", name: "已处理", color: "#eecb5f" },
+            { value: "", name: "待处理", color: "#61a5e8" },
+            { value: "", name: "超时", color: "#7ecf51" }]
+          ,
+           pieData3: [
+            { value: "", name: "已处理", color: "#eecb5f" },
+            { value: "", name: "待处理", color: "#61a5e8" },
+            { value: "", name: "超时", color: "#7ecf51" }]
+          }
     },
-    mounted() {
-      this.searchBankAccount()
-    },
-    methods: {
-      //银行账号列表-查询
-      searchBankAccount() {
-        this.$http.post(this.$service.searchBankAccount+`?accountBank=${this.searchParm.accountBank}&userName=${this.searchParm.userName}`).then((data) => {
-          this.loading = false
-          if (data.code == 200) {
-            let getData = JSON.parse(JSON.stringify(data.data))
-            this.tableData = getData
-            // this.$forceUpdate()
+    methods:{
+      centerTitle(index){
+        if(index == 0) {return this.centerTitle1}
+        else if(index == 1) {return this.centerTitle2}
+        else if(index == 2) {return this.centerTitle3}
+      },
+      pieData(index) {
+        if(index == 0) {return this.pieData1}
+        else if(index == 1) {return this.pieData2}
+        else if(index == 2) {return this.pieData3}
+      },
+      getSumData(){
+        this.$http.get(this.$service.sumWorkOrderData).then(data=>{
+          if(data.code==200){
+            //目的港总览数据
+            this.statistBoxData[0].value=data.data.hottestPod.pod
+            this.statistBoxData[1].value=data.data.hottestPod.weekSearchCount
+            this.statistBoxData[2].value=parseInt(data.data.hottestPod.weekGrowthRate)
+            let podRanks = data.data.podRanks
+            let podArray = []
+            podArray.length = podRanks.length
+          //目的港柱状图数据
+          this.$set(this.categorySeries[0],"data",podRanks.map(item=>item.weekSearchCount))
+          this.$set(this.categorySeries[1],"data",podArray.fill(Math.max(...podRanks.map(item=>item.weekSearchCount))))
+          this.$set(this.categoryYAxis[0],"data",podRanks.map(item=>item.pod))
+          this.$set(this.categoryYAxis[1],"data",podRanks.map(item=>item.weekSearchCount))
+
+           //工单统计饼图数据
+           //日
+           let dailySum = data.data.dailySum
+            this.pieData1[0].value = dailySum.processedCount
+            this.pieData1[1].value = dailySum.processingCount
+            this.pieData1[2].value = dailySum.timeOutCount
+            this.centerTitle1 = ` {name| ${dailySum.today.substr(5)}}\n {value|${dailySum.total}}`
+
+            //周
+            let weekLySums = data.data.weekLySums
+            this.pieData2[1].value = weekLySums[2].processingCount
+            this.pieData2[0].value = weekLySums[2].processedCount
+            this.pieData2[2].value = weekLySums[2].timeOutCount
+            this.centerTitle2 = `{name| ${weekLySums[2].weekDesc}}\n {value|${weekLySums[2].total}}`
+            let wIndex = 2
+            if(weekLySums && weekLySums.length>0){
+              this.intervalWeek = setInterval(()=>{
+                if(wIndex == 0){
+                  wIndex =weekLySums.length-1
+                }
+                this.pieData2[1].value = weekLySums[wIndex].processingCount
+                this.pieData2[0].value = weekLySums[wIndex].processedCount
+                this.pieData2[2].value = weekLySums[wIndex].timeOutCount
+                this.centerTitle2 = `{name| ${weekLySums[wIndex].weekDesc}}\n {value|${weekLySums[wIndex].total}}`
+                wIndex--
+              },14000)
+            }
+            //月
+            let monthlySums = data.data.monthlySums
+             this.pieData3[1].value = monthlySums[2].processingCount
+             this.pieData3[0].value = monthlySums[2].processedCount
+             this.pieData3[2].value = monthlySums[2].timeOutCount
+             this.centerTitle3 = `{name| ${monthlySums[2].monthNo+"月"}}\n {value|${monthlySums[2].total}}`
+            let mIndex = 2
+            if(monthlySums && monthlySums.length>0){
+              this.intervalMonth = setInterval(()=>{
+                if(mIndex == 0){
+                  mIndex =monthlySums.length-1
+                }
+                this.pieData3[1].value = monthlySums[mIndex].processingCount
+                this.pieData3[0].value = monthlySums[mIndex].processedCount
+                this.pieData3[2].value = monthlySums[mIndex].timeOutCount
+                this.centerTitle3 = `{name| ${monthlySums[mIndex].monthNo+"月"}}\n {value|${monthlySums[mIndex].total}}`
+                mIndex--
+              },14000)
+            }
           } else {
             this.$message.error(data.message)
           }
         })
-      },
-         //银行账号列表-编辑&新增
-      editAccount(add,message){
-        if(add == '1'){
-          this.bankMessage = {
-            bankAccount:"",
-            accountBank:"",
-            userName:"",
-          }
-        }else{
-          this.bankMessage = {
-            bankAccount:message.bankAccount,
-            accountBank:message.accountBank,
-            userName:message.userName,
-          }
-        }
-        if(message) { 
-          this.bankMessage.id = message.id
-        } 
-        this.buttonType = add
-        this.dialogFormVisible = true
-      },
-      //编辑弹框确认
-       dialogComfirm(){
-         if(this.bankMessage.bankAccount == "" || this.bankMessage.accountBank == "" || this.bankMessage.userName == "") {
-           this.$message({
-             type:"warning",
-             message:"开户行、户名、账号不能为空"
-           })
-           return
-         }
-        
-        this.bankMessage.bankAccount = this.bankMessage.bankAccount.replace(/[^\d.]/g,'')
-        this.$http.post(this.$service.editBankAccount,this.bankMessage).then(
-          data =>{
-            if(data.code == 200) {
-              this.$message.success('编辑成功')
-              this.searchBankAccount()
-            } else {
-                this.$message.error(data.message)
-              }
-          }
-        ).catch(() => {
-            console.log('取消')
-          })
-        this.dialogFormVisible = false
-      },
-      //银行账号列表-删除
-      deleteBankAccount(parm){
-        this.$confirm("确定删除这条数据?", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-          }).then(() => {
-            console.log(typeof(parm.id))
-            this.$http.post(this.$service.deleteBankAccount,{id:parm.id}).then(data => {
-              if (data.code == 200) {
-                this.searchBankAccount()
-                this.$message.success('删除成功')
-              } else {
-                this.$message.error(data.message)
-              }
-            })
-          }).catch(() => {
-            console.log('取消')
-          })
-        
-      },
-    }
+      }
+    },
+    destroyed() {
+      clearInterval(this.interval)
+      clearInterval(this.intervalWeek)
+      clearInterval(this.intervalMonth)
+    },
   }
 </script>
 
 <style scoped lang="less">
-  @import url("../../assets/icon/iconfont.css");
-
-  .content-wrapper {
+.content-wrapper {
     width: 100%;
     box-sizing: border-box;
     /*height: 100%;*/
@@ -215,69 +164,32 @@
     overflow: hidden;
     background-color: #f3f6f9 !important;
   }
-
-  .el-form {
-    background-color: #FFF;
-    text-align: center;
-  }
-
-  .el-form--inline .el-form-item {
-    margin-bottom: 20px;
-    vertical-align: bottom;
-  }
-
-  .parimary_btn {
-    background-color: #9ac143 !important;
-    border-color: #9ac143 !important;
-
-    &:hover {
-      color: #f1e3d5 !important;
-      background-color: #7f9e3c !important;
-      border-color: #7f9e3c !important;
+  .totalBox {
+    margin-bottom:40px; 
+    display:flex;
+    justify-content:space-around;
+    .statistBox {
+      width:360px;
+      border:2px solid silver;
+      .boxTitle {
+        padding:15px 0 15px 25px;
+        font-size:35px;
+        font-weight:bolder;
+        color:white;
+        background: #61a5e8;
+        margin-bottom:25px;
+      }
+      .boxMessage {
+        padding-left:25px;
+        font-size:25px;
+        margin-bottom:40px;
+      img {
+        width:30px;
+        height:40px;
+      }
     }
+}
   }
 
-  .icon-shouqi {
-    color: #3985ca;
-    margin-right: 2px;
-    font-size: 14px;
-    margin-left: 15px;
-  }
-
-  .shouqi {
-    cursor: pointer;
-    color: #3985ca;
-    position: relative;
-  }
-
-  .shouqi .iconfont {
-    font-size: 2px;
-    position: absolute;
-    height: 20px;
-    line-height: 20px;
-    margin-top: 7px;
-    margin-left: 10px;
-  }
-
-  .wrapper,.content {
-    width: 100%;
-  }
-
-  .el-table .sort-caret.ascending {
-    border-bottom-color: #FFF;
-  }
-
-  .content-search-normal {
-    padding: 20px 20px 0 20px !important;
-    background: #fff;
-  }
-
-  .content-search-high {
-    padding: 0 0 20px 30px;
-  }
-
-  /deep/ .el-dialog {
-    min-width: 480px;
-    border-radius: 6px;
-  }
+  
 </style>
