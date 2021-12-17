@@ -135,7 +135,22 @@ class tableObj{
   }
 }
 export default {
-  props:['getList','orderId','orderNo'],
+  props:['orderIdTemp','orderNoTemp','getList'],
+  // {
+  //   getList:{
+  //     type:Array
+  //   },
+  //   orderId:{
+  //     type:Number,
+  //     default(){
+  //       if(orderId == undefined){
+
+  //       }
+  //     }
+  //   }
+
+  // },
+  // 
   data() {
     return {
       tableData: [], // 
@@ -143,8 +158,10 @@ export default {
       expenseType:1,
       expenseUnitName:'',
       billId:0,
-      orderId:this.orderId  ,// 订单id
-      orderNo:this.orderNo,//
+      orderIdTemp:'',
+      orderNoTemp:'',
+      orderId:''  ,// 订单id
+      orderNo:'',//
       rates:[], // 汇率数组
       expenseCodeOpt:[] ,// 选择费用 
       totalOrgnArr:[],// 原币合并数组
@@ -174,8 +191,31 @@ export default {
     };
   },
   async mounted(){
-    // 初始化table
-    await this.initTabelData()  
+    // 初始化table prop
+    if(this.orderNoTemp == undefined){
+      let a = this.getList
+      let {orderId,expenseType,orderNo,expenseUnitName,billId} = a[0]
+        a.map((res)=>{
+            res.ingStatic = true
+          delete res.createTime
+          delete res.updateTime
+        })
+      this.tableData = a
+      this.orderId = orderId
+      // console.log(orderId)
+      this.expenseType = expenseType
+      this.orderNo = orderNo
+      this.expenseUnitName = expenseUnitName
+      this.billId = billId
+      this.title =  expenseType == 1 ? '应收账单' : '应付账单'
+      this.dealOriginData(this.tableData)
+
+    }else{
+      this.orderId = this.orderIdTemp
+      this.orderNo = this.orderNoTemp
+      this.addOneTableObj()
+    }
+    await this.getRates()
     await this.initExpenseCode()
     
    
@@ -240,32 +280,7 @@ export default {
           }
         })
       },
-    async initTabelData(){
-      if(this.getList.length > 0){
-      let a = this.getList
-      let {orderId,expenseType,orderNo,expenseUnitName,billId} = a[0]
-      console.log(a[0])
-        a.map((res)=>{
-            res.ingStatic = true
-          delete res.createTime
-          delete res.updateTime
-        })
-      this.tableData = a
-      this.orderId = orderId
-      this.expenseType = expenseType
-      this.orderNo = orderNo
-      this.expenseUnitName = expenseUnitName
-      this.billId = billId
-      this.title =  expenseType == 1 ? '应收账单' : '应付账单'
-      this.dealOriginData(this.tableData)
-      }else{
- 
-        this.addOneTableObj()
-      }
-       await this.getRates()
-   
-     
-    },
+
     // 计算人民币合计
     calcTotalCny(array){
       return  array.reduce((total, cur) => { return total += cur.totalCny}, 0);
