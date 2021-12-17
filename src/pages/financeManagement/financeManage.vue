@@ -490,7 +490,7 @@
                 <div>
                     {{scope.row.invoicingStatus == 0 ?
                     '未开票' : scope.row.invoicingStatus == 1 ?
-                    '已开票' : scope.row.invoicingStatus == 2 ? '部分开票' : ''
+                    '部分开票' : scope.row.invoicingStatus == 2 ? '已开票' : ''
                     }}
                 </div>
               </template>
@@ -771,8 +771,8 @@ export default {
       billProgress:[
           {label:"全部",value:""},
           {label:"未开",value:"0"},
-          {label:"部分开",value:"2"},
-          {label:"已开",value:"1"},
+          {label:"部分开",value:"1"},
+          {label:"已开",value:"2"},
         ],
       //订单状态
       getFinanceStatus:["未提单","正常","修改申请","修改中","异常"],
