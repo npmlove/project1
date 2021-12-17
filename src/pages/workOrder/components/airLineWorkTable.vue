@@ -150,7 +150,7 @@
                       : require('@/assets/xiajiantou.png')
                   "
                   alt=""
-                  style="width:10px;height:10px"
+                  style="width: 10px; height: 10px"
                 />
               </div>
               <div v-if="statuShow" class="head">
@@ -185,8 +185,11 @@
                     v-for="(item, index) in details.messages"
                     :key="index"
                   >
-                   <span style="margin-right:5px">{{ item.belong == 0 ? "工单历史" : "工单回复"}}</span> 
-                  <span style="margin-right:5px">{{ item.occuTime }}</span> {{ item.userName }}:  {{ item.content }}
+                    <span style="margin-right: 5px">{{
+                      item.belong == 0 ? "工单历史" : "工单回复"
+                    }}</span>
+                    <span style="margin-right: 5px">{{ item.occuTime }}</span>
+                    {{ item.userName }}: {{ item.content }}
                   </div>
                 </div>
                 <div v-if="statuShow">
@@ -246,11 +249,11 @@
 </template>
 <script>
 export default {
-  props:{
-    pageRoleId:{
-      type:Number,
-      default:0
-    }
+  props: {
+    pageRoleId: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -264,6 +267,7 @@ export default {
       nameList: [],
       details: [],
       //定时器显示
+      dataTimer: "", //数据请求定时器
       timer: "10:00",
       //定时器
       timerInterval: "",
@@ -305,6 +309,9 @@ export default {
   },
   mounted() {
     this.initData();
+    this.dataTimer = setInterval(() => {
+      this.initData();
+    }, 60000);
     this.getId();
     window.addEventListener("beforeunload", (e) => {
       var obj = JSON.stringify({ pageNum: this.pageNum });
@@ -338,19 +345,19 @@ export default {
           this.tableData.forEach((item) => {
             item.ifFold = false;
           });
+          clearInterval(this.dataTimer);
+          this.dataTimer = setInterval(() => {
+            this.initData();
+          }, 60000);
         } else {
           this.$message.error(data.message);
         }
       });
     },
     searchClick() {
-      this.pageSize = 20;
-      this.pageNum = 1;
       this.initData();
     },
     restClick() {
-      this.pageSize = 20;
-      this.pageNum = 1;
       this.selectResult.workOrderNo = "";
       this.selectResult.startCommitDate = "";
       this.selectResult.endCommitDate = "";
@@ -366,33 +373,20 @@ export default {
       this.pageNum = e;
       this.initData();
     },
+    //工单详情
     imgShow(e) {
-      this.text = '';
-        this.setText = ''
+      this.text = "";
+      this.setText = "";
       clearInterval(this.timerInterval);
-      this.timer = ''
+      this.timer = "";
       let index = e.$index;
       let data = e.row;
-      this.$refs["popover" + index].showPopper = !this.$refs["popover" + index].showPopper;
+      this.$refs["popover" + index].showPopper =
+        !this.$refs["popover" + index].showPopper;
       data.ifFold = !data.ifFold;
       this.$set(this.tableData, index, data);
       var withPrcps = "";
-      var time = 600;
-      this.timerInterval = setInterval(() => {
-        time--;
-        var m = parseInt(time / 60);
-        var s = parseInt(time % 60);
-        if (m < 10) {
-          m = "0" + m;
-        }
-        if (s < 10) {
-          s = "0" + s;
-        }
-        this.timer = m + ":" + s;
-        if(time == 0) {
-          clearInterval(this.timerInterval);
-        }
-      }, 1000);
+      
       if (data.statusStr == "工单已关闭") {
         withPrcps = false;
         this.statuShow = false;
@@ -411,7 +405,27 @@ export default {
         .then((data) => {
           if (data.code == 200) {
             this.details = data.data;
-          }
+            var time = data.data.secondsLeft;
+            if (time > 0 ){
+              this.timerInterval = setInterval(() => {
+              time--;
+              var m = parseInt(time / 60);
+              var s = parseInt(time % 60);
+              if (m < 10) {
+                m = "0" + m;
+              }
+              if (s < 10) {
+                s = "0" + s;
+              }
+              this.timer = m + ":" + s;
+              if (time == 0) {
+                clearInterval(this.timerInterval);
+              }
+            }, 1000);
+            } else {
+              this.timer = "00:00"
+            }
+                }
         });
     },
     exportFile() {
@@ -441,54 +455,53 @@ export default {
     },
     //工单详情 转单按钮
     selectClick(scope) {
-        if(this.setText==''){
-          this.$message.warning('请选择转单选项后进行操作')
-          return
-        }
-       let userId=this.setText.split(',')[0]
-       let userName=this.setText.split(',')[1]
-       let params={
-        workOrderId:scope.row.id,
-        userId:userId,
-        userName:userName
+      if (this.setText == "") {
+        this.$message.warning("请选择转单选项后进行操作");
+        return;
       }
-      this.$http.post(this.$service.setOrder,params).then((data)=>{
-        if(data.code==200){
-          this.$message.success("转单成功")
+      let userId = this.setText.split(",")[0];
+      let userName = this.setText.split(",")[1];
+      let params = {
+        workOrderId: scope.row.id,
+        userId: userId,
+        userName: userName,
+      };
+      this.$http.post(this.$service.setOrder, params).then((data) => {
+        if (data.code == 200) {
+          this.$message.success("转单成功");
           let data = "popover" + scope.$index;
           this.$refs[data].showPopper = false;
           let ifFolds = this.tableData[scope.$index].ifFold;
           this.tableData[scope.$index].ifFold = !ifFolds;
           this.initData();
         } else {
-          this.$message.error(data.message)
+          this.$message.error(data.message);
         }
-      })
+      });
     },
 
     //工单详情 提交按钮
     subClick(scope) {
-        
-        if(this.text==''){
-          this.$message.warning('请填写反馈内容后进行操作')
-          return
-        }
-        let json={
-            content:this.text,
-            workOrderId:scope.row.id,
-        }
-        this.$http.post(this.$service.handleOrder,json).then((data)=>{
-        if(data.code==200){
-          this.$message.success("提交成功")
+      if (this.text == "") {
+        this.$message.warning("请填写反馈内容后进行操作");
+        return;
+      }
+      let json = {
+        content: this.text,
+        workOrderId: scope.row.id,
+      };
+      this.$http.post(this.$service.handleOrder, json).then((data) => {
+        if (data.code == 200) {
+          this.$message.success("提交成功");
           let data = "popover" + scope.$index;
           this.$refs[data].showPopper = false;
           let ifFolds = this.tableData[scope.$index].ifFold;
           this.tableData[scope.$index].ifFold = !ifFolds;
           this.initData();
         } else {
-          this.$message.error(data.message)
+          this.$message.error(data.message);
         }
-        })
+      });
     },
     //订单详情弹框右上角X关闭
     closePopover(index) {
@@ -569,8 +582,8 @@ export default {
   display: flex;
   justify-content: center;
   margin-top: 20px;
-  height:auto;
-  padding-bottom:15px;
+  height: auto;
+  padding-bottom: 15px;
 }
 .select {
   margin-top: 10px;
@@ -591,12 +604,12 @@ export default {
 
 .delete {
   font-size: 20px;
-  margin-right:8px
+  margin-right: 8px;
 }
 .timi {
   margin-left: -5px;
   padding-bottom: 5px;
-  margin-top:2px;
+  margin-top: 2px;
 }
 .text {
   height: 150px;

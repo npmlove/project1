@@ -143,16 +143,22 @@
           prop="timeOutCount"
         ></el-table-column>
         <el-table-column
-          label="工单总耗时"
+          label="工单总耗时/hour"
           min-width="40"
           sortable="custom"
           prop="totalTakeUp"
         ></el-table-column>
         <el-table-column
-          label="工单均耗时"
+          label="工单均耗时/min"
           min-width="40"
           sortable="custom"
           prop="avgTakeUp"
+        ></el-table-column>
+        <el-table-column
+          label="总回复次数"
+          min-width="40"
+          sortable="custom"
+          prop="totalTimes"
         ></el-table-column>
       </el-table>
       <div class="footer">
@@ -195,7 +201,7 @@ export default {
         disabledDate: (time) => {
           let endDateVal = this.selectResult.endDate;
           if (endDateVal) {
-            return time.getTime() > new Date(endDateVal).getTime() - 8.64e7;
+            return time.getTime() > new Date(endDateVal).getTime() ;
           }
         },
       },
@@ -203,7 +209,7 @@ export default {
         disabledDate: (time) => {
           let beginDateVal = this.selectResult.startDate;
           if (beginDateVal) {
-            return time.getTime() < new Date(beginDateVal).getTime();
+            return time.getTime() < new Date(beginDateVal).getTime()- 8.64e7;
           }
         },
       },
@@ -211,6 +217,10 @@ export default {
   },
   mounted() {
     this.initData();
+    window.addEventListener("beforeunload", (e) => {
+      var obj = JSON.stringify({ pageNum: this.pageNum });
+      sessionStorage.setItem("lastPageNum", obj);
+    });
   },
   methods: {
     // 排序
@@ -366,6 +376,9 @@ export default {
           document.body.appendChild(aLink);
         });
     },
+  },
+  beforeDestroy() {
+    sessionStorage.setItem("lastPageNum", "");
   },
 };
 </script>

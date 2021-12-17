@@ -408,16 +408,14 @@
             <el-table-column
               prop="cargoInfo"
               label="货物信息"
-              min-width="140"
+              min-width="190"
               type=""
               v-if="checkedTable.indexOf('货物信息') !== -1"
             >
               <template slot-scope="scope">
                <span>
                  <div>{{ scope.row.cargoInfo.split(",")[0] }}</div>
-                  <div>{{ scope.row.cargoInfo.split(",")[1] }}PCS</div>
-                  <div>{{ scope.row.cargoInfo.split(",")[2] }}CBM</div>
-                  <div>{{ scope.row.cargoInfo.split(",")[3] }}KGS</div>
+                  <div>{{ scope.row.cargoInfo.split(",")[1] }}PCS/{{ scope.row.cargoInfo.split(",")[3] }}KGS/{{ scope.row.cargoInfo.split(",")[2] }}CBM</div>
                   <div>1:{{ scope.row.cargoInfo.split(",")[4] }}</div>
                </span>
               </template>
@@ -1488,7 +1486,11 @@ export default {
 
 <style scoped lang="less">
 @import url("../../assets/icon/iconfont.css");
-
+/deep/ .el-table {
+  th {
+    height:35px
+  }
+}
 /deep/.pageSkip {
         padding:3px 5px!important
   }

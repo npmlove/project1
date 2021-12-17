@@ -1689,6 +1689,9 @@
           .cell {
             text-align: center;
           }
+          th {
+            height:35px
+          }
       } 
   .content-wrapper {
     width: 100%;

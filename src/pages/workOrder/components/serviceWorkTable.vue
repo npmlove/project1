@@ -62,7 +62,7 @@
 
       </el-form>
       <!-- 新建工单弹框 -->
-        <el-dialog :visible.sync="workOrderDial" title="工单提交" width="40%;" style="padding-bottom:25px">
+        <el-dialog :visible.sync="workOrderDial" title="工单提交" width="40%;" style="padding-bottom:25px" :before-close="handleClose">
             <div style="padding-top:10px">
                 <el-input
                     class="bigInput"
@@ -73,7 +73,7 @@
                     show-word-limit
                     v-model="form.content">
                 </el-input>
-                <el-form style="display:flex">
+                <el-form style="display:flex;margin-top:10px">
                      <el-form-item label="目的港" label-width="60px" style="width:170px">
                         <el-input style="width:100px" size="medium">
                      </el-input>
@@ -107,9 +107,9 @@
                     </el-form-item>
                     <el-form-item label="紧急程度">
                          <el-radio-group v-model="form.urgency">
-                            <el-radio label="0">紧急</el-radio>
+                            <el-radio label="0">低</el-radio>
                             <el-radio label="1">中等</el-radio>
-                            <el-radio label="2">低</el-radio>
+                            <el-radio label="2">紧急</el-radio>
                           </el-radio-group>
                     </el-form-item>
                      <el-form-item label="航线人员">
@@ -196,7 +196,7 @@
                             </div>
                             <el-form v-if="scope.row.status == 0 ||scope.row.status == 2">
                                 <el-form-item label="反馈待定" label-width="70px">
-                                    <el-input style="width:80%;text-align:left" disabled v-model="workOrderDetail.unFeedbackUsers"></el-input>
+                                    <div style="width:80%;text-align:left;border:1px solid silver;padding-left:5px">{{workOrderDetail.unFeedbackUsers}}</div>
                                 </el-form-item>
                                 <el-form-item>
                                     <el-input placeholder="请输入工单内容" v-model="workOrderDetail.content"></el-input>
@@ -232,9 +232,9 @@
               <el-table-column  label="催单" min-width="80">
                  <template slot-scope="scope">
                   <el-button disabled type="info" size="mini" style="width:68px;background-color:#909399;color:#fff;border:0" v-if="scope.row.status == 3">已关闭</el-button>
-                  <el-button @click="remindOrder(scope.row.id)" type="primary" size="mini" style="width:68px" v-else-if="scope.row.timeOutFlag == 1 && scope.row.remindFlag == 0">催单</el-button>
-                  <el-button disabled type="info" size="mini" style="width:68px;background-color:#909399;color:#fff;border:0" v-else-if="scope.row.timeOutFlag == 0">催单</el-button>
-                  <el-button disabled type="warning" size="mini" style="background:rgb(245, 154, 35) !important" v-else-if="scope.row.timeOutFlag == 1 && scope.row.remindFlag == 1">已催单</el-button>
+                  <el-button @click="remindOrder(scope.row.id)" type="primary" size="mini" style="width:68px" v-else-if="scope.row.canRemind == 1 && scope.row.roundsRemindCount == 0">催单</el-button>
+                  <el-button disabled type="info" size="mini" style="width:68px;background-color:#909399;color:#fff;border:0" v-else-if="scope.row.canRemind == 0 && scope.row.roundsRemindCount == 0">催单</el-button>
+                  <el-button @click="remindOrder(scope.row.id)" :disabled="scope.row.canRemind" type="warning" size="mini" style="background:rgb(245, 154, 35) !important" v-else-if="scope.row.timeOutFlag == 1 && scope.row.remindFlag == 1">已催单{{scope.row.roundsRemindCount}}</el-button>
                 </template>  
               </el-table-column>  
             </el-table>
@@ -289,7 +289,7 @@ export default {
             //新建工单弹框
             workOrderDial:false,
             //新建工单弹框结果
-            form:{workOrderType:"",urgency:"",content:"",airLinePeople:[]},
+            form:{workOrderType:0,urgency:"0",content:"",airLinePeople:[]},
             //
             workOrderType:[{label:"询价",value:0}],
             //航线搜索框
@@ -324,14 +324,21 @@ export default {
              disabledDate: time => {
                 let beginDateVal = this.selectResult.startCommitDate
                 if (beginDateVal) {
-                return time.getTime() < new Date(beginDateVal).getTime()
+                return time.getTime() < new Date(beginDateVal).getTime()- 8.64e7
                 }
              }
             },
         }
     },
     methods:{
-        
+        //新建工单确认关闭
+          handleClose(done) {
+        this.$confirm('确认关闭？',{customClass:'confirmClass'})
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      },
         changeRows(row,column){
             if(column.label=="工单详情"){
                 let index
@@ -363,7 +370,7 @@ export default {
        
         //新建工单按钮
         openWorkOrder(){
-            this.form = {workOrderType:"",urgency:"",content:"",airLinePeople:[]},
+            this.form = {workOrderType:0,urgency:"0",content:"",airLinePeople:[]},
             this.workOrderDial = true
         },
         //新建工单 弹框提交
@@ -561,6 +568,11 @@ export default {
         min-height:150px!important
     }
 }
+
+/deep/.confirmClass {
+   width:500px
+}
+
 .content-wrapper {
     width: 100%;
     box-sizing: border-box;

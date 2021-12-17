@@ -1103,6 +1103,7 @@
   // /deep/.el-table tbody tr:hover>td { 
     // background-color:blue!important
 // }
+
  /deep/.el-input--medium{
      .el-input__inner {
         text-overflow: ellipsis!important;
@@ -1115,6 +1116,9 @@
           .cell {
             text-align: center;
           }
+          th {
+    height:35px
+  }
       } 
    .content-search-normal {
     .formItem{

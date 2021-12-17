@@ -175,6 +175,7 @@ export default {
     return {
       data: [], //循环对象
       nameList:[],//客服姓名
+      timer:"",//数据请求定时器
       waitDeal:[{feedBack:"",transfer:""},{feedBack:"",transfer:""},{feedBack:"",transfer:""}],
       pageSize: "3",
       selectResult: {
@@ -208,6 +209,9 @@ export default {
     console.log(this.data)
     this.initData();
     this.getId();
+    this.timer = setInterval(()=>{
+      this.initData()
+    },60000)
   },
   methods: {
       //客服姓名
@@ -229,6 +233,10 @@ export default {
       this.$http.post(this.$service.searchDealingWork4Prcp, request).then((data) => {
         if (data.code == 200) {
           this.data.push(...data.data);
+          clearInterval(this.timer)
+          this.timer = setInterval(()=>{
+            this.initData()
+          },60000)
         } else {
           this.$message.error(data.message)
         }
@@ -236,12 +244,7 @@ export default {
     },
     // 查询
     searchClick() {
-      if (this.selectResult.workOrderNo) {
         this.initData();
-        return;
-      } else {
-        this.initData();
-      }
     },
     // 清空
     restClick() {

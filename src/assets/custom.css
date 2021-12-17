@@ -56,6 +56,9 @@ body{
   color: #e5e5e5;
   font-size: 30px;
 }
+.confirmClass .el-message-box__btns .el-button--primary{
+  width:auto
+}
 .message-custom-class.el-message-box {
   width: 330px;
   height: 260px;

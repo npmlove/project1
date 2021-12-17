@@ -3,7 +3,7 @@
      <div class='totalBox'>
        <div class="statistBox">
          <div class="boxTitle">目的港总览-周统计</div>
-         <div v-for="(item,index) in statistBoxData" :key="index" class="boxMessage">{{item.title}}: <span :style="{color: (item.colorShow?'#d8220b':'black'),fontWeight:(item.bolderShow ? '900':'400')}">{{item.value}}{{item.unit && item.value?item.unit:""}}</span>
+         <div v-for="(item,index) in statistBoxData" :key="index" class="boxMessage">{{item.title}}: <span :style="{color: (item.colorShow?'#d8220b':'black'),fontWeight:(item.bolderShow ? '900':'400')}">{{item.value}}</span>
            <img src="../../assets/guanjunjiangbei.png" alt="" v-if="item.showNo">
            <img src="../../assets/upArrow.png" alt="" v-if="item.value>0 && item.showImg">
            <img src="../../assets/downArrow.png" alt="" v-if="item.value<0 && item.showImg">
@@ -54,18 +54,18 @@ import echartsCategory from '../../components/echartsCategory.vue'
           centerTitle2:"",
           centerTitle3:"",
           pieData1: [
-            { value: "", name: "已处理", color: "#eecb5f" },
-            { value: "", name: "待处理", color: "#61a5e8" },
-            { value: "", name: "超时", color: "#7ecf51" }],
+            { value: "", name: "正常处理", color: "#eecb5f" },
+            { value: "", name: "未处理", color: "#61a5e8" },
+            { value: "", name: "超时处理", color: "#7ecf51" }],
           pieData2: [
-            { value: "", name: "已处理", color: "#eecb5f" },
-            { value: "", name: "待处理", color: "#61a5e8" },
-            { value: "", name: "超时", color: "#7ecf51" }]
+            { value: "", name: "正常处理", color: "#eecb5f" },
+            { value: "", name: "未处理", color: "#61a5e8" },
+            { value: "", name: "超时处理", color: "#7ecf51" }]
           ,
            pieData3: [
-            { value: "", name: "已处理", color: "#eecb5f" },
-            { value: "", name: "待处理", color: "#61a5e8" },
-            { value: "", name: "超时", color: "#7ecf51" }]
+            { value: "", name: "正常处理", color: "#eecb5f" },
+            { value: "", name: "未处理", color: "#61a5e8" },
+            { value: "", name: "超时处理", color: "#7ecf51" }]
           }
     },
     methods:{
@@ -85,7 +85,7 @@ import echartsCategory from '../../components/echartsCategory.vue'
             //目的港总览数据
             this.statistBoxData[0].value=data.data.hottestPod.pod
             this.statistBoxData[1].value=data.data.hottestPod.weekSearchCount
-            this.statistBoxData[2].value=parseInt(data.data.hottestPod.weekGrowthRate)
+            this.statistBoxData[2].value=String(data.data.hottestPod.weekGrowthRate)
             let podRanks = data.data.podRanks
             let podArray = []
             podArray.length = podRanks.length
@@ -98,15 +98,15 @@ import echartsCategory from '../../components/echartsCategory.vue'
            //工单统计饼图数据
            //日
            let dailySum = data.data.dailySum
-            this.pieData1[0].value = dailySum.processedCount
-            this.pieData1[1].value = dailySum.processingCount
+            this.pieData1[0].value = dailySum.normalCount
+            this.pieData1[1].value = dailySum.unProcessedCount
             this.pieData1[2].value = dailySum.timeOutCount
             this.centerTitle1 = ` {name| ${dailySum.today.substr(5)}}\n {value|${dailySum.total}}`
 
             //周
             let weekLySums = data.data.weekLySums
-            this.pieData2[1].value = weekLySums[2].processingCount
-            this.pieData2[0].value = weekLySums[2].processedCount
+            this.pieData2[1].value = weekLySums[2].unProcessedCount
+            this.pieData2[0].value = weekLySums[2].normalCount
             this.pieData2[2].value = weekLySums[2].timeOutCount
             this.centerTitle2 = `{name| ${weekLySums[2].weekDesc}}\n {value|${weekLySums[2].total}}`
             let wIndex = 2
@@ -115,8 +115,8 @@ import echartsCategory from '../../components/echartsCategory.vue'
                 if(wIndex == 0){
                   wIndex =weekLySums.length-1
                 }
-                this.pieData2[1].value = weekLySums[wIndex].processingCount
-                this.pieData2[0].value = weekLySums[wIndex].processedCount
+                this.pieData2[1].value = weekLySums[wIndex].unProcessedCount
+                this.pieData2[0].value = weekLySums[wIndex].normalCount
                 this.pieData2[2].value = weekLySums[wIndex].timeOutCount
                 this.centerTitle2 = `{name| ${weekLySums[wIndex].weekDesc}}\n {value|${weekLySums[wIndex].total}}`
                 wIndex--
@@ -124,8 +124,8 @@ import echartsCategory from '../../components/echartsCategory.vue'
             }
             //月
             let monthlySums = data.data.monthlySums
-             this.pieData3[1].value = monthlySums[2].processingCount
-             this.pieData3[0].value = monthlySums[2].processedCount
+             this.pieData3[1].value = monthlySums[2].unProcessedCount
+             this.pieData3[0].value = monthlySums[2].normalCount
              this.pieData3[2].value = monthlySums[2].timeOutCount
              this.centerTitle3 = `{name| ${monthlySums[2].monthNo+"月"}}\n {value|${monthlySums[2].total}}`
             let mIndex = 2
@@ -134,8 +134,8 @@ import echartsCategory from '../../components/echartsCategory.vue'
                 if(mIndex == 0){
                   mIndex =monthlySums.length-1
                 }
-                this.pieData3[1].value = monthlySums[mIndex].processingCount
-                this.pieData3[0].value = monthlySums[mIndex].processedCount
+                this.pieData3[1].value = monthlySums[mIndex].unProcessedCount
+                this.pieData3[0].value = monthlySums[mIndex].normalCount
                 this.pieData3[2].value = monthlySums[mIndex].timeOutCount
                 this.centerTitle3 = `{name| ${monthlySums[mIndex].monthNo+"月"}}\n {value|${monthlySums[mIndex].total}}`
                 mIndex--

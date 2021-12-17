@@ -69,15 +69,7 @@
                 >
                 </div>
                 <div class="demo-input-suffix input1">
-                反馈待定&nbsp;
-                <el-input
-                    disabled
-                    placeholder=""
-                    v-model="item.unFeedbackUsers"
-                    size="small"
-                    style="width: 200px"
-                >
-                </el-input>
+                <div>反馈待定 {{item.unFeedbackUsers}}</div>
                 </div>
                 <div class="input2">
                 <el-input
@@ -127,6 +119,7 @@ export default {
   data() {
     return {
       data: [], //循环对象
+      timer:"",//数据请求定时器
       pageSize: "3",
       selectResult: {
         workOrderNo: "",
@@ -155,6 +148,9 @@ export default {
   mounted() {
     console.log(this.data)
     this.initData();
+    this.timer = setInterval(()=>{
+      this.initData()
+    },60000)
   },
   methods: {
     //初始化数据
@@ -168,10 +164,11 @@ export default {
       };
       this.$http.post(this.$service.searchDealing, params).then((data) => {
         if (data.code == 200) {
-          if (data.data.length == 0) {
-            this.$message.warning("没有搜索到结果");
-          }
           this.data.push(...data.data);
+          clearInterval(this.timer)
+          this.timer = setInterval(()=>{
+            this.initData()
+          },60000)
         } else {
           this.$message.error(data.message)
         }
@@ -179,12 +176,7 @@ export default {
     },
     // 查询
     searchClick() {
-      if (this.selectResult.workOrderNo) {
         this.initData();
-        return;
-      } else {
-        this.initData();
-      }
     },
     // 清空
     restClick() {
@@ -230,6 +222,9 @@ export default {
        })
     },
   },
+  beforeDestroy() {
+    clearInterval(this.timer)
+  },
 };
 </script>
 <style scoped>
@@ -245,7 +240,6 @@ export default {
         transition: all 1s;
       }
 
-     
       @keyframes slide-in {
         from {
           transform: translateY(100%);
