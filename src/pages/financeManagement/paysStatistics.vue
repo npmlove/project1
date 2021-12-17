@@ -214,18 +214,14 @@
              <el-checkbox class="mycheckbox" v-model="checkedIndex15">汇率</el-checkbox>
              <el-checkbox class="mycheckbox" v-model="checkedIndex16">结算方式</el-checkbox>
              <el-checkbox class="mycheckbox" v-model="checkedIndex17">核销次数</el-checkbox>
-             <el-checkbox class="mycheckbox" v-model="checkedIndex18">核销状态</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex14">核销状态</el-checkbox>
              
              
           
         </div>
         
       </el-drawer>
-      <!-- <el-tabs v-model="activeName" class="el_tabs" type="card"  @tab-click="handleClick">
-        <el-tab-pane :label="'可操作'+ countAuth" name="0"></el-tab-pane>
-        <el-tab-pane :label="'业务修改中'+ countNoAuth" name="1"></el-tab-pane>
-        <el-tab-pane :label="'异常'+ countErr" name="2"></el-tab-pane>
-      </el-tabs> -->
+
       <div class="el_tabs">
         <el-button :class="{tip: woStatus == 0}" @click="handleClick(0,initBoolen=true)" >可操作({{countAuth}})</el-button>
         <el-button :class="{tip: woStatus == 1}" @click="handleClick(1,initBoolen=true)">业务修改中({{countNoAuth}})</el-button>
@@ -395,7 +391,7 @@
       </el-table-column>
       <el-table-column
         label="核销状态"
-        v-if="checkedIndex18"
+        v-if="checkedIndex14"
         width="100">
         <template slot-scope="scope">
           <span v-if="scope.row.payWriteOffStatus == 0">未对账未核销</span>
@@ -509,16 +505,7 @@
             <template slot-scope="scope">
               <div v-for="(item,index) in scope.row.tempObj" :key="index">
                 <div v-if="item.status == 0 || item.status == -1">
-                  <!-- {{`操作${index + 1}:${item.writeOffOperator} `}}
-                  <span class="text_color_blue"  >{{item.payCheckAmount > 0 ? "对账" : '核销'}}</span>
-                  该订单，{{item.payCheckAmount > 0 ? "对账" : '核销'}}金额：{{item.payCheckAmount > 0 ? item.payCheckAmount : item.writeOffAmount}}
-                  <span v-if="item.currency == 1"> CNY</span>
-                  <span v-if="item.currency == 2"> 港币</span>
-                  <span v-if="item.currency == 3"> 美元</span>
-                  <span v-if="item.currency == 4"> 欧元</span>
-                  <span v-if="item.currency == 5"> 英镑</span>  -->
                   <div v-if="item.payCheckAmount > 0 ">
-               
                    <!-- 对账数据 -->
                    {{`操作${index + 1}:${item.writeOffOperator}`}}
                    <span class="text_color_blue">对账</span>
@@ -544,7 +531,7 @@
                 
                 </div>
                 <div v-if='item.status == 2'>
-                    {{`操作${index + 1}:${item.writeOffOperator} `}}撤销了
+                    {{`操作${index + 1}:${item.writeOffOperator} `}}撤销了操作{{item.tIndex}}
                     <span style="margin-left:100px">{{item.writeOffTime}}</span>
                 </div>
                 
@@ -661,6 +648,7 @@ import {exportFile} from '../../util/util'
         optionFour:[],//
         verificationObj:{},// 传递给核销组件的对象
         verificationArr:[], //传递给核销组件的数组
+        tableColumnArray:{},// 表头默认显示状态
         checkedIndex0:true ,// 默认全选  
         checkedIndex1:true ,  
         checkedIndex2:true ,  
@@ -675,17 +663,16 @@ import {exportFile} from '../../util/util'
         checkedIndex11:true ,  
         checkedIndex12:true ,  
         checkedIndex13:true ,  
-        // checkedIndex14:true ,  
+        checkedIndex14:true , 
         checkedIndex15:true ,  
         checkedIndex16:true ,  
         checkedIndex17:true ,  
-        checkedIndex18:true ,  
-
       }
     },
     watch:{
       checkedIndex0(newValue){
         if(newValue == true){
+
           this.checkedIndex1 = true
           this.checkedIndex2 = true
           this.checkedIndex3 = true
@@ -699,11 +686,11 @@ import {exportFile} from '../../util/util'
           this.checkedIndex11 = true
           this.checkedIndex12 = true
           this.checkedIndex13 = true
-          // this.checkedIndex14 = true
+          this.checkedIndex14 = true
           this.checkedIndex15 = true
           this.checkedIndex16 = true
           this.checkedIndex17 = true
-          this.checkedIndex18 = true
+          
         }else {
           this.checkedIndex1 = false
           this.checkedIndex2 = false
@@ -718,11 +705,11 @@ import {exportFile} from '../../util/util'
           this.checkedIndex11 = false
           this.checkedIndex12 = false
           this.checkedIndex13 = false
-          // this.checkedIndex14 = false
+          this.checkedIndex14 = false
           this.checkedIndex15 = false
           this.checkedIndex16 = false
           this.checkedIndex17 = false
-          this.checkedIndex18 = false
+          
         }
       }
     },
@@ -737,7 +724,7 @@ import {exportFile} from '../../util/util'
       verification
     },
     methods: {
-      // 
+
       // 清空搜索数据
       clearAllData(){
         this.formInline= {
@@ -798,9 +785,23 @@ import {exportFile} from '../../util/util'
       async recordsBtn(e){
         let res = await this.$http.post(this.$service.searchRecords,{ids:e.ids})
         if(res.code == 200){
-          let te = Object.assign({},e,{tempObj:res.data})
+          console.log(res.data)
+          let arr = res.data
+          for(let i in arr){
+            if(arr[i].status == 2){
+              for(let j in arr){
+                if(arr[i].revokeId == arr[j].id){
+                  arr[i].tIndex = Number(j)  + 1
+                }
+              }
+            }
+          }
+          let te = Object.assign({},e,{tempObj:arr})
           this.$set(this.payWriteOffCountData,0,te)
-          this.payWriteOffCountBoolen = true
+          setTimeout(()=>{
+            this.payWriteOffCountBoolen = true
+          },10)
+         
         }
        
       },

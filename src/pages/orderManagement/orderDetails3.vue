@@ -13,8 +13,8 @@
           </div> 操作完成
       </div> -->
       <el-button type="danger" @click="saveOrder" >保存</el-button>
-      <el-button type="primary" @click="exdeOrder" >操作完成</el-button>
-      <el-button type="primary" @click="cancleOrder" >取消订单</el-button>
+      <el-button type="primary" @click="exdeOrder(1)" >操作完成</el-button>
+      <el-button type="primary" @click="exdeOrder(2)" >取消订单</el-button>
 
       <div class="common">
           <div>
@@ -269,9 +269,9 @@
             <!-- 组件部分 -->
             <bill-order  :getList = item.list  :ref="`typeBill${index}`" />
             <!-- 操作部分 -->
-            <div style="margin-left:20px;" v-if="item.status == 0 || item.changeBillAddOne" >
-              <el-button  style="width:200px"   @click="fatherAddOneItem(index)" >添加费用</el-button>
-              <el-button  style="width:200px"  type="primary" @click="reconciliationClient(index)" >发起客户对账</el-button>
+            <div class="ml_20" v-if="item.status == 0 || item.changeBillAddOne" >
+              <el-button  class="setWidth"   @click="fatherAddOneItem(index)" >添加费用</el-button>
+              <el-button  class="setWidth"  type="primary" @click="reconciliationClient(index)" >发起客户对账</el-button>
             </div>
             <div  >
               <p class="pTips" v-if="item.status == 1 && item.changeBillAddOne ==false ">
@@ -293,25 +293,24 @@
             </div>
             <!-- 新增账单 -->
             <div>
-                <el-button v-if="(index == initData.arOrderPriceList.length - 1 && index !== 4) && item.status == 3" type="primary" @click="creatNewBill(index)" style="width:200px;margin-left:20px;margin-top:20px  " >新建账单</el-button>
+                <el-button v-if="(index == initData.arOrderPriceList.length - 1 && index !== 4) && item.status == 3" type="primary" @click="creatNewBill(index)" class="setWidth ml_20 mt_20" >新建账单</el-button>
             </div>
           </div>
           <div v-if="creatNewBillBoolen" >
-              <billOrder    ref="typeNewBill" :getList='[]' :orderId='orderId' :orderNo='orderNo' />
-              <el-button   style="margin-left:20px;width:200px"   @click="fatherAddOneItem(100)" >添加费用</el-button>
-              <el-button   style="margin-left:20px;width:200px" type="primary" @click="reconciliationClient(100)" >发起客户对账</el-button>
+              <billOrder    ref="typeNewBill" :getList='[]' :orderIdTemp='orderId' :orderNoTemp='orderNo' />
+              <el-button  class="setWidth ml_20"   @click="fatherAddOneItem(100)" >添加费用</el-button>
+              <el-button   class="setWidth ml_20" type="primary" @click="reconciliationClient(100)" >发起客户对账</el-button>
           </div>
           <div class="line"></div>
           <billOrder  :getList= "initData.apOrderPriceList"  ref="typeTwo" />
-            <span style="margin-left:20px;" v-if="initData.financeStatus == 0">未交单</span>
-            <span style="margin-left:20px;" v-if="initData.financeStatus == 1">已交单</span>
-            <span style="margin-left:20px;" v-if="initData.financeStatus == 2">请解锁</span>
-            <span style="margin-left:20px;" v-if="initData.financeStatus == 3">交单待审核</span>
-            <span style="margin-left:20px;" v-if="initData.financeStatus == 4">修改中</span>
-            <el-button style="margin-left:20px;width:200px" v-if="initData.financeStatus == 0" @click="commitionBill">交单</el-button>
-            <el-button style="margin-left:20px;width:200px;" v-if="initData.financeStatus == 1 || initData.financeStatus == 2" @click="recommiter" >申请解锁</el-button>
-            <el-button style="margin-left:20px;width:200px;" v-if="initData.financeStatus == 3 " @click="recommiter" >解锁已申请，等待审核</el-button>
-            
+            <span  class="ml_20" v-if="initData.financeStatus == 0">未交单</span>
+            <span  class="ml_20" v-if="initData.financeStatus == 1">已交单</span>
+            <span  class="ml_20" v-if="initData.financeStatus == 2">请解锁</span>
+            <span  class="ml_20" v-if="initData.financeStatus == 3">交单待审核</span>
+            <span class="ml_20" v-if="initData.financeStatus == 4">修改中</span>
+            <el-button class="setWidth ml_20" :type="isChangeJiaoDan ? 'primary' : ''" :disabled="!isChangeJiaoDan" v-if="isChangeJiaoDan" @click="commitionBill()">交单</el-button>
+            <el-button class="setWidth ml_20" v-if="initData.financeStatus == 1 " @click="recommiter" >申请解锁</el-button>
+            <el-button class="setWidth ml_20" v-if="initData.financeStatus == 2 " >解锁已申请，等待审核</el-button>
           <div class="line"></div>
           <div class="paddingBottom"></div>
         </div>
@@ -472,7 +471,7 @@ export default {
 
     },
     // 操作完成 推进订单进程 不然没法对账
-    exdeOrder(){
+    exdeOrder(e){
       // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
       let arrayTypeOne = this.$refs.typeBill0[0].tableData
       let arrayTypeTwo = this.$refs.typeTwo.tableData
@@ -484,16 +483,14 @@ export default {
         delete order.trayDetail
         delete order.createTime
         delete order.updateTime
-       let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
-       let orderCargoDetailList = this.$refs.typeThree.tableData
-
-
+      let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
+      let orderCargoDetailList = this.$refs.typeThree.tableData
       let params = {
         order:order,
         orderPriceList:orderPriceList,
         orderCargoDetailList:orderCargoDetailList,
         ctrlMap:{
-          ctrlFlag:1
+          ctrlFlag:e
         }
         
       }
@@ -505,13 +502,13 @@ export default {
               this.$message.error(data.message)
             }
       })
-
     },
+
     // 交单
     commitionBill(){
       // 账单暂时已经定 确认
 
-     
+     console.log(this.initData.financeStatus)
 
       let tempArr = this.initData.arOrderPriceList
       let isBoo  = tempArr.filter(item=>{
@@ -520,8 +517,8 @@ export default {
       if(isBoo.length > 0){
          this.$message.error('存在账单未对账');
       }else{
-        var data = {
-          financeStatus: 0,
+        let data = {
+          financeStatus: this.initData.financeStatus,
           operationType: 0,
           orderId: this.orderId,
           info: ''
@@ -544,9 +541,7 @@ export default {
     },
     // 创建一个新账单
     creatNewBill(e){
-      console.log(e)
       this.creatNewBillBoolen = true
-
     },
 
     // Four组件的新增放到父组件触发
@@ -611,6 +606,18 @@ export default {
     // 保存账单
     saveOrder(){
       // 在修改账单的过程中不允许保存
+      let tempArray = this.initData.arOrderPriceList
+      let test = tempArray.filter(res=>{
+        return res.status == 2 || res.status == 1
+      })
+      if(test.length > 0){
+        this.$message.error("账单在修改")
+        return ;
+      }
+      if(this.initData.financeStatus == 1 || this.initData.financeStatus == 4){
+        this.$message.error('账单在交单')
+        return ;
+      }
       let arrayTypeOne = this.$refs.typeBill0[0].tableData
       let arrayTypeTwo = this.$refs.typeTwo.tableData
       let order = this.initData
@@ -631,7 +638,7 @@ export default {
      this.$http.post(this.$service.orderSaveOrder,params).then((data) => {
             if(data.code == 200){
               this.$message('保存成功')
-              // this.$router.push('/orderManagement/orderManage')
+              this.$router.push('/orderManagement/orderManage')
             } else {
               this.$message.error(data.message)
             }
@@ -640,7 +647,7 @@ export default {
     // 如果子组件中有空运费 输入计费重的时候同时修改子组件单价
     dealChildPrice(num){
       // 取到子组件typeOne
-      let a = this.$refs.typeOne.tableData
+      let a = this.$refs.typeBill0[0].tableData
       
       for(let i in a){
         if(a[i].expenseName == '空运费'){
@@ -678,6 +685,8 @@ export default {
           for(let i in tempObj.arOrderPriceList){
            tempObj.arOrderPriceList[i].changeBillAddOne = false
           }
+          this.isChangeJiaoDan = tempObj.financeStatus == 0 ||  tempObj.financeStatus == 4
+          console.log( this.isChangeJiaoDan)
           this.orderNo = tempObj.orderNo
           console.log(tempObj.orderNo)
           this.initData = tempObj 
@@ -780,13 +789,8 @@ export default {
 .radioTap{
   padding: 15px 15px 0;
 }
-  .ml_10{
-    margin-left: 20px;
-    margin-top: 20px;
-  }
-  .ml_10{
-    margin-left: 10px;
-  }
+
+
 
 .flex_message{
   width: 100px;
@@ -801,6 +805,25 @@ export default {
 .mtop_15{
   margin-top: 15px;
 }
+.mtop_10{
+    margin-top: 10px;
+}
+.ml_10{
+  margin-left: 20px;
+  margin-top: 20px;
+}
+.mr_25{
+    margin-right: 25px;
+}
+.mt_20{
+  margin-top: 20px;
+}
+.ml_20{
+  margin-left: 20px;
+}
+.setWidth{
+  width: 200px;
+}
 .bg_dark{
     width: 60%;
     background: rgb(128,128,128);
@@ -812,10 +835,6 @@ export default {
 .flex_center{
     display: flex;
     align-content: center;
-
-}
-.mtop_10{
-    margin-top: 10px;
 }
 .flex_center>div{
     flex: 1;
@@ -837,9 +856,7 @@ export default {
 .padding_contont>div{
     padding: 10px 0;
 }
-.mr_25{
-    margin-right: 25px;
-}
+
 .paddingBottom{
   width: 100%;
   height: 160px;
