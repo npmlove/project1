@@ -112,7 +112,7 @@
 // currency         币种
 // exchangeRate     汇率
 // ingStatic        修改当前数据状态 主要是为了初始化第一条数据
-// billId           订单的id
+
 class tableObj{
   constructor(expenseName , expenseUnitName , quantity, price , currency  , exchangeRate = 1, remark, ingStatic = false,){
     this.expenseName = expenseName
@@ -125,7 +125,6 @@ class tableObj{
     this.ingStatic = ingStatic
     this.totalOrgn = this.countTotalOrgn()
     this.totalCny = this.countTotalCny()
-    // console
   }
   countTotalOrgn(){
     return isNaN(Number(this.quantity) * Number(this.price)) ? '' : Number(this.quantity) * Number(this.price)
@@ -136,15 +135,16 @@ class tableObj{
   }
 }
 export default {
-  props:['getList','propDate','billId','changeBill'],
+  props:['getList','orderId','orderNo'],
   data() {
     return {
-      // changeBillSec:
-      changeBill:this.changeBill,
       tableData: [], // 
       title:'',
       expenseType:1,
-      orderId:'',// 订单id
+      expenseUnitName:'',
+      billId:0,
+      orderId:this.orderId  ,// 订单id
+      orderNo:this.orderNo,//
       rates:[], // 汇率数组
       expenseCodeOpt:[] ,// 选择费用 
       totalOrgnArr:[],// 原币合并数组
@@ -173,41 +173,22 @@ export default {
       }]
     };
   },
-  computed: {
-      getBoolen: function () {
-        return this.changeBill
-      },
-  },
   async mounted(){
-    // 初始化table  
+    // 初始化table
+    await this.initTabelData()  
     await this.initExpenseCode()
-    await this.initTabelData()
-    await this.getRates()
+    
+   
 
   },
   watch:{
-    changeBill(newValue){
-      if(newValue){
-        for(let i in this.tableData){
-            let temp = this.tableData[i] 
-            temp.ingStatic = false
-            this.$set(this.tableData,i,temp)
-        }
-      }else{
-        for(let i in this.tableData){
-            let temp = this.tableData[i] 
-            temp.ingStatic = true
-            this.$set(this.tableData,i,temp)
-        }
-      }
-    },
     tableData:{
       deep:true,
       handler(newValue){
         for(let i in newValue){
           newValue[i].exchangeRate = newValue[i].exchangeRate == null ? this.getCurrentRate(newValue[i].currency) : newValue[i].exchangeRate
-          newValue[i].totalOrgn = isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)
-          newValue[i].totalCny =  isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) * Number(newValue[i].exchangeRate)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * Number(newValue[i].exchangeRate) 
+          newValue[i].totalOrgn = Math.floor((isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)) * 100) /100 
+          newValue[i].totalCny =  Math.floor(( isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) * Number(newValue[i].exchangeRate)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * Number(newValue[i].exchangeRate) )*100)/100
         }
         this.totalCnyStr =this.calcTotalCny(newValue)
         let {temArray,tempStr} =  this.calcTotalOrgn(newValue)
@@ -232,7 +213,7 @@ export default {
   
     },
     async getRates(){ // 获取当前订单的汇率
-      let res = await this.$http.get(this.$service.getExchangeRatesForOrder+'?orderId='+this.propDate.orderId)
+      let res = await this.$http.get(this.$service.getExchangeRatesForOrder+'?orderId='+this.orderId)
       if(res.code == 200){
         this.rates = res.data 
       }
@@ -243,7 +224,6 @@ export default {
       for(let i in tempArray){
         if(i == a){
           return tempArray[i]
-          break ;
         }
       }
     },
@@ -263,19 +243,28 @@ export default {
     async initTabelData(){
       if(this.getList.length > 0){
       let a = this.getList
+      let {orderId,expenseType,orderNo,expenseUnitName,billId} = a[0]
+      console.log(a[0])
         a.map((res)=>{
             res.ingStatic = true
           delete res.createTime
           delete res.updateTime
         })
       this.tableData = a
+      this.orderId = orderId
+      this.expenseType = expenseType
+      this.orderNo = orderNo
+      this.expenseUnitName = expenseUnitName
+      this.billId = billId
+      this.title =  expenseType == 1 ? '应收账单' : '应付账单'
       this.dealOriginData(this.tableData)
       }else{
+ 
         this.addOneTableObj()
       }
-      
-      let  {expenseType }  = this.propDate
-      this.title =  expenseType == 1 ? '应收账单' : '应付账单'
+       await this.getRates()
+   
+     
     },
     // 计算人民币合计
     calcTotalCny(array){
@@ -324,22 +313,29 @@ export default {
     },
     // 添加
     addOneTableObj(){
-      let tempObj = new tableObj('')
-      let a = Object.assign({},tempObj,this.propDate,{billId:this.billId})
+      let tempObj = new tableObj('',this.expenseUnitName)
+
+      let a = Object.assign({},tempObj,{
+        orderId:this.orderId,
+        expenseType:this.expenseType,
+        orderNo:this.orderNo,
+        billId:this.billId}
+      )
+      console.log(a)
       this.tableData.push(a)
     },
     // 删除
     deleOneTableObj(e){
       let index = e.$index
-      // console.log(index)
-      // if(index == 0){
-      //   this.$message({
-      //     message: '这条数据不能删除',
-      //     type: 'warning'
-      //   });
-      // }else{
+      console.log(index)
+      if(index == 0){
+        this.$message({
+          message: '这条数据不能删除',
+          type: 'warning'
+        });
+      }else{
         this.tableData.splice(index,1)
-      // }
+      }
     },
   }  
 }

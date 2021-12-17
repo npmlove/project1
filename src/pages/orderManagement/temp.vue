@@ -663,10 +663,8 @@
   </div>
 </template>
 
-<script>
+<script> 
   import {toData} from '@/util/assist'
-
-  
   export default {
     data() {
       return {

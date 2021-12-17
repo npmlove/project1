@@ -94,11 +94,11 @@ class tempObj {
 }
 export default {
 
-    props:['childData'],
+    props:['childData','orderId'],
     data() {
         return {
             id:'',
-            orderId:'',
+            orderId:this.orderId,
             tableData:[], //进仓数据
             packingArray:[
                 {
@@ -132,16 +132,20 @@ export default {
     },
 
     mounted() {
-        let {id , orderId} = this.childData[0]
-        console.log(this.childData  )
-        this.id = id
-        this.orderId = orderId
-        let tempIndata = this.childData
-        for(let i in tempIndata){
-            delete tempIndata[i].createTime
-            delete tempIndata[i].updateTime
+        if(this.childData.length > 0){
+            let {id , orderId} = this.childData[0]
+            this.id = id
+            this.orderId = orderId
+            let tempIndata = this.childData
+            for(let i in tempIndata){
+                delete tempIndata[i].createTime
+                delete tempIndata[i].updateTime
+            }
+            this.tableData = tempIndata
+        }else{
+            this.addOneTableObj()
         }
-        this.tableData = tempIndata
+        
         // this.addOneTableObj()
     },
 

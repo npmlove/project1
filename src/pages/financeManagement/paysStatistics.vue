@@ -363,12 +363,12 @@
           </template>
         </el-table-column>
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         prop="totalApCny"
         label="应付总金额"
         v-if="checkedIndex14"
         width="100">
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column
         prop="exchangeRates"
@@ -390,8 +390,7 @@
         v-if="checkedIndex17"
         width="100">
         <template slot-scope="scope">
-          <span v-if="scope.row.payCheckAmount > 0" style="cursor:pointer;color:rgb(97,180,120)" @click="recordsBtn(scope.row)">{{scope.row.payWriteOffCount}}</span>
-          <span v-else style="cursor:pointer;" @click="recordsBtn(scope.row)" >{{scope.row.payWriteOffCount}}</span>
+          <span   @click="recordsBtn(scope.row)">{{scope.row.payWriteOffCount}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -499,7 +498,7 @@
             width="250">
           </el-table-column>
           <el-table-column
-            prop="totalArCny"
+            prop="totalApOrgn"
             
             label="应付金额"
             width="100">
@@ -510,15 +509,39 @@
             <template slot-scope="scope">
               <div v-for="(item,index) in scope.row.tempObj" :key="index">
                 <div v-if="item.status == 0 || item.status == -1">
-                  {{`操作${index + 1}:${item.writeOffOperator} `}}
+                  <!-- {{`操作${index + 1}:${item.writeOffOperator} `}}
                   <span class="text_color_blue"  >{{item.payCheckAmount > 0 ? "对账" : '核销'}}</span>
-                  该订单，对账金额：
-                  <span v-if="item.currency == 1"> {{item.writeOffAmount}}CNY</span>
-                  <span v-if="item.currency == 2"> {{item.writeOffAmount}}港币</span>
-                  <span v-if="item.currency == 3"> {{item.writeOffAmount}}美元</span>
-                  <span v-if="item.currency == 4"> {{item.writeOffAmount}}欧元</span>
-                  <span v-if="item.currency == 5"> {{item.writeOffAmount}}英镑</span> 
-                {{item.writeOffTime}}
+                  该订单，{{item.payCheckAmount > 0 ? "对账" : '核销'}}金额：{{item.payCheckAmount > 0 ? item.payCheckAmount : item.writeOffAmount}}
+                  <span v-if="item.currency == 1"> CNY</span>
+                  <span v-if="item.currency == 2"> 港币</span>
+                  <span v-if="item.currency == 3"> 美元</span>
+                  <span v-if="item.currency == 4"> 欧元</span>
+                  <span v-if="item.currency == 5"> 英镑</span>  -->
+                  <div v-if="item.payCheckAmount > 0 ">
+               
+                   <!-- 对账数据 -->
+                   {{`操作${index + 1}:${item.writeOffOperator}`}}
+                   <span class="text_color_blue">对账</span>
+                   该订单,对账{{ item.payCheckAmount}}金额
+                   <span v-if="item.currency == 1"> CNY</span>
+                    <span v-if="item.currency == 2"> 港币</span>
+                    <span v-if="item.currency == 3"> 美元</span>
+                    <span v-if="item.currency == 4"> 欧元</span>
+                    <span v-if="item.currency == 5"> 英镑</span> 
+                  </div>
+                  <div v-else>
+               
+                    {{`操作${index + 1}:${item.writeOffOperator}`}}
+                    <span class="text_color_blue">核销</span>
+                    该订单,核销{{item.writeOffAmount}}金额
+                      <span v-if="item.currency == 1"> CNY</span>
+                      <span v-if="item.currency == 2"> 港币</span>
+                      <span v-if="item.currency == 3"> 美元</span>
+                      <span v-if="item.currency == 4"> 欧元</span>
+                      <span v-if="item.currency == 5"> 英镑</span> 
+                  </div>
+
+                
                 </div>
                 <div v-if='item.status == 2'>
                     {{`操作${index + 1}:${item.writeOffOperator} `}}撤销了
@@ -610,7 +633,6 @@ import {exportFile} from '../../util/util'
         }],
         payWriteOffCountBoolen:false,// 点击核销次数 控制模态框的显示
         payWriteOffCountData:[],// 模态框展示的数据
-        payWriteOffCountIds:'',//
         woStatus:0,// 正常0，业务修改中1，异常2
         tableData: [],
         // slectAllDataArray:[],// 全选后返回的所在状态下的数据 不展示
@@ -653,7 +675,7 @@ import {exportFile} from '../../util/util'
         checkedIndex11:true ,  
         checkedIndex12:true ,  
         checkedIndex13:true ,  
-        checkedIndex14:true ,  
+        // checkedIndex14:true ,  
         checkedIndex15:true ,  
         checkedIndex16:true ,  
         checkedIndex17:true ,  
@@ -677,7 +699,7 @@ import {exportFile} from '../../util/util'
           this.checkedIndex11 = true
           this.checkedIndex12 = true
           this.checkedIndex13 = true
-          this.checkedIndex14 = true
+          // this.checkedIndex14 = true
           this.checkedIndex15 = true
           this.checkedIndex16 = true
           this.checkedIndex17 = true
@@ -696,7 +718,7 @@ import {exportFile} from '../../util/util'
           this.checkedIndex11 = false
           this.checkedIndex12 = false
           this.checkedIndex13 = false
-          this.checkedIndex14 = false
+          // this.checkedIndex14 = false
           this.checkedIndex15 = false
           this.checkedIndex16 = false
           this.checkedIndex17 = false
@@ -758,7 +780,7 @@ import {exportFile} from '../../util/util'
             console.log(res)
             if(res.code == 200){
               let res1 = await this.$http.post(this.$service.searchRecords,{ids:e.ids})
-               this.payWriteOffCountData[0].tempObj = res1.data
+                this.payWriteOffCountData[0].tempObj = res1.data
                 this.$message({
                 type: 'success',
                 message: '撤销成功!'
@@ -772,15 +794,12 @@ import {exportFile} from '../../util/util'
       handleClose(){
          this.payWriteOffCountData = []
          this.payWriteOffCountBoolen = false
-         this.payWriteOffCountIds = ''
       },
       async recordsBtn(e){
-        console.log(e)
-        this.payWriteOffCountIds = e.ids
-        this.payWriteOffCountData.push(e)
         let res = await this.$http.post(this.$service.searchRecords,{ids:e.ids})
         if(res.code == 200){
-          this.payWriteOffCountData[0].tempObj = res.data
+          let te = Object.assign({},e,{tempObj:res.data})
+          this.$set(this.payWriteOffCountData,0,te)
           this.payWriteOffCountBoolen = true
         }
        
