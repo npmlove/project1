@@ -54,8 +54,9 @@
               clearable
               filterable
               remote
-              maxlength="30"
+              maxlength="3"
               reserve-keyword
+              id="agentId"
               style="width: 200px"
             >
               <el-option
@@ -70,6 +71,7 @@
 
           <el-form-item label="航司:" class="formItem" label-width="80px">
             <el-select
+              id="airCompany"
               v-model="selectResult.airCompanyCode"
               placeholder="请输入航司"
               :remote-method="companyMethod"
@@ -87,6 +89,8 @@
                 :label="item.name"
                 :value="item.airCompanyCode"
               >
+              <span>{{ item.airCompanyCode }}</span>
+                <span style="margin-left: 5px">{{ item.name }}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -94,6 +98,7 @@
           <el-form-item label="起运港:" class="formItem" label-width="80px">
             <el-select
               v-model="selectResult.pol"
+              id="pol"
               placeholder="起运港三字码"
               :remote-method="polMethod"
               :loading="loading"
@@ -119,6 +124,7 @@
           <el-form-item label="目的港:" class="formItem" label-width="80px">
             <el-select
               v-model="selectResult.pod"
+              id="pod"
               placeholder="目的港三字码"
               :remote-method="podMethod"
               maxlength="15"
@@ -440,9 +446,7 @@
               </el-table-column>
               <el-table-column label="原币" width="120">
                 <template slot-scope="scope">
-                  <div>
-                    {{scope.row.totalArOrgn | getOrgn}}
-                   </div>
+                  <div v-html="dealOrgn(scope.row.totalArOrgn)" style="white-space:pre-wrap"></div>
                 </template>
               </el-table-column>
             </el-table-column>
@@ -455,9 +459,7 @@
               </el-table-column>
               <el-table-column label="原币" width="120">
                   <template slot-scope="scope">
-                  <div>
-                    {{scope.row.totalApOrgn | getOrgn}}
-                   </div>
+                  <div v-html="dealOrgn(scope.row.totalApOrgn)" style="white-space:pre-wrap"></div>
                 </template>
               </el-table-column>
             </el-table-column>
@@ -474,8 +476,7 @@
               v-if="checkedTable.indexOf('汇率') !== -1"
             >
             <template slot-scope="scope">
-              <div>
-                {{scope.row.exchangeRate | getExchangeRate}}
+              <div v-html="getExchangeRate(scope.row.exchangeRate)" style="white-space:pre-wrap">
               </div>
             </template>
             </el-table-column>
@@ -941,8 +942,23 @@ export default {
     this.initAirportSearchByPage()
     this.initCompanySearchByPage()
     this.operateData()
+    this.dom()
   },
   methods: {
+    //限制搜索条件的最大位数
+    dom(){
+      //代理上家
+    const select = document.querySelector('#agentId')
+    select.setAttribute('maxLength',30)  
+    //航司
+    const select1 = document.querySelector('#airCompany')
+    select1.setAttribute('maxLength',15)  
+    //起运港目的港  
+        const select2 = document.querySelector('#pod')
+        select2.setAttribute('maxLength',15)  
+         const select3 = document.querySelector('#pol')
+        select3.setAttribute('maxLength',15) 
+    },
     dialTableClassName({row,rowIndex,column,columnIndex}){
       if(this.orderFinanceStatus ==3 && row.modifyColumn) {
         if(row.modifyColumn ==-1){
@@ -1211,7 +1227,40 @@ export default {
         });
 
     },
-
+    dealOrgn(orgn) {
+      if (!orgn) {
+        return;
+      }
+       orgn = JSON.parse(orgn);
+      var totalOrgn = "";
+      var value1 = 0;
+      var value2 = 0;
+      var value3 = 0;
+      var value4 = 0;
+      var value5 = 0;
+      // HK$ $ € ￡
+      for (var i = 0; i < orgn.length; i++) {
+        if (orgn[i].currency == "1") {
+          value1 += orgn[i].amount;
+        } else if (orgn[i].currency == "2") {
+          value2 += orgn[i].amount;
+        } else if (orgn[i].currency == "3") {
+          value3 += orgn[i].amount;
+        } else if (orgn[i].currency == "4") {
+          value4 += orgn[i].amount;
+        } else if (orgn[i].currency == "5") {
+          value5 += orgn[i].amount;
+        }
+      }
+      totalOrgn = "";
+      totalOrgn += value1 || value1 == 0 ? value1 + "CNY" + "\n" : "";
+      totalOrgn += value2 ? value2 + "HKD" + "\n" : "";
+      totalOrgn += value3 ? value3 + "USD" + "\n" : "";
+      totalOrgn += value4 ? value4 + "EUR" + "\n" : "";
+      totalOrgn += value5 ? value5 + "GBP" + "\n": "";
+      totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
+      return totalOrgn;
+    },
     getOrgn(orgn) {
       if (!orgn) {
         return;
@@ -1242,7 +1291,7 @@ export default {
       totalOrgn += value2 ? value2 + "HKD" + "+" : "";
       totalOrgn += value3 ? value3 + "USD" + "+" : "";
       totalOrgn += value4 ? value4 + "EUR" + "+" : "";
-      totalOrgn += value5 ? value5 + "GBP" : "";
+      totalOrgn += value5 ? value5 + "GBP" + "+" : "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return totalOrgn;
     },
@@ -1358,6 +1407,35 @@ export default {
       this.pageSize = e;
        this.initData ();
     },
+      getExchangeRate(exchangeRate) {
+      var totalOrgn = "";
+      var value1 = 0;
+      var value2 = 0;
+      var value3 = 0;
+      var value4 = 0;
+      var value5 = 0;
+      for (var i = 0; i < exchangeRate.length; i++) {
+        if (exchangeRate[i].currency == "1") {
+          value1 += exchangeRate[i].exchangeRate;
+        } else if (exchangeRate[i].currency == "2") {
+          value2 += exchangeRate[i].exchangeRate;
+        } else if (exchangeRate[i].currency == "3") {
+          value3 += exchangeRate[i].exchangeRate;
+        } else if (exchangeRate[i].currency == "4") {
+          value4 += exchangeRate[i].exchangeRate;
+        } else if (exchangeRate[i].currency == "5") {
+          value5 += exchangeRate[i].exchangeRate;
+        }
+      }
+      totalOrgn = "";
+      totalOrgn += value1 || value1 == 0 ? "CNY:" + value1 + "\n" : "";
+      totalOrgn += value2 ? "HKD:" + value2 + "\n" : "";
+      totalOrgn += value3 ? "USD:" + value3 + "\n" : "";
+      totalOrgn += value4 ? "EUR:" + value4 + "\n" : "";
+      totalOrgn += value5 ? "GBP:" + value5 + "\n" : "";
+      totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
+      return totalOrgn;
+    },
   },
   watch: {
     tableData(idx) {
@@ -1402,35 +1480,7 @@ export default {
         totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
         return totalOrgn;
       },
-      getExchangeRate(exchangeRate) {
-      var totalOrgn = "";
-      var value1 = 0;
-      var value2 = 0;
-      var value3 = 0;
-      var value4 = 0;
-      var value5 = 0;
-      for (var i = 0; i < exchangeRate.length; i++) {
-        if (exchangeRate[i].currency == "1") {
-          value1 += exchangeRate[i].exchangeRate;
-        } else if (exchangeRate[i].currency == "2") {
-          value2 += exchangeRate[i].exchangeRate;
-        } else if (exchangeRate[i].currency == "3") {
-          value3 += exchangeRate[i].exchangeRate;
-        } else if (exchangeRate[i].currency == "4") {
-          value4 += exchangeRate[i].exchangeRate;
-        } else if (exchangeRate[i].currency == "5") {
-          value5 += exchangeRate[i].exchangeRate;
-        }
-      }
-      totalOrgn = "";
-      totalOrgn += value1 || value1 == 0 ? "CNY:" + value1 + "+" : "";
-      totalOrgn += value2 ? "HKD:" + value2 + "+" : "";
-      totalOrgn += value3 ? "USD:" + value3 + "+" : "";
-      totalOrgn += value4 ? "EUR:" + value4 + "+" : "";
-      totalOrgn += value5 ? "GBP:" + value5 + "+" : "";
-      totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
-      return totalOrgn;
-    },
+    
     }
 };
 </script>

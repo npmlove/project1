@@ -277,9 +277,7 @@
               <el-table-column prop="totalArCny" label="人民币" min-width="80"></el-table-column>
               <el-table-column  label="原币" min-width="80">
                 <template slot-scope="scope">
-                  <div>
-                    {{scope.row.totalArOrgn | getOrgn}}
-                   </div>
+                  <div v-html="dealOrgn(scope.row.totalArOrgn)" style="white-space:pre-wrap"></div>
                 </template>
               </el-table-column>
             </el-table-column>
@@ -287,9 +285,7 @@
               <el-table-column prop="totalApCny" label="人民币" min-width="80"></el-table-column>
               <el-table-column prop="date20" label="原币" min-width="80">
                 <template slot-scope="scope">
-                  <div>
-                    {{scope.row.totalApOrgn | getOrgn}}
-                   </div>
+                  <div v-html="dealOrgn(scope.row.totalApOrgn)" style="white-space:pre-wrap"></div>
                 </template>
               </el-table-column>
             </el-table-column>
@@ -1080,7 +1076,6 @@
      
       //开票弹框左侧确认生成
       invoiceLeftConfirm() {
-        console.log(this.invoicingLeft)
         if(this.invoicingLeft.invoiceCount>50){
           this.$message({
             message: '开票张数不能大于50',
@@ -1111,6 +1106,12 @@
             message: '开票首张号码必须是八位数字',
             type: 'warning'
           })
+        }
+        else if ((this.invoiceFootTwo-this.invoiceFootThree) < Number(this.invoicingLeft.invoiceAmount)*Number(this.invoicingLeft.invoiceCount) ){
+           this.$message({
+            message: '发票金额大于未开票金额,请重新填写',
+            type: 'warning'
+          });
         }
         else {
           const copyData = JSON.parse(JSON.stringify(this.copyTable))
@@ -1420,7 +1421,42 @@
         if(!express) express =""
         let data = express.split(",")
         return `<div>公司:${data[0]?data[0]:""}\n单号:${data[1]?data[1]:""}\n日期:${data[2]?data[2]:""}</div>`
+      },
+      //控制原币列显示 
+       dealOrgn(orgn) {
+      if (!orgn) {
+        return;
       }
+       orgn = JSON.parse(orgn);
+      var totalOrgn = "";
+      var value1 = 0;
+      var value2 = 0;
+      var value3 = 0;
+      var value4 = 0;
+      var value5 = 0;
+      // HK$ $ € ￡
+      for (var i = 0; i < orgn.length; i++) {
+        if (orgn[i].currency == "1") {
+          value1 += orgn[i].amount;
+        } else if (orgn[i].currency == "2") {
+          value2 += orgn[i].amount;
+        } else if (orgn[i].currency == "3") {
+          value3 += orgn[i].amount;
+        } else if (orgn[i].currency == "4") {
+          value4 += orgn[i].amount;
+        } else if (orgn[i].currency == "5") {
+          value5 += orgn[i].amount;
+        }
+      }
+      totalOrgn = "";
+      totalOrgn += value1 || value1 == 0 ? value1 + "CNY" + "\n" : "";
+      totalOrgn += value2 ? value2 + "HKD" + "\n" : "";
+      totalOrgn += value3 ? value3 + "USD" + "\n" : "";
+      totalOrgn += value4 ? value4 + "EUR" + "\n" : "";
+      totalOrgn += value5 ? value5 + "GBP" + "\n": "";
+      totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
+      return totalOrgn;
+    },
     },
    filters:{
       getOrgn(orgn) {
