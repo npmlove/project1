@@ -69,6 +69,7 @@
           <el-form-item label="代理上家:" class="formItem" label-width="80px" >
             <el-select
               v-model="selectResult.agentId"
+              id="agentId"
               placeholder="请输入代理上家"
               :remote-method="agentMethod"
               :loading="loading"
@@ -92,6 +93,7 @@
           <el-form-item label="航司:" class="formItem" label-width="80px">
             <el-select
               v-model="selectResult.airCompanyCode"
+              id="airCompany"
               placeholder="请输入航司"
               :remote-method="companyMethod"
               :loading="loading"
@@ -108,6 +110,8 @@
                 :label="item.name"
                 :value="item.airCompanyCode"
               >
+              <span>{{ item.airCompanyCode }}</span>
+                <span style="margin-left: 5px">{{ item.name }}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -115,6 +119,7 @@
           <el-form-item label="起运港:" class="formItem" label-width="80px">
             <el-select
               v-model="selectResult.pol"
+              id="pol"
               placeholder="起运港三字码"
               :remote-method="polMethod"
               :loading="loading"
@@ -142,6 +147,7 @@
               v-model="selectResult.pod"
               placeholder="目的港三字码"
               :remote-method="podMethod"
+              id="pod"
               maxlength="15"
               :loading="loading"
               clearable
@@ -418,9 +424,8 @@
               </el-table-column>
               <el-table-column label="原币" width="120">
                 <template slot-scope="scope">
-                  <div>
-                    {{scope.row.totalArOrgn | getOrgn}}
-                   </div>
+                  <div v-html="dealOrgn(scope.row.totalArOrgn)" style="white-space:pre-wrap"></div>
+                 
                 </template>
               </el-table-column>
             </el-table-column>
@@ -435,9 +440,7 @@
               </el-table-column>
               <el-table-column label="原币" width="120">
                  <template slot-scope="scope">
-                  <div>
-                    {{scope.row.rcvWriteOffAmountOrgn | getOrgn}}
-                   </div>
+                  <div v-html="dealOrgn(scope.row.rcvWriteOffAmountOrgn)" style="white-space:pre-wrap"></div>
                 </template>
               </el-table-column>
             </el-table-column>
@@ -449,9 +452,7 @@
               </el-table-column>
               <el-table-column label="原币" width="120">
                  <template slot-scope="scope">
-                  <div>
-                    {{scope.row.notRcvWriteOffAmountOrgn | getOrgn}}
-                   </div>
+                  <div v-html="dealOrgn(scope.row.notRcvWriteOffAmountOrgn)" style="white-space:pre-wrap"></div>
                 </template>
               </el-table-column>
             </el-table-column>
@@ -474,9 +475,7 @@
               v-if="checkedTable.indexOf('汇率') !== -1"
             >
             <template slot-scope="scope">
-              <div>
-                {{scope.row.exchangeRate| getExchangeRate}}
-              </div>
+                <div v-html="getExchangeRate(scope.row.exchangeRate)" style="white-space:pre-wrap"></div>
             </template>
             </el-table-column>
             <el-table-column
@@ -521,15 +520,15 @@
               <div style="margin-top: 15px;display:flex;font-size:12px" v-if="statistDataShow">
                 <div class="statist">
                   <div>应收总金额:{{statistData.totalArCny}}</div>
-                  <div class="statists">应收原币:{{statistData.totalArOrgn | getOrgn}}</div>
+                  <div v-html="dealOrgn(statistData.totalArOrgn,'应收原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
                 </div>
                 <div class="statist">
                   <div>已核销总金额:{{statistData.totalRcWoCny}}</div>
-                  <div class="statists">已核销原币:{{statistData.totalRcWoOrgn | getOrgn}}</div>
+                  <div v-html="dealOrgn(statistData.totalRcWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
                 </div>
                 <div class="statist">
                   <div>未核销总金额:{{statistData.totalRcUnwoCny}}</div>
-                  <div class="statists">未核销原币:{{statistData.totalRcUnwoOrgn | getOrgn}}</div>
+                  <div v-html="dealOrgn(statistData.totalRcUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
                 </div>
                 <div class="statist" style="color:red;font-size:20px" v-if = "errorStatist">
                   <div>存在异常订单！</div>
@@ -623,7 +622,7 @@
         </div>
     </el-dialog>
     <!-- 核销按钮弹框 -->
-    <el-dialog title="应收核销" :visible.sync="dialogFormVisibleThree" width= "800px" style="margin:auto;">
+    <el-dialog title="应收核销" :visible.sync="dialogFormVisibleThree" width= "880px" style="margin:auto;">
       <el-form style="display:flex;flex-wrap:wrap;justify-content:space-between;margin-top:20px" label-position="left">
          <el-form-item label="核销金额:" required label-width="130px">
             <el-input v-model.number="chargeOffData.writeOffAmount" placeholder="请输入核销金额" style="width:200px"></el-input>
@@ -959,7 +958,7 @@
           disabledDate: time => {
             let beginDateVal = this.selectResult.startDepartureDate
             if (beginDateVal) {
-              return time.getTime() < new Date(beginDateVal).getTime()
+              return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
           }
         },
@@ -976,7 +975,7 @@
           disabledDate: time => {
             let beginDateVal = this.selectResult.startOrderTime
             if (beginDateVal) {
-              return time.getTime() < new Date(beginDateVal).getTime()
+              return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
           }
         },
@@ -996,8 +995,92 @@
       this.initAirportSearchByPage()
       this.initCompanySearchByPage()
       this.operateData()
+      this.dom()
     },
     methods:{
+      //汇率处理
+      getExchangeRate(exchangeRate) {
+         let copy = JSON.parse(exchangeRate)
+        if (typeof (exchangeRate) == "undefined") {
+          return "";
+        }
+      var totalOrgn = "";
+      var value1 = 0;
+      var value2 = 0;
+      var value3 = 0;
+      var value4 = 0;
+      var value5 = 0;
+      for (var i = 0; i < copy.length; i++) {
+        if (copy[i].currency == "1") {
+          value1 += copy[i].amount;
+        } else if (copy[i].currency == "2") {
+          value2 += copy[i].amount;
+        } else if (copy[i].currency == "3") {
+          value3 += copy[i].amount;
+        } else if (copy[i].currency == "4") {
+          value4 += copy[i].amount;
+        } else if (copy[i].currency == "5") {
+          value5 += copy[i].amount;
+        }
+      }
+      totalOrgn = "";
+      totalOrgn += value1 || value1 == 0 ? "CNY:" + value1 + "\n" : "";
+      totalOrgn += value2 ? "HKD:" + value2 + "\n" : "";
+      totalOrgn += value3 ? "USD:" + value3 + "\n" : "";
+      totalOrgn += value4 ? "EUR:" + value4 + "\n" : "";
+      totalOrgn += value5 ? "GBP:" + value5 + "\n" : "";
+      totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
+      return totalOrgn;
+    },
+      //原币处理
+      dealOrgn(orgn,extraWord) {
+      if (!orgn) {
+        return;
+      }
+       orgn = JSON.parse(orgn);
+      var totalOrgn = "";
+      var value1 = 0;
+      var value2 = 0;
+      var value3 = 0;
+      var value4 = 0;
+      var value5 = 0;
+      // HK$ $ € ￡
+      for (var i = 0; i < orgn.length; i++) {
+        if (orgn[i].currency == "1") {
+          value1 += orgn[i].amount;
+        } else if (orgn[i].currency == "2") {
+          value2 += orgn[i].amount;
+        } else if (orgn[i].currency == "3") {
+          value3 += orgn[i].amount;
+        } else if (orgn[i].currency == "4") {
+          value4 += orgn[i].amount;
+        } else if (orgn[i].currency == "5") {
+          value5 += orgn[i].amount;
+        }
+      }
+      totalOrgn = "";
+      totalOrgn += value1 || value1 == 0 ? value1 + "CNY" + "\n" : "";
+      totalOrgn += value2 ? value2 + "HKD" + "\n" : "";
+      totalOrgn += value3 ? value3 + "USD" + "\n" : "";
+      totalOrgn += value4 ? value4 + "EUR" + "\n" : "";
+      totalOrgn += value5 ? value5 + "GBP" + "\n": "";
+      totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
+      return (extraWord?extraWord+":":"") +totalOrgn;
+    },
+       //限制搜索条件的最大位数
+      dom(){
+          //代理上家
+        const select = document.querySelector('#agentId')
+        select.setAttribute('maxLength',30) 
+        //航司 
+        const select1 = document.querySelector('#airCompany')
+        select1.setAttribute('maxLength',15)
+        //起运港目的港  
+        const select2 = document.querySelector('#pod')
+        select2.setAttribute('maxLength',15)  
+         const select3 = document.querySelector('#pol')
+        select3.setAttribute('maxLength',15) 
+      },
       //表格列全选控制
       handleCheckAllChange(val) {
       this.checkedTable = val ? this.tableOptions : [];

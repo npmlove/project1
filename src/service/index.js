@@ -256,10 +256,11 @@ const serviceApi = {
    //航线工单 - 转单
    setOrder:pulicWeb + '/t-work-order/transfer',
  // 航线工单 - 交单
-   handleOrder: pulicWeb + '/t-work-order/askAgain',
+   handleOrder: pulicWeb + '/t-work-order/reply',
    //航线工单 - 待我处理数量
    countWork4Prcp: pulicWeb + '/t-work-order/countWork4Prcp',
-
+  //航线工单 - 代我处理查询
+  searchDealingWork4Prcp: pulicWeb +'/t-work-order/searchDealingWork4Prcp',
    // 工单 - 统计
   orderStatistics: pulicWeb + '/t-work-order/sumUserWorkData',
   //工单 - 统计 导出统计数据

@@ -26,6 +26,7 @@
               maxlength="30"
               remote
               reserve-keyword
+              id="agentId"
               style="width: 200px"
             >
               <el-option
@@ -39,12 +40,14 @@
           </el-form-item>
 
           <el-form-item label="航司" label-width="100px">
-            <el-select v-model="selectResult.airCompanyCode" placeholder="请输入航司" :remote-method="companyMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
+            <el-select v-model="selectResult.airCompanyCode" placeholder="请输入航司" id="airCompany" :remote-method="companyMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
               <el-option
                 v-for="(item,index) in airCompanyCodeOpt"
                 :key="index"
                 :label="item.name"
                 :value="item.airCompanyCode">
+                <span>{{ item.airCompanyCode }}</span>
+                <span style="margin-left: 5px">{{ item.name }}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -134,7 +137,7 @@
           </el-form-item>
 
           <el-form-item label="起运港" label-width="100px">
-            <el-select v-model="selectResult.pol" placeholder="起运港三字码" :remote-method="polMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
+            <el-select v-model="selectResult.pol" placeholder="起运港三字码" id="pol" :remote-method="polMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
               <el-option
                 v-for="(item,index) in polOpt"
                 :disabled="pod == item.threeLetterCode"
@@ -147,7 +150,7 @@
           </el-form-item>
 
           <el-form-item label="目的港" label-width="100px">
-            <el-select v-model="selectResult.pod" placeholder="目的港三字码" :remote-method="podMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
+            <el-select v-model="selectResult.pod" placeholder="目的港三字码" id="pod" :remote-method="podMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
               <el-option
                 v-for="item in podOpt"
                 :disabled="pol == item.threeLetterCode"
@@ -183,7 +186,6 @@
             <el-select
               v-model="selectResult.principalId"
               placeholder="请输入航线"
-              :remote-method="agentMethod"
               :loading="loading"
               clearable
               filterable
@@ -345,9 +347,7 @@
               </el-table-column>
               <el-table-column label="原币" width="120">
                 <template slot-scope="scope">
-                  <div>
-                    {{scope.row.totalArOrgn | getOrgn}}
-                   </div>
+                  <div v-html="dealOrgn(scope.row.totalArOrgn)" style="white-space:pre-wrap"></div>
                 </template>
               </el-table-column>
             </el-table-column>
@@ -359,9 +359,7 @@
               </el-table-column>
               <el-table-column label="原币" width="120">
                  <template slot-scope="scope">
-                  <div>
-                    {{scope.row.totalRcWoOrgn | getOrgn}}
-                   </div>
+                  <div v-html="dealOrgn(scope.row.totalRcWoOrgn)" style="white-space:pre-wrap"></div>
                 </template>
               </el-table-column>
             </el-table-column>
@@ -373,9 +371,7 @@
               </el-table-column>
               <el-table-column label="原币" width="120">
                  <template slot-scope="scope">
-                  <div>
-                    {{scope.row.totalRcUnwoOrgn | getOrgn}}
-                   </div>
+                  <div v-html="dealOrgn(scope.row.totalRcUnwoOrgn)" style="white-space:pre-wrap"></div>
                 </template>
               </el-table-column>
             </el-table-column>
@@ -387,9 +383,7 @@
               </el-table-column>
               <el-table-column prop="city" label="原币" width="120">
                  <template slot-scope="scope">
-                  <div>
-                    {{scope.row.totalApOrgn | getOrgn}}
-                   </div>
+                  <div v-html="dealOrgn(scope.row.totalApOrgn)" style="white-space:pre-wrap"></div>
                 </template>
               </el-table-column>
             </el-table-column>
@@ -401,9 +395,7 @@
               </el-table-column>
               <el-table-column label="原币" width="120">
                  <template slot-scope="scope">
-                  <div>
-                    {{scope.row.totalApWoOrgn | getOrgn}}
-                   </div>
+                  <div v-html="dealOrgn(scope.row.totalApWoOrgn)" style="white-space:pre-wrap"></div>
                 </template>
               </el-table-column>
             </el-table-column>
@@ -415,9 +407,7 @@
               </el-table-column>
               <el-table-column label="原币" width="120">
                  <template slot-scope="scope">
-                  <div>
-                    {{scope.row.totalApUnwoOrgn | getOrgn}}
-                   </div>
+                  <div v-html="dealOrgn(scope.row.totalApUnwoOrgn)" style="white-space:pre-wrap"></div>
                 </template>
               </el-table-column>
             </el-table-column>
@@ -434,36 +424,25 @@
               <el-button type="primary" size="mini" @click="getStatistData"
                 >数据统计</el-button
               >
-              <div style="margin-top: 15px;display:flex;font-size:12px" v-if="statistDataShow">
-                <div class="statist">
+              <div v-if="statistDataShow" style="margin-top:15px">
+                <div style="display:flex;" class="allStatist">
                   <div>应收总金额:{{statistData.totalArCny.toLocaleString('en-US')}}</div>
-                  <div class="statists">应付总金额:{{statistData.totalApCny.toLocaleString('en-US')}}</div>
+                  <div class="statists">已核销总金额:{{statistData.totalRcWoCny.toLocaleString('en-US')}}</div>
+                  <div class="statists">未核销总金额:{{statistData.totalRcUnwoCny.toLocaleString('en-US')}}</div>
+                  <div class="statists" v-html="dealOrgn(statistData.totalArOrgn,'应收原币')" style="white-space:pre-wrap;text-align:right"></div>
+                  <div class="statists" v-html="dealOrgn(statistData.totalRcWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right"></div>
+                  <div class="statists" v-html="dealOrgn(statistData.totalRcUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right"></div>
                 </div>
-                <div class="statist">
-                  <div>已核销总金额:{{statistData.totalRcWoCny.toLocaleString('en-US')}}</div>
-                  <div class="statists">已核销总金额:{{statistData.totalApWoCny.toLocaleString('en-US')}}</div>
-                </div>
-                <div class="statist">
-                  <div>未核销总金额:{{statistData.totalRcUnwoCny.toLocaleString('en-US')}}</div>
-                  <div class="statists">未核销总金额:{{statistData.totalApUnwoCny.toLocaleString('en-US')}}</div>
-                </div>
-                
-                <div class="statist">
-                  <div>应收原币:{{statistData.totalArOrgn | getOrgn}}</div>
-                  <div class="statists">应付原币:{{statistData.totalApOrgn | getOrgn}}</div>
-                </div>
-                <div class="statist">
-                  <div>已核销原币:{{statistData.totalRcWoOrgn | getOrgn}}</div>
-                  <div class="statists">已核销原币:{{statistData.totalApWoOrgn | getOrgn}}</div>
-                </div>
-                <div class="statist">
-                  <div>未核销原币:{{statistData.totalRcUnwoOrgn | getOrgn}}</div>
-                  <div class="statists">未核销原币:{{statistData.totalApUnwoOrgn | getOrgn}}</div>
-                </div>
-                <div class="statist" style="color:red;font-size:20px" v-if = "errorStatist">
-                  <div>存在异常订单！</div>
+                <div style="display:flex" class="allStatist">
+                  <div>应付总金额:{{statistData.totalApCny.toLocaleString('en-US')}}</div>
+                  <div class="statists" >已核销总金额:{{statistData.totalApWoCny.toLocaleString('en-US')}}</div>
+                  <div class="statists" >未核销总金额:{{statistData.totalApUnwoCny.toLocaleString('en-US')}}</div>
+                  <div class="statists" v-html="dealOrgn(statistData.totalApOrgn,'应付原币')" style="white-space:pre-wrap;text-align:right"></div>
+                  <div class="statists" v-html="dealOrgn(statistData.totalApWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right"></div>
+                  <div class="statists" v-html="dealOrgn(statistData.totalApUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right"></div>
                 </div>
               </div>
+            
             </div>
           </div>
             <el-pagination
@@ -706,7 +685,7 @@
           disabledDate: time => {
             let beginDateVal = this.selectResult.startDepartureDate
             if (beginDateVal) {
-              return time.getTime() < new Date(beginDateVal).getTime()
+              return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
           }
         },
@@ -723,7 +702,7 @@
           disabledDate: time => {
             let beginDateVal = this.selectResult.endOrderTime
             if (beginDateVal) {
-              return time.getTime() < new Date(beginDateVal).getTime()
+              return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
           }
         },
@@ -745,8 +724,58 @@
       this.initAirportSearchByPage()
       this.initCompanySearchByPage()
       this.operateData()
+      this.dom()
     },
     methods: {
+      //原币处理
+      dealOrgn(orgn,extraWord) {
+      if (!orgn) {
+        return;
+      }
+       orgn = JSON.parse(orgn);
+      var totalOrgn = "";
+      var value1 = 0;
+      var value2 = 0;
+      var value3 = 0;
+      var value4 = 0;
+      var value5 = 0;
+      // HK$ $ € ￡
+      for (var i = 0; i < orgn.length; i++) {
+        if (orgn[i].currency == "1") {
+          value1 += orgn[i].amount;
+        } else if (orgn[i].currency == "2") {
+          value2 += orgn[i].amount;
+        } else if (orgn[i].currency == "3") {
+          value3 += orgn[i].amount;
+        } else if (orgn[i].currency == "4") {
+          value4 += orgn[i].amount;
+        } else if (orgn[i].currency == "5") {
+          value5 += orgn[i].amount;
+        }
+      }
+      totalOrgn = "";
+      totalOrgn += value1 || value1 == 0 ? value1 + "CNY" + "\n" : "";
+      totalOrgn += value2 ? value2 + "HKD" + "\n" : "";
+      totalOrgn += value3 ? value3 + "USD" + "\n" : "";
+      totalOrgn += value4 ? value4 + "EUR" + "\n" : "";
+      totalOrgn += value5 ? value5 + "GBP" + "\n": "";
+      totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
+      return (extraWord?extraWord+":":"") +totalOrgn;
+    },
+      //限制搜索条件的最大位数
+      dom(){
+          //代理上家
+        const select = document.querySelector('#agentId')
+        select.setAttribute('maxLength',30) 
+        //航司 
+        const select1 = document.querySelector('#airCompany')
+        select1.setAttribute('maxLength',15)  
+         //起运港目的港  
+        const select2 = document.querySelector('#pod')
+        select2.setAttribute('maxLength',15)  
+         const select3 = document.querySelector('#pol')
+        select3.setAttribute('maxLength',15) 
+      },
         //获取表格选中数据
         handleSelectionChange (e) {
           this.selectTableData = e
@@ -1094,12 +1123,17 @@
       margin-top:-5px;
     }
   }
-  .statist {
-    margin-left:15px;
+  .allStatist {
+    div {
+      flex:0 0 130px
+    }
     .statists {
-      margin-top:10px;
+      margin-right:15px;
     }
   }
+    .statists {
+      margin-right:15px;
+    }
   .content-wrapper {
     width: 100%;
     box-sizing: border-box;
