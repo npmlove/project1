@@ -533,7 +533,7 @@
           disabledDate: time => {
             let beginDateVal = this.selectResult.startDepartureDate
             if (beginDateVal) {
-              return time.getTime() < new Date(beginDateVal).getTime()
+              return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
           }
         },
@@ -550,7 +550,7 @@
           disabledDate: time => {
             let beginDateVal = this.selectResult.startPresentationTime
             if (beginDateVal) {
-              return time.getTime() < new Date(beginDateVal).getTime()
+              return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
           }
         },
@@ -567,7 +567,7 @@
           disabledDate: time => {
             let beginDateVal = this.selectResult.startInvoiceApplyTime
             if (beginDateVal) {
-              return time.getTime() < new Date(beginDateVal).getTime()
+              return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
           }
         },
@@ -584,7 +584,7 @@
           disabledDate: time => {
             let beginDateVal = this.selectResult.startInvoicingTime
             if (beginDateVal) {
-              return time.getTime() < new Date(beginDateVal).getTime()
+              return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
           }
         },

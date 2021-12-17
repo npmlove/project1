@@ -958,7 +958,7 @@
           disabledDate: time => {
             let beginDateVal = this.selectResult.startDepartureDate
             if (beginDateVal) {
-              return time.getTime() < new Date(beginDateVal).getTime()
+              return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
           }
         },
@@ -975,7 +975,7 @@
           disabledDate: time => {
             let beginDateVal = this.selectResult.startOrderTime
             if (beginDateVal) {
-              return time.getTime() < new Date(beginDateVal).getTime()
+              return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
           }
         },
