@@ -241,6 +241,7 @@
     methods: {
       //tab切换
       tabClickData() {
+        this.pageNum = 1
       	this.initData()
       	this.initOrderCountList()
       },
