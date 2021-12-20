@@ -238,8 +238,8 @@
                   <el-button @click="remindOrder(scope.row.id)" :disabled="scope.row.canRemind" type="warning" size="mini" style="background:rgb(245, 154, 35) !important" v-else-if="scope.row.timeOutFlag == 1 && scope.row.remindFlag == 1">已催单{{scope.row.roundsRemindCount}}</el-button>
                 </template>  
               </el-table-column>  
-              <el-table-column label="目的港" prop="pod"></el-table-column>
-              <el-table-column label="件/毛/体" prop="cargoInfo"></el-table-column>
+              <el-table-column label="目的港" prop="pod" min-width="40"></el-table-column>
+              <el-table-column label="件/毛/体" prop="cargoInfo"min-width="80"></el-table-column>
             </el-table>
              <el-pagination
                 @size-change="handleSizeChange"
