@@ -938,8 +938,25 @@
         })
         return num
       },
+      ifDataDel (){
+        var result
+        if(this.selectTableData.some(item=>!item.hasChild)){
+           if(this.selectTableData.some(item=>item.invoiceStatus == 1)){
+          result = true
+        } 
+        }
+        else {
+          this.selectTableData.forEach(item=>{
+            if(item.invoiceInfos.some(item2=>item2.invoiceStatus == "作废")) {
+              result = true
+            }
+          })
+        }
+        return result
+      },
       //作废按钮
       delInvoice(){
+        console.log(this.ifDataDel())
         if(this.pageSkipChecked) {
           this.$message({
             message: '作废不支持跨页全选',
@@ -960,6 +977,11 @@
         }  else if(this.selectTableData.some(item=>item.invoiceNum =="")){
            this.$message({
             message: '勾选数据存在未开票数据，请重新勾选',
+            type: 'warning'
+          });
+        } else if (this.ifDataDel()) {
+            this.$message({
+            message: '勾选数据存在已作废数据，请重新勾选',
             type: 'warning'
           });
         }

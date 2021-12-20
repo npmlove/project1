@@ -178,6 +178,7 @@ export default {
       nameList:[],//客服姓名
       timer:"",//数据请求定时器
       leaveTimer:[],//工单剩余时间
+      leaveTimerNum:[],
       timerInterval:[],//工单倒计时计时器
       waitDeal:[{feedBack:"",transfer:""},{feedBack:"",transfer:""},{feedBack:"",transfer:""}],
       pageSize: "3",
@@ -226,6 +227,7 @@ export default {
           this.nameList = data.data.records;
         });
     },
+
     //查询数据获取
     initData() {
       this.data = []
@@ -236,28 +238,26 @@ export default {
         if (data.code == 200) {
           this.data.push(...data.data);
           let copy = data.data
-          this.leaveTimer= copy.map(item=>item.secondsLeft)
+          this.leaveTimerNum= copy.map(item=>item.secondsLeft)
           for(let i=0;i<copy.length;i++) {
-              if (this.leaveTimer[i] > 0 ){
                 this.timerInterval[i] = setInterval(() => {
-                let timer = this.leaveTimer[i]
-                timer--;
-                var m = parseInt(timer / 60);
-                var s = parseInt(timer % 60);
-                if (m < 10) {
-                  m = "0" + m;
-                }
-                if (s < 10) {
-                  s = "0" + s;
-                }
-                this.this.leaveTimer[i] = m + ":" + s;
-                if (timer == 0) {
-                  clearInterval(this.timerInterval[i]);
-                }
+                  let timer = this.leaveTimerNum[i]
+                  console.log(timer,222)
+                  timer--;
+                  var m = parseInt(timer / 60);
+                  var s = parseInt(timer % 60);
+                  if (m < 10) {
+                    m = "0" + m;
+                  }
+                  if (s < 10) {
+                    s = "0" + s;
+                  }
+                  this.leaveTimer[i] = m + ":" + s;
+                  if (timer == 0) {
+                    clearInterval(this.timerInterval[i]);
+                  }
                 }, 1000);
-              } else {
-                this.leaveTimer[i] = "00:00"
-              }
+             
           }
           clearInterval(this.timer)
           this.timer = setInterval(()=>{
