@@ -259,29 +259,29 @@
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">进仓数据</div>
         <div>
           <el-form-item required label="件数">
-            <el-input :disabled="true" v-model="inboundPiece" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="9" placeholder="请输入件数" style="width: 216px;">
+            <el-input  v-model="inboundPiece" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="9" placeholder="请输入件数" style="width: 216px;">
               <template slot="append">PCS</template>
             </el-input>
           </el-form-item>
           <el-form-item required label="体积">
-            <el-input :disabled="true" v-model="inboundCbm" @blur="cbmBlur(inboundCbm,0,'体积1')" onkeyup="value=value.replace(/[^\d\.]/g, '')" maxlength="9" placeholder="请输入体积" style="width: 216px;">
+            <el-input  v-model="inboundCbm" @blur="cbmBlur(inboundCbm,0,'体积1')" onkeyup="value=value.replace(/[^\d\.]/g, '')" maxlength="9" placeholder="请输入体积" style="width: 216px;">
               <template slot="append">CBM</template>
             </el-input>
           </el-form-item>
         </div>
         <div>
           <el-form-item required label="重量">
-            <el-input :disabled="true" v-model="inboundWeight" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="6" placeholder="请输入重量" style="width: 216px;">
+            <el-input  v-model="inboundWeight" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="6" placeholder="请输入重量" style="width: 216px;">
               <template slot="append">KGS</template>
             </el-input>
           </el-form-item>
         </div>
         <div>
           <el-form-item required label="比重">
-            <el-input v-model="inboundVwr" :disabled="true" style="width: 216px;"></el-input>
+            <el-input v-model="inboundVwr"  style="width: 216px;"></el-input>
           </el-form-item>
           <el-form-item required label="计费重">
-            <el-input v-model="inboundCw" :disabled="true" style="width: 216px;">
+            <el-input v-model="inboundCw"  style="width: 216px;">
               <template slot="append">KGS</template>
             </el-input>
           </el-form-item>
