@@ -160,7 +160,7 @@
                   <i class="el-icon-time"></i>
                   <h1 class="timi">{{ timer }}</h1>
                 </div>
-                <div @click="closePopover(scope.$index)" class="delete">X</div>
+                <div @click="closePopover(scope.$index,scope)" class="delete">X</div>
               </div>
               <div v-if="statuShow" class="sad"></div>
               <div v-if="statuShow" class="items">
@@ -266,13 +266,14 @@ export default {
       },
       nameList: [],
       details: [],
-      //定时器显示
       dataTimer: "", //数据请求定时器
+      //工单倒计时数字
       timer: "10:00",
-      //定时器
+      //工单倒计时定时器
       timerInterval: "",
-      text: "",
-      setText: "",
+
+      text: "", //反馈内容
+      setText: "", //转单选项
       statuShow: "true",
       pageSize: 10,
       pageNum: 1,
@@ -319,6 +320,7 @@ export default {
     });
   },
   methods: {
+    //客服姓名数据
     getId() {
       this.$http
         .get(
@@ -328,6 +330,7 @@ export default {
           this.nameList = data.data.records;
         });
     },
+    //数据查询
     initData() {
       let json = {
         workOrderNo: this.selectResult.workOrderNo,
@@ -345,6 +348,7 @@ export default {
           this.tableData.forEach((item) => {
             item.ifFold = false;
           });
+       
           clearInterval(this.dataTimer);
           this.dataTimer = setInterval(() => {
             this.initData();
@@ -365,6 +369,7 @@ export default {
       this.selectResult.roleName = "";
       this.initData();
     },
+    //分页切换
     handleSizeChange(e) {
       this.pageSize = e;
       this.initData();
@@ -381,8 +386,14 @@ export default {
       this.timer = "";
       let index = e.$index;
       let data = e.row;
-      this.$refs["popover" + index].showPopper =
-        !this.$refs["popover" + index].showPopper;
+      this.$refs["popover" + index].showPopper = !this.$refs["popover" + index].showPopper;
+      if(this.$refs["popover" + index].showPopper){
+          clearInterval(this.dataTimer);
+      } else {
+         this.dataTimer = setInterval(() => {
+            this.initData();
+          }, 60000);
+      }
       data.ifFold = !data.ifFold;
       this.$set(this.tableData, index, data);
       var withPrcps = "";
@@ -428,6 +439,7 @@ export default {
                 }
         });
     },
+    //导出文件
     exportFile() {
       let params = {
         customerId: this.selectResult.roleName,
@@ -504,8 +516,10 @@ export default {
       });
     },
     //订单详情弹框右上角X关闭
-    closePopover(index) {
-      this.tableData[index].ifFold = !this.tableData[index].ifFold;
+    closePopover(index,e) {
+      let dataFold = e.row;
+      dataFold.ifFold = !dataFold.ifFold;
+      this.$set(this.tableData, index, dataFold);
       let data = "popover" + index;
       this.$refs[data].showPopper = false;
     },
@@ -523,6 +537,7 @@ export default {
   },
   destroyed() {
     sessionStorage.setItem("lastPageNum", "");
+    clearInterval(this.dataTimer)
   },
 };
 </script>

@@ -945,6 +945,11 @@
             message: '主数据和折叠数据不能同时存在',
             type: 'warning'
           });
+        }  else if(this.selectTableData.some(item=>item.invoiceNum =="")){
+           this.$message({
+            message: '勾选数据存在未开票数据，请重新勾选',
+            type: 'warning'
+          });
         }
         else {
           var rubbishArray = []

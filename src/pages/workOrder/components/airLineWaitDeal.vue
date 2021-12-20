@@ -93,7 +93,7 @@
                 <div class="warn">注:请于10分钟内处理工单</div>
                 <div class="time">
                   <i class="el-icon-time"></i>
-                  <h1 class="timi">{{ timer }}</h1>
+                  <h1 class="timi">{{ leaveTimer[index] }}</h1>
                 </div>
               </div>
               <div class="sad"></div>
@@ -176,6 +176,8 @@ export default {
       data: [], //循环对象
       nameList:[],//客服姓名
       timer:"",//数据请求定时器
+      leaveTimer:[],//工单剩余时间
+      timerInterval:[],//工单倒计时计时器
       waitDeal:[{feedBack:"",transfer:""},{feedBack:"",transfer:""},{feedBack:"",transfer:""}],
       pageSize: "3",
       selectResult: {
@@ -206,7 +208,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.data)
     this.initData();
     this.getId();
     this.timer = setInterval(()=>{
@@ -233,6 +234,30 @@ export default {
       this.$http.post(this.$service.searchDealingWork4Prcp, request).then((data) => {
         if (data.code == 200) {
           this.data.push(...data.data);
+          let copy = data.data
+          this.leaveTimer= copy.map(item=>item.secondsLeft)
+          for(let i=0;i<copy.length;i++) {
+              if (this.leaveTimer[i] > 0 ){
+                this.timerInterval[i] = setInterval(() => {
+                let timer = this.leaveTimer[i]
+                timer--;
+                var m = parseInt(timer / 60);
+                var s = parseInt(timer % 60);
+                if (m < 10) {
+                  m = "0" + m;
+                }
+                if (s < 10) {
+                  s = "0" + s;
+                }
+                this.this.leaveTimer[i] = m + ":" + s;
+                if (timer == 0) {
+                  clearInterval(this.timerInterval[i]);
+                }
+                }, 1000);
+              } else {
+                this.leaveTimer[i] = "00:00"
+              }
+          }
           clearInterval(this.timer)
           this.timer = setInterval(()=>{
             this.initData()
@@ -303,6 +328,12 @@ export default {
         }
         })
     },
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
+    for(let i = 0;i<this.timerInterval.length;i++) {
+      clearInterval(this.timerInterval[i])
+    }
   },
 };
 </script>
