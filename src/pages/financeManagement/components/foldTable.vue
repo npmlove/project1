@@ -118,6 +118,7 @@
                               width="40"
                               trigger="hover"
                               popper-class="invoicePopper"
+                              v-if="item2.invoiceInfos"
                               >
                               <div v-for="(item11,index11) in item2.invoiceInfos" :key ="index11">{{item11.invoiceNum}}</div>
                               <div slot="reference"> <template v-if="item2.hasChild">
@@ -146,6 +147,7 @@
                               width="40"
                               popper-class="invoicePopper"
                               trigger="hover"
+                               v-if="item2.invoiceInfos"
                               >
                               <div v-for="(item11,index11) in item2.invoiceInfos" :key ="index11">{{item11.invoicingTime}}</div>
                               <div slot="reference">{{item2.invoicingTime}}</div>
@@ -215,26 +217,31 @@ export default {
       default: () => {
         return [
           { checkBox: true, width: 50 },
-          { label: "订单号", width: 160,  key: "orderNo"},
-          { label: "运单号", width: 160,key: "waybillNo" },
-          { label: "订舱公司",width: 160, key: "customerName" },
-          { label: "航班日期",width: 160, key: "departureDate" },
-          { label: "交单时间",width: 160, key: "presentationTime" },
-          { label: "发票抬头",width: 160, key: "invoiceTitle" },
-          { label: "开票信息",width: 160, key: "showInvoice" },
-          { label: "应收费用总金额",width: 160, key: "totalArCny" },
-          { label: "申请开票金额",width: 160, key: "applyAmount" ,unit:'CNY'},
-          { label: "发票种类",width: 160, key: "invoiceType" },
-          { label: "申请人", width: 160,key: "applicant" },
-          { label: "申请时间",width: 160, key: "applyTime" },
-          { label: "开票进度", width: 160,key: "invoicingStatus" },
-          { label: "已开票金额", width: 160,key: "invoicedAmount" },
-          { label: "发票号码",width: 160, key: "invoiceNum" },
-          { label: "开票时间",width: 160, key: "invoicingTime" },
-          { label: "快递信息",width: 160, key: "expressInfo" },
-          { label: "快递状态",width: 160, key: "expressStatus" },
-          { label: "发票状态",width: 160, key: "invoiceStatus" },
-          { label: "是否上传",width: 160, key: "upload" },
+          { label: "订单号", width: 160, key: "orderNo" },
+          { label: "运单号", width: 160, key: "waybillNo" },
+          { label: "订舱公司", width: 160, key: "customerName" },
+          { label: "航班日期", width: 160, key: "departureDate" },
+          { label: "交单时间", width: 160, key: "presentationTime" },
+          { label: "发票抬头", width: 160, key: "invoiceTitle" },
+          { label: "开票信息", width: 160, key: "showInvoice" },
+          { label: "应收费用总金额", width: 160, key: "totalArCny" },
+          {
+            label: "申请开票金额",
+            width: 160,
+            key: "applyAmount",
+            unit: "CNY",
+          },
+          { label: "发票种类", width: 160, key: "invoiceType" },
+          { label: "申请人", width: 160, key: "applicant" },
+          { label: "申请时间", width: 160, key: "applyTime" },
+          { label: "开票进度", width: 160, key: "invoicingStatus" },
+          { label: "已开票金额", width: 160, key: "invoicedAmount" },
+          { label: "发票号码", width: 160, key: "invoiceNum" },
+          { label: "开票时间", width: 160, key: "invoicingTime" },
+          { label: "快递信息", width: 160, key: "expressInfo" },
+          { label: "快递状态", width: 160, key: "expressStatus" },
+          { label: "发票状态", width: 160, key: "invoiceStatus" },
+          { label: "是否上传", width: 160, key: "upload" },
         ];
       },
     },
@@ -246,15 +253,14 @@ export default {
     tableData: {
       type: Array,
       default: () => {
-        return [
-        ]
+        return [];
       },
     },
     //跨页全选
-    pageSkipAll:{
-      type:Boolean,
-      default:false
-    }
+    pageSkipAll: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -263,79 +269,78 @@ export default {
       //表格行选中
       checked: [],
       //表头全选
-      checkAll:false,
+      checkAll: false,
     };
   },
-  mounted() {
-    
-  },
-  watch:{
-    tableData () {
-      console.log()
-      this.selectResult=[];
-      for(let i = 0;i<this.tableData.length;i++){
-           this.$set(this.checked,i,false)
-          }
+  mounted() {},
+  watch: {
+    tableData() {
+      console.log();
+      this.selectResult = [];
+      for (let i = 0; i < this.tableData.length; i++) {
+        this.$set(this.checked, i, false);
+      }
     },
-    pageSkipAll(){
-        for(let i = 0;i<this.tableData.length;i++){
-          if(this.pageSkipAll == true){
-            this.$set(this.checked,i,true)
-            this.checkAll=true
-          } else {
-           this.$set(this.checked,i,false)
-            this.checkAll=false 
-            }
+    pageSkipAll() {
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.pageSkipAll == true) {
+          this.$set(this.checked, i, true);
+          this.checkAll = true;
+        } else {
+          this.$set(this.checked, i, false);
+          this.checkAll = false;
         }
-    }
+      }
+    },
   },
   computed: {},
   methods: {
-    //控制快递信息列显示内容  
-      dealExpress(express) {
-        if(!express) 
-        {
-          express =""
-          return ""
-        }
-        let data = express.split(",")
-        return `<div>公司:${data[0]?data[0]:""}\n单号:${data[1]?data[1]:""}\n日期:${data[2]?data[2]:""}</div>`
-      },
-      //表格头全选事件
-      changeCheckAll(e){
-        for(let i = 0;i<this.tableData.length;i++){
-          if(e == true){
-            this.$set(this.checked,i,true)
-          } else {
-           this.$set(this.checked,i,false)
-          }
-        }
-        if(e==true){
-          this.$emit("changeCheckBox",this.tableData)
+    //控制快递信息列显示内容
+    dealExpress(express) {
+      if (!express) {
+        express = "";
+        return "";
+      }
+      let data = express.split(",");
+      return `<div>公司:${data[0] ? data[0] : ""}\n单号:${
+        data[1] ? data[1] : ""
+      }\n日期:${data[2] ? data[2] : ""}</div>`;
+    },
+    //表格头全选事件
+    changeCheckAll(e) {
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (e == true) {
+          this.$set(this.checked, i, true);
         } else {
-          this.$emit("changeCheckBox",[])
+          this.$set(this.checked, i, false);
         }
-      },
-      //表格选择列选中事件
-    changeCheckBox(e,i,index) {
-      console.log(i)
-      if(index != undefined) {
-        this.checked[index] = e
       }
-      if(e == true){
-        this.selectResult.push(i)    
+      if (e == true) {
+        this.$emit("changeCheckBox", this.tableData);
       } else {
-       let index =  this.selectResult.findIndex(item=>item.id = i.id)
-       this.selectResult.splice(index,1)
+        this.$emit("changeCheckBox", []);
       }
-      console.log(this.checked)
-      this.$emit("changeCheckBox",this.selectResult)
+    },
+    //表格选择列选中事件
+    changeCheckBox(e, i, index) {
+      console.log(i);
+      if (index != undefined) {
+        this.checked[index] = e;
+      }
+      if (e == true) {
+        this.selectResult.push(i);
+      } else {
+        let index = this.selectResult.findIndex((item) => (item.id = i.id));
+        this.selectResult.splice(index, 1);
+      }
+      console.log(this.checked);
+      this.$emit("changeCheckBox", this.selectResult);
     },
     //展开箭头点击事件
     foldRow(item2, index2) {
       // console.log(item2.ifFold,"FOLD1")
       // debugger
-      console.log(item2.ifFold)
+      console.log(item2.ifFold);
       item2.ifFold = !item2.ifFold;
     },
   },
@@ -359,12 +364,12 @@ export default {
           display: flex;
           justify-content: center;
           align-items: center;
-           &:first-child {
-              background-color: #5b95ff;
-              position: sticky;
-              left: 0;
-              z-index: 10;
-            }
+          &:first-child {
+            background-color: #5b95ff;
+            position: sticky;
+            left: 0;
+            z-index: 10;
+          }
         }
       }
     }
@@ -375,7 +380,7 @@ export default {
           min-width: 3250px;
           background-color: #ffffff;
           .tb-td {
-             &:first-child {
+            &:first-child {
               background-color: #ffffff;
               position: sticky;
               left: 0;
@@ -387,7 +392,7 @@ export default {
           min-width: 3250px;
           background-color: #f2f6ff;
           .tb-td {
-             &:first-child {
+            &:first-child {
               background-color: #f2f6ff;
               position: sticky;
               left: 0;
@@ -395,7 +400,8 @@ export default {
             }
           }
         }
-        .tb-td,.tb-th {
+        .tb-td,
+        .tb-th {
           flex: 1;
           padding: 0.375rem 0;
           color: #343434;
@@ -414,7 +420,6 @@ export default {
           // }
 
           &:first-child {
-          
             .tb-span {
               width: 3.5rem;
               overflow: auto;
@@ -436,7 +441,7 @@ export default {
             width: 10px;
             height: 10px;
             margin-right: 5px;
-            transform:translateY(-1px)
+            transform: translateY(-1px);
           }
           &:first-child {
             font-weight: bolder !important;
@@ -447,81 +452,81 @@ export default {
       }
       .tb-son {
         .tb-tr {
-        display: flex;
-        &:nth-child(odd) {
-          min-width: 3250px;
-          background-color: #ffffff;
-          .tb-td {
-             &:first-child {
-              background-color: #ffffff;
-              position: sticky;
-              left: 0;
-              z-index: 10;
-            }
-          }
-        }
-        &:nth-child(even) {
-          min-width: 3250px;
-          background-color: #f2f6ff;
-          .tb-td {
-             &:first-child {
-              background-color: #f2f6ff;
-              position: sticky;
-              left: 0;
-              z-index: 10;
-            }
-          }
-        }
-        .tb-td,.tb-th {
-          flex: 1;
-          padding: 0.375rem 0;
-          color: #343434;
-          font-size: 10px;
-          font-weight: 400;
           display: flex;
-          justify-content: center;
-          text-align: center !important;
-          align-items: center;
-          // position:relative;
-          // &:first-child{
-          //   .foldContent{
-          //     position:absolute;
-          //     left:10px;
-          // }
-          // }
-
-          &:first-child {
-          
-            .tb-span {
-              width: 3.5rem;
-              overflow: auto;
-              text-align: center;
-              white-space: nowrap;
-              // margin-right:5px;
-              img {
-                // position:absolute;
-                // left:3.5rem;
-                margin-left: 5px;
-                width: 12px;
-                height: 12px;
-                // position:fixed;
-                // padding:0 5px;
+          &:nth-child(odd) {
+            min-width: 3250px;
+            background-color: #ffffff;
+            .tb-td {
+              &:first-child {
+                background-color: #ffffff;
+                position: sticky;
+                left: 0;
+                z-index: 10;
               }
             }
           }
-          .foldImg {
-            width: 10px;
-            height: 10px;
-            margin-right: 5px;
-            transform:translateY(-1px)
+          &:nth-child(even) {
+            min-width: 3250px;
+            background-color: #f2f6ff;
+            .tb-td {
+              &:first-child {
+                background-color: #f2f6ff;
+                position: sticky;
+                left: 0;
+                z-index: 10;
+              }
+            }
           }
-          &:first-child {
-            font-weight: bolder !important;
-          }
-          .tb-span {
+          .tb-td,
+          .tb-th {
+            flex: 1;
+            padding: 0.375rem 0;
+            color: #343434;
+            font-size: 10px;
+            font-weight: 400;
+            display: flex;
+            justify-content: center;
+            text-align: center !important;
+            align-items: center;
+            // position:relative;
+            // &:first-child{
+            //   .foldContent{
+            //     position:absolute;
+            //     left:10px;
+            // }
+            // }
+
+            &:first-child {
+              .tb-span {
+                width: 3.5rem;
+                overflow: auto;
+                text-align: center;
+                white-space: nowrap;
+                // margin-right:5px;
+                img {
+                  // position:absolute;
+                  // left:3.5rem;
+                  margin-left: 5px;
+                  width: 12px;
+                  height: 12px;
+                  // position:fixed;
+                  // padding:0 5px;
+                }
+              }
+            }
+            .foldImg {
+              width: 10px;
+              height: 10px;
+              margin-right: 5px;
+              transform: translateY(-1px);
+            }
+            &:first-child {
+              font-weight: bolder !important;
+            }
+            .tb-span {
+            }
           }
         }
-      }
       }
     }
     .no-data {
@@ -531,7 +536,5 @@ export default {
       text-align: center;
     }
   }
-
-  
 }
 </style>
