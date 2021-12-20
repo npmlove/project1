@@ -68,6 +68,7 @@
                     class="bigInput"
                     type="textarea"
                     :rows="2"
+                    @change="getKeyWords($event)"
                     placeholder="请输入内容"
                     maxlength="150"
                     show-word-limit
@@ -75,21 +76,21 @@
                 </el-input>
                 <el-form style="display:flex;margin-top:10px">
                      <el-form-item label="目的港" label-width="60px" style="width:170px">
-                        <el-input style="width:100px" size="medium">
+                        <el-input style="width:100px" size="medium" v-model="newMessage.pod" disabled>
                      </el-input>
                     </el-form-item>
                     <el-form-item label="件数" label-width="60px" style="width:200px">
-                        <el-input style="width:140px" size="medium" v-model="xxx" maxlength="4" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');"  @blur="xxx = $event.target.value">
+                        <el-input style="width:140px" size="medium" v-model="newMessage.piece" maxlength="4" disabled>
                             <template slot="append">PCS</template>
                      </el-input>
                     </el-form-item>
                      <el-form-item label="毛重" label-width="60px" style="width:220px">
-                        <el-input style="width:150px" size="medium" v-model="xxx" maxlength="6" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');"  @blur="xxx = $event.target.value">
+                        <el-input style="width:150px" size="medium" v-model="newMessage.weight" maxlength="6" disabled>
                             <template slot="append">KG</template>
                      </el-input>
                     </el-form-item>
                     <el-form-item label="体积" label-width="60px" style="width:240px">
-                        <el-input style="width:170px" size="medium" v-model="xxx" onkeyup="this.value= this.value.match(/^\d{0,4}(\.\d{0,4})?/)? this.value.match(/^\d{0,4}(\.\d{0,4})?/)[0] : ''" @blur="xxx = $event.target.value">
+                        <el-input style="width:170px" size="medium" v-model="newMessage.cbm" disabled>
                             <template slot="append">CBM</template>
                      </el-input>
                     </el-form-item>
@@ -237,6 +238,8 @@
                   <el-button @click="remindOrder(scope.row.id)" :disabled="scope.row.canRemind" type="warning" size="mini" style="background:rgb(245, 154, 35) !important" v-else-if="scope.row.timeOutFlag == 1 && scope.row.remindFlag == 1">已催单{{scope.row.roundsRemindCount}}</el-button>
                 </template>  
               </el-table-column>  
+              <el-table-column label="目的港" prop="pod"></el-table-column>
+              <el-table-column label="件/毛/体" prop="cargoInfo"></el-table-column>
             </el-table>
              <el-pagination
                 @size-change="handleSizeChange"
@@ -282,7 +285,7 @@ export default {
     },
     data(){
         return {
-            xxx:"",
+            newMessage:{pod:"",piece:"",cbm:"",weight:""},
             //表格数据定时器
             tableTimer:null,
             pageRoleName:"",
@@ -331,14 +334,24 @@ export default {
         }
     },
     methods:{
-        //新建工单确认关闭
-          handleClose(done) {
-        this.$confirm('确认关闭？',{customClass:'confirmClass'})
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {});
-      },
+        //获取关键字 
+        getKeyWords(e){
+            this.$http.post(this.$service.stringIfContent,e).then(data=>{
+                let copy = data.data
+                this.newMessage.pod = copy.pod
+                this.newMessage.piece = copy.piece
+                this.newMessage.cbm = copy.cbm
+                this.newMessage.weight = copy.weight
+            })
+        },
+         //新建工单确认关闭
+        handleClose(done) {
+            this.$confirm('确认关闭？',{customClass:'confirmClass'})
+                .then(_ => {
+                    done();
+                })
+            .catch(_ => {});
+        },
         changeRows(row,column){
             if(column.label=="工单详情"){
                 let index
@@ -371,6 +384,7 @@ export default {
         //新建工单按钮
         openWorkOrder(){
             this.form = {workOrderType:0,urgency:"0",content:"",airLinePeople:[]},
+            this.newMessage = {pod:"",piece:"",cbm:"",weight:""},
             this.workOrderDial = true
         },
         //新建工单 弹框提交

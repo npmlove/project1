@@ -960,7 +960,9 @@
   /deep/ .pageSkip {
     padding: 3px 5px !important
   }
-
+  /deep/ .el-table tbody tr:hover > td {
+    background-color: transparent;
+  }
   .content-wrapper {
     width: 100%;
     box-sizing: border-box;

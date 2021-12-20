@@ -178,6 +178,7 @@
                   }}
                 </div>
               </div>
+              <div style="textAlign:center;margin-top:5px;color:red" v-if="statuShow && details.timeOutHours>=1"><img src="../../../assets/redTriangle.png" alt="" style="width:20px;height:20px;margin-right:10px"/>超时{{details.timeOutHours}}小时</div>
               <div class="inputarea">
                 <div class="text">
                   <div

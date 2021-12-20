@@ -243,7 +243,8 @@ const serviceApi = {
    countDealingWork4Cst : pulicWeb +'/t-work-order/countDealingWork4Cst',
    //客服工单 -滚动公告
    searchRollList: pulicWeb +'/t-work-order/searchRollList',
-
+  //客服工单 - 新建工单获取关键字
+  stringIfContent: pulicWeb +'/t-work-order/stringIfContent',
    //工单-客服工单查询
    searchByPageForCst:  pulicWeb + '/t-work-order/searchByPageForCst',
    //工单 - 待我确认 查询
