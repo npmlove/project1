@@ -1,21 +1,9 @@
 <template>
   <div class="contont" v-if="isDataDone">
-      <!-- <div class="opeartion">
-          <div> <span class="tips">操作中,待完成</span> </div>
-          <div>
-            <el-button  type="primary">保存</el-button>
-          </div>
-          <div>
-            <el-button  type="primary">操作完成</el-button>
-          </div>
-          <div>
-            <el-button  type="danger">操作异常，取消订单</el-button>
-          </div> 操作完成
-      </div> -->
-      <el-button type="danger" @click="saveOrder" >保存</el-button>
+      <el-button type="" disabled class="setWidth"  >{{initData.statusDesc}}</el-button>
+      <el-button type="primary" @click="saveOrder" >保存</el-button>
       <el-button type="primary" @click="exdeOrder(1)" >操作完成</el-button>
       <el-button type="primary" @click="exdeOrder(2)" >取消订单</el-button>
-
       <div class="common">
           <div>
             <span>订单号</span>
@@ -149,7 +137,7 @@
               <div class="flex_message">托书下载</div>
               <div>
                 <el-button class="ml_10" size="mini">点击下载<i class="el-icon-download el-icon--right"></i></el-button>
-                </div>
+              </div>
             </div>
             <h1 class="title mtop_15">订舱数据</h1>
               <div class="bg_dark">
@@ -199,11 +187,11 @@
               <div class="inData ">
                   <div class="flex_center">
                       <div><el-input size="mini" class="ml_10" v-model="initData.inboundPiece" placeholder=""></el-input></div>
-                      <div><el-input size="mini" class="ml_10" v-model="initData.inboundWeight" placeholder=""></el-input></div>
-                      <div><el-input size="mini" class="ml_10" v-model="initData.inboundCbm" placeholder=""></el-input></div>
-                      <div><el-input size="mini" class="ml_10" v-model="initData.inboundVwr" placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10" v-model="initData.inboundWeight" @change="calcVwr" placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10"  v-model="initData.inboundCbm" @change="calcVwr" placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10" disabled v-model="initData.inboundVwr" placeholder=""></el-input></div>
                       <div>
-                        <el-select class="ml_10" size="mini" v-model="initData.bubblePoint" placeholder="请选择">
+                        <el-select class="ml_10" size="mini" v-model="initData.bubblePoint" @change="calcVwr" placeholder="请选择">
                             <el-option
                               v-for="item in bubblePointArray"
                               :key="item.value"
@@ -302,7 +290,9 @@
               <el-button   class="setWidth ml_20" type="primary" @click="reconciliationClient(100)" >发起客户对账</el-button>
           </div>
           <div class="line"></div>
-          <billOrder  :getList= "initData.apOrderPriceList"  ref="typeTwo" />
+            <billOrder  :getList= "initData.apOrderPriceList"  ref="typeTwo" />
+            <!-- 应收添加 -->
+            <!-- <el-button  class="setWidth ml_20"   @click="fatherAddOneItem(200)" >添加费用</el-button> -->
             <span  class="ml_20" v-if="initData.financeStatus == 0">未交单</span>
             <span  class="ml_20" v-if="initData.financeStatus == 1">已交单</span>
             <span  class="ml_20" v-if="initData.financeStatus == 2">请解锁</span>
@@ -435,6 +425,36 @@ export default {
     billOrder
   },
   methods:{
+    calcVwr(){
+      let {inboundWeight,inboundCbm,bubblePoint} = this.initData
+      if(inboundWeight && inboundCbm){
+        let scale = inboundCbm / inboundWeight
+        this.initData.inboundVwr = Math.ceil(scale > 1/167 ? scale : 1/167) 
+        if(bubblePoint == 10){
+          this.initData.inboundCw = inboundWeight
+        }else if(bubblePoint == 9){
+           this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.9 + inboundWeight * 0.1)
+        }else if(bubblePoint == 8){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.8 + inboundWeight * 0.2)
+        }else if(bubblePoint == 7){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.7 + inboundWeight * 0.3)
+        }else if(bubblePoint == 6){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.6 + inboundWeight * 0.4)
+        }else if(bubblePoint == 5){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.5 + inboundWeight * 0.5)
+        }else if(bubblePoint == 4){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.4 + inboundWeight * 0.6)
+        }else if(bubblePoint == 3){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.3 + inboundWeight * 0.7)
+        }else if(bubblePoint == 2){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.2 + inboundWeight * 0.8)
+        }else if(bubblePoint == 1){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.1 + inboundWeight * 0.9)
+        }
+      }else{
+
+      }
+    },
     // 申请解锁
     recommiter(){
       this.$prompt('申请解锁', {
@@ -559,6 +579,8 @@ export default {
       }else if(e == 100){
         // 这里是新增账单
         this.$refs.typeNewBill.addOneTableObj()
+      }else if(e == 200){
+        this.$refs.typeTwo.addOneTableObj()
       }
      
     },
@@ -618,6 +640,32 @@ export default {
         this.$message.error('账单在交单')
         return ;
       }
+      let {inboundWeight,inboundCbm, inboundCw , inboundPiece} = this.initData
+      if(!inboundPiece){
+        this.$message.error('请输入进仓件数')
+        return ;
+      }
+      if(!inboundWeight){
+        this.$message.error('请输入毛重')
+        return ;
+      }
+      if(!inboundCbm){
+        this.$message.error('请输入体积')
+        return ;
+      }
+      if(!inboundCw){
+        this.$message.error('请输入计费重')
+        return ;
+      }
+      let arrayTypeThree = this.$refs.typeThree.tableData 
+      let tempthree = arrayTypeThree.filter(item=>{
+        return (item.piece == undefined || item.piece == '') || (item.cbm == undefined || item.cbm == "") || (item.weight == undefined || item.weight == '')  || (item.cargoSize == undefined || item.cargoSize == '')
+      }) 
+      if(tempthree.length > 0){
+        this.$message.error('进仓数据未填写')
+        return ;
+      }
+      
       let arrayTypeOne = this.$refs.typeBill0[0].tableData
       let arrayTypeTwo = this.$refs.typeTwo.tableData
       let order = this.initData
@@ -627,7 +675,7 @@ export default {
         delete order.orderPriceList
         delete order.trayDetail
        let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
-       let orderCargoDetailList = this.$refs.typeThree.tableData
+       let orderCargoDetailList = arrayTypeThree
 
   
       let params = {
@@ -686,9 +734,7 @@ export default {
            tempObj.arOrderPriceList[i].changeBillAddOne = false
           }
           this.isChangeJiaoDan = tempObj.financeStatus == 0 ||  tempObj.financeStatus == 4
-          console.log( this.isChangeJiaoDan)
           this.orderNo = tempObj.orderNo
-          console.log(tempObj.orderNo)
           this.initData = tempObj 
           this.isDataDone = true
       }
@@ -757,14 +803,6 @@ export default {
   padding: 20px 0;
   overflow: scroll;
 }
-.opeartion{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #d5d5d5;
-  /* border-radius: 15px; */
-  padding-bottom: 20px;
-}
 .tips{
   font-size: 26px;
   font-weight: 800;
@@ -810,7 +848,7 @@ export default {
 }
 .ml_10{
   margin-left: 20px;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 .mr_25{
     margin-right: 25px;
@@ -839,6 +877,7 @@ export default {
 .flex_center>div{
     flex: 1;
     text-align: center;
+  
 }
 .bg_table,.inData{
     width: 60%;

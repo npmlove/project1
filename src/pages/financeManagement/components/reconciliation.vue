@@ -81,6 +81,8 @@
                     <el-input
                         size="small"
                         type="number"
+                        @change='getNumberLength'
+                        maxlength="10"
                         placeholder="请输入数字"
                         v-model="input3">
                     </el-input> 
@@ -108,6 +110,7 @@
                 <div>  
                     <el-input
                         size="small"
+                        disabled
                         placeholder="请输入内容"
                         v-model="expenseUnitName">
                     </el-input> 
@@ -209,6 +212,13 @@ export default {
     methods: {
         async handleClose(){
             await this.cancle()
+        },
+        getNumberLength(e){
+            console.log(e.length)
+            if(e.length > 10){
+                this.$message.error('最多输入10位数字')
+                this.input3 = ''
+            }
         },
         setOne(t){
             // 获取 当前币种下的未对账金额

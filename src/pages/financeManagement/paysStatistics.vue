@@ -148,7 +148,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="售前客服">
-        <el-select v-model="formInline.pscsId" clearable placeholder="请选择">
+        <el-select v-model="formInline.pscsId" filterable clearable placeholder="请选择">
           <el-option
             v-for="item in preSaleList"
             :key="item.id"
@@ -158,7 +158,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="航线负责人">
-        <el-select v-model="formInline.principalId" clearable placeholder="请选择">
+        <el-select v-model="formInline.principalId" filterable clearable placeholder="请选择">
           <el-option
             v-for="item in airLineList"
             :key="item.id"
@@ -168,7 +168,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="售中客服" >
-        <el-select v-model="formInline.mscsId" clearable placeholder="请选择">
+        <el-select v-model="formInline.mscsId" filterable clearable placeholder="请选择">
           <el-option
             v-for="item in onSaleList"
             :key="item.id"
@@ -966,6 +966,8 @@ import {exportFile} from '../../util/util'
               }
             }
             
+            
+            
             let {formInline} = this
             let params= Object.assign({},formInline,{ids:tempAds})
             let res = await this.$http.post(this.$service.toCheckAmount,params)
@@ -973,6 +975,7 @@ import {exportFile} from '../../util/util'
               let testObj = Object.assign({},res.data,{expenseUnitName:tempString},{ids:tempAds})
               this.childPropsObj = testObj
               setTimeout(()=>{
+                  this.$refs.reconciliationData.input3 = ''
                   this.$refs.reconciliationData.showModal()
               },0)
               
@@ -1141,11 +1144,11 @@ import {exportFile} from '../../util/util'
       },
       // 处理利润异常样式
       backStyle({row,rowIndex}){
-        if (0 <= row.orderProfit && row.orderProfit <=200 ) {
+        if (-200 < row.orderProfit && row.orderProfit < 0 ) {
           return 'background-color: #FFDEAD';
-        }else if (200 < row.orderProfit && row.orderProfit <= 500) {
+        }else if (-500 <= row.orderProfit && row.orderProfit <= -200) {
           return 'background-color: #F4A460';
-        }else if (500 < row.orderProfit ) {
+        }else if ( row.orderProfit < -500 ) {
           return 'background-color: #FA8072';
         }else if(row.orderProfit < 0 ){
           return 'background-color: #CD5C5C'
