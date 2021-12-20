@@ -95,6 +95,7 @@
         </div>
          <el-form-item label="售前客服" class="formItem" label-width="100px">
             <el-select
+              id="pscsId"
               v-model="selectResult.pscsId"
               placeholder="请输入售前客服"
               :loading="loading"
@@ -164,6 +165,7 @@
    
           <el-form-item label="售中客服" class="formItem" label-width="100px">
             <el-select
+              id="mscsId"
               v-model="selectResult.mscsId"
               placeholder="请输入售中客服"
               :loading="loading"
@@ -184,6 +186,7 @@
           </el-form-item>
            <el-form-item label="航线:" class="formItem" label-width="80px">
             <el-select
+              id="principalId"
               v-model="selectResult.principalId"
               placeholder="请输入航线"
               :loading="loading"
@@ -775,6 +778,13 @@
         select2.setAttribute('maxLength',15)  
          const select3 = document.querySelector('#pol')
         select3.setAttribute('maxLength',15) 
+        //售前售中航线
+         const select4 = document.querySelector('#pscsId')
+         select4.setAttribute('maxLength',10) 
+         const select5 = document.querySelector('#mscsId')
+         select5.setAttribute('maxLength',10) 
+         const select6 = document.querySelector('#principalId')
+         select6.setAttribute('maxLength',10) 
       },
         //获取表格选中数据
         handleSelectionChange (e) {
