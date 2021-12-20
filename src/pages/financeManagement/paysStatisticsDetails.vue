@@ -512,21 +512,21 @@
             value: ''
           },
           {
-            rcvWriteOffStatus: '未对账未核销',
+            rcvWriteOffStatus: '未对账',
             value: '0'
           },
           {
-            rcvWriteOffStatus: '部分对账未核销',
+            rcvWriteOffStatus: '部分对账',
             value: '1'
           },
           {
-            rcvWriteOffStatus: '已对账未核销',
+            rcvWriteOffStatus: '已对账',
             value: '2'
           },
-          {
+      /*    {
             rcvWriteOffStatus: '未对账部分核销',
             value: '3'
-          },
+          },*/
           {
             rcvWriteOffStatus: '部分对账部分核销',
             value: '4'
@@ -535,14 +535,14 @@
             rcvWriteOffStatus: '已对账部分核销',
             value: '5'
           },
-          {
+     /*     {
             rcvWriteOffStatus: '未对账已核销',
             value: '6'
           },
           {
             rcvWriteOffStatus: '部分对账已核销',
             value: '7'
-          },
+          },*/
           {
             rcvWriteOffStatus: '已对账已核销',
             value: '8'
