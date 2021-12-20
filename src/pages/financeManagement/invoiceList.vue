@@ -926,6 +926,18 @@
         }
         return exist;
       },
+      //获取作废条数
+      getDeleteNum (){
+        var num =0
+        this.selectTableData.forEach(item=>{
+          if(item.invoiceInfos){
+            num +=item.invoiceInfos.length
+          } else {
+            num+=1
+          }
+        })
+        return num
+      },
       //作废按钮
       delInvoice(){
         if(this.pageSkipChecked) {
@@ -935,9 +947,9 @@
           });
         }
         // if(this.pageSkipChecked) this.selectTableData = JSON.parse(JSON.stringify(this.copyTable))
-        else if(this.selectTableData.length<1 || this.selectTableData.length>10) {
+        else if(this.getDeleteNum()<1 || this.getDeleteNum()>10) {
           this.$message({
-            message: '请选择1到10条信息',
+            message: '所选数据发票超过十条',
             type: 'warning'
           });
         }  else if(this.ifMainFold(this.selectTableData)){

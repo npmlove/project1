@@ -161,7 +161,7 @@
                 <div v-html="dealExpress(item2.expressInfo)" style="white-space:pre-line;text-align:left!important;width:100%"></div>
               </div>
               <div v-else-if="item.key=='expressStatus'">
-                <div @click="$emit('openPost',item2)">
+                <div @click="$emit('openPost',item2)" :style="{'color':item2.expressStatus=='未寄出'? 'skyblue':'black'}">
                     {{item2.expressStatus}}
                   </div>
                  </div>
