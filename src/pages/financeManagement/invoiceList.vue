@@ -941,7 +941,7 @@
       ifDataDel (){
         var result
         if(this.selectTableData.some(item=>!item.hasChild)){
-           if(this.selectTableData.some(item=>item.invoiceStatus == 1)){
+           if(this.selectTableData.some(item=>item.invoiceStatus == "作废")){
           result = true
         } 
         }
