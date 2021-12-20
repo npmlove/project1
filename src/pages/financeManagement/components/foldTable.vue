@@ -138,7 +138,9 @@
   
                
                               </div>
+                              
                           </el-popover>
+                          <div v-else>{{item2.invoiceNum}}</div>
               </div>
               <div v-else-if="item.key=='invoicingTime'">
                 <div>
@@ -152,6 +154,7 @@
                               <div v-for="(item11,index11) in item2.invoiceInfos" :key ="index11">{{item11.invoicingTime}}</div>
                               <div slot="reference">{{item2.invoicingTime}}</div>
                           </el-popover>
+                          <div v-else>{{item2.invoicingTime}}</div>
                        </div>
               </div>
               <div v-else-if="item.key=='expressInfo'">
