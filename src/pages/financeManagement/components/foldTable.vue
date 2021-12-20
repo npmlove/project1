@@ -170,7 +170,7 @@
               </div>
             </div>
           </div>
-          <div style="min-width:3255px;height:300px;overflow-y:scroll;" v-if="item2.ifFold && item2.hasChild" class="tb-son">
+          <div style="min-width:2540px;height:300px;overflow-y:scroll;" v-if="item2.ifFold && item2.hasChild" class="tb-son">
           <template v-for="(item3, key) in item2.invoiceInfos" id="fold">
             <div class="tb-tr" v-show="item2.ifFold && item2.hasChild" :key="key + '' + index2">
               <div
@@ -220,31 +220,31 @@ export default {
       default: () => {
         return [
           { checkBox: true, width: 50 },
-          { label: "订单号", width: 160, key: "orderNo" },
-          { label: "运单号", width: 160, key: "waybillNo" },
+          { label: "订单号", width: 140, key: "orderNo" },
+          { label: "运单号", width: 140, key: "waybillNo" },
           { label: "订舱公司", width: 160, key: "customerName" },
-          { label: "航班日期", width: 160, key: "departureDate" },
+          { label: "航班日期", width: 140, key: "departureDate" },
           { label: "交单时间", width: 160, key: "presentationTime" },
           { label: "发票抬头", width: 160, key: "invoiceTitle" },
-          { label: "开票信息", width: 160, key: "showInvoice" },
-          { label: "应收费用总金额", width: 160, key: "totalArCny" },
+          { label: "开票信息", width: 60, key: "showInvoice" },
+          { label: "应收费用总金额", width: 100, key: "totalArCny" },
           {
             label: "申请开票金额",
-            width: 160,
+            width: 120,
             key: "applyAmount",
             unit: "CNY",
           },
-          { label: "发票种类", width: 160, key: "invoiceType" },
-          { label: "申请人", width: 160, key: "applicant" },
-          { label: "申请时间", width: 160, key: "applyTime" },
-          { label: "开票进度", width: 160, key: "invoicingStatus" },
-          { label: "已开票金额", width: 160, key: "invoicedAmount" },
+          { label: "发票种类", width: 100, key: "invoiceType" },
+          { label: "申请人", width: 100, key: "applicant" },
+          { label: "申请时间", width: 120, key: "applyTime" },
+          { label: "开票进度", width: 80, key: "invoicingStatus" },
+          { label: "已开票金额", width: 100, key: "invoicedAmount" },
           { label: "发票号码", width: 160, key: "invoiceNum" },
           { label: "开票时间", width: 160, key: "invoicingTime" },
           { label: "快递信息", width: 160, key: "expressInfo" },
-          { label: "快递状态", width: 160, key: "expressStatus" },
-          { label: "发票状态", width: 160, key: "invoiceStatus" },
-          { label: "是否上传", width: 160, key: "upload" },
+          { label: "快递状态", width: 100, key: "expressStatus" },
+          { label: "发票状态", width: 100, key: "invoiceStatus" },
+          { label: "是否上传", width: 100, key: "upload" },
         ];
       },
     },
@@ -380,7 +380,7 @@ export default {
       .tb-father {
         display: flex;
         &:nth-child(odd) {
-          min-width: 3250px;
+          min-width: 2520px;
           background-color: #ffffff;
           .tb-td {
             &:first-child {
@@ -392,7 +392,7 @@ export default {
           }
         }
         &:nth-child(even) {
-          min-width: 3250px;
+          min-width: 2520px;
           background-color: #f2f6ff;
           .tb-td {
             &:first-child {
@@ -454,10 +454,11 @@ export default {
         }
       }
       .tb-son {
+        min-width:2520px;
         .tb-tr {
           display: flex;
           &:nth-child(odd) {
-            min-width: 3250px;
+            min-width: 2520px;
             background-color: #ffffff;
             .tb-td {
               &:first-child {
@@ -469,7 +470,7 @@ export default {
             }
           }
           &:nth-child(even) {
-            min-width: 3250px;
+            min-width: 2520px;
             background-color: #f2f6ff;
             .tb-td {
               &:first-child {

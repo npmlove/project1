@@ -536,6 +536,7 @@
                 <span style="margin-left: 15px"
                   >利润:{{ statistData.orderProfit?statistData.orderProfit.toLocaleString('en-US'):0 }}</span
                 >
+                <span style="fontSize:17px;color:red;margin-left:10px" v-if="statistData.abnormalFlag != 0">存在异常订单！</span>
               </div>
             </div>
 

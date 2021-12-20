@@ -89,10 +89,10 @@
             style="margin-right: 40px;display:inline-block;border:1px solid black"
             >
             <div class="head">
-                <div>{{ item.workOrderNo }}</div>
+                <div style="margin-left:5px">{{ item.workOrderNo }}</div>
                 <div class="warn">注:请于10分钟内处理工单</div>
                 <div class="time">
-                  <i class="el-icon-time"></i>
+                  <i class="el-icon-time" style="width:25px;height:25px"></i>
                   <h1 class="timi">{{ leaveTimer[index] }}</h1>
                 </div>
               </div>
@@ -137,7 +137,7 @@
                 </div>
               </div>
               <div class="select">
-                <label>转单</label>
+                <label style="fontSize:15px;margin-right:5px">转单</label>
                 <el-select clearable v-model="waitDeal[index].transfer" placeholder="请选择转单">
                   <el-option
                     v-for="(item1, index1) in item.principalUsers"
@@ -227,7 +227,28 @@ export default {
           this.nameList = data.data.records;
         });
     },
-
+    getInterval (num,index){
+      if(num == 0) {
+        this.leaveTimer[index] ="00:00";
+      } else {
+        this.timerInterval[index] = setInterval(() => {
+                  num--
+                  console.log(num,index)
+                  var m = parseInt(num / 60);
+                  var s = parseInt(num % 60);
+                  if (m < 10) {
+                    m = "0" + m;
+                  }
+                  if (s < 10) {
+                    s = "0" + s;
+                  }
+                  this.$set(this.leaveTimer,index, m + ":" + s);
+                  if (num == 0) {
+                    clearInterval(this.timerInterval[index]);
+                  }
+                }, 1000);
+      }
+    },
     //查询数据获取
     initData() {
       this.data = []
@@ -237,27 +258,13 @@ export default {
       this.$http.post(this.$service.searchDealingWork4Prcp, request).then((data) => {
         if (data.code == 200) {
           this.data.push(...data.data);
+            for(let i = 0;i<this.timerInterval.length;i++) {
+              clearInterval(this.timerInterval[i])
+            }
           let copy = data.data
           this.leaveTimerNum= copy.map(item=>item.secondsLeft)
           for(let i=0;i<copy.length;i++) {
-                this.timerInterval[i] = setInterval(() => {
-                  let timer = this.leaveTimerNum[i]
-                  console.log(timer,222)
-                  timer--;
-                  var m = parseInt(timer / 60);
-                  var s = parseInt(timer % 60);
-                  if (m < 10) {
-                    m = "0" + m;
-                  }
-                  if (s < 10) {
-                    s = "0" + s;
-                  }
-                  this.leaveTimer[i] = m + ":" + s;
-                  if (timer == 0) {
-                    clearInterval(this.timerInterval[i]);
-                  }
-                }, 1000);
-             
+              this.getInterval( this.leaveTimerNum[i],i)
           }
           clearInterval(this.timer)
           this.timer = setInterval(()=>{
@@ -394,7 +401,8 @@ export default {
   overflow-x: scroll;
 }
 .common {
-  flex:0 0 400px;
+  flex:0 0 450px;
+  border: 1px solid gray;
 }
 
 .title {
@@ -467,24 +475,26 @@ h1{
 }
 
 .head {
-  height: 32px;
+  height: 45px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 .head :first-child {
-  font-size: 22px;
+  font-size: 14px;
   margin-right: 10px;
 }
 
 .warn {
   color: red;
+  font-size:16px
 }
 .sad {
   height: 2px;
   background-color: rgb(121, 121, 121);
 }
 .items {
+  font-size:15px;
   display: flex;
   justify-content: space-around;
   margin-top: 10px;
@@ -524,9 +534,10 @@ h1{
   margin-left: -5px;
   padding-bottom: 5px;
   margin-top:2px;
+  color:red
 }
 .text {
-  height: 150px;
+  height: 200px;
   border: 1px solid rgb(193, 193, 193);
   overflow: auto;
   overflow-x: hidden;
