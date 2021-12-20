@@ -594,7 +594,9 @@
   a {
     padding: 0;
   }
-
+  /deep/ .el-table tbody tr:hover > td {
+    background-color: transparent;
+  }
   span {
     padding-right: 0px;
   }
