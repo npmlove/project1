@@ -839,7 +839,7 @@
         tabNum:[0,0,0],
         typeCode:"可操作",
         //核销状态
-        writeOffStatus:[{value:"全部",id:""},{value:"未对账未核销",id:0},{value:"部分对账未核销",id:1},{value:"已对账未核销",id:2},{value:"未对账部分核销",id:3},{value:"部分对账部分核销",id:4},{value:"已对账部分核销",id:5},{value:"未对账已核销",id:6},{value:"部分对账已核销",id:7},{value:"已对账已核销",id:8},],
+        writeOffStatus:[{value:"全部",id:""},{value:"未对账",id:0},{value:"部分对账",id:1},{value:"已对账",id:2},{value:"部分对账部分核销",id:4},{value:"已对账部分核销",id:5},{value:"已对账已核销",id:8}],
         payWayData:[{value:"全部",id:""},{value:"付款买单",id:0},{value:"月结买单",id:1}],
         //搜索框结果
       selectResult:{

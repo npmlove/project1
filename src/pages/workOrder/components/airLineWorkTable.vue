@@ -486,6 +486,9 @@ export default {
           let ifFolds = this.tableData[scope.$index].ifFold;
           this.tableData[scope.$index].ifFold = !ifFolds;
           this.initData();
+           this.dataTimer = setInterval(() => {
+            this.initData();
+          }, 60000);
         } else {
           this.$message.error(data.message);
         }
@@ -509,6 +512,9 @@ export default {
           this.$refs[data].showPopper = false;
           let ifFolds = this.tableData[scope.$index].ifFold;
           this.tableData[scope.$index].ifFold = !ifFolds;
+           this.dataTimer = setInterval(() => {
+            this.initData();
+          }, 60000);
           this.initData();
         } else {
           this.$message.error(data.message);
@@ -522,6 +528,9 @@ export default {
       this.$set(this.tableData, index, dataFold);
       let data = "popover" + index;
       this.$refs[data].showPopper = false;
+       this.dataTimer = setInterval(() => {
+            this.initData();
+          }, 60000);
     },
   },
   filters: {
