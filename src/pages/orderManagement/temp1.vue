@@ -21,7 +21,7 @@
           <div>
             <span>航司 </span>
             <span>{{initData.airCompanyName}}</span>
-          </div> 
+          </div>
           <div class="flex">
             <span>订舱单价 </span>
             <span> <el-input  v-model="initData.bookingPrice" size="mini" placeholder="请输入内容">
@@ -33,7 +33,7 @@
           </div>
           <div>
             <span>目的港  </span>
-            <span> {{initData.pod}}</span>  
+            <span> {{initData.pod}}</span>
           </div>
           <div>
             <span>日期  </span>
@@ -53,7 +53,7 @@
           </div>
           <div>
             <span>航线负责人</span>
-            <span>        
+            <span>
               <el-select v-model="principalId" size="mini" placeholder="请选择">
                 <el-option
                   v-for="item in airLineList"
@@ -61,12 +61,12 @@
                   :label="item.loginName"
                   :value="item.id">
                 </el-option>
-              </el-select> 
+              </el-select>
             </span>
           </div>
           <div>
             <span>售前客服</span>
-            <span>        
+            <span>
               <el-select v-model="pscsId" size="mini" placeholder="请选择">
                 <el-option
                   v-for="item in preSaleList"
@@ -74,12 +74,12 @@
                   :label="item.loginName"
                   :value="item.id">
                 </el-option>
-              </el-select> 
+              </el-select>
             </span>
           </div>
           <div>
             <span>售中客服</span>
-            <span>        
+            <span>
               <el-select v-model="input" size="mini" placeholder="请选择">
                 <el-option
                   v-for="item in onSaleList"
@@ -87,7 +87,7 @@
                   :label="item.loginName"
                   :value="item.id">
                 </el-option>
-              </el-select> 
+              </el-select>
             </span>
           </div>
       </div>
@@ -106,7 +106,7 @@
             </div>
             <div class="flex mtop_10">
               <div class="flex_message">品类</div>
-              <div>  
+              <div>
                 <el-select class="ml_10" size="mini" v-model="initData.cargoType" placeholder="请选择">
                   <el-option
                     v-for="item in cargoTypeArray"
@@ -119,7 +119,7 @@
             </div>
             <div class="flex mtop_10">
               <div class="flex_message">包装类型</div>
-              <div>  
+              <div>
                 <el-select class="ml_10" size="mini" v-model="initData.packageType" placeholder="请选择">
                   <el-option
                     v-for="item in packageTypeArray"
@@ -172,7 +172,7 @@
                     <div>比重</div>
                     <div>分泡比例</div>
                     <div>计费重</div>
-                </div> 
+                </div>
             </div>
             <h1 class="title">其他服务</h1>
               <div class="inData" style="background:rgb(240,240,240);padding-left:20px">
@@ -209,7 +209,7 @@
                       v-model="initData.remark">
                   </el-input>
               </div>
-              
+
               <div class="paddingBottom"></div>
         </div>
         <div v-show="radio1=='2'" class="details">
@@ -270,7 +270,7 @@ export default {
           value:2,
           lable:"托盘"
         },
-        ],    
+        ],
     };
   },
   components:{
@@ -293,9 +293,9 @@ export default {
         delete order.orderPriceList
         delete order.trayDetail
        let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
-    
 
-  
+
+
       let params = {
         order:order,
         orderPriceList:orderPriceList
@@ -318,13 +318,13 @@ export default {
       }else if(e == 200){
         this.$refs.typeTwo.addOneTableObj()
       }
-     
+
     },
         // 获取页面初始配置
     async initSysSetTing(){
-      let res1 = await this.$http.get(this.$service.userSearch+'?roleName=售前客服&pageSize=50000')
-      let res2 = await this.$http.get(this.$service.userSearch+'?roleName=售中客服&pageSize=50000')
-      let res3 = await this.$http.get(this.$service.userSearch+'?roleName=航线负责人&pageSize=50000')
+      let res1 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000')
+      let res2 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售中客服&pageSize=50000')
+      let res3 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=航线负责人&pageSize=50000')
       Promise.all([res1,res2,res3]).then(res=>{
         this.preSaleList = res[0].data.records
         this.onSaleList = res[1].data.records
@@ -341,7 +341,7 @@ export default {
            tempObj.arOrderPriceList[i].changeBillAddOne = false
           }
           this.orderNo = tempObj.orderNo
-          this.initData = tempObj 
+          this.initData = tempObj
           this.isDataDone = true
       }
     },
@@ -366,7 +366,7 @@ export default {
   padding: 10px 20px;
   flex-wrap: wrap;
   align-items: center;
-  
+
 }
 .common>div{
   width: 25%;

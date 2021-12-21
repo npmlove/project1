@@ -663,7 +663,7 @@
   </div>
 </template>
 
-<script> 
+<script>
   import {toData} from '@/util/assist'
   export default {
     data() {
@@ -1012,7 +1012,7 @@
       changeSecondBill(){
         let id = this.arOrderPriceList[0].list[0].billId
 
-        console.log(id) 
+        console.log(id)
         this.$http.post(this.$service.modifyBill,{billId:id}).then(res=>{
           console.log(res)
           if(res.code ==200){
@@ -1099,11 +1099,11 @@
             this.$message({
               type: 'info',
               message: '取消输入'
-            });       
+            });
           });
 
         }
-        
+
       },
       duiZhangClick() {
         // this.$confirm('该账单存在两个收款单位，已生成两张账单，请确认发送?', '提示', {
@@ -1111,7 +1111,7 @@
         //   cancelButtonText: '取消',
         //   type: 'warning'
         // }).then(() => {
- 
+
         // }).catch(() => {
 
         // })
@@ -1119,7 +1119,7 @@
           if(this.arOrderPriceList.length > 0){
             for(var y = 0; y < this.arOrderPriceList.length; y++){
               for(var p = 0; p < this.arOrderPriceList[y].list.length; p++){
-                
+
                 newOrderArr.push(this.arOrderPriceList[y].list[p])
               }
             }
@@ -1761,7 +1761,7 @@
           pageSize: 50000,
         }
         json = toData(json)
-        this.$http.get(this.$service.userSearch+'?'+json).then((data) => {
+        this.$http.get(this.$service.userSearchNoAuth+'?'+json).then((data) => {
           if(data.code == 200){
             this.principalIdOpt = data.data.records
           }else{
@@ -1776,7 +1776,7 @@
           pageSize: 50000,
         }
         json = toData(json)
-        this.$http.get(this.$service.userSearch+'?'+json).then((data) => {
+        this.$http.get(this.$service.userSearchNoAuth+'?'+json).then((data) => {
           if(data.code == 200){
             this.pscsIdOpt = data.data.records
           }else{
@@ -1791,7 +1791,7 @@
           pageSize: 50000,
         }
         json = toData(json)
-        this.$http.get(this.$service.userSearch+'?'+json).then((data) => {
+        this.$http.get(this.$service.userSearchNoAuth+'?'+json).then((data) => {
           if(data.code == 200){
             this.mscsIdOpt = data.data.records
           }else{
@@ -1890,7 +1890,7 @@
         this.$http.get(this.$service.orderSearchDetail+'?orderId='+this.orderId).then((data) => {
           if(data.code == 200){
             this.detailsArr = data.data
-            var data = data.data  
+            var data = data.data
             this.statusDesc = data.statusDesc
             this.status = data.status
             this.pscsName = data.pscsName

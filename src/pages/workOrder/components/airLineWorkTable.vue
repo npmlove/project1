@@ -154,7 +154,7 @@
                   style="width: 10px; height: 10px"
                 />
               </div>
-              <div v-if="!statuShow" class="head"> 
+              <div v-if="!statuShow" class="head">
                 <div>{{ scope.row.workOrderNo }}</div>
                 <div @click="closePopover(scope.$index,scope)" class="delete">X</div>
               </div>
@@ -316,7 +316,7 @@ export default {
   },
   mounted() {
     this.initData();
-   
+
     this.getId();
     window.addEventListener("beforeunload", (e) => {
       var obj = JSON.stringify({ pageNum: this.pageNum });
@@ -328,7 +328,7 @@ export default {
     getId() {
       this.$http
         .get(
-          this.$service.userSearch + "?roleName=" + this.selectResult.roleName
+          this.$service.userSearchNoAuth + "?roleName=" + this.selectResult.roleName
         )
         .then((data) => {
           this.nameList = data.data.records;
@@ -352,7 +352,7 @@ export default {
           this.tableData.forEach((item) => {
             item.ifFold = false;
           });
-       
+
           clearInterval(this.dataTimer);
           this.dataTimer = setInterval(() => {
             this.initData();
@@ -413,7 +413,7 @@ export default {
       data.ifFold = !data.ifFold;
       this.$set(this.tableData, index, data);
       var withPrcps = "";
-      
+
       if (data.statusStr == "工单已关闭") {
         withPrcps = false;
         this.statuShow = false;

@@ -84,6 +84,9 @@ const serviceApi = {
   userSearchByPage: pulicWeb + '/t-portal-user/searchByPage',
   //用户查询
   userSearch: pulicWeb + '/t-sys-user/search',
+
+  //用户查询
+  userSearchNoAuth: pulicWeb + '/t-sys-user/noAuth/search',
   //修改用户
   userUpdateUserinfo: pulicWeb + '/t-portal-user/update',
   //费用查询
@@ -220,13 +223,9 @@ const serviceApi = {
    billExportExcel: pulicWeb + '/t-order-payment/exportExcel',
    // 发票列表页面 - 上传发票
    uploadInvoBody :  pulicWeb +'/t-invoice-apply/uploadInvoBody',
-   toCheckAmount : pulicWeb + '/t-order-payment/toCheckAmount',
    //  核销统计接口
-   toWriteOffAmountCount: pulicWeb + '/t-order-payment/toWriteOffAmountCount',
    //客服工单-工单数据统计
    sumWorkOrderData: pulicWeb + '/t-work-order/sumWorkOrderData',
-   //客服工单-客服工单查询
-   searchByPageForCst:  pulicWeb + '/t-work-order/searchByPageForCst',
    //客服工单/航线 工单详情
    searchWorkOrderDetailById:  pulicWeb +'/t-work-order/searchWorkOrderDetailById',
    //客服工单/航线 工单详情 取消按钮
@@ -275,7 +274,6 @@ const serviceApi = {
   // 获取订单的汇率
   getExchangeRatesForOrder: pulicWeb +  '/t-order/getExchangeRatesForOrder',
 
-  modifyBill: pulicWeb + '/t-bill/modifyBill',
   // 用户账单页面
   userList: pulicWeb + '/t-bill/userBill',
 // 导出用户账单

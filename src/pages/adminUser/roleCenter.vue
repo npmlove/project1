@@ -1,8 +1,8 @@
 <template>
   <div class="content-wrapper">
-    <el-form v-if="newRoleId == '-1'" :inline="true" size="medium" class="demo-form-inline">
+    <el-form v-if="newRoleName == 'admin'" :inline="true" size="medium" class="demo-form-inline">
       <div class="content-search-normal">
-        <el-form-item :style="{visibility: newRoleId == '-1' ? 'visible' : 'hidden'}"
+        <el-form-item :style="{visibility: newRoleName == 'admin' ? 'visible' : 'hidden'}"
           style="float: right;margin-right: 20px">
           <el-row>
             <el-button @click="newAdd" size="medium">新增角色</el-button>
@@ -101,14 +101,14 @@
         direction: 'rtl',
         moduleArr: [],
         drawerTitle: '',
-        newRoleId: ''
+        newRoleName: ''
       }
     },
     mounted() {
       this.initRoleSearch()
       this.initAuthoritySearch()
-      this.newRoleId = JSON.parse(sessionStorage.getItem('userInfo')).roleId
-      if (this.newRoleId == '-1') {
+      this.newRoleName = JSON.parse(sessionStorage.getItem('userInfo')).loginName
+      if (this.newRoleName == 'admin') {
         this.operation.show = true
       } else {
         this.operation.show = false

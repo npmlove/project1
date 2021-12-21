@@ -1513,7 +1513,7 @@
           pageSize: 50000,
         }
         json = toData(json)
-        this.$http.get(this.$service.userSearch+'?'+json).then((data) => {
+        this.$http.get(this.$service.userSearchNoAuth+'?'+json).then((data) => {
           if(data.code == 200){
             this.principalIdOpt = data.data.records
           }else{
@@ -1528,7 +1528,7 @@
           pageSize: 50000,
         }
         json = toData(json)
-        this.$http.get(this.$service.userSearch+'?'+json).then((data) => {
+        this.$http.get(this.$service.userSearchNoAuth+'?'+json).then((data) => {
           if(data.code == 200){
             this.pscsIdOpt = data.data.records
           }else{
@@ -1543,7 +1543,7 @@
           pageSize: 50000,
         }
         json = toData(json)
-        this.$http.get(this.$service.userSearch+'?'+json).then((data) => {
+        this.$http.get(this.$service.userSearchNoAuth+'?'+json).then((data) => {
           if(data.code == 200){
             this.mscsIdOpt = data.data.records
           }else{
