@@ -285,7 +285,7 @@
               </p>
               <p class="pTips" v-if="item.status == 1 ">
                   <span>账单已发送，等待客户确认....（倒计时：{{item.billCreateTime}}）</span>
-                  <!-- <span >修改账单</span> -->
+                  <span @click="reWriteBill(index)" v-if="initData.financeStatus == 0 || initData.financeStatus == 4 " >修改账单</span>
               </p>
               <p class="pTips" v-if="item.status == 2">
                   <span>账单已确认</span>
