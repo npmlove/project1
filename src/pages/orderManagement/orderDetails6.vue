@@ -1,1870 +1,945 @@
 <template>
-  <div class="content-wrapper">
-    <div class="content">
-      <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
-        <div style="position: fixed;right: 40px;font-size: 22px;font-weight: 100;color: #2273CE;width: 150px;text-align: center;">{{statusDesc}}</div>
-        <div v-if="status == '5'" style="display: flex;align-items: center;margin-bottom: 20px;">
-          <div style="font-size: 18px;font-weight: 100;color: #2273ce;">待客户确认备选方案</div>
-          <div style="margin: 0 20px;"><el-button style="width: auto;" size="medium" type="primary">取消订单</el-button></div>
-          <div style="font-size: 18px;font-weight: 100;color: #F00;">{{timeOut}}</div>
-        </div>
-
-        <!-- 客户信息 -->
-        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">客户信息</div>
-        <div>
-          <el-form-item label="客户">
-            <el-input v-model="customerName" :disabled="true" style="width: 596px;"></el-input>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item label="订单号">
-            <el-input v-model="orderNo" :disabled="true" style="width: 216px;"></el-input>
-          </el-form-item>
-          <el-form-item label="进仓编号">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="inboundNo" maxlength="30" placeholder="请输入进仓编号" clearable style="width: 216px;"></el-input>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item label="运单号">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="waybillNo" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="11" placeholder="请输入运单号" clearable style="width: 216px;"></el-input>
-          </el-form-item>
-          <el-form-item label="航线人员">
-            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="principalId" placeholder="请输入航线人员" filterable clearable style="width: 216px;">
-              <el-option
-                v-for="item in principalIdOpt"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id+'#'+item.name">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item label="售前客服">
-            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="pscsId" placeholder="请输入售前客服" filterable clearable style="width: 216px;">
-              <el-option
-                v-for="item in pscsIdOpt"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id+'#'+item.name">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item prop="pod" label="售中客服">
-            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="mscsId" placeholder="请输入售中客服" filterable clearable style="width: 216px;">
-              <el-option
-                v-for="item in mscsIdOpt"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id+'#'+item.name">
-              </el-option>
-            </el-select>
-          </el-form-item>
+  <div class="contont" v-if="isDataDone">
+     
+      <div >
+        <el-button type="" disabled class="setWidth"   >{{initData.statusDesc}}</el-button>
+        <el-button type="primary" @click="saveOrder" >保存</el-button>
+      </div>
+      <div class="common">
           <div>
-            <el-form-item label="订单备注">
-              <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="remark" maxlength="200" placeholder="请输入订单备注" type="textarea" style="width: 596px;" show-word-limit></el-input>
-            </el-form-item>
+            <span>订单号</span>
+            <span>{{initData.orderNo}}</span>
           </div>
-        </div>
-
-        <!-- 其他服务-国内提货 -->
-        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">其他服务-国内提货</div>
-        <div>
-          <el-form-item label="国内提货">
-            <el-radio-group v-model="isPickUp">
-              <el-radio :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-for="(item,index) in isPickUpOpt" :key="index" :label="item.Value">{{item.Name}}</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </div>
-        <div v-if="isPickUp == '2'">
-          <el-form-item label="提货地址">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="pickUpAddress" placeholder="请输入提货地址" maxlength="50" type="textarea" style="width: 596px;" show-word-limit></el-input>
-          </el-form-item>
-        </div>
-        <div v-if="isPickUp == '2'">
-          <el-form-item label="提货联系人">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="pickUpContacts" placeholder="请输入提货联系人" maxlength="15" style="width: 596px;"></el-input>
-          </el-form-item>
-        </div>
-        <div v-if="isPickUp == '2'">
-          <el-form-item label="联系电话">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="pickUpTel" placeholder="请输入联系电话" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="11" style="width: 596px;"></el-input>
-          </el-form-item>
-        </div>
-
-        <!-- 其他服务-清关服务 -->
-        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">其他服务-清关服务</div>
-        <div>
-          <el-form-item label="清关服务">
-            <el-radio-group v-model="cclType">
-              <el-radio :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-for="(item,index) in cclTypeOpt" :key="index" :label="item.Value">{{item.Name}}</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </div>
-        <div v-if="cclType != '1'">
-          <el-form-item label="送货地址">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryAddress" placeholder="请输入送货地址" maxlength="200" type="textarea" style="width: 596px;" show-word-limit></el-input>
-          </el-form-item>
-        </div>
-        <div v-if="cclType != '1'">
-          <el-form-item label="送货联系人">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryContacts" placeholder="请输入送货联系人" maxlength="50" style="width: 596px;"></el-input>
-          </el-form-item>
-        </div>
-        <div v-if="cclType != '1'">
-          <el-form-item label="联系电话">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryTel" placeholder="请输入联系电话" maxlength="20" style="width: 596px;"></el-input>
-          </el-form-item>
-        </div>
-
-        <!-- 航线信息 -->
-        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">航线信息</div>
-        <div>
-          <el-form-item label="起运港">
-            <el-select v-model="pol" :disabled="orderStatus.indexOf(status) > -1 ? false : true" :remote-method="polMethod" @change="initAirlineSearchByPage" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择起运港" style="width: 216;">
-              <el-option
-                v-for="item in polOpt"
-                :key="item.threeLetterCode"
-                :disabled="item.pod == item.threeLetterCode"
-                :label="item.threeLetterCode"
-                :value="item.threeLetterCode">
-                <span style="margin-right: 5px;">{{item.threeLetterCode}}</span>
-                <span>{{item.name}}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="目的港">
-            <el-select v-model="pod" :disabled="orderStatus.indexOf(status) > -1 ? false : true" :remote-method="podMethod" @change="initAirlineSearchByPage" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择起运港" style="width: 216;">
-              <el-option
-                v-for="item in podOpt"
-                :key="item.threeLetterCode"
-                :disabled="item.pol == item.threeLetterCode"
-                :label="item.threeLetterCode"
-                :value="item.threeLetterCode">
-                <span style="margin-right: 5px;">{{item.threeLetterCode}}</span>
-                <span>{{item.name}}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item label="航司">
-            <el-select v-model="airCompanyName" :disabled="orderStatus.indexOf(status) > -1 ? false : true" @change="initAirlineSearchByPage" :remote-method="companyMethod" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择航司" style="width: 216;">
-              <el-option
-                v-for="item in airCompanyCodeOpt"
-                :key="item.airCompanyCode"
-                :label="item.name"
-                :value="item.airCompanyCode">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="订舱单价">
-            <el-input v-model="bookingPrice" @blur="pirceBlurInput" :disabled="orderStatus.indexOf(status) > -1 ? false : true" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item label="航线路径">
-            <!-- <el-input v-model="fullLeg" :disabled="true" placeholder="请输入航线路径" style="width: 596px;"></el-input> -->
-            <div v-if="flightNoOpt.length == 0" style="color: #2273ce;">选择起运港、目的港、航司、代理公司后才会有推荐航线</div>
-            <el-radio-group v-else v-model="fullLeg" :disabled="orderStatus.indexOf(status) > -1 ? false : true">
-              <el-radio v-for="(optItem,optIndex) in flightNoOpt" :key="optIndex" :label="optItem.fullLeg">{{optItem.fullLeg}}</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item label="分泡比例">
-            <el-select @change="bubblePointChang" :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="bubblePoint"  filterable clearable placeholder="请选择分泡比例" style="width: 216;">
-              <el-option
-                v-for="item in bubblePointOpt"
-                :key="item.Name"
-                :label="item.Name"
-                :value="item.Value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="出发日期">
-            <el-date-picker
-              v-model="departureDate"
-              type="date"
-              placeholder="选择日期"
-               :disabled="orderStatus.indexOf(status) > -1 ? false : true"
-              style="width: 216px;"
-              value-format="yyyy-MM-dd">
-            </el-date-picker>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item label="代理公司">
-            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="agentId" filterable clearable placeholder="请选代理公司" style="width: 216;">
-              <el-option
-                v-for="item in agentIdOpt"
-                :key="item.id"
-                :label="item.agentName"
-                :value="item.id+'#'+item.agentName">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="航班号">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="flightNo" maxlength="30" placeholder="请输入航班号" style="width: 216px;"></el-input>
-          </el-form-item>
-        </div>
-        <!-- 货物信息 -->
-        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">货物信息</div>
-        <div>
-          <el-form-item label="货物品名">
-            <el-input maxlength="30" :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="cargoName" placeholder="请输入货物品名" style="width: 596px;"></el-input>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item label="货物品类">
-            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="cargoType" clearable placeholder="请选择货物品类" style="width: 216;">
-              <el-option
-                v-for="item in cargoTypeOpt"
-                :key="item.Name"
-                :label="item.Name"
-                :value="item.Value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="包装类型">
-            <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="packageType" clearable placeholder="请选择包装类型" style="width: 216;">
-              <el-option
-                v-for="item in packageTypeOpt"
-                :key="item.Name"
-                :label="item.Name"
-                :value="item.Value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item label="件数">
-            <el-input v-model="bookingPiece" :disabled="true" placeholder="请输入件数" style="width: 216px;"></el-input>
-          </el-form-item>
-          <el-form-item label="体积">
-            <el-input v-model="bookingCbm" :disabled="true" placeholder="请输入体积" style="width: 216px;"></el-input>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item label="重量">
-            <el-input :value="bookingWeight" :disabled="true" placeholder="请输入重量" style="width: 216px;"></el-input>
-          </el-form-item>
-          <el-form-item label="比重">
-            <el-input :value="1+':'+bookingVwr" :disabled="true" placeholder="请输入比重" style="width: 216px;"></el-input>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item label="计费重">
-            <el-input v-model="bookingCw" :disabled="true" placeholder="请输入计费重" style="width: 216px;"></el-input>
-          </el-form-item>
-        </div>
-
-        <!-- 进仓数据 -->
-        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">进仓数据</div>
-        <div>
-          <el-form-item required label="件数">
-            <el-input :disabled="true" v-model="inboundPiece" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="9" placeholder="请输入件数" style="width: 216px;">
-              <template slot="append">PCS</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item required label="体积">
-            <el-input :disabled="true" v-model="inboundCbm" @blur="cbmBlur(inboundCbm,0,'体积1')" onkeyup="value=value.replace(/[^\d\.]/g, '')" maxlength="9" placeholder="请输入体积" style="width: 216px;">
-              <template slot="append">CBM</template>
-            </el-input>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item required label="重量">
-            <el-input :disabled="true" v-model="inboundWeight" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="6" placeholder="请输入重量" style="width: 216px;">
-              <template slot="append">KGS</template>
-            </el-input>
-          </el-form-item>
-        </div>
-        <div>
-          <el-form-item required label="比重">
-            <el-input v-model="inboundVwr" :disabled="true" style="width: 216px;"></el-input>
-          </el-form-item>
-          <el-form-item required label="计费重">
-            <el-input v-model="inboundCw" :disabled="true" style="width: 216px;">
-              <template slot="append">KGS</template>
-            </el-input>
-          </el-form-item>
-        </div>
-        <div class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
-          <div class="flight-template" style="width: auto;margin-left: 0;">
-            <div class="flight-template-ul-header">
-              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">件数 PCS</div>
-              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">体积 CBM</div>
-              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">重量 KGS</div>
-              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">货物尺寸 CM</div>
-              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">包装方式</div>
-              <div class="flight-template-li" style="flex: 0 0 15%;text-align: center;">外箱情况</div>
-              <!-- <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div> -->
-            </div>
-            <div v-for="(childerItem,childerIndex) in orderCargoDetailList" :key="childerIndex" class="flight-template-ul-content">
-              <div class="flight-template-li" style="flex: 0 0 15%;">
-                <el-input :disabled="true" v-model="childerItem.piece" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="9" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 15%;">
-                <el-input :disabled="true" v-model="childerItem.cbm"  @blur="cbmBlur(childerItem.cbm,childerIndex,'体积2')" onkeyup="value=value.replace(/[^\d\.]/g, '')" maxlength="9" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 15%;">
-                <el-input :disabled="true" v-model="childerItem.weight" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="6" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 15%;">
-                <el-input :disabled="true" v-model="childerItem.cargoSize" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 15%;">
-                <el-select :disabled="true" v-model="childerItem.packing" size="small" clearable placeholder="请选择" style="width: 90%;">
-                  <el-option
-                    v-for="item in packingOpt"
-                    :key="item.Value"
-                    :label="item.Name"
-                    :value="item.Value">
-                  </el-option>
-                </el-select>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 15%;">
-                <el-select :disabled="true" v-model="childerItem.outerBox" size="small" clearable placeholder="请选择" style="width: 90%;">
-                  <el-option
-                    v-for="item in outerBoxOpt"
-                    :key="item.Value"
-                    :label="item.Name"
-                    :value="item.Value">
-                  </el-option>
-                </el-select>
-              </div>
-              <!-- <div class="flight-template-li" size="small" style="flex: 0 0 10%;">
-                <a :style="{visibility: orderCargoDetailList.length > 9 ? 'hidden' : 'visible'}" @click="addOrderCargoDetailList(childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
-                <a @click="delOrderCargoDetailList(childerIndex)" style="font-size: 18px;" :style="{visibility: childerIndex == 0 ? 'hidden' : 'visible'}"><i class="el-icon-delete"></i></a>
-              </div> -->
-            </div>
+          <div>
+            <span>起运港 </span>
+            <span>{{initData.pol}}</span>
           </div>
-        </div>
-        <div>
-          <el-form-item class="up-input" label="进仓图片">
-            <div v-if="imgArr.length > 0" style="width: 800px;display: flex;flex-wrap: wrap;">
-              <div v-for="(item,index) in imgArr" :key="index" style="margin-right: 10px;margin-bottom: 10px;font-size: 0;position: relative;">
-                <img :src="imgUrl+item.xpath" style="width: 150px;height: 150px;" />
-              </div>
-            </div>
-            <el-input v-else value="暂无图片" :disabled="true"  style="width: 216px;"></el-input>
-          </el-form-item>
-        </div>
-
-        <!-- 账单信息-应收账单 -->
-        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">账单信息-应收账单</div>
-        <div v-for="(priceItem,priceIndex) in arOrderPriceList" :key="priceIndex" class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
-          <div class="flight-template" style="width: auto;margin-left: 0;">
-            <div class="flight-template-ul-header">
-              <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">序号</div>
-              <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">费用名称</div>
-              <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">收款单位</div>
-              <div class="flight-template-li" style="flex: 0 0 7%;text-align: center;">单价</div>
-              <div class="flight-template-li" style="flex: 0 0 7%;text-align: center;">数量</div>
-              <div class="flight-template-li" style="flex: 0 0 7%;text-align: center;">币种</div>
-              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">原币合计</div>
-              <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">汇率</div>
-              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">人民币合计</div>
-              <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">备注</div>
-              <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
-            </div>
-            <div v-for="(childerItem,childerIndex) in priceItem.list" :key="childerIndex" class="flight-template-ul-content">
-              <div class="flight-template-li" style="flex: 0 0 5%;">{{childerIndex+1}}</div>
-              <div class="flight-template-li" style="flex: 0 0 13%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" value="空运费" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.expenseName" size="small" clearable placeholder="请选择" style="width: 90%;">
-                  <el-option
-                    v-for="item in expenseCodeOpt"
-                    :key="item.expenseName"
-                    :label="item.expenseName"
-                    :value="item.expenseName">
-                  </el-option>
-                </el-select>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 13%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.expenseUnitName" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 7%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.price" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.price" @blur="priceBlur(childerItem.price,childerIndex,'应收','单价',priceIndex)" onkeyup="value=value.replace(/[^\d\.]/g, '')"size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 7%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.quantity" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.quantity" @blur="priceBlur(childerItem.quantity,childerIndex,'应收','数量',priceIndex)" maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 7%;">
-                <el-select @change="totalPriceType('应收')" :disabled="(childerItem.expenseName == '空运费') || (orderStatus.indexOf(status) == -1) ? true : false" v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 90%;">
-                  <el-option
-                    v-for="item in currencyOpt"
-                    :key="item.Name"
-                    :label="item.Name"
-                    :value="item.Value">
-                  </el-option>
-                </el-select>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 10%;">
-                <el-input v-model="childerItem.totalOrgn" :disabled="true" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 5%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.exchangeRate" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.exchangeRate"  @blur="priceBlur(childerItem.exchangeRate,childerIndex,'应收','汇率',priceIndex)" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 10%;">
-                <el-input v-model="childerItem.totalCny" :disabled="true" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 13%;">
-                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="childerItem.remark" maxlength="50" size="small" style="width: 80%;"></el-input>
-              </div>
-              <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" size="small" style="flex: 0 0 10%;">
-                <a :style="{visibility: arOrderPriceList.length > 9 ? 'hidden' : 'visible'}" @click="addArOrderPriceList(priceIndex,childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
-                <a @click="delArOrderPriceList(priceIndex,childerIndex)" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
-              </div>
-            </div>
+          <div>
+            <span>航司 </span>
+            <span>{{initData.airCompanyName}}</span>
+          </div> 
+          <div class="flex">
+            <span>订舱单价 </span>
+            <span> <el-input  v-model="initData.bookingPrice" size="mini" placeholder="请输入内容">
+               <template slot="prepend">￥</template></el-input></span>
           </div>
-          <div style="margin-top: 20px;">
-            <el-form-item label="账单合计">
-              <div>{{priceItem.totalArOrgn}}</div>
-            </el-form-item>
-            <el-form-item label="人民币合计">
-              <div>{{priceItem.billAmountCny}}</div>
-            </el-form-item>
-            <el-form-item label="结算方式">
-              <el-select :disabled="payWay == '0'" v-model="payWay" clearable placeholder="请选择结算方式">
+          <div class="flex">
+            <span>运单号 </span>
+            <span> <el-input v-model="initData.waybillNo" size="mini" placeholder="请输入内容"></el-input> </span>
+          </div>
+          <div>
+            <span>目的港  </span>
+            <span> {{initData.pod}}</span>  
+          </div>
+          <div>
+            <span>日期  </span>
+            <span>{{initData.orderTime}}</span>
+          </div>
+          <div>
+            <span>利润 </span>
+            <span>￥{{initData.orderProfit}}</span>
+          </div>
+          <div>
+            <span>客    户 </span>
+            <span>{{initData.customerName}}</span>
+          </div>
+          <div>
+            <span>代   理</span>
+            <span>{{initData.agentName}}</span>
+          </div>
+          <div>
+            <span>航线负责人</span>
+            <span>        
+              <el-select v-model="principalId" size="mini" placeholder="请选择">
                 <el-option
-                  v-for="item in payWayOpt"
-                  :key="item.Name"
-                  :label="item.Name"
-                  :value="item.Value">
+                  v-for="item in airLineList"
+                  :key="item.id"
+                  :label="item.loginName"
+                  :value="item.id">
                 </el-option>
-              </el-select>
-            </el-form-item>
+              </el-select> 
+            </span>
           </div>
           <div>
-            <el-form-item v-if="inboundPiece && (status != '13') && priceItem.status == '0'" label="">
-              <el-button @click="duiZhangClick" style="width: auto;" size="medium" type="primary">发起客户对账</el-button>
-            </el-form-item>
-            <div v-if="inboundPiece && (status != '13') && priceItem.status == '1'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
-              <div>账单已发送，等待客户确认</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
-            </div>
-            <div v-if="inboundPiece && (status != '13') && priceItem.status == '2'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
-              <div>账单已确认</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
-            </div>
-            <div v-if="inboundPiece && (status != '13') && priceItem.status == '3'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
-              <div>账单已确认，开票已申请</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
-            </div>
-            <div v-if="inboundPiece && (status != '13') && priceItem.status == '4'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
-              <div>账单已确认，发票开具￥{{priceItem.invoiceAmount}}</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
-            </div>
+            <span>售前客服</span>
+            <span>        
+              <el-select v-model="pscsId" size="mini" placeholder="请选择">
+                <el-option
+                  v-for="item in preSaleList"
+                  :key="item.id"
+                  :label="item.loginName"
+                  :value="item.id">
+                </el-option>
+              </el-select> 
+            </span>
           </div>
-        </div>
-
-        <!-- 账单信息-应付账单 -->
-        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">账单信息-应付账单</div>
-        <div class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
-          <div class="flight-template" style="width: auto;margin-left: 0;">
-            <div class="flight-template-ul-header">
-              <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">序号</div>
-              <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">费用名称</div>
-              <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">付款单位</div>
-              <div class="flight-template-li" style="flex: 0 0 7%;text-align: center;">单价</div>
-              <div class="flight-template-li" style="flex: 0 0 7%;text-align: center;">数量</div>
-              <div class="flight-template-li" style="flex: 0 0 7%;text-align: center;">币种</div>
-              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">原币合计</div>
-              <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">汇率</div>
-              <div class="flight-template-li" style="flex: 0 0 10%;text-align: center;">人民币合计</div>
-              <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">备注</div>
-              <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" style="flex: 0 0 10%;text-align: center;">操作</div>
+          <div>
+            <span>售中客服</span>
+            <span>        
+              <el-select v-model="input" size="mini" placeholder="请选择">
+                <el-option
+                  v-for="item in onSaleList"
+                  :key="item.id"
+                  :label="item.loginName"
+                  :value="item.id">
+                </el-option>
+              </el-select> 
+            </span>
+          </div>
+      </div>
+      <div class="radioTap">
+        <el-radio-group v-model="radio1">
+          <el-radio-button label="1">订舱信息</el-radio-button>
+          <el-radio-button label="2">账单</el-radio-button>
+        </el-radio-group>
+      </div>
+      <div   style="height:60vh;">
+        <div v-show="radio1=='1'" class="details">
+            <h1 class="title">订舱信息</h1>
+            <div class="flex ">
+              <div class="flex_message">品名</div>
+              <div><el-input size="mini" class="ml_10" v-model="initData.cargoName" placeholder="请输入内容"></el-input></div>
             </div>
-            <div v-for="(childerItem,childerIndex) in apOrderPriceList" :key="childerIndex" class="flight-template-ul-content">
-              <div class="flight-template-li" style="flex: 0 0 5%;">{{childerIndex+1}}</div>
-              <div class="flight-template-li" style="flex: 0 0 13%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" value="空运费" :disabled="true" size="small" style="width: 80%;"></el-input>
-                <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.expenseName" size="small" clearable placeholder="请选择" style="width: 80%;">
+            <div class="flex mtop_10">
+              <div class="flex_message">品类</div>
+              <div>  
+                <el-select class="ml_10" size="mini" v-model="initData.cargoType" placeholder="请选择">
                   <el-option
-                    v-for="item in expenseCodeOpt"
-                    :key="item.expenseName"
-                    :label="item.expenseName"
-                    :value="item.expenseName">
+                    v-for="item in cargoTypeArray"
+                    :key="item.value"
+                    :label="item.lable"
+                    :value="item.value">
                   </el-option>
                 </el-select>
               </div>
-              <div class="flight-template-li" style="flex: 0 0 13%;">
-                <el-input :disabled="(childerItem.expenseName == '空运费') || (orderStatus.indexOf(status) == -1) ? true : false" v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 7%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.price" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.price" @blur="priceBlur(childerItem.price,childerIndex,'应付','单价')" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 7%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.quantity" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.quantity" @blur="priceBlur(childerItem.quantity,childerIndex,'应付','数量')" maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 7%;">
-                <el-select @change="totalPriceType('应付')" :disabled="(childerItem.expenseName == '空运费') || (orderStatus.indexOf(status) == -1) ? true : false" v-model="childerItem.currency" size="small" clearable placeholder="请选择" style="width: 80%;">
+            </div>
+            <div class="flex mtop_10">
+              <div class="flex_message">包装类型</div>
+              <div>  
+                <el-select class="ml_10" size="mini" v-model="initData.packageType" placeholder="请选择">
                   <el-option
-                    v-for="item in currencyOpt"
-                    :key="item.Name"
-                    :label="item.Name"
-                    :value="item.Value">
+                    v-for="item in packageTypeArray"
+                    :key="item.value"
+                    :label="item.lable"
+                    :value="item.value">
                   </el-option>
                 </el-select>
               </div>
-              <div class="flight-template-li" style="flex: 0 0 10%;">
-                <el-input v-model="childerItem.totalOrgn" :disabled="true" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 5%;">
-                <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.exchangeRate" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-else v-model="childerItem.exchangeRate" @blur="priceBlur(childerItem.exchangeRate,childerIndex,'应付','汇率')" onkeyup="value=value.replace(/[^\d\.]/g, '')" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 10%;">
-                <el-input v-model="childerItem.totalCny" :disabled="true" size="small" style="width: 90%;"></el-input>
-              </div>
-              <div class="flight-template-li" style="flex: 0 0 13%;">
-                <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="childerItem.remark" maxlength="50" size="small" style="width: 80%;"></el-input>
-              </div>
-              <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" size="small" style="flex: 0 0 10%;">
-                <a :style="{visibility: apOrderPriceList.length > 9 ? 'hidden' : 'visible'}" @click="addApOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
-                <a @click="delApOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
+            </div>
+            <div class="flex mtop_15 ">
+              <div class="flex_message">单价</div>
+              <div><span class="ml_10">￥{{initData.bookingPrice}}</span></div>
+            </div>
+            <div class="flex mtop_15 ">
+              <div class="flex_message">航线</div>
+              <div><span class="ml_10">{{initData.pol}}-{{initData.pod}}</span></div>
+            </div>
+            <div class="flex mtop_15 ">
+              <div class="flex_message">托书下载</div>
+              <div>
+                <el-button class="ml_10" size="mini">点击下载<i class="el-icon-download el-icon--right"></i></el-button>
               </div>
             </div>
-          </div>
-          <div style="margin-top: 20px;">
-            <el-form-item label="账单合计">
-              <div>{{totalApOrgn}}</div>
-            </el-form-item>
-            <el-form-item label="人民币合计">
-              <div>{{totalApCny}}</div>
-            </el-form-item>
-            <el-form-item label="利润">
-              <div>{{totalArCny - totalApCny}}</div>
-            </el-form-item>
-          </div>
-          <div>
-            <el-form-item v-if="inboundPiece && (status != '13') && financeStatus == '0'" label="">
-              <el-button @click="jiaoDanClick" style="width: auto;" size="medium" type="primary">交单</el-button>
-            </el-form-item>
-            <el-form-item v-if="inboundPiece && (status != '13') && financeStatus == '1'" label="">
-              <el-button @click="jiaoDanClick" style="width: auto;" size="medium" type="primary">申请解锁</el-button>
-            </el-form-item>
-            <!-- <div v-if="inboundPiece && (status != '13') && statusPrice.status == '1'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
-              <div>账单已发送，等待客户确认</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
+            <h1 class="title mtop_15">订舱数据</h1>
+              <div class="bg_dark">
+                  <div class="flex_center">
+                      <div>{{initData.bookingPiece}}</div>
+                      <div>{{initData.bookingWeight}}</div>
+                      <div>{{initData.bookingCbm}}</div>
+                      <div>{{initData.bookingVwr}}</div>
+                      <div>
+                        <span v-if="initData.bubblePoint == 1">1/9</span>
+                        <span v-if="initData.bubblePoint == 2">2/8</span>
+                        <span v-if="initData.bubblePoint == 3">3/7</span>
+                        <span v-if="initData.bubblePoint == 4">4/6</span>
+                        <span v-if="initData.bubblePoint == 5">5/5</span>
+                        <span v-if="initData.bubblePoint == 6">6/4</span>
+                        <span v-if="initData.bubblePoint == 7">7/3</span>
+                        <span v-if="initData.bubblePoint == 8">8/2</span>
+                        <span v-if="initData.bubblePoint == 9">9/1</span>
+                        <span v-if="initData.bubblePoint == 10">不分泡</span>
+                      </div>
+                      <div>{{initData.bookingCw}}</div>
+                  </div>
+                  <div class="flex_center mtop_10">
+                      <div>件数</div>
+                      <div>毛重</div>
+                      <div>体积</div>
+                      <div>比重</div>
+                      <div>分泡比例</div>
+                      <div>计费重</div>
+                  </div> 
+              </div>
+              <div class="bg_table">
+                  <div class="flex_center border padding_contont " style="">
+                      <div>托盘数量</div>
+                      <div>长（cm）</div>
+                      <div>宽（cm）</div>
+                      <div>高（cm）</div>
+                  </div>
+                  <div class="flex_center border padding_contont "  v-for="(item,index) in initData.trayDetail" :key="index">
+                        <div>{{item.trayNumber}}</div>
+                        <div>{{item.traySize}}</div>
+                        <div>{{item.trayWidth}}</div>
+                        <div>{{item.trayHeight}}</div>
+                  </div>
+              </div>
+              <h1 class="title">进仓数据</h1>
+              <div class="inData ">
+                  <div class="flex_center">
+                      <div><el-input size="mini" class="ml_10" v-model="initData.inboundPiece" placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10" v-model="initData.inboundWeight" @change="calcVwr" placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10"  v-model="initData.inboundCbm" @change="calcVwr" placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10" disabled v-model="initData.inboundVwr" placeholder=""></el-input></div>
+                      <div>
+                        <el-select class="ml_10" size="mini" v-model="initData.bubblePoint" @change="calcVwr" placeholder="请选择">
+                            <el-option
+                              v-for="item in bubblePointArray"
+                              :key="item.value"
+                              :label="item.lable"
+                              :value="item.value">
+                            </el-option>
+                          </el-select>
+                      </div>
+                      <div><el-input size="mini" class="ml_10" v-model="initData.inboundCw" placeholder=""></el-input></div>
+                  </div>
+                  <div class="flex_center mtop_10">
+                      <div>件数</div>
+                      <div>毛重</div>
+                      <div>体积</div>
+                      <div>比重</div>
+                      <div>分泡比例</div>
+                      <div>计费重</div>
+                  </div>
+                  <binList class="mtop_10" ref="typeThree" :orderId= "orderId" :childData= "initData.orderCargoDetailList" />
+              </div>
+              <h1 class="title">其他服务</h1>
+              <div class="inData" style="background:rgb(240,240,240);padding-left:20px">
+                  <div>
+                      <span class="mr_25">报关服务</span>
+                      <el-radio-group v-model="initData.customsType">
+                        <el-radio :label="1">自行报关</el-radio>
+                        <el-radio :label="2">委托报关</el-radio>
+                      </el-radio-group>
+                  </div>
+                  <div class="mtop_10">
+                      <span class="mr_25">国内提货</span>
+                      <el-radio-group v-model="initData.isPickUp">
+                        <el-radio :label="1">不需要</el-radio>
+                        <el-radio :label="2">需要</el-radio>
+                      </el-radio-group>
+                  </div>
+                  <div class="mtop_10">
+                      <span class="mr_25">清关服务</span>
+                      <el-radio-group v-model="initData.cclType">
+                        <el-radio :label="1">自行清关</el-radio>
+                        <el-radio :label="2">DDU</el-radio>
+                        <el-radio :label="3">DDP</el-radio>
+                        <el-radio :label="4">DAP</el-radio>
+                      </el-radio-group>
+                  </div>
+              </div>
+              <h1 class="title">订单备注</h1>
+              <div class="inData">
+                  <el-input
+                      type="textarea"
+                      :rows="2"
+                      placeholder="请输入备注"
+                      v-model="initData.remark">
+                  </el-input>
+              </div>
+              
+              <div class="paddingBottom"></div>
+              
+        </div>
+        <div v-show="radio1=='2'" class="details">
+          <!-- 应付账单可以最多有5个 做个循环 循环组件ref -->
+          <div v-for="(item,index) in initData.arOrderPriceList"   :key="index">
+            <!-- 组件部分 -->
+            <bill-order  :getList = item.list  :ref="`typeBill${index}`" />
+            <!-- 操作部分 -->
+            <div class="ml_20" v-if="initData.canCheckFlag == 1  && item.status == 0 "  >
+              <el-button  class="setWidth"   @click="fatherAddOneItem(index)" >添加费用</el-button>
+              <el-button  class="setWidth"  type="primary" @click="reconciliationClient(index)" >发起客户对账</el-button>
             </div>
-            <div v-if="inboundPiece && (status != '13') && statusPrice.status == '2'" style="color: #F00;font-size: 14px;padding-bottom: 20px;display: flex;">
-              <div>账单已确认</div>
-              <div style="margin-left: 20px;color: #2273ce;cursor: pointer;">修改账单</div>
-            </div> -->
+            <div  >
+              <p class="pTips" v-if="item.status == 0 ">
+                  <span>未发起客户对账</span>
+                  <!-- <span >修改账单</span> -->
+              </p>
+              <p class="pTips" v-if="item.status == 1 ">
+                  <span>账单已发送，等待客户确认....（倒计时：{{item.billCreateTime}}）</span>
+                  <!-- <span >修改账单</span> -->
+              </p>
+              <p class="pTips" v-if="item.status == 2">
+                  <span>账单已确认</span>
+                  <span @click="reWriteBill(index)" v-if="initData.financeStatus == 0 || initData.financeStatus == 4 " >修改账单</span>
+              </p>
+              <p class="pTips" v-if="item.status == 3">
+                  <span>账单已确认，开票已申请</span>
+                  <span  @click="reWriteBill(index)" v-if=" initData.financeStatus == 0 || initData.financeStatus == 4" >修改账单</span>
+              </p>
+              <p class="pTips" v-if="item.status == 4">
+                  <span>账单已确认，发票开具￥{{item.invoiceAmount}}</span>
+                  <span @click="reWriteBill(index)" v-if=" initData.financeStatus == 0 || initData.financeStatus == 4" >修改账单</span>
+              </p>
+            </div>
+            <!-- 新增账单 -->
+            <div>
+                <el-button v-if="(index == initData.arOrderPriceList.length - 1 && index !== 4) && item.status == 3 && (  initData.financeStatus == 0 || initData.financeStatus == 4)" type="primary" @click="creatNewBill(index)" class="setWidth ml_20 mt_20" >新建账单</el-button>
+            </div>
           </div>
+          <div v-if="creatNewBillBoolen" >
+              <billOrder    ref="typeNewBill" :getList='[]' :orderIdTemp='orderId' :orderNoTemp='orderNo' />
+              <el-button    class="setWidth ml_20"    @click="fatherAddOneItem(100)" >添加费用</el-button>
+              <el-button    class="setWidth ml_20" type="primary" @click="reconciliationClient(100)" >发起客户对账</el-button>
+          </div>
+          <div class="line"></div>
+            <billOrder  :getList= "initData.apOrderPriceList"  ref="typeTwo" />
+            <!-- 应收添加 -->
+            <el-button  class="setWidth ml_20"  v-if="initData.financeStatus == 0 || initData.financeStatus == 4"  @click="fatherAddOneItem(200)" >添加费用</el-button>
+            <br>
+            <br>
+            <br>
+            <span  class="ml_20 " v-if="initData.financeStatus == 0">未交单</span>
+            <span  class="ml_20" v-if="initData.financeStatus == 1">已交单</span>
+            <span  class="ml_20" v-if="initData.financeStatus == 2">请解锁</span>
+            <span  class="ml_20" v-if="initData.financeStatus == 3">交单待审核</span>
+            <span class="ml_20" v-if="initData.financeStatus == 4">修改中</span>
+            <el-button class="setWidth ml_20" :type="isChangeJiaoDan ? 'primary' : ''" :disabled="!isChangeJiaoDan" v-if="isChangeJiaoDan && isChangeJiaoDan2" @click="commitionBill()">交单</el-button>
+            <el-button class="setWidth ml_20" v-if="initData.financeStatus == 1 " @click="recommiter" >申请解锁</el-button>
+            <el-button class="setWidth ml_20" v-if="initData.financeStatus == 2 " >解锁已申请，等待审核</el-button>
+          <div class="line"></div>
+          <div class="paddingBottom"></div>
         </div>
-      </el-form>
-
-      <!-- 航线价格 -->
-      <el-form v-if="orderStatus.indexOf(status) > -1" :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
-        <div class="rest-style" style="padding-left: 20px;">
-          <el-form-item label=" " label-width="150px">
-            <el-button @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
-          </el-form-item>
-        </div>
-      </el-form>
-    </div>
+      </div>
   </div>
 </template>
-
 <script>
-  import {toData} from '@/util/assist'
-  export default {
-    data() {
-      return {
-        orderStatus: [43],
-        labelPosition: 'right',
-        loading: false,
-        id: '',
-        orderId: '',
-        status: '',
-        dow: '',
-        detailsArr: {},
-        customerId: '',
-        customerName: '',
-        orderNo: '',
-        inboundNo: '',
-        waybillNo: '',
-        principalId: '',
-        principalIdOpt: [],
-        pscsId: '',
-        pscsIdOpt: [],
-        mscsId: '',
-        mscsIdOpt: [],
-        remark: '',
-        isPickUp: '1',
-        pickUpAddress: '',
-        pickUpContacts: '',
-        pickUpTel: '',
-        isPickUpOpt: [
-          {
-            Name: '不需要',
-            Value: '1'
-          },
-          {
-            Name: '需要',
-            Value: '2'
-          }
-        ],
-        cclType: '1',
-        deliveryAddress: '',
-        deliveryContacts: '',
-        deliveryTel: '',
-        cclTypeOpt: [
-          {
-            Name: '自行清关',
-            Value: '1'
-          },
-          {
-            Name: 'DDU',
-            Value: '2'
-          },
-          {
-            Name: 'DDP',
-            Value: '3'
-          },
-          {
-            Name: 'DAP',
-            Value: '4'
-          }
-        ],
-        pol: '',
-        pod: '',
-        airCompanyCode: '',
-        airCompanyName: '',
-        bookingPrice: '',
-        fullLeg: '',
-        bubblePoint: '',
-        bubblePointOpt: [
-          {
-            Name: '不分泡',
-            Value: '10'
-          },
-          {
-            Name: '1/9',
-            Value: '1'
-          },
-          {
-            Name: '2/8',
-            Value: '2'
-          },
-          {
-            Name: '3/7',
-            Value: '3'
-          },
-          {
-            Name: '4/6',
-            Value: '4'
-          },
-          {
-            Name: '5/5',
-            Value: '5'
-          },
-          {
-            Name: '6/4',
-            Value: '6'
-          },
-          {
-            Name: '7/3',
-            Value: '7'
-          },
-          {
-            Name: '8/2',
-            Value: '8'
-          },
-          {
-            Name: '9/1',
-            Value: '9'
-          }
-        ],
-        departureDate: '',
-        agentId: '',
-        agentIdOpt: [],
-        flightNo: '',
-        cargoName: '',
-        cargoType: '',
-        cargoTypeOpt: [
-          {
-            Name: '普货',
-            Value: '1'
-          },
-          {
-            Name: '化工',
-            Value: '2'
-          },
-          {
-            Name: '危险品',
-            Value: '3'
-          },
-          {
-            Name: '防疫物资',
-            Value: '4'
-          }
-        ],
-        packageType: '',
-        packageTypeOpt: [
-          {
-            Name: '散货价',
-            Value: '1'
-          },
-          {
-            Name: '托盘价',
-            Value: '2'
-          }
-        ],
-        bookingPiece: '',
-        bookingCbm: '',
-        bookingWeight: '',
-        bookingVwr: '',
-        bookingCw: '',
-        showMake: false,
-        orderOptionsList: [
-          {
-            pol: '',
-            pod: '',
-            airCompanyCode: '',
-            agentId: '',
-            agentName: '',
-            departureDate: '',
-            bookingPrice: '',
-            bubblePoint: '',
-            flightNo: '',
-            id: '',
-            dow: '',
-            orderId: '',
-            sortNo: '',
-            fullLeg: '',
-            flightNoOpt: []
-          }
-        ],
-        polOpt: [],
-        podOpt: [],
-        airCompanyCodeOpt: [],
-        flightNoOpt: [],
-        arOrderPriceList: [],
-        apOrderPriceList: [],
-        currencyOpt: [
-          {
-            Name: '人民币',
-            Value: '1'
-          },
-          {
-            Name: '港币',
-            Value: '2'
-          },
-          {
-            Name: '美元',
-            Value: '3'
-          },
-          {
-            Name: '欧元',
-            Value: '4'
-          },
-          {
-            Name: '英镑',
-            Value: '5'
-          }
-        ],
-        expenseCodeOpt: [],
-        payWay: '',
-        payWayOpt: [
-          {
-            Name: '付款买单',
-            Value: '0'
-          },
-          {
-            Name: '月结买单',
-            Value: '1'
-          }
-        ],
-        totalApCny: '',
-        totalApOrgn: '',
-        totalArCny: '',
-        totalArOrgn: '',
-        orderProfit: '',
-        customsType: '',
-        pscsName: '',
-        principalName: '',
-        mscsName: '',
-        agentName: '',
-        activityCodeDoing: '',
-        activityCodeDoing: '',
-        updateTime: '',
-        timeOut: '',
-        h: '',
-        m: '',
-        s: '',
-        outerBoxOpt: [
-          {
-            Name: '正常',
-            Value: '1'
-          },
-          {
-            Name: '异常',
-            Value: '2'
-          }
-        ],
-        packingOpt: [
-          {
-            Name: '纸箱',
-            Value: '1'
-          },
-          {
-            Name: '夹板箱',
-            Value: '2'
-          },
-          {
-            Name: '托盘',
-            Value: '3'
-          }
-        ],
-        orderCargoDetailList: [
-          {
-            piece: '',
-            cbm: '',
-            weight: '',
-            cargoSize: '',
-            packing: '',
-            outerBox: ''
-          }
-        ],
-        inboundPiece: '',
-        inboundCbm: '',
-        inboundWeight: '',
-        inboundVwr: '',
-        inboundCw: '',
-        imgArr: [],
-        statusDesc: '',
-        statusPrice: {},
-        financeStatus: ''
-      }
-    },
-    created() {
+import binList from './components/binList.vue'
+import billOrder from './components/billOrder.vue'
+export default {
+  data() {
+    return {
+      input: '',
+      radio1:'1',
+      isDataDone:false,// 已经获取到数据在渲染界面
+      isChangeJiaoDan:true, // 交单是否显示出来
+      orderNo:'',// 运单号
+      orderId:'',// 账单id
+      creatNewBillBoolen:false, // 新建账单的状态
+      preSaleList:[] ,// 售前客服初始数组
+      pscsId:'', // 售前客服id
+      onSaleList:[] ,// 售中客服初始数组
+      mscsId:"",// 售中客服id
+      airLineList:[] ,// 航线负责人初始数组
+      principalId:'', // 航线负责人ID
+      typeTwoProp:{}, //传递给typeTwo 对象
+      billIdTwo:'',//传递给账单id
+      initData:{}, // 初始化返回对象
+      billFourArray:[], // 账单
+      bubblePointArray:[
+        {
+          value:1,
+          lable:"1/9"
+        },
+        {
+          value:2,
+          lable:"2/8"
+        },
+        {
+          value:3,
+          lable:"3/7"
+        },
+        {
+          value:4,
+          lable:'4/6'
+        },
+        {
+          value:5,
+          lable:'5/5'
+        },
+        {
+          value:6,
+          lable:'6/4'
+        },
+        {
+          value:7,
+          lable:'7/3'
+        },
+        {
+          value:8,
+          lable:'8/2'
+        },
+        {
+          value:9,
+          lable:'9/1'
+        },
+        {
+          value:10,
+          lable:'不分泡'
+        },
+
+      ], // 分泡比率数组
+      cargoTypeArray:[
+        {
+          value:1,
+          lable:"普货"
+        },
+        {
+          value:2,
+          lable:"化工"
+        },
+        {
+          value:3,
+          lable:"危险品"
+        },
+        {
+          value:5,
+          lable:"防疫物资"
+        }],
+      packageTypeArray:[
+        {
+          value:1,
+          lable:"散货"
+        },{
+          value:2,
+          lable:"托盘"
+        },
+        ],  
+    };
+  },
+  computed:{
+    getInboundCw(){
+      return this.initData.inboundCw
+    }
+  },
+  watch:{
+    getInboundCw(newValue){
+      console.log(newValue)
+      this.dealChildPrice(newValue)
+    }
+  },
+
+   created(){
       this.orderId = this.$route.query.id
-      this.initPrincipal()
-      this.initPscs()
-      this.initMscs()
-      this.initAgent()
-      this.initExpenseCode()
-      this.initDetails()
-      this.initPolPod()
-      this.companyMethod()
+      this.getOriganData()
+      this.initSysSetTing()
+  },
+  components:{
+    binList,
+    billOrder
+  },
+  methods:{
+    // 判断是否能够账单删除
+    judgeDeleteBIll(){
+      return this.initData.financeStatus == 0 || this.initData.financeStatus == 4
     },
-    watch: {
-      inboundWeight() {
-        if(this.inboundWeight && this.inboundCbm){
-          this.inboundVwr = Math.ceil(this.inboundWeight/this.inboundCbm)
-          this.inboundCw = (this.inboundCbm*167) > this.inboundWeight ? Math.ceil(this.inboundCbm*167) : Math.ceil(this.inboundWeight)
-        } else {
-          this.inboundVwr = ''
-          this.inboundCw = ''
+    calcVwr(){
+      let {inboundWeight,inboundCbm,bubblePoint} = this.initData
+      if(inboundWeight && inboundCbm){
+        let scale = inboundCbm / inboundWeight
+        this.initData.inboundVwr = Math.ceil(scale > 1/167 ? scale : 1/167) 
+        if(bubblePoint == 10){
+          this.initData.inboundCw = inboundWeight
+        }else if(bubblePoint == 9){
+           this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.9 + inboundWeight * 0.1)
+        }else if(bubblePoint == 8){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.8 + inboundWeight * 0.2)
+        }else if(bubblePoint == 7){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.7 + inboundWeight * 0.3)
+        }else if(bubblePoint == 6){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.6 + inboundWeight * 0.4)
+        }else if(bubblePoint == 5){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.5 + inboundWeight * 0.5)
+        }else if(bubblePoint == 4){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.4 + inboundWeight * 0.6)
+        }else if(bubblePoint == 3){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.3 + inboundWeight * 0.7)
+        }else if(bubblePoint == 2){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.2 + inboundWeight * 0.8)
+        }else if(bubblePoint == 1){
+          this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.1 + inboundWeight * 0.9)
         }
-      },
-      inboundCbm() {
-        if(this.inboundWeight && this.inboundCbm){
-          this.inboundVwr = Math.ceil(this.inboundWeight/this.inboundCbm)
-          this.inboundCw = (this.inboundCbm*167) > this.inboundWeight ? Math.ceil(this.inboundCbm*167) : Math.ceil(this.inboundWeight)
-        } else {
-          this.inboundVwr = ''
-          this.inboundCw = ''
-        }
+      }else{
+
       }
     },
-    methods: {
-      jiaoDanClick() {
-        this.$confirm('确定交单?', '提示', {
+    // 申请解锁
+    recommiter(){
+      this.$prompt('申请解锁', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          var data = {
-            financeStatus: this.financeStatus,
-            operationType: 0,
-            orderId: this.orderId,
-            info: ''
-          }
-          this.$http.post(this.$service.presentSavePresentLog, data).then(res => {
-            if (res.code == 200) {
-              this.initDetails()
-            }else{
-              this.$message.error(res.message)
-            }
-          })
-        }).catch(() => {
-
-        })
-      },
-      duiZhangClick() {
-        this.$confirm('该账单存在两个收款单位，已生成两张账单，请确认发送?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          var newOrderArr = []
-          if(this.arOrderPriceList.length > 0){
-            for(var y = 0; y < this.arOrderPriceList.length; y++){
-              for(var p = 0; p < this.arOrderPriceList[y].list.length; p++){
-                newOrderArr.push(this.arOrderPriceList[y].list[p])
+          inputPattern: /^(\s|\S){0,200}$/,
+          inputErrorMessage: '限制200字'
+        }).then(({ value }) => {
+              var data = {
+                financeStatus: this.initData.financeStatus,
+                operationType: 1,
+                orderId: this.orderId,
+                info: value
               }
-            }
-          }
-          var data = {
-            departureDate: this.departureDate,
-            fullLeg: this.fullLeg,
-            orderId: this.orderId,
-            orderNo: this.orderNo,
-            waybillNo: this.waybillNo,
-            prices: newOrderArr
-          }
-          this.$http.post(this.$service.priceSendBill, data).then(res => {
-            if (res.code == 200) {
-              this.$router.push('/orderManagement/orderManage')
-            }else{
-              this.$message.error(res.message)
-            }
-          })
+              this.$http.post(this.$service.presentSavePresentLog, data).then(res => {
+                if (res.code == 200) {
+                  this.$alert('申请成功', {
+                    confirmButtonText: '确定',
+                    callback: () => {
+                      this.$router.push('/orderManagement/orderManage')
+                    }
+                  });
+                }else{
+                  this.$message.error(res.message)
+                }
+              })
         }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });       
+        });
+ 
 
+    },
+    // 操作完成 推进订单进程 不然没法对账
+    exdeOrder(e){
+      // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
+      let arrayTypeOne = this.$refs.typeBill0[0].tableData
+      let arrayTypeTwo = this.$refs.typeTwo.tableData
+      let order = this.initData
+        delete order.arOrderPriceList
+        delete order.apOrderPriceList
+        delete order.orderCargoDetailList
+        delete order.orderPriceList
+        delete order.trayDetail
+        delete order.createTime
+        delete order.updateTime
+      let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
+      let orderCargoDetailList = this.$refs.typeThree.tableData
+      let params = {
+        order:order,
+        orderPriceList:orderPriceList,
+        orderCargoDetailList:orderCargoDetailList,
+        ctrlMap:{
+          ctrlFlag:e
+        }
+        
+      }
+     this.$http.post(this.$service.orderExecuteOrder,params).then((data) => {
+            if(data.code == 200){
+              this.$message('成功')
+              this.$router.push('/orderManagement/orderManage')
+            } else {
+              this.$message.error(data.message)
+            }
+      })
+    },
+
+    // 交单
+    commitionBill(){
+      // 账单暂时已经定 确认
+
+     console.log(this.initData.financeStatus)
+        let data = {
+          financeStatus: this.initData.financeStatus,
+          operationType: 0,
+          orderId: this.orderId,
+          info: ''
+        }
+        this.$http.post(this.$service.presentSavePresentLog, data).then(res => {
+          if (res.code == 200) {
+            if(this.initData.financeStatus == 0){
+              this.$alert('交单成功', {
+                confirmButtonText: '确定',
+                callback: () => {
+                  this.$router.push('/orderManagement/orderManage')
+                }
+              });
+            }else if(this.initData.financeStatus == 4){
+              this.$alert('交单已提交，待审核', {
+                confirmButtonText: '确定',
+                callback: () => {
+                  this.$router.push('/orderManagement/orderManage')
+                }
+              });
+            }
+            
+          }else{
+            this.$message.error(res.message)
+          }
         })
-      },
-      pirceBlurInput(){
-        var reg = /(^[1-9][0-9]{0,5}$)|(^[0-9]{0,6}[\.][0-9]{1,4}$)/
-        if(!reg.test(this.bookingPrice)){
-          this.bookingPrice = ''
-          this.$message.error('单价最大输入六位正整数，小数保留四位')
+   
+
+
+    },
+    // 创建一个新账单
+    creatNewBill(e){
+      this.creatNewBillBoolen = true
+    },
+
+    // Four组件的新增放到父组件触发
+    fatherAddOneItem(e){
+      if(e == 0){
+        this.$refs.typeBill0[0].addOneTableObj()
+      }else if(e == 1){
+        this.$refs.typeBill1[0].addOneTableObj()
+      }else if(e == 2){
+        this.$refs.typeBill2[0].addOneTableObj()
+      }else if(e == 3){
+        this.$refs.typeBill3[0].addOneTableObj()
+      }else if(e == 4){
+        this.$refs.typeBill4[0].addOneTableObj()
+      }else if(e == 100){
+        // 这里是新增账单
+        this.$refs.typeNewBill.addOneTableObj()
+      }else if(e == 200){
+        this.$refs.typeTwo.addOneTableObj()
+      }
+     
+    },
+    // 组件的新增放到父组件触发
+    fatherNewOne(){
+      this.$refs.typeOne.addOneTableObj()
+    },
+    // 修改账单
+    reWriteBill(e){
+      this.initData.arOrderPriceList[e].changeBillAddOne = true
+      let  tempArray = []
+      if(e == 0){
+        tempArray = this.$refs.typeBill0[0].tableData
+       
+      }else if(e == 1){
+        tempArray = this.$refs.typeBill1[0].tableData
+       
+      }else if(e == 2){
+        tempArray = this.$refs.typeBill2[0].tableData
+       
+      }else if(e == 3){
+        tempArray = this.$refs.typeBill3[0].tableData
+       
+      }else if(e == 4){
+        tempArray = this.$refs.typeBill4[0].tableData 
+        
+      }
+      tempArray.map(res=>{
+        if(res.expenseName == '空运费'){
+          res.ingStatic = true
         }else{
-          for(var i = 0; i < this.apOrderPriceList.length; i++){
-            if(this.apOrderPriceList[i].expenseName == '空运费'){
-              this.apOrderPriceList[i].price = this.bookingPrice
-              this.apOrderPriceList[i].totalOrgn = Math.ceil(this.arOrderPriceList[i].quantity*this.apOrderPriceList[i].price)
-              this.apOrderPriceList[i].totalCny = Math.ceil(this.arOrderPriceList[i].quantity*this.apOrderPriceList[i].price)
-            }
-          }
-          for(var q = 0; q < this.arOrderPriceList.length; q++){
-            if(this.arOrderPriceList[q].expenseName == '空运费'){
-              this.arOrderPriceList[q].price = this.bookingPrice
-              this.arOrderPriceList[q].totalOrgn = Math.ceil(this.arOrderPriceList[q].quantity*this.arOrderPriceList[q].price)
-              this.arOrderPriceList[q].totalCny = Math.ceil(this.arOrderPriceList[q].quantity*this.arOrderPriceList[q].price)
-            }
-          }
-          this.totalPriceType('应收')
-          this.totalPriceType('应付')
+          res.ingStatic = false
         }
-      },
-      bubblePointChang() {
-        var shuliang = Math.ceil((this.bubblePoint/10)*this.bookingCw+(1-this.bubblePoint/10)*(this.bookingWeight))
-        for(var i = 0; i < this.apOrderPriceList.length; i++){
-          if(this.apOrderPriceList[i].expenseName == '空运费'){
-            this.apOrderPriceList[i].quantity = shuliang
-            this.apOrderPriceList[i].totalOrgn = Math.ceil(shuliang*this.apOrderPriceList[i].price)
-            this.apOrderPriceList[i].totalCny = Math.ceil(shuliang*this.apOrderPriceList[i].price)
-          }
-        }
-        for(var q = 0; q < this.arOrderPriceList.length; q++){
-          if(this.arOrderPriceList[q].expenseName == '空运费'){
-            this.arOrderPriceList[q].quantity = shuliang
-            this.arOrderPriceList[q].totalOrgn = Math.ceil(shuliang*this.arOrderPriceList[q].price)
-            this.arOrderPriceList[q].totalCny = Math.ceil(shuliang*this.arOrderPriceList[q].price)
-          }
-        }
-        this.totalPriceType('应收')
-        this.totalPriceType('应付')
-      },
-      //进仓数据
-      addOrderCargoDetailList(){
-        var json = {
-          piece: '',
-          cbm: '',
-          weight: '',
-          cargoSize: '',
-          packing: '',
-          outerBox: ''
-        }
-        this.orderCargoDetailList.push(json)
-      },
-      delOrderCargoDetailList(index) {
-        this.orderCargoDetailList.splice(index,1)
-      },
-      cbmBlur(val,index,type) {
-        if(type == '体积1'){
-          var reg = /(^[1-9][0-9]{0,3}$)|(^[0-9]{0,4}[\.][0-9]{1,4}$)/
-          if(!reg.test(val) && (val != '')){
-          	this.$message.error('体积最大输入四位正整数，小数保留四位')
-            this.inboundCbm = ''
-          }
-        }else if(type == '体积2'){
-          var reg = /(^[1-9][0-9]{0,3}$)|(^[0-9]{0,4}[\.][0-9]{1,4}$)/
-          if(!reg.test(val) && (val != '')){
-          	this.$message.error('体积最大输入四位正整数，小数保留四位')
-            this.orderCargoDetailList[index].cbm = ''
-          }
-        }
-      },
-      //倒计时
-      countTime(totalTime) {
-        //获取当前时间
-        var date = new Date();
-        var now = date.getTime();
-
-        //设置截止时间
-        var endDate = new Date(totalTime);
-        var end = endDate.getTime()+24*60*60*1000;
-
-        //时间差
-        var leftTime = end-now;
-
-        //定义变量 d,h,m,s保存倒计时的时间
-        if (leftTime>=0) {
-          this.h = Math.floor(leftTime/1000/60/60%24);
-          this.m = Math.floor(leftTime/1000/60%60);
-          this.s = Math.floor(leftTime/1000%60);
-        }
-        this.h = this.h > 9 ? this.h : '0'+this.h
-        this.m = this.m > 9 ? this.m : '0'+this.m
-        this.s = this.s > 9 ? this.s : '0'+this.s
-        this.timeOut = this.h +'时'+ this.m +'分'+ this.s +'秒'
-        setTimeout(() => {
-          this.countTime(this.updateTime)
-        },1000);
-      },
-      //保存
-      submitClick(type) {
-        if(!this.inboundPiece){
-          this.$message.error('请输入进仓件数')
-          return
-        }else if(!this.inboundWeight){
-          this.$message.error('请输入进仓重量')
-          return
-        }else if(!this.inboundCbm){
-          this.$message.error('请输入进仓体积')
-          return
-        }
-        var order = {
-          agentId: this.agentId.split('#')[0],
-          agentName: this.agentId.split('#')[1],
-          airCompanyCode: this.airCompanyCode,
-          bookingCbm: this.bookingCbm,
-          bookingCw: this.bookingCw,
-          bookingPiece: this.bookingPiece,
-          bookingPrice: this.bookingPrice,
-          bookingWeight: this.bookingWeight,
-          bubblePoint: this.bubblePoint,
-          cargoName: this.cargoName,
-          cargoType: this.cargoType,
-          cclType: this.cclType,
-          customerId: this.customerId,
-          customsType: this.customsType,
-          deliveryAddress: this.deliveryAddress,
-          deliveryContacts: this.deliveryContacts,
-          deliveryTel: this.deliveryTel,
-          departureDate: this.departureDate,
-          dow: this.dow,
-          flightNo: this.flightNo,
-          fullLeg: this.fullLeg,
-          id: this.orderId,
-          isPickUp: this.isPickUp,
-          mscsId: this.mscsId.split('#')[0],
-          mscsName: this.mscsId.split('#')[1],
-          orderNo: this.orderNo,
-          orderProfit: this.totalArCny - this.totalApCny,
-          packageType: this.packageType,
-          pickUpAddress: this.pickUpAddress,
-          pickUpContacts: this.pickUpContacts,
-          pickUpTel: this.pickUpTel,
-          principalId: this.principalId.split('#')[0],
-          principalName: this.principalId.split('#')[1],
-          pscsId: this.pscsId.split('#')[0],
-          pscsName: this.pscsId.split('#')[1],
-          remark: this.remark,
-          payWay: this.payWay,
-          status: this.status,
-          totalApCny: this.totalApCny,
-          totalApOrgn: this.totalApOrgn,
-          totalArCny: this.totalArCny,
-          totalArOrgn: this.totalArOrgn,
-          waybillNo: this.waybillNo,
-          pod: this.pod,
-          pol: this.pol,
-          activityCodeDoing: this.activityCodeDoing,
-          activityCodeDone: this.activityCodeDone,
-          inboundNo: this.inboundNo,
-          inboundPiece: this.inboundPiece,
-          inboundCbm: this.inboundCbm,
-          inboundWeight: this.inboundWeight,
-          inboundVwr: this.inboundVwr,
-          inboundCw: this.inboundCw,
-        }
-        var orderPriceList = []
-        var newOrderArr = []
-        if(this.arOrderPriceList.length > 0){
-          for(var y = 0; y < this.arOrderPriceList.length; y++){
-            for(var p = 0; p < this.arOrderPriceList[y].list.length; p++){
-              newOrderArr.push(this.arOrderPriceList[y].list[p])
-            }
-          }
-        }
-        orderPriceList = newOrderArr.concat(this.apOrderPriceList)
-        if(orderPriceList.length > 0){
-          for(var m = 0; m < orderPriceList.length; m++){
-            if(!orderPriceList[m].expenseName){
-              this.$message.error('请选择账单费用名称')
-              return
-            }else if(!orderPriceList[m].price){
-              this.$message.error('请输入账单单价')
-              return
-            }else if(!orderPriceList[m].quantity){
-              this.$message.error('请输入账单数量')
-              return
-            }else if(!orderPriceList[m].currency){
-              this.$message.error('请选择账单币种')
-              return
-            }else if(!orderPriceList[m].exchangeRate){
-              this.$message.error('请输入账单汇率')
-              return
-            }
-          }
-        }
-        if(this.showMake){
-          var orderOptionsList = []
-          for(var q = 0; q < this.orderOptionsList.length; q++){
-            var json = {
-              agentId: this.orderOptionsList[q].agentId.split('#')[0],
-              agentName: this.orderOptionsList[q].agentId.split('#')[1],
-              airCompanyCode: this.orderOptionsList[q].airCompanyCode.split('#')[0],
-              airCompanyName: this.orderOptionsList[q].airCompanyCode.split('#')[1],
-              bookingPrice: this.orderOptionsList[q].bookingPrice,
-              bubblePoint: this.orderOptionsList[q].bubblePoint,
-              departureDate: this.orderOptionsList[q].departureDate,
-              dow: new Date(this.orderOptionsList[q].departureDate).getDay() == 0 ? 7 : new Date(this.orderOptionsList[q].departureDate).getDay(),
-              flightNo: this.orderOptionsList[q].flightNo,
-              fullLeg: this.orderOptionsList[q].fullLeg,
-              pod: this.orderOptionsList[q].pod,
-              pol: this.orderOptionsList[q].pol,
-              sortNo: q+1,
-              id: this.orderOptionsList[q].id,
-              orderId: this.orderId
-            }
-            orderOptionsList.push(json)
-          }
-          var data = {
-            order: order,
-            orderOptionsList: orderOptionsList,
-            orderPriceList: orderPriceList,
-          }
-        } else {
-          var data = {
-            order: order,
-            orderPriceList: orderPriceList,
-          }
-        }
-        data.orderCargoDetailList = []
-        for(var j = 0; j < this.orderCargoDetailList.length; j++){
-          if(this.orderCargoDetailList[j].piece && this.orderCargoDetailList[j].cbm && this.orderCargoDetailList[j].weight && this.orderCargoDetailList[j].packing && this.orderCargoDetailList[j].outerBox && this.orderCargoDetailList[j].cargoSize){
-            data.orderCargoDetailList.push(this.orderCargoDetailList[j])
-          }
-        }
-        if (data.order.fullLeg) {
-          let fullLeg = data.order.fullLeg.split('-');
-          data.order.fullLeg = fullLeg.join(',');
-        }
-        if(type == '保存'){
-          this.$http.post(this.$service.orderSaveOrder,data).then((data) => {
-            if(data.code == 200){
-              this.$router.push('/orderManagement/orderManage')
-            } else {
-              this.$message.error(data.message)
-            }
-          })
-        }else if(type == '通过'){
-          data.ctrlMap = {
-            ctrlFlag: 1
-          }
-          this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
-            if(data.code == 200){
-              this.$router.push('/orderManagement/orderManage')
-            } else {
-              this.$message.error(data.message)
-            }
-          })
-        }else if(type == '失败'){
-          this.$confirm('确定取消订单?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            data.ctrlMap = {
-              ctrlFlag: 2
-            }
-            this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
-              if(data.code == 200){
-                this.$router.push('/orderManagement/orderManage')
-              } else {
-                this.$message.error(data.message)
-              }
+      })
+      let {billId} = tempArray[0]
+      this.$http.post(this.$service.modifyBill,{billId:billId}).then(res=>{
+        if(res.code == 200){
+          
+            this.$message({
+              message: '修改账单成功',
+              type: 'success'
             })
-          })
+            this.getOriganData()
         }
-      },
-      //账单合计、人民币合计
-      totalPriceType(type) {
-        if(type == '应收'){
-          var newArr = []
-          // HK$ $ € ￡
-          this.totalArCny = 0
-          for(var i = 0; i < this.arOrderPriceList.length; i++){
-            this.arOrderPriceList[i].billAmountCny = 0
-            var value1 = 0
-            var value2 = 0
-            var value3 = 0
-            var value4 = 0
-            var value5 = 0
-            var json = {}
-            for(var q = 0; q < this.arOrderPriceList[i].list.length; q++){
-              this.arOrderPriceList[i].billAmountCny += this.arOrderPriceList[i].list[q].totalCny
-              if(this.arOrderPriceList[i].list[q].currency == '1'){
-                value1 += this.arOrderPriceList[i].list[q].totalCny
-              }else if(this.arOrderPriceList[i].list[q].currency == '2'){
-                value2 += this.arOrderPriceList[i].list[q].totalCny
-              }else if(this.arOrderPriceList[i].list[q].currency == '3'){
-                value3 += this.arOrderPriceList[i].list[q].totalCny
-              }else if(this.arOrderPriceList[i].list[q].currency == '4'){
-                value4 += this.arOrderPriceList[i].list[q].totalCny
-              }else if(this.arOrderPriceList[i].list[q].currency == '5'){
-                value5 += this.arOrderPriceList[i].list[q].totalCny
-              }
-            }
-            this.arOrderPriceList[i].totalArOrgn = ''
-            this.arOrderPriceList[i].totalArOrgn += value1 ? '￥'+value1+'+' : ''
-            this.arOrderPriceList[i].totalArOrgn += value2 ? 'HK$'+value2+'+' : ''
-            this.arOrderPriceList[i].totalArOrgn += value3 ? '$'+value3+'+' : ''
-            this.arOrderPriceList[i].totalArOrgn += value4 ? '€'+value4+'+' : ''
-            this.arOrderPriceList[i].totalArOrgn += value5 ? '￡'+value5 : ''
-            this.arOrderPriceList[i].totalArOrgn = this.arOrderPriceList[i].totalArOrgn.substring(0, this.arOrderPriceList[i].totalArOrgn.length - 1)
-            this.totalArCny += this.arOrderPriceList[i].billAmountCny
-          }
+      })
+    },
+    // 保存账单
+    saveOrder(){
+      // 在修改账单的过程中不允许保存
+      let tempArray = this.initData.arOrderPriceList
+      let test = tempArray.filter(res=>{
+        return res.status == 2 || res.status == 1
+      })
+      if(test.length > 0){
+        this.$message.error("账单在修改")
+        return ;
+      }
+      if(this.initData.financeStatus == 0 || this.initData.financeStatus == 4){
+        this.$message.error('账单在交单')
+        return ;
+      }
+      let {inboundWeight,inboundCbm, inboundCw , inboundPiece} = this.initData
+      if(!inboundPiece){
+        this.$message.error('请输入进仓件数')
+        return ;
+      }
+      if(!inboundWeight){
+        this.$message.error('请输入毛重')
+        return ;
+      }
+      if(!inboundCbm){
+        this.$message.error('请输入体积')
+        return ;
+      }
+      if(!inboundCw){
+        this.$message.error('请输入计费重')
+        return ;
+      }
+      let arrayTypeThree = this.$refs.typeThree.tableData 
+      let tempthree = arrayTypeThree.filter(item=>{
+        return (item.piece == undefined || item.piece == '') || (item.cbm == undefined || item.cbm == "") || (item.weight == undefined || item.weight == '')  || (item.cargoSize == undefined || item.cargoSize == '')
+      }) 
+      if(tempthree.length > 0){
+        this.$message.error('进仓数据未填写')
+        return ;
+      }
+      
+      let arrayTypeOne = this.$refs.typeBill0[0].tableData
+      let arrayTypeTwo = this.$refs.typeTwo.tableData
+      let order = this.initData
+        delete order.arOrderPriceList
+        delete order.apOrderPriceList
+        delete order.orderCargoDetailList
+        delete order.orderPriceList
+        delete order.trayDetail
+       let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
+       let orderCargoDetailList = arrayTypeThree
 
-        }else if(type == '应付'){
-          var newArr = []
-          this.totalApCny = 0
-          var value1 = 0
-          var value2 = 0
-          var value3 = 0
-          var value4 = 0
-          var value5 = 0
-          // HK$ $ € ￡
-          for(var i = 0; i < this.apOrderPriceList.length; i++){
-            this.totalApCny += this.apOrderPriceList[i].totalOrgn
-            var json = {}
-            if(this.apOrderPriceList[i].currency == '1'){
-              value1 += this.apOrderPriceList[i].totalCny
-            }else if(this.apOrderPriceList[i].currency == '2'){
-              value2 += this.apOrderPriceList[i].totalCny
-            }else if(this.apOrderPriceList[i].currency == '3'){
-              value3 += this.apOrderPriceList[i].totalCny
-            }else if(this.apOrderPriceList[i].currency == '4'){
-              value4 += this.apOrderPriceList[i].totalCny
-            }else if(this.apOrderPriceList[i].currency == '5'){
-              value5 += this.apOrderPriceList[i].totalCny
-            }
-          }
-          this.totalApOrgn = ''
-          this.totalApOrgn += value1 ? '￥'+value1+'+' : ''
-          this.totalApOrgn += value2 ? 'HK$'+value2+'+' : ''
-          this.totalApOrgn += value3 ? '$'+value3+'+' : ''
-          this.totalApOrgn += value4 ? '€'+value4+'+' : ''
-          this.totalApOrgn += value5 ? '￡'+value5 : ''
-          this.totalApOrgn = this.totalApOrgn.substring(0, this.totalApOrgn.length - 1)
-        }
-      },
-      //账单单价、数量、汇率计算
-      priceBlur(val,index,type,title,priceIndex) {
-        var reg = /(^[1-9][0-9]{0,5}$)|(^[0-9]{0,6}[\.][0-9]{1,4}$)/
-        var reg1 = /(^[1-9][0-9]{0,3}$)|(^[0-9]{0,4}[\.][0-9]{1,4}$)/
-        var num = Number(val)
-        if(title == '单价'){
-          if(!reg.test(num) && (num != '')){
-          	this.$message.error('单价最大输入六位正整数，小数保留四位')
-            if(type == '应收'){
-              this.arOrderPriceList[priceIndex].list[index].price = ''
-              this.arOrderPriceList[priceIndex].list[index].totalCny = ''
-              this.arOrderPriceList[priceIndex].list[index].totalOrgn = ''
-            }else if(type == '应付'){
-              this.apOrderPriceList[index].price = ''
-              this.apOrderPriceList[index].totalCny = ''
-              this.apOrderPriceList[index].totalOrgn = ''
-            }
-          }else if(num == ''){
-            if(type == '应收'){
-              this.arOrderPriceList[priceIndex].list[index].totalCny = ''
-              this.arOrderPriceList[priceIndex].list[index].totalOrgn = ''
-            }else if(type == '应付'){
-              this.apOrderPriceList[index].totalCny = ''
-              this.apOrderPriceList[index].totalOrgn = ''
-            }
-          }else{
-            if(type == '应收' && this.arOrderPriceList[priceIndex].list[index].price && this.arOrderPriceList[priceIndex].list[index].quantity){
-              this.arOrderPriceList[priceIndex].list[index].totalOrgn = Math.ceil(this.arOrderPriceList[priceIndex].list[index].price*this.arOrderPriceList[priceIndex].list[index].quantity)
-              if(this.arOrderPriceList[priceIndex].list[index].exchangeRate == ''){
-                this.arOrderPriceList[priceIndex].list[index].totalCny = Math.ceil(this.arOrderPriceList[priceIndex].list[index].price*this.arOrderPriceList[priceIndex].list[index].quantity*1)
-              }else{
-                this.arOrderPriceList[priceIndex].list[index].totalCny = Math.ceil(this.arOrderPriceList[priceIndex].list[index].price*this.arOrderPriceList[priceIndex].list[index].quantity*this.arOrderPriceList[priceIndex].list[index].exchangeRate)
-              }
-              this.totalPriceType('应收')
-            }else if(type == '应付' && this.apOrderPriceList[index].price && this.apOrderPriceList[index].quantity){
-              this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity)
-              if(this.apOrderPriceList[index].exchangeRate == ''){
-                this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*1)
-              }else{
-                this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*this.apOrderPriceList[index].exchangeRate)
-              }
-              this.totalPriceType('应付')
-            }
-          }
-        }else if(title == '汇率'){
-          if(!reg1.test(num) && (num != '')){
-          	this.$message.error('单价最大输入四位正整数，小数保留四位')
-            if(type == '应收'){
-              this.arOrderPriceList[priceIndex].list[index].exchangeRate = ''
-              this.arOrderPriceList[priceIndex].list[index].totalOrgn = ''
-            }else if(type == '应付'){
-              this.apOrderPriceList[index].exchangeRate = ''
-              this.apOrderPriceList[index].totalOrgn = ''
-            }
-          }else if(type == '应收' && this.arOrderPriceList[priceIndex].list[index].price && this.arOrderPriceList[priceIndex].list[index].quantity){
-            if(this.arOrderPriceList[priceIndex].list[index].exchangeRate == ''){
-              this.arOrderPriceList[priceIndex].list[index].totalCny = Math.ceil(this.arOrderPriceList[priceIndex].list[index].price*this.arOrderPriceList[priceIndex].list[index].quantity*1)
-            }else{
-              this.arOrderPriceList[priceIndex].list[index].totalCny = Math.ceil(this.arOrderPriceList[priceIndex].list[index].price*this.arOrderPriceList[priceIndex].list[index].quantity*this.arOrderPriceList[priceIndex].list[index].exchangeRate)
-            }
-            this.totalPriceType('应收')
-          }else if(type == '应付' && this.apOrderPriceList[index].price && this.apOrderPriceList[index].quantity){
-            if(this.apOrderPriceList[index].exchangeRate == ''){
-              this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*1)
-            }else{
-              this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*this.apOrderPriceList[index].exchangeRate)
-            }
-            this.totalPriceType('应付')
-          }
-        }else if(title == '数量'){
-          if(num == ''){
-            if(type == '应收'){
-              this.arOrderPriceList[priceIndex].list[index].totalCny = ''
-              this.arOrderPriceList[priceIndex].list[index].totalOrgn = ''
-            }else if(type == '应付'){
-              this.apOrderPriceList[index].totalCny = ''
-              this.apOrderPriceList[index].totalOrgn = ''
-            }
-          }else{
-            if(type == '应收' && this.arOrderPriceList[priceIndex].list[index].price && this.arOrderPriceList[priceIndex].list[index].quantity){
-              this.arOrderPriceList[priceIndex].list[index].totalOrgn = Math.ceil(this.arOrderPriceList[priceIndex].list[index].price*this.arOrderPriceList[priceIndex].list[index].quantity)
-              if(this.arOrderPriceList[priceIndex].list[index].exchangeRate == ''){
-                this.arOrderPriceList[priceIndex].list[index].totalCny = Math.ceil(this.arOrderPriceList[priceIndex].list[index].price*this.arOrderPriceList[priceIndex].list[index].quantity*1)
-              }else{
-                this.arOrderPriceList[priceIndex].list[index].totalCny = Math.ceil(this.arOrderPriceList[priceIndex].list[index].price*this.arOrderPriceList[priceIndex].list[index].quantity*this.arOrderPriceList[priceIndex].list[index].exchangeRate)
-              }
-              this.totalPriceType('应收')
-            }else if(type == '应付' && this.apOrderPriceList[index].price && this.apOrderPriceList[index].quantity){
-              this.apOrderPriceList[index].totalOrgn = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity)
-              if(this.apOrderPriceList[index].exchangeRate == ''){
-                this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*1)
-              }else{
-                this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*this.apOrderPriceList[index].exchangeRate)
-              }
-              this.totalPriceType('应付')
-            }
-          }
-        }else if(type == '推荐'){
-          if(!reg1.test(num) && (num != '')){
-          	this.$message.error('单价最大输入四位正整数，小数保留四位')
-            this.orderOptionsList[index].bookingPrice = ''
-            return
-          }
-        }
-      },
-      // 审核失败，制作推荐方案
-      showMakeClick() {
-        this.showMake = !this.showMake
-        // this.$confirm('是否制作推荐方案?', '提示', {
-        //   confirmButtonText: '确定',
-        //   cancelButtonText: '取消',
-        //   type: 'warning'
-        // }).then(() => {
-        //   this.showMake = true
-        // }).catch(() => {
-        //   this.showMake = false
-        // })
-      },
-      delTableMack(index) {
-        this.orderOptionsList.splice(index,1)
-      },
-      addOrderOptionsList() {
-        var json = {
-          pol: '',
-          pod: '',
-          airCompanyCode: '',
-          agentId: '',
-          agentName: '',
-          departureDate: '',
-          bookingPrice: '',
-          bubblePoint: '',
-          flightNo: '',
-          id: '',
-          dow: '',
-          orderId: '',
-          sortNo: '',
-          fullLeg: '',
-          flightNoOpt: []
-        }
-        this.orderOptionsList.push(json)
-      },
-      //航线
-      initAirlineSearchByPage(index,item) {
-        if(!this.agentId || !this.pol || !this.pod || !this.airCompanyCode){
-          return
-        }
-        var json = {
-          airCompanyCode: this.airCompanyCode,
-          pol: this.pol,
-          pod: this.pod,
-          pageNum: 1,
-          agentName: this.agentId.split('#')[1]
-        }
-        this.$http.post(this.$service.airlineSearchByPage,json).then((data) => {
-          if(data.code == 200){
-            this.flightNoOpt = data.data.records
-            this.$forceUpdate()
-          }else{
-            this.$message.error(data.message)
-          }
-        })
-      },
-      //费用名称
-      initExpenseCode() {
-        var json = {
-          pageSize: 50000,
-        }
-        json = toData(json)
-        this.$http.get(this.$service.expenseSearchExcludeAirFee+'?'+json).then((data) => {
-          if(data.code == 200){
-            this.expenseCodeOpt = data.data.records
-          }else{
-            this.$message.error(data.message)
-          }
-        })
-      },
-      //航司公司
-      initCompany(keyWord) {
-        if(!keyWord){
-          keyWord = ''
-        }
-        this.$http.get(this.$service.companySearchByPage+'?keyWord='+keyWord).then((data) => {
-          this.loading = false
-          if(data.code == 200){
-            this.airCompanyCodeOpt = data.data.records
-          } else {
-            this.$message.error(data.message)
-          }
-        })
-      },
-      companyMethod(keyWord) {
-        this.initCompany(keyWord)
-      },
-      //起始港目的港
-      initPolPod(keyWord, type) {
-        if (!keyWord) {
-          keyWord = ''
-        }
-        this.$http.get(this.$service.airportSearchByPage + '?keyWord=' + keyWord).then((data) => {
-          if (data.code == 200) {
-            this.loading = false
-            if (type == '起始港') {
-              this.polOpt = data.data.records
-              console.log(this.polOpt)
-            } else if (type == '目的港') {
-              this.podOpt = data.data.records
+  
+      let params = {
+        order:order,
+        orderPriceList:orderPriceList,
+        orderCargoDetailList:orderCargoDetailList,
+      }
+     this.$http.post(this.$service.orderSaveOrder,params).then((data) => {
+            if(data.code == 200){
+              this.$message('保存成功')
+              this.$router.push('/orderManagement/orderManage')
             } else {
-              this.polOpt = data.data.records
-              this.podOpt = data.data.records
+              this.$message.error(data.message)
             }
-          } else {
-            this.$message.error(data.message)
-          }
-        })
-      },
-      polMethod(keyWord) {
-        this.loading = true
-        this.initPolPod(keyWord,'起始港')
-      },
-      podMethod(keyWord) {
-        this.loading = true
-        this.initPolPod(keyWord,'目的港')
-      },
-      //航线人员
-      initPrincipal() {
-        var json = {
-          roleName: '航线负责人',
-          pageSize: 50000,
+      })
+    },
+    // 如果子组件中有空运费 输入计费重的时候同时修改子组件单价
+    dealChildPrice(num){
+      // 取到子组件typeOne
+      let a = this.$refs.typeBill0[0].tableData
+      
+      for(let i in a){
+        if(a[i].expenseName == '空运费'){
+          a.quantity = num
+          this.$set(a[i],'quantity',num)
         }
-        json = toData(json)
-        this.$http.get(this.$service.userSearch+'?'+json).then((data) => {
-          if(data.code == 200){
-            this.principalIdOpt = data.data.records
-          }else{
-            this.$message.error(data.message)
-          }
-        })
-      },
-      //售前客服
-      initPscs() {
-        var json = {
-          roleName: '售前客服',
-          pageSize: 50000,
-        }
-        json = toData(json)
-        this.$http.get(this.$service.userSearch+'?'+json).then((data) => {
-          if(data.code == 200){
-            this.pscsIdOpt = data.data.records
-          }else{
-            this.$message.error(data.message)
-          }
-        })
-      },
-      //售中客服
-      initMscs() {
-        var json = {
-          roleName: '售中客服',
-          pageSize: 50000,
-        }
-        json = toData(json)
-        this.$http.get(this.$service.userSearch+'?'+json).then((data) => {
-          if(data.code == 200){
-            this.mscsIdOpt = data.data.records
-          }else{
-            this.$message.error(data.message)
-          }
-        })
-      },
-      //代理公司
-      initAgent() {
-        var data = {
-          pageSize: 50000,
-        }
-        this.$http.post(this.$service.agentList,data).then((data) => {
-          this.loading = false
-          if(data.code == 200){
-            this.agentIdOpt = data.data.records
-          }else{
-            this.$message.error(data.message)
-          }
-        })
-      },
-      //账单添加与删除
-      delApOrderPriceList(index) {
-        this.apOrderPriceList.splice(index,1)
-        this.totalPriceType('应付')
-      },
-      addApOrderPriceList() {
-        var json = {
-          currency: '1',
-          exchangeRate: 1,
-          expenseName: '',
-          expenseType: 2,
-          expenseUnitId: '',
-          expenseUnitName: '',
-          id: '',
-          orderId: this.orderId,
-          price: '',
-          quantity: '',
-          remark: '',
-          totalCny: '',
-          totalOrgn: '',
-        }
-        this.apOrderPriceList.push(json)
-      },
-      delArOrderPriceList(priceIndex,childerIndex) {
-        this.arOrderPriceList[priceIndex].list.splice(childerIndex,1)
-        this.totalPriceType('应收')
-      },
-      addArOrderPriceList(priceIndex,childerIndex) {
-        var json = {
-          currency: '1',
-          exchangeRate: 1,
-          expenseName: '',
-          expenseType: 1,
-          expenseUnitId: '',
-          expenseUnitName: '',
-          id: '',
-          orderId: this.orderId,
-          price: '',
-          quantity: '',
-          remark: '',
-          totalCny: '',
-          totalOrgn: '',
-        }
-        this.arOrderPriceList[priceIndex].list.push(json)
-      },
-      //账单转化
-      priceType(json) {
-        if(json){
-          var arr = JSON.parse(json)
-          var price = ''
-          for(var i = 0; i < arr.length; i++){
-            if(arr[i].currency == '1'){
-              price += '￥'+arr[i].amount+'+'
-            }else if(arr[i].currency == '2'){
-              price += 'HK$'+arr[i].amount+'+'
-            }else if(arr[i].currency == '3'){
-              price += '$'+arr[i].amount+'+'
-            }else if(arr[i].currency == '4'){
-              price += '€'+arr[i].amount+'+'
-            }else if(arr[i].currency == '5'){
-              price += '￡'+arr[i].amount+'+'
-            }
-          }
-          price = price.substring(0, price.length - 1)
-          return price
-        }
-      },
-      //获取详情
-      initDetails() {
-        this.$http.get(this.$service.orderSearchDetail+'?orderId='+this.orderId).then((data) => {
-          if(data.code == 200){
-            this.detailsArr = data.data
-            var data = data.data
-
-            this.statusDesc = data.statusDesc
-            this.status = data.status
-            this.pscsName = data.pscsName
-            this.principalName = data.principalName
-            this.mscsName = data.mscsName
-            this.agentName = data.agentName
-            this.id = data.id
-            this.customerId = data.customerId
-            this.orderNo = data.orderNo
-            this.customerName = data.customerName
-            this.inboundNo = data.inboundNo
-            this.waybillNo = data.waybillNo
-            this.principalId = data.principalId+'#'+data.principalName
-            this.pscsId = data.pscsId+'#'+data.pscsName
-            this.mscsId = data.mscsId+'#'+data.mscsName
-            this.remark = data.remark
-            this.pol = data.pol
-            this.pod = data.pod
-            this.dow = data.dow
-            this.customsType = data.customsType
-            this.airCompanyCode = data.airCompanyCode
-            this.airCompanyName = data.airCompanyName
-            this.bookingPrice = data.bookingPrice
-            let fullLeg = data.fullLeg.split(',');
-            this.fullLeg = fullLeg.join('-');
-            // this.fullLeg = data.fullLeg
-            this.bubblePoint = data.bubblePoint.toString()
-            this.departureDate = data.departureDate
-            this.agentId = data.agentId+'#'+data.agentName
-            this.flightNo = data.flightNo
-            this.cargoName = data.cargoName
-            this.cargoType = data.cargoType.toString()
-            this.packageType = data.packageType.toString()
-            this.bookingPiece = data.bookingPiece
-            this.bookingCbm = data.bookingCbm
-            this.bookingWeight = data.bookingWeight
-            this.bookingVwr = data.bookingVwr
-            this.bookingCw = data.bookingCw
-            this.isPickUp = data.isPickUp.toString()
-            this.pickUpAddress = data.pickUpAddress
-            this.pickUpContacts = data.pickUpContacts
-            this.pickUpTel = data.pickUpTel
-            this.cclType = data.cclType.toString()
-            this.deliveryAddress = data.deliveryAddress
-            this.deliveryContacts = data.deliveryContacts
-            this.deliveryTel = data.deliveryTel
-            this.payWay = data.payWay.toString()
-            this.totalApCny = data.totalApCny
-            this.totalApOrgn = this.priceType(data.totalApOrgn)
-            this.totalArCny = data.totalArCny
-            this.totalArOrgn = this.priceType(data.totalArOrgn)
-            this.orderProfit = data.orderProfit
-            this.activityCodeDoing = data.activityCodeDoing
-            this.activityCodeDone = data.activityCodeDone
-            if(data.apOrderPriceList){
-              for(var i = 0; i < data.apOrderPriceList.length; i++){
-                data.apOrderPriceList[i].currency = data.apOrderPriceList[i].currency.toString()
-              }
-            }
-            this.apOrderPriceList = data.apOrderPriceList
-
-            if(data.arOrderPriceList){
-              for(var r = 0; r < data.arOrderPriceList.length; r++){
-                for(var t = 0; t < data.arOrderPriceList[r].list.length; t++){
-                  data.arOrderPriceList[r].list[t].currency = data.arOrderPriceList[r].list[t].currency.toString()
-                }
-              }
-            }
-            this.arOrderPriceList = data.arOrderPriceList
-
-            if(data.orderOptionsList != null){
-              if(data.orderOptionsList.length != 0){
-                this.showMake = true
-                this.orderOptionsList = data.orderOptionsList
-                for(var q = 0; q < this.orderOptionsList.length; q++){
-                  this.orderOptionsList[q].flightNoOpt = []
-                  this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
-                  this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
-                }
-              }
-            }
-            if(data.status == '5'){
-              this.updateTime = data.updateTime
-              this.countTime(data.updateTime)
-            }
-
-            if(data.orderCargoDetailList != null){
-              if(data.orderCargoDetailList.length != 0){
-                this.orderCargoDetailList = data.orderCargoDetailList
-                for(var z = 0; z < this.orderCargoDetailList.length; z++) {
-                  if(this.orderCargoDetailList[z].packing != null){
-                    this.orderCargoDetailList[z].packing = this.orderCargoDetailList[z].packing.toString()
-                  }
-                  if(this.orderCargoDetailList[z].outerBox != null){
-                    this.orderCargoDetailList[z].outerBox = this.orderCargoDetailList[z].outerBox.toString()
-                  }
-                }
-              }
-            }
-            this.inboundCbm = data.inboundCbm
-            this.inboundCw = data.inboundCw
-            this.inboundPiece = data.inboundPiece
-            this.inboundVwr = data.inboundVwr
-            this.inboundWeight = data.inboundWeight
-            this.imgArr = data.orderAttachmentList
-            this.financeStatus = data.financeStatus
-            this.initAirlineSearchByPage()
-            this.totalPriceType('应收')
-
-          }else{
-            this.$message.error(data.message)
-          }
-        })
       }
-    }
+      let b = this.$refs.typeTwo.tableData
+      for(let i in b){
+        if(b[i].expenseName == '空运费'){
+          b.quantity = num
+          this.$set(b[i],'quantity',num)
+        }
+      }
+
+
+    },
+    // 获取页面初始配置
+    async initSysSetTing(){
+      let res1 = await this.$http.get(this.$service.userSearch+'?roleName=售前客服&pageSize=50000')
+      let res2 = await this.$http.get(this.$service.userSearch+'?roleName=售中客服&pageSize=50000')
+      let res3 = await this.$http.get(this.$service.userSearch+'?roleName=航线负责人&pageSize=50000')
+      Promise.all([res1,res2,res3]).then(res=>{
+        this.preSaleList = res[0].data.records
+        this.onSaleList = res[1].data.records
+        this.airLineList = res[2].data.records
+      })
+    },
+    // 获取订单详情
+    async  getOriganData(){
+      let res = await  this.$http.get(this.$service.orderSearchDetail+`?orderId=${this.orderId}`)
+      if(res.code == 200){
+        let tempObj = res.data
+          tempObj.trayDetail = JSON.parse(tempObj.trayDetail)
+          for(let i in tempObj.arOrderPriceList){
+           tempObj.arOrderPriceList[i].changeBillAddOne = false
+          }
+          let tempArr = tempObj.arOrderPriceList
+          let isBoo  = tempArr.filter(item=>{
+            return    item.status == 0 || item.status == 1
+          })
+       
+          this.isChangeJiaoDan2 = (isBoo.length > 0 ? false : true)
+          this.isChangeJiaoDan = (tempObj.financeStatus == 0 ||  tempObj.financeStatus == 4) 
+          this.orderNo = tempObj.orderNo
+          this.initData = tempObj 
+          this.isDataDone = true
+      }
+    },
+    // 客户发起对账
+    async reconciliationClient(e){
+      let {departureDate , fullLeg  ,orderNo ,waybillNo} = this.initData ;
+      let userId = sessionStorage.getItem('userId')
+      let  tempArray = []
+      let  totalCny = 0
+      if(e == 0){
+        tempArray = this.$refs.typeBill0[0].tableData
+        totalCny = this.$refs.typeBill0[0].totalCnyStr
+      }else if(e == 1){
+        tempArray = this.$refs.typeBill1[0].tableData
+        totalCny = this.$refs.typeBill1[0].totalCnyStr
+      }else if(e == 2){
+        tempArray = this.$refs.typeBill2[0].tableData
+        totalCny = this.$refs.typeBill2[0].totalCnyStr
+      }else if(e == 3){
+        tempArray = this.$refs.typeBill3[0].tableData
+        totalCny = this.$refs.typeBill3[0].totalCnyStr
+      }else if(e == 4){
+        tempArray = this.$refs.typeBill4[0].tableData 
+        totalCny = this.$refs.typeBill4[0].totalCnyStr
+      }else if(e == 100){
+        tempArray = this.$refs.typeNewBill.tableData 
+        totalCny = this.$refs.typeNewBill.totalCnyStr
+      }
+      
+      
+      if(totalCny > 0){
+        let params = {
+          departureDate:departureDate,
+          fullLeg:fullLeg,
+          orderNo:orderNo,
+          waybillNo:waybillNo,
+          orderId:this.orderId ,
+          userId:userId,
+          prices:tempArray,
+        }
+
+        this.$http.post(this.$service.priceSendBill, params).then(res => {
+              console.log(res)
+            if (res.code == 200) {
+             
+              this.$router.push('/orderManagement/orderManage')
+            }else{
+              console.log(res.message)
+              this.$message.error(res.message)
+            }
+          }).catch(err=>{
+            console.log(err)
+          })
+      }else{
+        this.$message.error(`${this.initData.customerName}，账单金额异常，发起对账失败`)
+        return
+      }
+    },
   }
+}
 </script>
+<style scoped>
+.contont{
+  height: 100%;
+  margin: 0 20px;
+  padding: 20px 0;
+  overflow: scroll;
+}
+.tips{
+  font-size: 26px;
+  font-weight: 800;
+}
+.common{
+  background: rgb(231, 236, 239);
+  display: flex;
+  color: rgb(2, 175, 240);
+  padding: 10px 20px;
+  flex-wrap: wrap;
+  align-items: center;
+  
+}
+.common>div{
+  width: 25%;
+  padding-top: 10px;
+}
+.flex{
+  display: flex;
+  align-items: center;
+}
+.radioTap{
+  padding: 15px 15px 0;
+}
 
-<style scoped lang="less">
-  @import url("../../assets/icon/iconfont.css");
 
-  .content-wrapper {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 20px;
-    overflow: hidden;
-    background-color: #f3f6f9;
-  }
 
-  .content {
-    background-color: #FFF;
-    padding: 20px;
-    box-sizing: border-box;
-    /deep/ .el-form{
-      background-color: transparent;
-    }
-    /deep/ .el-form--inline .el-form-item{
-      margin-bottom: 20px;
-      vertical-align: top;
-    }
-
-    /deep/ .textArea {
-      .el-form-item__content {
-        height: 64px;
-
-        .el-textarea__inner {
-          resize: none;
-          padding: 10px 15px;
-        }
-      }
-    }
-
-    /deep/ .radio-group {
-      margin-bottom: 30px;
-
-      .el-form-item__label,
-      .el-form-item__content {
-        // height: 25px;
-        line-height: 25px;
-      }
-    }
-
-    /deep/ .brother-radio {
-      margin-bottom: 12px;
-    }
-
-    /deep/ .el-form-item__content {
-      height: auto;
-    }
-  }
-
-  .stpes-class {
-    width: 500px;
-    margin-left: 200px;
-    margin-bottom: 20px;
-  }
-
-  .route-module {
-    background-color: rgba(153, 153, 153, 0.1);
-    padding: 20px;
-    width: 80%;
+.flex_message{
+  width: 100px;
+  text-align: right;
+}
+.title{
+    font-size: 16px;
+    color: rgb(2, 175, 240);
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+.mtop_15{
+  margin-top: 15px;
+}
+.mtop_10{
+    margin-top: 10px;
+}
+.ml_10{
+  margin-left: 20px;
+  /* margin-top: 20px; */
+}
+.mr_25{
+    margin-right: 25px;
+}
+.mt_20{
+  margin-top: 20px;
+}
+.ml_20{
+  margin-left: 20px;
+}
+.setWidth{
+  width: 200px;
+}
+.bg_dark{
+    width: 60%;
+    background: rgb(128,128,128);
+    padding: 10px 0;
     margin-left: 80px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    position: relative;
-  }
+    font-weight: 900;
 
-  .flight-template {
-    width: 80%;
-    margin-left: 150px;
-  }
-
-  .flight-template-ul-header {
-    background-color: #FAFAFA;
-    font-weight: bold;
+}
+.flex_center{
     display: flex;
-    font-size: 14px;
-  }
+    align-content: center;
+}
+.flex_center>div{
+    flex: 1;
+    text-align: center;
+  
+}
+.bg_table,.inData{
+    width: 60%;
+    padding: 10px 0;
+    margin-left: 80px;
+    font-weight: 900;
+}
+.border{
+    border: 1px solid black;
+    border-bottom:none 
+}
+.border:nth-last-child(1){
+    border: 1px solid black;
+}
+.padding_contont>div{
+    padding: 10px 0;
+}
 
-  .flight-template-ul-header .flight-template-li {
-    height: 40px;
-    line-height: 40px;
-  }
+.paddingBottom{
+  width: 100%;
+  height: 160px;
+ 
+}
+.line{
+  width: 100%;
+  margin: 20px 0;
+  /* background: #000; */
+  border: 1px dashed black;
+}
+.details{
+  margin-left: 25px;
+  margin-top: 20px;
+}
+.pTips{
+  margin-left: 25px;
+  margin-top: 20px;
+}
+.pTips>span:nth-child(2){
+  color: rgb(2, 175, 240);
+  text-decoration: underline;
+  margin-left: 15px;
 
-  .flight-template-ul-content {
-    display: flex;
-    font-size: 14px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.09);
-
-  }
-
-  .flight-template-ul-content .flight-template-li {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 40px;
-  }
-  .close-img{
-    width: 40px;
-    height: 40px;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    cursor: pointer;
-  }
+}
 </style>
