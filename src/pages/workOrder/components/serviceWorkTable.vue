@@ -120,7 +120,7 @@
                         </el-popover>
                     </el-form-item>
                      <el-form-item label="航线人员">
-                        <el-select v-model="form.airLinePeople" multiple collapse-tags filterable multiple-limit="6"  clearable placeholder="请选择工单类型">
+                        <el-select v-model="form.airLinePeople" multiple collapse-tags filterable multiple-limit="6"  clearable placeholder="请选择航线人员">
                          <el-option  
                             v-for="item in airManger"
                             :key="item.value"

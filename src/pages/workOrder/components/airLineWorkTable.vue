@@ -316,9 +316,7 @@ export default {
   },
   mounted() {
     this.initData();
-    this.dataTimer = setInterval(() => {
-      this.initData();
-    }, 60000);
+   
     this.getId();
     window.addEventListener("beforeunload", (e) => {
       var obj = JSON.stringify({ pageNum: this.pageNum });

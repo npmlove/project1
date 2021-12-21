@@ -52,6 +52,7 @@
       </el-form>
    <transition-group name="slide" style="display:flex;justify-content:center">
             <div
+            :id="'workOrder'+index"
             class="common"
             v-for="(item, index) in data"
             :key="item.id"
@@ -148,9 +149,19 @@ export default {
   mounted() {
     console.log(this.data)
     this.initData();
-    this.timer = setInterval(()=>{
-      this.initData()
-    },60000)
+    // 控制点击工单停止定时器，点击订单外开始定时器
+    var vm=this
+    document.querySelectorAll('.content-wrapper')[0].onclick = function(e) {
+        if((document.getElementById("workOrder0") &&document.getElementById("workOrder0").contains(e.target)) || (document.getElementById("workOrder1") &&document.getElementById("workOrder1").contains(e.target)) || (document.getElementById("workOrder2") &&document.getElementById("workOrder2").contains(e.target))) {
+          console.log(vm.timer)
+          clearInterval(vm.timer)
+        } else {
+          clearInterval(vm.timer)
+          vm.timer = setInterval(()=>{
+              vm.initData()
+          },60000)
+        }
+      }  
   },
   methods: {
     //初始化数据

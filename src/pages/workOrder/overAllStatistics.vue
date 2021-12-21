@@ -143,13 +143,13 @@
           prop="timeOutCount"
         ></el-table-column>
         <el-table-column
-          label="工单总耗时/hour"
+          label="工单总耗时/h"
           min-width="40"
           sortable="custom"
           prop="totalTakeUp"
         ></el-table-column>
         <el-table-column
-          label="工单均耗时/min"
+          label="工单均耗时/m"
           min-width="40"
           sortable="custom"
           prop="avgTakeUp"
