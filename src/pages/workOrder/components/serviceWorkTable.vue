@@ -107,11 +107,17 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="紧急程度">
-                         <el-radio-group v-model="form.urgency">
-                            <el-radio label="0">低</el-radio>
-                            <el-radio label="1">中等</el-radio>
-                            <el-radio label="2">紧急</el-radio>
+                        <el-popover
+                            placement="top-start"
+                            width="340"
+                            trigger="hover"
+                            content="工单常规处理:低(4小时),中等(2小时),紧急(1小时)">
+                            <el-radio-group v-model="form.urgency" slot="reference">
+                                <el-radio label="0">低</el-radio>
+                                <el-radio label="1">中等</el-radio>
+                                <el-radio label="2">紧急</el-radio>
                           </el-radio-group>
+                        </el-popover>
                     </el-form-item>
                      <el-form-item label="航线人员">
                         <el-select v-model="form.airLinePeople" multiple collapse-tags filterable multiple-limit="6"  clearable placeholder="请选择工单类型">
@@ -360,6 +366,11 @@ export default {
                         index = index1
                     }
                 })
+                for(let i = 0;i<this.tableData.length;i++) {
+                    if(index == i) continue
+                    this.$refs["popover" + i].showPopper = false
+                    this.tableData[i].arrow = true
+                 }
             this.$refs["popover"+index].showPopper= !this.$refs["popover"+index].showPopper
             this.tableData[index].arrow = !this.tableData[index].arrow
             //判断是否需要请求航线选择框信息
