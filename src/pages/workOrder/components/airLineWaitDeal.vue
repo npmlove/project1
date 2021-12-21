@@ -83,17 +83,18 @@
       </el-form>
    <transition-group name="slide" style="display:flex;justify-content:center">
             <div
+            :id="'workOrder'+index"
+            @click="startInterval(index)"
             class="common"
             v-for="(item, index) in data"
             :key="item.id"
-            style="margin-right: 40px;display:inline-block;border:1px solid black"
             >
             <div class="head">
                 <div style="margin-left:5px">{{ item.workOrderNo }}</div>
                 <div class="warn">注:请于10分钟内处理工单</div>
                 <div class="time">
                   <i class="el-icon-time" style="width:25px;height:25px"></i>
-                  <h1 class="timi">{{ leaveTimer[index] }}</h1>
+                  <h1 class="timi" style="margin-top:3px">{{ leaveTimer[index] }}</h1>
                 </div>
               </div>
               <div class="sad"></div>
@@ -126,7 +127,7 @@
                 </div>
                 <div>
                   <el-input
-                    style="margin-top: 10px"
+                    style="margin-top: 10px;"
                     type="textarea"
                     placeholder="反馈内容"
                     v-model="waitDeal[index].feedBack"
@@ -138,7 +139,7 @@
               </div>
               <div class="select">
                 <label style="fontSize:15px;margin-right:5px">转单</label>
-                <el-select clearable v-model="waitDeal[index].transfer" placeholder="请选择转单">
+                <el-select clearable v-model="waitDeal[index].transfer" placeholder="请选择转单" @visible-change="clearIntervalss()">
                   <el-option
                     v-for="(item1, index1) in item.principalUsers"
                     :key="index1"
@@ -212,13 +213,32 @@ export default {
   mounted() {
     this.initData();
     this.getId();
-    this.timer = setInterval(()=>{
-      this.initData()
-    },60000)
+    // 控制点击工单停止定时器，点击订单外开始定时器
+    var vm=this
+    document.querySelectorAll('.content-wrapper')[0].onclick = function(e) {
+        if((document.getElementById("workOrder0") &&document.getElementById("workOrder0").contains(e.target)) || (document.getElementById("workOrder1") &&document.getElementById("workOrder1").contains(e.target)) || (document.getElementById("workOrder2") &&document.getElementById("workOrder2").contains(e.target))) {
+          console.log(111)
+          console.log(vm.timer)
+          clearInterval(vm.timer)
+        } else {
+          console.log(222)
+          vm.timer = setInterval(()=>{
+              vm.initData()
+          },60000)
+        }
+      }  
   },
   methods: {
+    //点击下拉框停止定时器
+    clearIntervalss(){
+     clearInterval(this.timer)
+    },
+    //点击工单停止定时器
+    startInterval(index){
+      clearInterval(this.timer)
+    },
       //客服姓名
-      getId() {
+    getId() {
       this.$http
         .get(
           this.$service.userSearch + "?roleName=" + this.selectResult.roleName
@@ -227,6 +247,7 @@ export default {
           this.nameList = data.data.records;
         });
     },
+    //工单右上角定时器显示
     getInterval (num,index){
       if(num == 0) {
         this.leaveTimer[index] ="00:00";
@@ -345,7 +366,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style scoped lang="less">
  
       .slide-enter-active {
         animation: slide-in 1s ease-out;
@@ -378,6 +399,11 @@ export default {
           opacity: 0;
         }
       }
+ /deep/ .el-textarea {
+   textarea {
+     min-height:160px!important;
+   }
+ }
 .content-wrapper {
     width: 100%;
     box-sizing: border-box;
@@ -402,7 +428,10 @@ export default {
 }
 .common {
   flex:0 0 450px;
-  border: 1px solid gray;
+  border: 3px solid gray;
+  margin-right: 60px;
+  display:inline-block;
+  box-shadow:5px 5px 15px gray
 }
 
 .title {
@@ -523,7 +552,8 @@ h1{
   height: 40px;
 }
 .time {
-  display: flex;
+  display:flex;
+  margin-right:5px;
 }
 
 .delete {
@@ -537,7 +567,7 @@ h1{
   color:red
 }
 .text {
-  height: 200px;
+  height: 240px;
   border: 1px solid rgb(193, 193, 193);
   overflow: auto;
   overflow-x: hidden;
@@ -546,6 +576,12 @@ h1{
   font-size: 15px;
   padding-top: 10px;
 }
+.el-icon-time:before{
+  font-size: 25px;
+}
+
+
+
 </style>
 
 

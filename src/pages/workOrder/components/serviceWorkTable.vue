@@ -188,7 +188,7 @@
                             trigger="manual">
                             <div style="display:flex;justify-content:space-between;align-item:center">
                                 <div style="fontSize:20px">{{workOrderDetail.title}}</div>
-                                <div style="fontSize:28px;color:silver;margin-right:5px;margin-top:-10px" @click="closePopover(scope.$index)">X</div>
+                                <div style="fontSize:28px;color:silver;margin-right:5px;margin-top:-10px;cursor:pointer" @click="closePopover(scope.$index)">X</div>
                             </div>
                             <div class="popoverContent">
                                 <div v-for="(item,index) in workOrderDetail.messages" :key="index">
@@ -360,7 +360,7 @@ export default {
                         index = index1
                     }
                 })
-                this.$refs["popover"+index].showPopper= !this.$refs["popover"+index].showPopper
+            this.$refs["popover"+index].showPopper= !this.$refs["popover"+index].showPopper
             this.tableData[index].arrow = !this.tableData[index].arrow
             //判断是否需要请求航线选择框信息
             let withPrcps = ""

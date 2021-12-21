@@ -84,6 +84,7 @@
         max-height="600"
         header
         class="finance-talbe"
+        @row-click="imgShow"
         style="width: 100%"
         @selection-change="handleSelectionChange"
       >
@@ -141,7 +142,7 @@
               :ref="`popover${scope.$index}`"
               trigger="manual"
             >
-              <div slot="reference" @click="imgShow(scope)">
+              <div slot="reference">
                 详情
                 <img
                   :src="
@@ -152,6 +153,10 @@
                   alt=""
                   style="width: 10px; height: 10px"
                 />
+              </div>
+              <div v-if="!statuShow" class="head"> 
+                <div>{{ scope.row.workOrderNo }}</div>
+                <div @click="closePopover(scope.$index,scope)" class="delete">X</div>
               </div>
               <div v-if="statuShow" class="head">
                 <div>{{ scope.row.workOrderNo }}</div>
@@ -380,13 +385,25 @@ export default {
       this.initData();
     },
     //工单详情
-    imgShow(e) {
+    imgShow(row,column) {
+       if(column.label=="工单详情"){
+                let index
+                this.tableData.forEach((item,index1)=>{
+                    if(item.id == row.id) {
+                        index = index1
+                    }
+                })
       this.text = "";
       this.setText = "";
       clearInterval(this.timerInterval);
       this.timer = "";
-      let index = e.$index;
-      let data = e.row;
+      let data = this.tableData[index];
+      for(let i = 0;i<this.tableData.length;i++) {
+        if(index == i) continue
+        this.$refs["popover" + i].showPopper = false
+        this.tableData[i].ifFold = false
+
+      }
       this.$refs["popover" + index].showPopper = !this.$refs["popover" + index].showPopper;
       if(this.$refs["popover" + index].showPopper){
           clearInterval(this.dataTimer);
@@ -412,7 +429,7 @@ export default {
             "?withPrcps=" +
             withPrcps +
             "&workOrderId=" +
-            e.row.id
+            data.id
         )
         .then((data) => {
           if (data.code == 200) {
@@ -439,6 +456,7 @@ export default {
             }
                 }
         });
+       }
     },
     //导出文件
     exportFile() {
@@ -630,6 +648,7 @@ export default {
 .delete {
   font-size: 20px;
   margin-right: 8px;
+  cursor: pointer;
 }
 .timi {
   margin-left: -5px;
