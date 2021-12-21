@@ -491,7 +491,18 @@ const orderManagementCenter = [{
         keepAlive: false,
         needLogin: true
       }
-    }
+    },
+    {
+      path: 'orderDetails8',
+      component: () => import('@/pages/orderManagement/orderDetails8.vue'),
+      name: 'orderDetails8',
+      hidden: true,
+      meta: {
+        title: '订单详情-平台审核',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
   ]
 }]
 

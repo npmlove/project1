@@ -26,9 +26,8 @@
               v-model="selectResult.waybillNo"
               style="width: 200px"
               size="medium"
-              maxlength="11"
               onkeyup="this.value = this.value.replace(/[^\d]/g,'');"
-              @blur="selectResult.waybillNo = $event.target.value"
+              @blur="selectResult.waybillNo = $event.target.value.substr(0,11)"
               clearable
               placeholder="请输入运单号"
             ></el-input>
@@ -1375,6 +1374,7 @@ export default {
     //查询
     searchClick() {
       this.pageSkipChecked = false
+      this.pageNum = 1
       this.initData();
     },
     //重置

@@ -1563,6 +1563,7 @@
       },
       searchClick(){
         this.pageSkipChecked = false
+        this.pageNum = 1
         this.initData(this.searchDataDeal())
       },
       restClick(){

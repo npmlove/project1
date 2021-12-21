@@ -247,7 +247,15 @@
       },
       //详情
       orderDetails(scope) {
-        if(scope.row.status == '3' || scope.row.status == '5'){
+        if(scope.row.status == '3' && scope.row.fastOrderFlag == '1') {
+          this.$router.push({
+            path: '/orderManagement/orderDetails8',
+            query: {
+              id: scope.row.id
+            }
+          })
+        }
+        else if(scope.row.status == '3' || scope.row.status == '5'){
           this.$router.push({
             path: '/orderManagement/orderDetails1',
             query: {

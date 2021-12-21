@@ -171,7 +171,7 @@
           </el-form-item>
         </div>
         <div class="operateButton">
-              <el-button @click="searchClick(true)" size="mini" type="primary" icon="el-icon-search">查询</el-button>
+              <el-button @click="searchClick(true)" size="mini" type="primary" icon="el-icon-search" style="margin-right:0">查询</el-button>
               <el-button @click="restClick" size="mini" type="primary">清空</el-button>
         </div>
            <div class="operateButton">
@@ -1347,7 +1347,9 @@
       //查询
       searchClick(self) {
         let arrayCopy = this.selectResultData()
-        
+        if(self) {
+          this.pageNum = 1
+        }
         //当前页数和每页显示个数
         arrayCopy.pageNum = this.pageNum
         arrayCopy.pageSize = this.pageSize
