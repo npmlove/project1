@@ -805,7 +805,7 @@ export default {
       
       let typeTwo  =this.$refs.typeTwo.tableData
       tempArray = tempArray.concat(typeTwo)
-   
+      console.log('ceshi')
       if(totalCny > 0){
         let params = {
           departureDate:departureDate,
