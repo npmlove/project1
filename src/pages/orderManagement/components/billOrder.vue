@@ -86,7 +86,7 @@
           <el-table-column
             label="备注">
             <template slot-scope="scope">
-                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.remark" clearable></el-input>    
+                <el-input size="small"  v-model="scope.row.remark" clearable></el-input>    
             </template>
           </el-table-column>
         </el-table>
@@ -343,6 +343,13 @@ export default {
     deleOneTableObj(e){
       let index = e.$index
       console.log(index)
+      let ttt = this.$parent.judgeDeleteBIll()
+      if(ttt){
+        this.$message({
+          message: '交单时不允许删除',
+          type: 'warning'
+        });
+      }else{
       if(index == 0){
         this.$message({
           message: '这条数据不能删除',
@@ -351,6 +358,8 @@ export default {
       }else{
         this.tableData.splice(index,1)
       }
+      }
+
     },
   }  
 }

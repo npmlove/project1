@@ -1,9 +1,26 @@
 <template>
   <div class="contont" v-if="isDataDone">
-      <el-button type="" disabled class="setWidth"  >{{initData.statusDesc}}</el-button>
-      <el-button type="primary" @click="saveOrder" >保存</el-button>
-      <el-button type="primary" @click="exdeOrder(1)" >操作完成</el-button>
-      <el-button type="primary" @click="exdeOrder(2)" >取消订单</el-button>
+     
+      <div v-if="initData.status == 13">
+        <el-button type="" disabled class="setWidth"   >{{initData.statusDesc}}</el-button>
+        <el-button type="primary" @click="saveOrder" >保存</el-button>
+        <el-button type="primary" class="setWidth" @click="exdeOrder(1)" >填写进仓数据</el-button>
+        <el-button type="danger" @click="exdeOrder(2)" >进仓异常,取消订单</el-button>
+      </div>
+      <div v-if="initData.status == 17">
+        
+        <el-button type="" disabled class="setWidth"   >{{initData.statusDesc}}</el-button>
+        <el-button type="primary" @click="saveOrder" >保存</el-button>
+        <el-button type="primary" class="setWidth" @click="exdeOrder(1)" >进仓数据已确认</el-button>
+        <el-button type="danger" @click="exdeOrder(2)" >进仓数据有异议,取消订单</el-button>
+      </div>
+      <div v-if="initData.status == 21">
+        
+        <el-button type="" disabled class="setWidth"   >{{initData.statusDesc}}</el-button>
+        <el-button type="primary" @click="saveOrder" >保存</el-button>
+        <el-button type="primary" class="setWidth" @click="exdeOrder(1)" >操作完成</el-button>
+        <el-button type="danger" @click="exdeOrder(2)" >操作异常,取消订单</el-button>
+      </div>
       <div class="common">
           <div>
             <span>订单号</span>
@@ -257,56 +274,61 @@
             <!-- 组件部分 -->
             <bill-order  :getList = item.list  :ref="`typeBill${index}`" />
             <!-- 操作部分 -->
-            <div class="ml_20" v-if="item.status == 0 || item.changeBillAddOne" >
+            <div class="ml_20" v-if="initData.canCheckFlag == 1  && item.status == 0 "  >
               <el-button  class="setWidth"   @click="fatherAddOneItem(index)" >添加费用</el-button>
               <el-button  class="setWidth"  type="primary" @click="reconciliationClient(index)" >发起客户对账</el-button>
             </div>
             <div  >
-              <p class="pTips" v-if="item.status == 1 && item.changeBillAddOne ==false ">
+              <p class="pTips" v-if="item.status == 0 ">
+                  <span>未发起客户对账</span>
+                  <!-- <span >修改账单</span> -->
+              </p>
+              <p class="pTips" v-if="item.status == 1 ">
                   <span>账单已发送，等待客户确认....（倒计时：{{item.billCreateTime}}）</span>
-                  <span @click="reWriteBill(index)">修改账单</span>
+                  <!-- <span >修改账单</span> -->
               </p>
               <p class="pTips" v-if="item.status == 2">
                   <span>账单已确认</span>
-                  <span @click="reWriteBill(index)">修改账单</span>
+                  <span @click="reWriteBill(index)" v-if="initData.financeStatus == 0 || initData.financeStatus == 4 " >修改账单</span>
               </p>
               <p class="pTips" v-if="item.status == 3">
                   <span>账单已确认，开票已申请</span>
-                  <span >修改账单</span>
+                  <span  @click="reWriteBill(index)" v-if=" initData.financeStatus == 0 || initData.financeStatus == 4" >修改账单</span>
               </p>
               <p class="pTips" v-if="item.status == 4">
                   <span>账单已确认，发票开具￥{{item.invoiceAmount}}</span>
-                  <span >修改账单</span>
+                  <span @click="reWriteBill(index)" v-if=" initData.financeStatus == 0 || initData.financeStatus == 4" >修改账单</span>
               </p>
             </div>
             <!-- 新增账单 -->
             <div>
-                <el-button v-if="(index == initData.arOrderPriceList.length - 1 && index !== 4) && item.status == 3" type="primary" @click="creatNewBill(index)" class="setWidth ml_20 mt_20" >新建账单</el-button>
+                <el-button v-if="(index == initData.arOrderPriceList.length - 1 && index !== 4) && item.status == 3 && (  initData.financeStatus == 0 || initData.financeStatus == 4)" type="primary" @click="creatNewBill(index)" class="setWidth ml_20 mt_20" >新建账单</el-button>
             </div>
           </div>
           <div v-if="creatNewBillBoolen" >
               <billOrder    ref="typeNewBill" :getList='[]' :orderIdTemp='orderId' :orderNoTemp='orderNo' />
-              <el-button  class="setWidth ml_20"   @click="fatherAddOneItem(100)" >添加费用</el-button>
-              <el-button   class="setWidth ml_20" type="primary" @click="reconciliationClient(100)" >发起客户对账</el-button>
+              <el-button    class="setWidth ml_20"    @click="fatherAddOneItem(100)" >添加费用</el-button>
+              <el-button    class="setWidth ml_20" type="primary" @click="reconciliationClient(100)" >发起客户对账</el-button>
           </div>
           <div class="line"></div>
             <billOrder  :getList= "initData.apOrderPriceList"  ref="typeTwo" />
             <!-- 应收添加 -->
-            <!-- <el-button  class="setWidth ml_20"   @click="fatherAddOneItem(200)" >添加费用</el-button> -->
-            <span  class="ml_20" v-if="initData.financeStatus == 0">未交单</span>
+            <el-button  class="setWidth ml_20"  v-if="initData.financeStatus == 0 || initData.financeStatus == 4"  @click="fatherAddOneItem(200)" >添加费用</el-button>
+            <br>
+            <br>
+            <br>
+            <span  class="ml_20 " v-if="initData.financeStatus == 0">未交单</span>
             <span  class="ml_20" v-if="initData.financeStatus == 1">已交单</span>
             <span  class="ml_20" v-if="initData.financeStatus == 2">请解锁</span>
             <span  class="ml_20" v-if="initData.financeStatus == 3">交单待审核</span>
             <span class="ml_20" v-if="initData.financeStatus == 4">修改中</span>
-            <el-button class="setWidth ml_20" :type="isChangeJiaoDan ? 'primary' : ''" :disabled="!isChangeJiaoDan" v-if="isChangeJiaoDan" @click="commitionBill()">交单</el-button>
+            <el-button class="setWidth ml_20" :type="isChangeJiaoDan ? 'primary' : ''" :disabled="!isChangeJiaoDan" v-if="isChangeJiaoDan && isChangeJiaoDan2" @click="commitionBill()">交单</el-button>
             <el-button class="setWidth ml_20" v-if="initData.financeStatus == 1 " @click="recommiter" >申请解锁</el-button>
             <el-button class="setWidth ml_20" v-if="initData.financeStatus == 2 " >解锁已申请，等待审核</el-button>
           <div class="line"></div>
           <div class="paddingBottom"></div>
         </div>
-        
       </div>
-
   </div>
 </template>
 <script>
@@ -425,6 +447,10 @@ export default {
     billOrder
   },
   methods:{
+    // 判断是否能够账单删除
+    judgeDeleteBIll(){
+      return this.initData.financeStatus == 0 || this.initData.financeStatus == 4
+    },
     calcVwr(){
       let {inboundWeight,inboundCbm,bubblePoint} = this.initData
       if(inboundWeight && inboundCbm){
@@ -529,14 +555,6 @@ export default {
       // 账单暂时已经定 确认
 
      console.log(this.initData.financeStatus)
-
-      let tempArr = this.initData.arOrderPriceList
-      let isBoo  = tempArr.filter(item=>{
-        return    item.status <3
-      })
-      if(isBoo.length > 0){
-         this.$message.error('存在账单未对账');
-      }else{
         let data = {
           financeStatus: this.initData.financeStatus,
           operationType: 0,
@@ -545,17 +563,27 @@ export default {
         }
         this.$http.post(this.$service.presentSavePresentLog, data).then(res => {
           if (res.code == 200) {
-            this.$alert('交单成功', {
-              confirmButtonText: '确定',
-              callback: () => {
-                this.$router.push('/orderManagement/orderManage')
-              }
-            });
+            if(this.initData.financeStatus == 0){
+              this.$alert('交单成功', {
+                confirmButtonText: '确定',
+                callback: () => {
+                  this.$router.push('/orderManagement/orderManage')
+                }
+              });
+            }else if(this.initData.financeStatus == 4){
+              this.$alert('交单已提交，待审核', {
+                confirmButtonText: '确定',
+                callback: () => {
+                  this.$router.push('/orderManagement/orderManage')
+                }
+              });
+            }
+            
           }else{
             this.$message.error(res.message)
           }
         })
-      }
+   
 
 
     },
@@ -618,10 +646,12 @@ export default {
       let {billId} = tempArray[0]
       this.$http.post(this.$service.modifyBill,{billId:billId}).then(res=>{
         if(res.code == 200){
+          
             this.$message({
               message: '修改账单成功',
               type: 'success'
             })
+            this.getOriganData()
         }
       })
     },
@@ -636,7 +666,7 @@ export default {
         this.$message.error("账单在修改")
         return ;
       }
-      if(this.initData.financeStatus == 1 || this.initData.financeStatus == 4){
+      if(this.initData.financeStatus == 0 || this.initData.financeStatus == 4){
         this.$message.error('账单在交单')
         return ;
       }
@@ -733,7 +763,13 @@ export default {
           for(let i in tempObj.arOrderPriceList){
            tempObj.arOrderPriceList[i].changeBillAddOne = false
           }
-          this.isChangeJiaoDan = tempObj.financeStatus == 0 ||  tempObj.financeStatus == 4
+          let tempArr = tempObj.arOrderPriceList
+          let isBoo  = tempArr.filter(item=>{
+            return    item.status == 0 || item.status == 1
+          })
+       
+          this.isChangeJiaoDan2 = (isBoo.length > 0 ? false : true)
+          this.isChangeJiaoDan = (tempObj.financeStatus == 0 ||  tempObj.financeStatus == 4) 
           this.orderNo = tempObj.orderNo
           this.initData = tempObj 
           this.isDataDone = true
@@ -783,6 +819,7 @@ export default {
              
               this.$router.push('/orderManagement/orderManage')
             }else{
+              console.log(res.message)
               this.$message.error(res.message)
             }
           }).catch(err=>{
