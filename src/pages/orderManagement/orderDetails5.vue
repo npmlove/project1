@@ -1,6 +1,6 @@
 <template>
   <div class="contont" v-if="isDataDone">
-     
+
       <div v-if="initData.status == 37">
         <el-button type="" disabled class="setWidth"   >{{initData.statusDesc}}</el-button>
         <el-button type="primary" @click="saveOrder" >保存</el-button>
@@ -10,7 +10,7 @@
       <div v-if="initData.status == 41">
         <el-button type="" disabled class="setWidth"   >{{initData.statusDesc}}</el-button>
         <el-button type="primary" @click="saveOrder" >保存</el-button>
-        <el-button type="primary" class="setWidth" @click="exdeOrder(1)" >已到达</el-button> 
+        <el-button type="primary" class="setWidth" @click="exdeOrder(1)" >已到达</el-button>
       </div>
       <div class="common">
           <div>
@@ -24,7 +24,7 @@
           <div>
             <span>航司 </span>
             <span>{{initData.airCompanyName}}</span>
-          </div> 
+          </div>
           <div class="flex">
             <span>订舱单价 </span>
             <span> <el-input  v-model="initData.bookingPrice" size="mini" placeholder="请输入内容">
@@ -36,7 +36,7 @@
           </div>
           <div>
             <span>目的港  </span>
-            <span> {{initData.pod}}</span>  
+            <span> {{initData.pod}}</span>
           </div>
           <div>
             <span>日期  </span>
@@ -56,7 +56,7 @@
           </div>
           <div>
             <span>航线负责人</span>
-            <span>        
+            <span>
               <el-select v-model="principalId" size="mini" placeholder="请选择">
                 <el-option
                   v-for="item in airLineList"
@@ -64,12 +64,12 @@
                   :label="item.loginName"
                   :value="item.id">
                 </el-option>
-              </el-select> 
+              </el-select>
             </span>
           </div>
           <div>
             <span>售前客服</span>
-            <span>        
+            <span>
               <el-select v-model="pscsId" size="mini" placeholder="请选择">
                 <el-option
                   v-for="item in preSaleList"
@@ -77,12 +77,12 @@
                   :label="item.loginName"
                   :value="item.id">
                 </el-option>
-              </el-select> 
+              </el-select>
             </span>
           </div>
           <div>
             <span>售中客服</span>
-            <span>        
+            <span>
               <el-select v-model="input" size="mini" placeholder="请选择">
                 <el-option
                   v-for="item in onSaleList"
@@ -90,7 +90,7 @@
                   :label="item.loginName"
                   :value="item.id">
                 </el-option>
-              </el-select> 
+              </el-select>
             </span>
           </div>
       </div>
@@ -109,7 +109,7 @@
             </div>
             <div class="flex mtop_10">
               <div class="flex_message">品类</div>
-              <div>  
+              <div>
                 <el-select class="ml_10" size="mini" v-model="initData.cargoType" placeholder="请选择">
                   <el-option
                     v-for="item in cargoTypeArray"
@@ -122,7 +122,7 @@
             </div>
             <div class="flex mtop_10">
               <div class="flex_message">包装类型</div>
-              <div>  
+              <div>
                 <el-select class="ml_10" size="mini" v-model="initData.packageType" placeholder="请选择">
                   <el-option
                     v-for="item in packageTypeArray"
@@ -175,7 +175,7 @@
                       <div>比重</div>
                       <div>分泡比例</div>
                       <div>计费重</div>
-                  </div> 
+                  </div>
               </div>
               <div class="bg_table">
                   <div class="flex_center border padding_contont " style="">
@@ -255,9 +255,9 @@
                       v-model="initData.remark">
                   </el-input>
               </div>
-              
+
               <div class="paddingBottom"></div>
-              
+
         </div>
         <div v-show="radio1=='2'" class="details">
           <!-- 应付账单可以最多有5个 做个循环 循环组件ref -->
@@ -413,7 +413,7 @@ export default {
           value:2,
           lable:"托盘"
         },
-        ],  
+        ],
     };
   },
   computed:{
@@ -446,7 +446,7 @@ export default {
       let {inboundWeight,inboundCbm,bubblePoint} = this.initData
       if(inboundWeight && inboundCbm){
         let scale = inboundCbm / inboundWeight
-        this.initData.inboundVwr = Math.ceil(scale > 1/167 ? scale : 1/167) 
+        this.initData.inboundVwr = Math.ceil(scale > 1/167 ? scale : 1/167)
         if(bubblePoint == 10){
           this.initData.inboundCw = inboundWeight
         }else if(bubblePoint == 9){
@@ -502,9 +502,9 @@ export default {
           this.$message({
             type: 'info',
             message: '取消输入'
-          });       
+          });
         });
- 
+
 
     },
     // 操作完成 推进订单进程 不然没法对账
@@ -529,7 +529,7 @@ export default {
         ctrlMap:{
           ctrlFlag:e
         }
-        
+
       }
      this.$http.post(this.$service.orderExecuteOrder,params).then((data) => {
             if(data.code == 200){
@@ -569,12 +569,12 @@ export default {
                 }
               });
             }
-            
+
           }else{
             this.$message.error(res.message)
           }
         })
-   
+
 
 
     },
@@ -601,7 +601,7 @@ export default {
       }else if(e == 200){
         this.$refs.typeTwo.addOneTableObj()
       }
-     
+
     },
     // 组件的新增放到父组件触发
     fatherNewOne(){
@@ -613,19 +613,19 @@ export default {
       let  tempArray = []
       if(e == 0){
         tempArray = this.$refs.typeBill0[0].tableData
-       
+
       }else if(e == 1){
         tempArray = this.$refs.typeBill1[0].tableData
-       
+
       }else if(e == 2){
         tempArray = this.$refs.typeBill2[0].tableData
-       
+
       }else if(e == 3){
         tempArray = this.$refs.typeBill3[0].tableData
-       
+
       }else if(e == 4){
-        tempArray = this.$refs.typeBill4[0].tableData 
-        
+        tempArray = this.$refs.typeBill4[0].tableData
+
       }
       tempArray.map(res=>{
         if(res.expenseName == '空运费'){
@@ -637,7 +637,7 @@ export default {
       let {billId} = tempArray[0]
       this.$http.post(this.$service.modifyBill,{billId:billId}).then(res=>{
         if(res.code == 200){
-          
+
             this.$message({
               message: '修改账单成功',
               type: 'success'
@@ -678,15 +678,15 @@ export default {
         this.$message.error('请输入计费重')
         return ;
       }
-      let arrayTypeThree = this.$refs.typeThree.tableData 
+      let arrayTypeThree = this.$refs.typeThree.tableData
       let tempthree = arrayTypeThree.filter(item=>{
         return (item.piece == undefined || item.piece == '') || (item.cbm == undefined || item.cbm == "") || (item.weight == undefined || item.weight == '')  || (item.cargoSize == undefined || item.cargoSize == '')
-      }) 
+      })
       if(tempthree.length > 0){
         this.$message.error('进仓数据未填写')
         return ;
       }
-      
+
       let arrayTypeOne = this.$refs.typeBill0[0].tableData
       let arrayTypeTwo = this.$refs.typeTwo.tableData
       let order = this.initData
@@ -698,7 +698,7 @@ export default {
        let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
        let orderCargoDetailList = arrayTypeThree
 
-  
+
       let params = {
         order:order,
         orderPriceList:orderPriceList,
@@ -717,7 +717,7 @@ export default {
     dealChildPrice(num){
       // 取到子组件typeOne
       let a = this.$refs.typeBill0[0].tableData
-      
+
       for(let i in a){
         if(a[i].expenseName == '空运费'){
           a.quantity = num
@@ -736,9 +736,9 @@ export default {
     },
     // 获取页面初始配置
     async initSysSetTing(){
-      let res1 = await this.$http.get(this.$service.userSearch+'?roleName=售前客服&pageSize=50000')
-      let res2 = await this.$http.get(this.$service.userSearch+'?roleName=售中客服&pageSize=50000')
-      let res3 = await this.$http.get(this.$service.userSearch+'?roleName=航线负责人&pageSize=50000')
+      let res1 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000')
+      let res2 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售中客服&pageSize=50000')
+      let res3 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=航线负责人&pageSize=50000')
       Promise.all([res1,res2,res3]).then(res=>{
         this.preSaleList = res[0].data.records
         this.onSaleList = res[1].data.records
@@ -758,11 +758,11 @@ export default {
           let isBoo  = tempArr.filter(item=>{
             return    item.status == 0 || item.status == 1
           })
-       
+
           this.isChangeJiaoDan2 = (isBoo.length > 0 ? false : true)
-          this.isChangeJiaoDan = (tempObj.financeStatus == 0 ||  tempObj.financeStatus == 4) 
+          this.isChangeJiaoDan = (tempObj.financeStatus == 0 ||  tempObj.financeStatus == 4)
           this.orderNo = tempObj.orderNo
-          this.initData = tempObj 
+          this.initData = tempObj
           this.isDataDone = true
       }
     },
@@ -785,14 +785,14 @@ export default {
         tempArray = this.$refs.typeBill3[0].tableData
         totalCny = this.$refs.typeBill3[0].totalCnyStr
       }else if(e == 4){
-        tempArray = this.$refs.typeBill4[0].tableData 
+        tempArray = this.$refs.typeBill4[0].tableData
         totalCny = this.$refs.typeBill4[0].totalCnyStr
       }else if(e == 100){
-        tempArray = this.$refs.typeNewBill.tableData 
+        tempArray = this.$refs.typeNewBill.tableData
         totalCny = this.$refs.typeNewBill.totalCnyStr
       }
-      
-      
+
+
       if(totalCny > 0){
         let params = {
           departureDate:departureDate,
@@ -807,7 +807,7 @@ export default {
         this.$http.post(this.$service.priceSendBill, params).then(res => {
               console.log(res)
             if (res.code == 200) {
-             
+
               this.$router.push('/orderManagement/orderManage')
             }else{
               console.log(res.message)
@@ -842,7 +842,7 @@ export default {
   padding: 10px 20px;
   flex-wrap: wrap;
   align-items: center;
-  
+
 }
 .common>div{
   width: 25%;
@@ -905,7 +905,7 @@ export default {
 .flex_center>div{
     flex: 1;
     text-align: center;
-  
+
 }
 .bg_table,.inData{
     width: 60%;
@@ -915,7 +915,7 @@ export default {
 }
 .border{
     border: 1px solid black;
-    border-bottom:none 
+    border-bottom:none
 }
 .border:nth-last-child(1){
     border: 1px solid black;
@@ -927,7 +927,7 @@ export default {
 .paddingBottom{
   width: 100%;
   height: 160px;
- 
+
 }
 .line{
   width: 100%;

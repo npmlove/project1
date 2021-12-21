@@ -121,7 +121,7 @@
                     v-for="(item2, index2) in item.messages"
                     :key="index2"
                   >
-                   <span style="margin-right:5px">{{ item2.belong == 0 ? "工单历史" : "工单回复"}}</span> 
+                   <span style="margin-right:5px">{{ item2.belong == 0 ? "工单历史" : "工单回复"}}</span>
                   <span style="margin-right:5px">{{ item2.occuTime }}</span> {{ item2.userName }}:  {{ item2.content }}
                   </div>
                 </div>
@@ -227,7 +227,7 @@ export default {
               vm.initData()
           },60000)
         }
-      }  
+      }
   },
   methods: {
     //点击下拉框停止定时器
@@ -242,7 +242,7 @@ export default {
     getId() {
       this.$http
         .get(
-          this.$service.userSearch + "?roleName=" + this.selectResult.roleName
+          this.$service.userSearchNoAuth + "?roleName=" + this.selectResult.roleName
         )
         .then((data) => {
           this.nameList = data.data.records;
@@ -371,7 +371,7 @@ export default {
 };
 </script>
 <style scoped lang="less">
- 
+
       .slide-enter-active {
         animation: slide-in 1s ease-out;
       }
@@ -383,7 +383,7 @@ export default {
         transition: all 1s;
       }
 
-     
+
       @keyframes slide-in {
         from {
           transform: translateY(100%);
@@ -427,7 +427,7 @@ export default {
   padding-top: 20px;
 }
 .text {
-  
+
   overflow-x: scroll;
 }
 .common {

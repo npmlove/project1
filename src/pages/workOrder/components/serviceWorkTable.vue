@@ -98,7 +98,7 @@
                 <el-form>
                      <el-form-item label="工单类型">
                         <el-select v-model="form.workOrderType" placeholder="请选择工单类型">
-                            <el-option  
+                            <el-option
                                 v-for="item in workOrderType"
                                 :key="item.value"
                                 :label="item.label"
@@ -121,7 +121,7 @@
                     </el-form-item>
                      <el-form-item label="航线人员">
                         <el-select v-model="form.airLinePeople" multiple collapse-tags filterable multiple-limit="6"  clearable placeholder="请选择航线人员">
-                         <el-option  
+                         <el-option
                             v-for="item in airManger"
                             :key="item.value"
                             :label="item.name"
@@ -130,7 +130,7 @@
                       </el-select>
                     </el-form-item>
                 </el-form>
-                
+
                   <!-- 底部按钮 -->
                 <div slot="footer" class="dialog-footer">
                     <div style="text-align: center;padding-top:20px;">
@@ -210,7 +210,7 @@
                                 </el-form-item>
                                 <el-form-item label="航线人员" label-width="70px">
                                     <el-select placeholder="请选择航线人员" style="width:80%;text-align:left"  v-model="workOrderDetail.principalResult">
-                                        <el-option 
+                                        <el-option
                                             v-for="(item,index) in workOrderDetail.principalUsers"
                                             :key="index"
                                             :label="item.name"
@@ -233,7 +233,7 @@
                                  </div>
                             </div>
                           </el-popover>
-                     
+
                   </template>
               </el-table-column>
               <el-table-column  label="催单" min-width="80">
@@ -242,8 +242,8 @@
                   <el-button @click="remindOrder(scope.row.id)" type="primary" size="mini" style="width:68px" v-else-if="scope.row.canRemind == 1 && scope.row.roundsRemindCount == 0">催单</el-button>
                   <el-button disabled type="info" size="mini" style="width:68px;background-color:#909399;color:#fff;border:0" v-else-if="scope.row.canRemind == 0 && scope.row.roundsRemindCount == 0">催单</el-button>
                   <el-button @click="remindOrder(scope.row.id)" :disabled="scope.row.canRemind" type="warning" size="mini" style="background:rgb(245, 154, 35) !important" v-else-if="scope.row.timeOutFlag == 1 && scope.row.remindFlag == 1">已催单{{scope.row.roundsRemindCount}}</el-button>
-                </template>  
-              </el-table-column>  
+                </template>
+              </el-table-column>
               <el-table-column label="目的港" prop="pod" min-width="40"></el-table-column>
               <el-table-column label="件/毛/体" prop="cargoInfo"min-width="80"></el-table-column>
             </el-table>
@@ -281,7 +281,7 @@ export default {
         this.tableTimer = setInterval(()=>{this.searchClick()},60000)
         this.pageRoleName = JSON.parse(sessionStorage.getItem("userInfo")).name
         this.searchClick()
-        this.$http.get(this.$service.userSearch+'?roleName=航线负责人&pageSize=50000').then(data=>{
+        this.$http.get(this.$service.userSearchNoAuth+'?roleName=航线负责人&pageSize=50000').then(data=>{
           this.airManger = data.data.records
         })
         window.addEventListener('beforeunload', e => {
@@ -340,7 +340,7 @@ export default {
         }
     },
     methods:{
-        //获取关键字 
+        //获取关键字
         getKeyWords(e){
             this.$http.post(this.$service.stringIfContent,e).then(data=>{
                 let copy = data.data
@@ -391,7 +391,7 @@ export default {
             })
             }
         },
-       
+
         //新建工单按钮
         openWorkOrder(){
             this.form = {workOrderType:0,urgency:"0",content:"",airLinePeople:[]},
@@ -420,9 +420,9 @@ export default {
             clearInterval(this.tableTimer)
             this.tableTimer = setInterval(()=>{this.searchClick()},60000)
         },
-        
+
         //点击工单详情箭头图标
-        // changeArrow(data){  
+        // changeArrow(data){
         //     let index = data.$index
         //     this.$refs["popover"+index].showPopper= !this.$refs["popover"+index].showPopper
         //     this.tableData[index].arrow = !this.tableData[index].arrow
@@ -618,7 +618,7 @@ export default {
     display:flex;
     justify-content: flex-end;
     margin-bottom:-10px;
-   
+
     button {
       margin:0px 10px 20px 10px;
     }

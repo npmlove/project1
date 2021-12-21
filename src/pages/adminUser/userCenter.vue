@@ -29,7 +29,7 @@
             </el-row>
           </el-form-item>
 
-          <el-form-item v-if="newRoleId == '-1'" style="float: right;margin-right: 0">
+          <el-form-item v-if="newRoleName == 'admin'" style="float: right;margin-right: 0">
             <el-row>
               <el-button @click="newAdd" size="medium">新增用户</el-button>
             </el-row>
@@ -80,7 +80,7 @@
   export default {
     data() {
       var validatePass1 = (rule, value, callback) => {
-        var reg = /^[0-9A-Za-z]{6,20}$/ 
+        var reg = /^[0-9A-Za-z]{6,20}$/
         if(value == ''){
           callback(new Error('请输入密码'));
         }if (!reg.test(value)) {
@@ -186,14 +186,14 @@
           id: '',
           checknewPassword: ''
         },
-        newRoleId: ''
+        newRoleName: ''
       }
     },
     mounted() {
       this.initRoleSearch()
       this.initUserSearch()
-      this.newRoleId = JSON.parse(sessionStorage.getItem('userInfo')).roleId
-      if(this.newRoleId == '-1'){
+      this.newRoleName = JSON.parse(sessionStorage.getItem('userInfo')).loginName
+      if(this.newRoleName == 'admin'){
         this.operation.show = true
       }else{
         this.operation.show = false
@@ -298,7 +298,7 @@
         }
       },
       switchChangeUser(scope) {
-        if(this.newRoleId != '-1'){
+        if(this.newRoleName != 'admin'){
           this.$message.error('您没有权限操作')
           return
         }

@@ -178,7 +178,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        
+
       </el-form-item>
     </el-form>
     <el-row type='flex' style="direction: rtl;" >
@@ -195,7 +195,7 @@
         :visible.sync="drawer"
         :with-header="false">
         <div class="drawerTip">
-          
+
              <el-checkbox  v-model="checkedIndex0">全选</el-checkbox>
              <el-checkbox class="mycheckbox"  v-model="checkedIndex1">订单号</el-checkbox>
              <el-checkbox class="mycheckbox" v-model="checkedIndex2">运单号</el-checkbox>
@@ -215,11 +215,11 @@
              <el-checkbox class="mycheckbox" v-model="checkedIndex16">结算方式</el-checkbox>
              <el-checkbox class="mycheckbox" v-model="checkedIndex17">核销次数</el-checkbox>
              <el-checkbox class="mycheckbox" v-model="checkedIndex14">核销状态</el-checkbox>
-             
-             
-          
+
+
+
         </div>
-        
+
       </el-drawer>
 
       <div class="el_tabs">
@@ -282,7 +282,7 @@
         label="应收总金额"
          v-if="checkedIndex6"
          prop="totalArCny">
-        
+
       </el-table-column>
       <el-table-column
         prop="orderProfit"
@@ -426,14 +426,14 @@
           <span>应付已核销总金额{{dataStaticObj.totalApWoCny}}</span>
           <span >
               <span>应付未核销总金额</span>
-              <span class="fon" v-for="(item,index) in dataStaticObj.totalApWoOrgn" :key="index">               
+              <span class="fon" v-for="(item,index) in dataStaticObj.totalApWoOrgn" :key="index">
                   <span v-if="item.currency == 1"> {{item.amount}}CNY</span>
                   <span v-if="item.currency == 2"> {{item.amount}}港币</span>
                   <span v-if="item.currency == 3"> {{item.amount}}美元</span>
                   <span v-if="item.currency == 4"> {{item.amount}}欧元</span>
-                  <span v-if="item.currency == 5"> {{item.amount}}英镑</span> 
+                  <span v-if="item.currency == 5"> {{item.amount}}英镑</span>
               </span>
-            </span>    
+            </span>
           <span >
             <span>应付原币</span>
             <span class="fon" v-for='(item,index) in dataStaticObj.totalApOrgn' :key="index">
@@ -441,7 +441,7 @@
                   <span v-if="item.currency == 2"> {{item.amount}}港币</span>
                   <span v-if="item.currency == 3"> {{item.amount}}美元</span>
                   <span v-if="item.currency == 4"> {{item.amount}}欧元</span>
-                  <span v-if="item.currency == 5"> {{item.amount}}英镑</span> 
+                  <span v-if="item.currency == 5"> {{item.amount}}英镑</span>
             </span>
           </span>
           <span>应付已核销原币{{dataStaticObj.totalApUnwoCny}}</span>
@@ -452,12 +452,12 @@
                   <span v-if="item.currency == 2"> {{item.amount}}港币</span>
                   <span v-if="item.currency == 3"> {{item.amount}}美元</span>
                   <span v-if="item.currency == 4"> {{item.amount}}欧元</span>
-                  <span v-if="item.currency == 5"> {{item.amount}}英镑</span> 
+                  <span v-if="item.currency == 5"> {{item.amount}}英镑</span>
             </span>
-          </span>  
+          </span>
     </div>
     <!-- 对账模态框组件 -->
-    <reconciliation @farhersearch='onSubmit'  :childPropsObj = childPropsObj ref="reconciliationData"/> 
+    <reconciliation @farhersearch='onSubmit'  :childPropsObj = childPropsObj ref="reconciliationData"/>
     <!-- 核销模态框组件 -->
     <verification  @farhersearch2='onSubmit' :childPropsObj= verificationObj :verificationArr= 'verificationArr' ref="verificationData" />
     <!-- 点击核销次数模态框 -->
@@ -465,7 +465,7 @@
       title="应付核销操作记录"
       :visible.sync="payWriteOffCountBoolen"
       width="60%"
-      
+
       :before-close="handleClose">
       <div class="diaModalClass">
         <el-table
@@ -474,7 +474,7 @@
           >
           <el-table-column
             type="index"
-            label="序号"    
+            label="序号"
             fixed
             :index="indexMethod">
           </el-table-column>
@@ -495,7 +495,7 @@
           </el-table-column>
           <el-table-column
             prop="totalApOrgn"
-            
+
             label="应付金额"
             width="100">
           </el-table-column>
@@ -514,10 +514,10 @@
                     <span v-if="item.currency == 2"> 港币</span>
                     <span v-if="item.currency == 3"> 美元</span>
                     <span v-if="item.currency == 4"> 欧元</span>
-                    <span v-if="item.currency == 5"> 英镑</span> 
+                    <span v-if="item.currency == 5"> 英镑</span>
                   </div>
                   <div v-else>
-               
+
                     {{`操作${index + 1}:${item.writeOffOperator}`}}
                     <span class="text_color_blue">核销</span>
                     该订单,核销{{item.writeOffAmount}}金额
@@ -525,21 +525,21 @@
                       <span v-if="item.currency == 2"> 港币</span>
                       <span v-if="item.currency == 3"> 美元</span>
                       <span v-if="item.currency == 4"> 欧元</span>
-                      <span v-if="item.currency == 5"> 英镑</span> 
+                      <span v-if="item.currency == 5"> 英镑</span>
                   </div>
 
-                
+
                 </div>
                 <div v-if='item.status == 2'>
                     {{`操作${index + 1}:${item.writeOffOperator} `}}撤销了操作{{item.tIndex}}
                     <span style="margin-left:100px">{{item.writeOffTime}}</span>
                 </div>
-                
+
 
               </div>
             </template>
           </el-table-column>
-          <el-table-column      
+          <el-table-column
             label="操作">
             <template slot-scope="scope">
               <div v-for="(item,index) in scope.row.tempObj" :key="index">
@@ -548,8 +548,8 @@
                     <span >{{item.status == -1 ? '已撤销' : ''}}</span>
                     <span class="opacity" v-show="item.status == 2" >ceshi</span>
                 </div>
-              </div>    
-            </template>        
+              </div>
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -565,7 +565,7 @@ import verification from './components/verification.vue'
 import {exportFile} from '../../util/util'
   export default {
     data() {
-      return {   
+      return {
         // activeName:'0',
         drawer:false, // 右侧表格状态
         formInline: {
@@ -638,7 +638,7 @@ import {exportFile} from '../../util/util'
         multipleSelection:[],// 单选的数组,
         childPropsData:[], //  传入对账子组件的数组
         childPropsObj:{}, //
-        childBoolen:false, // 子组件是否引入 
+        childBoolen:false, // 子组件是否引入
         preSaleList:[],// 售前客服数组
         onSaleList:[],// 售中客服数组
         airLineList:[],// 航线负责人数组
@@ -649,24 +649,24 @@ import {exportFile} from '../../util/util'
         verificationObj:{},// 传递给核销组件的对象
         verificationArr:[], //传递给核销组件的数组
         tableColumnArray:{},// 表头默认显示状态
-        checkedIndex0:true ,// 默认全选  
-        checkedIndex1:true ,  
-        checkedIndex2:true ,  
-        checkedIndex3:true ,  
-        checkedIndex4:true ,  
-        checkedIndex5:true ,  
-        checkedIndex6:true ,  
-        checkedIndex7:true ,  
-        checkedIndex8:true ,  
-        checkedIndex9:true ,  
-        checkedIndex10:true ,  
-        checkedIndex11:true ,  
-        checkedIndex12:true ,  
-        checkedIndex13:true ,  
-        checkedIndex14:true , 
-        checkedIndex15:true ,  
-        checkedIndex16:true ,  
-        checkedIndex17:true ,  
+        checkedIndex0:true ,// 默认全选
+        checkedIndex1:true ,
+        checkedIndex2:true ,
+        checkedIndex3:true ,
+        checkedIndex4:true ,
+        checkedIndex5:true ,
+        checkedIndex6:true ,
+        checkedIndex7:true ,
+        checkedIndex8:true ,
+        checkedIndex9:true ,
+        checkedIndex10:true ,
+        checkedIndex11:true ,
+        checkedIndex12:true ,
+        checkedIndex13:true ,
+        checkedIndex14:true ,
+        checkedIndex15:true ,
+        checkedIndex16:true ,
+        checkedIndex17:true ,
       }
     },
     watch:{
@@ -690,7 +690,7 @@ import {exportFile} from '../../util/util'
           this.checkedIndex15 = true
           this.checkedIndex16 = true
           this.checkedIndex17 = true
-          
+
         }else {
           this.checkedIndex1 = false
           this.checkedIndex2 = false
@@ -709,7 +709,7 @@ import {exportFile} from '../../util/util'
           this.checkedIndex15 = false
           this.checkedIndex16 = false
           this.checkedIndex17 = false
-          
+
         }
       }
     },
@@ -750,14 +750,14 @@ import {exportFile} from '../../util/util'
       },
       // 跨页之后禁止单选
       judgeAllSelect(){
-        
+
         return !this.slectAllDataStatic
       },
       // 撤销
       async cheXiao(e){
         let { id } = this.payWriteOffCountData[0].tempObj[e]
         console.log()
-        
+
         this.$confirm(`确认撤销 “操作${e+1}” 吗？`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -775,7 +775,7 @@ import {exportFile} from '../../util/util'
               this.handleClose()
               this.onSubmit()
             }
-            
+
           })
       },
       handleClose(){
@@ -801,9 +801,9 @@ import {exportFile} from '../../util/util'
           setTimeout(()=>{
             this.payWriteOffCountBoolen = true
           },10)
-         
+
         }
-       
+
       },
       // 导出列表
       async exportBillList(){
@@ -833,7 +833,7 @@ import {exportFile} from '../../util/util'
       },
 
       async  handleClick(e,initBoolen = true) {
- 
+
         this.woStatus = e
         this.currentPage = 1
         let { formInline, currentPage, woStatus,slectAllDataStatic, countAuth,countErr,countNoAuth} = this
@@ -856,10 +856,10 @@ import {exportFile} from '../../util/util'
           }
         })
         if(initBoolen){
-  
+
           await this.getTabelData(formInline,currentPage,woStatus,slectAllDataStatic,this.pageSize)
-        } 
-     
+        }
+
 
       },
       // 输入代理上家的时候返回值
@@ -880,7 +880,7 @@ import {exportFile} from '../../util/util'
             this.optionTwo = res.data.records.map((item)=>{
             return {value:item.threeLetterCode, label: item.name}
           })
-          
+
         }else{
           this.optionTwo =[]
         }
@@ -910,9 +910,9 @@ import {exportFile} from '../../util/util'
       },
       // 获取搜索条件当中的原始值
       async getSysInitial(){
-        let res1 = await this.$http.get(this.$service.userSearch+'?roleName=售前客服&pageSize=50000')
-        let res2 = await this.$http.get(this.$service.userSearch+'?roleName=售中客服&pageSize=50000')
-        let res3 = await this.$http.get(this.$service.userSearch+'?roleName=航线负责人&pageSize=50000')
+        let res1 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000')
+        let res2 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售中客服&pageSize=50000')
+        let res3 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=航线负责人&pageSize=50000')
         Promise.all([res1,res2,res3]).then(res=>{
           this.preSaleList = res[0].data.records
           this.onSaleList = res[1].data.records
@@ -926,7 +926,7 @@ import {exportFile} from '../../util/util'
       },
       async handleCurrentChange(e){
         let { formInline, woStatus,slectAllDataStatic} = this ;
-        this.currentPage = e 
+        this.currentPage = e
         await this.getTabelData(formInline,e,woStatus,slectAllDataStatic)
       },
       // 点击对账
@@ -954,7 +954,7 @@ import {exportFile} from '../../util/util'
             let tempAds = []
             for(let j in idsArray){
               if(idsArray[j] == null){
-                
+
               }else{
                 if(idsArray[j].indexOf(',') == -1){
                   tempAds.push(idsArray[j])
@@ -965,9 +965,9 @@ import {exportFile} from '../../util/util'
                 }
               }
             }
-            
-            
-            
+
+
+
             let {formInline} = this
             let params= Object.assign({},formInline,{ids:tempAds})
             let res = await this.$http.post(this.$service.toCheckAmount,params)
@@ -978,9 +978,9 @@ import {exportFile} from '../../util/util'
                   this.$refs.reconciliationData.input3 = ''
                   this.$refs.reconciliationData.showModal()
               },0)
-              
+
             }
-            
+
           }
         }else if(tempArray.length == 0){
           this.$message({
@@ -1016,7 +1016,7 @@ import {exportFile} from '../../util/util'
             let tempAds = []
             for(let j in idsArray){
               if(idsArray[j] == null){
-                
+
               }else{
                 if(idsArray[j].indexOf(',') == -1){
                   tempAds.push(idsArray[j])
@@ -1039,7 +1039,7 @@ import {exportFile} from '../../util/util'
                 this.$refs.verificationData.showModal()
               },0)
             }
-            
+
           }
         }else if(tempArray.length == 0){
           this.$message({
@@ -1064,20 +1064,20 @@ import {exportFile} from '../../util/util'
         }else{
           await this.getTabelData(formInline, currentPage, woStatus,slectAllDataStatic)
         }
-        
+
       },
       // 数据统计
       async calcSlectData(){
         this.computedDataStatic = !this.computedDataStatic
         this.computedDataType = this.computedDataStatic == false ? '' : 'primary'
       },
-      // 默认处理tableData是否全选 
+      // 默认处理tableData是否全选
      async dealSelectAll(e){
         this.tableData.forEach((item)=>{
             this.$refs.multipleTable.toggleRowSelection(item,e)
-        }) 
+        })
      },
-  
+
       // 处理input的输入选择
       querySearch(q,cb){
         let tempQuery = []
@@ -1093,7 +1093,7 @@ import {exportFile} from '../../util/util'
         }
         for(let i in tempQuery){
           let newobj = {}
-          newobj.value = tempQuery[i] 
+          newobj.value = tempQuery[i]
           newobj.label = tempQuery[i]
           arrayt.push(newobj)
         }
@@ -1129,14 +1129,14 @@ import {exportFile} from '../../util/util'
                   this.multipleSelection = resData.records
                 }else{
                   this.multipleSelection = []
-                }    
+                }
                 setTimeout(async()=>{
-                  await this.dealSelectAll(slectAllDataStatic) 
+                  await this.dealSelectAll(slectAllDataStatic)
                 },0)
             }else{
                this.tableData = []
             }
-            
+
           }
         } catch (error) {
           console.log(error)
@@ -1158,7 +1158,7 @@ import {exportFile} from '../../util/util'
       async dealApString(tempString){
 
         if(typeof(tempString) == 'string'){
-          let st =    JSON.parse(tempString) 
+          let st =    JSON.parse(tempString)
           let ss = st.map(res=>{
             if(res.currency == 1){
               return res.amount + '￥'
@@ -1172,7 +1172,7 @@ import {exportFile} from '../../util/util'
               return res.amount + '￡'
             }
           })
-         
+
           return ss
         }else {
           return null
@@ -1186,10 +1186,10 @@ import {exportFile} from '../../util/util'
 <style scoped>
 .demo-form-inline {
   /* width: 80%; */
-  display: flex; 
+  display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
- 
+
 }
 .endItem{
   position: relative;
@@ -1215,7 +1215,7 @@ import {exportFile} from '../../util/util'
 }
 .calcDataContont>span{
  margin-left: 10px;
- 
+
 }
 .calcDataContont .fon{
   display: flex;

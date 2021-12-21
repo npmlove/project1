@@ -25,7 +25,7 @@
                   >
               </el-input>
           </el-popover>
-            
+
           </el-form-item>
           <el-form-item label="运单号:" class="formItem" label-width="80px">
             <el-popover
@@ -65,7 +65,7 @@
               placeholder="请输入订舱客户"
             ></el-input>
           </el-form-item>
-      
+
           <el-form-item label="代理上家:" class="formItem" label-width="80px" >
             <el-select
               v-model="selectResult.agentId"
@@ -177,7 +177,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-         
+
           <el-form-item label="售前客服:" class="formItem" label-width="80px">
             <el-select
               id="pscsId"
@@ -220,7 +220,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          
+
           <el-form-item
             label="航班日期:"
             style="width: 480px"
@@ -418,7 +418,7 @@
               type=""
               v-if="checkedTable.indexOf('交单时间') !== -1"
             ></el-table-column>
-            
+
             <el-table-column
               label="应收金额"
               v-if="checkedTable.indexOf('应收金额') !== -1"
@@ -428,7 +428,7 @@
               <el-table-column label="原币" width="120">
                 <template slot-scope="scope">
                   <div v-html="dealOrgn(scope.row.totalArOrgn)" style="white-space:pre-wrap"></div>
-                 
+
                 </template>
               </el-table-column>
             </el-table-column>
@@ -464,7 +464,7 @@
               label="应付总金额"
               min-width="80"
               v-if="checkedTable.indexOf('应付总金额') !== -1"
-            ></el-table-column> 
+            ></el-table-column>
             <el-table-column
               prop="orderProfit"
               label="利润"
@@ -509,7 +509,7 @@
             >
             <template slot-scope="scope">
               <div>
-                 {{scope.row.rcvWriteOffStatus | getWriteOffStatus}} 
+                 {{scope.row.rcvWriteOffStatus | getWriteOffStatus}}
               </div>
             </template>
             </el-table-column>
@@ -602,7 +602,7 @@
                    </div>
                 </template>
               </el-table-column>
-              
+
               <el-table-column label="记录" width="600">
                 <template slot-scope="scope">
                   <div v-for="(item,index) in scope.row.records" :key="index">
@@ -687,7 +687,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="到账时间:" required label-width="130px">
-           
+
             <el-date-picker
               style="width: 200px"
               v-model="chargeOffData.payDate"
@@ -754,7 +754,7 @@
           <div>已收金额:  ¥ {{dialFourDatas.totalWoCny}}</div>
           <div>未收金额:  ¥ {{dialFourDatas.totalUnWoCny}}</div>
         </div>
-        
+
       </div>
       <el-form label-position="left">
           <el-form-item required label=" ">
@@ -775,12 +775,12 @@
           </el-form-item>
           <div style="margin:20px 0"><span>签字:</span><span style="margin-left:200px">日期:</span></div>
           <div style="display:flex;justify-content:space-between;padding-bottom:30px;height:40px">
-            <el-form-item label=" " required style="width:70%"> 
+            <el-form-item label=" " required style="width:70%">
               <el-input type="text" v-model="dialCheckInfo.statementWarnInfo" style="width:80%" placeholder="若有异议,请联系我司财务部,联系电话:17898843921" maxlength="100"></el-input>
             </el-form-item>
             <el-button sizi="mini" @click="exportAccount">导出对账单</el-button>
           </div>
-          
+
         </el-form>
     </el-dialog>
   </div>
@@ -818,7 +818,7 @@
         "核销次数",
         "核销状态",
         ],
-      tableOptions: [  
+      tableOptions: [
         "序号",
         "订单号",
         "运单号",
@@ -1074,22 +1074,22 @@
       dom(){
           //代理上家
         const select = document.querySelector('#agentId')
-        select.setAttribute('maxLength',30) 
-        //航司 
+        select.setAttribute('maxLength',30)
+        //航司
         const select1 = document.querySelector('#airCompany')
         select1.setAttribute('maxLength',15)
-        //起运港目的港  
+        //起运港目的港
         const select2 = document.querySelector('#pod')
-        select2.setAttribute('maxLength',15)  
+        select2.setAttribute('maxLength',15)
          const select3 = document.querySelector('#pol')
-        select3.setAttribute('maxLength',15) 
+        select3.setAttribute('maxLength',15)
         //售前售中航线
          const select4 = document.querySelector('#pscsId')
-         select4.setAttribute('maxLength',10) 
+         select4.setAttribute('maxLength',10)
          const select5 = document.querySelector('#mscsId')
-         select5.setAttribute('maxLength',10) 
+         select5.setAttribute('maxLength',10)
          const select6 = document.querySelector('#principalId')
-         select6.setAttribute('maxLength',10) 
+         select6.setAttribute('maxLength',10)
       },
       //表格列全选控制
       handleCheckAllChange(val) {
@@ -1169,7 +1169,7 @@
           } else {
             this.$message.error(res.message)
           }
-          
+
         })
         }
       },
@@ -1193,7 +1193,7 @@
               type: "application/pdf"
             })
             aLink.href = URL.createObjectURL(blob)
-            aLink.setAttribute('download', '应收统计对账单' + '.pdf') 
+            aLink.setAttribute('download', '应收统计对账单' + '.pdf')
             aLink.click()
             document.body.appendChild(aLink)
             this.dialogFormVisibleFour = false
@@ -1227,7 +1227,7 @@
             requestData.overPageCheck = false
             requestData.rcvIds = this.selectTableData.map(item=>item.id)
           }
-            
+
 
           this.$http.post(this.$service.getWoFrameData,requestData).then(res=>{
             if(res.code == 200){
@@ -1238,7 +1238,7 @@
             this.copyChargeNum[0] = res.data.arUnWoOrgn
             this.copyChargeNum[1] = res.data.arWoOrgn
             //设置币种选项
-            this.$set(this.chargeMoney,index,{label:this.currencyArray[item-1],value:item}) 
+            this.$set(this.chargeMoney,index,{label:this.currencyArray[item-1],value:item})
             this.dialogFormVisibleThree = true;
           })
           } else {
@@ -1260,7 +1260,7 @@
           return
         } else if(this.chargeOffData.writeOffAmount > this.moneyData[1]){
           this.$message.warning("核销金额不能大于未核销金额,请重新填写")
-          return 
+          return
         }
         let requestData = JSON.parse(JSON.stringify(this.chargeOffData))
         requestData.exportWoDTO = {overPageCheck:this.pageSkipChecked}
@@ -1269,7 +1269,7 @@
         }
         else {
           requestData.exportWoDTO.financePageDTO = this.searchDataDeal()
-        } 
+        }
         let array = requestData.userInfo.split("-")
         requestData.accountBank = array[0]
         requestData.accountName = array[1]
@@ -1287,7 +1287,7 @@
       },
       //核销次数列点击事件
        getRcvWrite (row){
-         
+
         this.receiveOperate= [{}]
         this.dialogFormVisibleTwo = true
         const copyData = [{}]
@@ -1310,7 +1310,7 @@
           this.receiveOperate = copyData
           this.receiveOperate[0].copyId = row.id
         })
-        
+
       },
        //核销次数列确认核销
         confirmReset(index,id,rowId){
@@ -1369,7 +1369,7 @@
       getExportExcel() {
         if(this.selectTableData.length == 0) {
           this.$message.warning("请至少选择一条信息")
-          return 
+          return
         }
         let requestData;
         if(this.pageSkipChecked == true) {
@@ -1391,7 +1391,7 @@
               type: "application/vnd.ms-excel"
             })
             aLink.href = URL.createObjectURL(blob)
-            aLink.setAttribute('download', '应收统计' + '.xlsx') 
+            aLink.setAttribute('download', '应收统计' + '.xlsx')
             aLink.click()
             document.body.appendChild(aLink)
         })
@@ -1402,7 +1402,7 @@
         this.pageSkipChecked = false
         this.initData(this.searchDataDeal())
       },
-      
+
       //订单号详情
       showData(id,orderNo){
         this.dialogTitleOne = ""
@@ -1419,7 +1419,7 @@
               pod:data.data.pod,
               cargoInfo:data.data.cargoName+","+data.data.inboundPiece+","+data.data.inboundCbm+","+data.data.inboundWeight+","+data.data.inboundVwr,
               operation:data.data.pscsName+","+data.data.mscsName+","+data.data.principalName
-              
+
             }]
             this.totalArOrgn = data.data.totalArOrgn
             this.totalArCny = data.data.totalArCny
@@ -1530,13 +1530,13 @@
       },
       //售前售中客服、航线负责人数据
       operateData (){
-        this.$http.get(this.$service.userSearch+'?roleName=售前客服&pageSize=50000').then(data=>{
+        this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000').then(data=>{
           this.payBefore = data.data.records
         })
-        this.$http.get(this.$service.userSearch+'?roleName=售中客服&pageSize=50000').then(data=>{
+        this.$http.get(this.$service.userSearchNoAuth+'?roleName=售中客服&pageSize=50000').then(data=>{
           this.paying = data.data.records
         })
-        this.$http.get(this.$service.userSearch+'?roleName=航线负责人&pageSize=50000').then(data=>{
+        this.$http.get(this.$service.userSearchNoAuth+'?roleName=航线负责人&pageSize=50000').then(data=>{
           this.airManger = data.data.records
         })
       },
@@ -1673,7 +1673,7 @@
     components:{
       Table
     }
-      
+
   }
 </script>
 
@@ -1702,7 +1702,7 @@
           th {
             height:35px
           }
-      } 
+      }
   .content-wrapper {
     width: 100%;
     box-sizing: border-box;
@@ -1727,7 +1727,7 @@
              margin: 0px 10px 20px 10px;
            }
           }
-      } 
+      }
     }
   }
   .el-form--inline .el-form-item {

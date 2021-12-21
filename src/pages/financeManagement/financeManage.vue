@@ -953,30 +953,30 @@ export default {
     dom(){
       //代理上家
     const select = document.querySelector('#agentId')
-    select.setAttribute('maxLength',30)  
-    
+    select.setAttribute('maxLength',30)
+
     //航司
     const select1 = document.querySelector('#airCompany')
-    select1.setAttribute('maxLength',15)  
-    //起运港目的港  
+    select1.setAttribute('maxLength',15)
+    //起运港目的港
         const select2 = document.querySelector('#pod')
-        select2.setAttribute('maxLength',15)  
+        select2.setAttribute('maxLength',15)
          const select3 = document.querySelector('#pol')
-        select3.setAttribute('maxLength',15) 
+        select3.setAttribute('maxLength',15)
         //售前售中航线
          const select4 = document.querySelector('#pscsId')
-         select4.setAttribute('maxLength',10) 
+         select4.setAttribute('maxLength',10)
          const select5 = document.querySelector('#mscsId')
-         select5.setAttribute('maxLength',10) 
+         select5.setAttribute('maxLength',10)
          const select6 = document.querySelector('#principalId')
-         select6.setAttribute('maxLength',10) 
-         
+         select6.setAttribute('maxLength',10)
+
     },
     dialTableClassName({row,rowIndex,column,columnIndex}){
       if(this.orderFinanceStatus ==3 && row.modifyColumn) {
         if(row.modifyColumn ==-1){
           return `text-decoration:line-through;text-decoration-color:red;`
-        } 
+        }
         else if(row.modifyColumn == 0) {
           return 'background-color: #169bd5';
         }
@@ -1143,13 +1143,13 @@ export default {
       },
       //售前售中客服、航线负责人数据
       operateData (){
-        this.$http.get(this.$service.userSearch+'?roleName=售前客服&pageSize=50000').then(data=>{
+        this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000').then(data=>{
           this.payBefore = data.data.records
         })
-        this.$http.get(this.$service.userSearch+'?roleName=售中客服&pageSize=50000').then(data=>{
+        this.$http.get(this.$service.userSearchNoAuth+'?roleName=售中客服&pageSize=50000').then(data=>{
           this.paying = data.data.records
         })
-        this.$http.get(this.$service.userSearch+'?roleName=航线负责人&pageSize=50000').then(data=>{
+        this.$http.get(this.$service.userSearchNoAuth+'?roleName=航线负责人&pageSize=50000').then(data=>{
           this.airManger = data.data.records
         })
       },
@@ -1493,7 +1493,7 @@ export default {
         totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
         return totalOrgn;
       },
-    
+
     }
 };
 </script>

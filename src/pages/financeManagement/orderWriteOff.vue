@@ -53,7 +53,7 @@
           </el-form-item>
 
         <div style="width:455px" class="formItem">
-          <el-form-item label="下单时间:" label-width="100px"> 
+          <el-form-item label="下单时间:" label-width="100px">
             <el-date-picker
              style="width:165px"
               value-format="yyyy-MM-dd"
@@ -162,7 +162,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-   
+
           <el-form-item label="售中客服" class="formItem" label-width="100px">
             <el-select
               id="mscsId"
@@ -281,7 +281,7 @@
               type=""
               v-if="checkedTable.indexOf('交单时间') !== -1"
             ></el-table-column>
-            
+
             <el-table-column
               prop="agentName"
               label="代理上家"
@@ -445,7 +445,7 @@
                   <div class="statists" v-html="dealOrgn(statistData.totalApUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right"></div>
                 </div>
               </div>
-            
+
             </div>
           </div>
             <el-pagination
@@ -538,7 +538,7 @@
   export default {
     data() {
       return {
-       
+
        //表格控制列drawer
       drawer: false,
       checkAll: false,
@@ -579,7 +579,7 @@
         "应付已核销金额",
         "应付未核销金额",
         "利润",
-        
+
       ],
         //表格tab页
         tabName:["可操作","业务修改中","异常"],
@@ -769,22 +769,22 @@
       dom(){
           //代理上家
         const select = document.querySelector('#agentId')
-        select.setAttribute('maxLength',30) 
-        //航司 
+        select.setAttribute('maxLength',30)
+        //航司
         const select1 = document.querySelector('#airCompany')
-        select1.setAttribute('maxLength',15)  
-         //起运港目的港  
+        select1.setAttribute('maxLength',15)
+         //起运港目的港
         const select2 = document.querySelector('#pod')
-        select2.setAttribute('maxLength',15)  
+        select2.setAttribute('maxLength',15)
          const select3 = document.querySelector('#pol')
-        select3.setAttribute('maxLength',15) 
+        select3.setAttribute('maxLength',15)
         //售前售中航线
          const select4 = document.querySelector('#pscsId')
-         select4.setAttribute('maxLength',10) 
+         select4.setAttribute('maxLength',10)
          const select5 = document.querySelector('#mscsId')
-         select5.setAttribute('maxLength',10) 
+         select5.setAttribute('maxLength',10)
          const select6 = document.querySelector('#principalId')
-         select6.setAttribute('maxLength',10) 
+         select6.setAttribute('maxLength',10)
       },
         //获取表格选中数据
         handleSelectionChange (e) {
@@ -856,7 +856,7 @@
         this.pageSkipChecked = false
       	this.initData()
       },
-      
+
       //起始港三字码
       initAirportSearchByPage(keyWord, type) {
         if (!keyWord) {
@@ -925,13 +925,13 @@
       },
       //售前售中客服、航线负责人数据
       operateData (){
-        this.$http.get(this.$service.userSearch+'?roleName=售前客服&pageSize=50000').then(data=>{
+        this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000').then(data=>{
           this.payBefore = data.data.records
         })
-        this.$http.get(this.$service.userSearch+'?roleName=售中客服&pageSize=50000').then(data=>{
+        this.$http.get(this.$service.userSearchNoAuth+'?roleName=售中客服&pageSize=50000').then(data=>{
           this.paying = data.data.records
         })
-        this.$http.get(this.$service.userSearch+'?roleName=航线负责人&pageSize=50000').then(data=>{
+        this.$http.get(this.$service.userSearchNoAuth+'?roleName=航线负责人&pageSize=50000').then(data=>{
           this.airManger = data.data.records
         })
       },
@@ -967,7 +967,7 @@
           }
           copyData.pageSize =this.pageSize
           copyData.pageNum =this.pageNum
-          copyData.woStatus = this.typeCode == "可操作" ? 0 :this.typeCode == "业务修改中" ? 1 :this.typeCode == "异常" ?  2 :""  
+          copyData.woStatus = this.typeCode == "可操作" ? 0 :this.typeCode == "业务修改中" ? 1 :this.typeCode == "异常" ?  2 :""
           return copyData
       },
       //导出列表
@@ -1028,7 +1028,7 @@
       },
       //重置
       restClick() {
-        
+
         this.selectResult={
           orderNo:"",
           waybillNo:"",
@@ -1064,7 +1064,7 @@
         this.initData()
       },
     },
-    
+
     components: {
       Table
     },
@@ -1110,7 +1110,7 @@
 
 <style scoped lang="less">
   @import url("../../assets/icon/iconfont.css");
-  // /deep/.el-table tbody tr:hover>td { 
+  // /deep/.el-table tbody tr:hover>td {
     // background-color:blue!important
 // }
 
@@ -1129,7 +1129,7 @@
           th {
     height:35px
   }
-      } 
+      }
    .content-search-normal {
     .formItem{
       display:inline-block;
