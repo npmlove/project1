@@ -56,8 +56,8 @@
           </div>
           <div>
             <span>航线负责人</span>
-            <span>
-              <el-select v-model="principalId" size="mini" placeholder="请选择">
+            <span>        
+              <el-select v-model="principalId" filterable size="mini" placeholder="请选择">
                 <el-option
                   v-for="item in airLineList"
                   :key="item.id"
@@ -69,8 +69,8 @@
           </div>
           <div>
             <span>售前客服</span>
-            <span>
-              <el-select v-model="pscsId" size="mini" placeholder="请选择">
+            <span>        
+              <el-select v-model="pscsId" filterable size="mini" placeholder="请选择">
                 <el-option
                   v-for="item in preSaleList"
                   :key="item.id"
@@ -82,8 +82,8 @@
           </div>
           <div>
             <span>售中客服</span>
-            <span>
-              <el-select v-model="input" size="mini" placeholder="请选择">
+            <span>        
+              <el-select v-model="input" filterable size="mini" placeholder="请选择">
                 <el-option
                   v-for="item in onSaleList"
                   :key="item.id"
@@ -793,6 +793,8 @@ export default {
       }
 
 
+      let typeTwo  =this.$refs.typeTwo.tableData
+      tempArray = tempArray.concat(typeTwo)
       if(totalCny > 0){
         let params = {
           departureDate:departureDate,
