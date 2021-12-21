@@ -49,7 +49,8 @@
               {{scope.row.sex==1?'男':scope.row.sex==2?'女':'未知'}}
             </span>
             <span v-else-if="column.prop == 'payWay' && column.label == '结算方式'">
-              {{scope.row.payWay==0?'付款买单':'月结'}}
+              {{scope.row.payWay==0?'付款买单':
+              scope.row.payWay==1?'月结':'********'}}
             </span>
             <span v-else v-html="getDataName(scope.row, column)"></span>
           </span>
