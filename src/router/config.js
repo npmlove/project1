@@ -52,7 +52,8 @@ const agentManagement=[{
   meta:{
     title:'代理管理',
     icon: 'icon iconfont icon-diannao',
-    breadcrumb: true
+    breadcrumb: true,
+    roles:['航线负责人','售中客服']
   },
   children:[{
     path: 'agentList',
@@ -76,7 +77,8 @@ const expenseManagement=[{
   meta:{
     title:'费用管理',
     icon: 'icon iconfont icon-diannao',
-    breadcrumb: true
+    breadcrumb: true,
+    roles:['航线负责人','售中客服','售前客服','财务人员']
   },
   children:[{
     path: 'expenseList',
@@ -90,7 +92,7 @@ const expenseManagement=[{
 
 },
 ]
-//费用管理
+//货物跟踪
 const cargoTrackingManage=[{
   path:'/cargoTrackingManage',
   component:Layout,
@@ -100,7 +102,8 @@ const cargoTrackingManage=[{
   meta:{
     title:'货物追踪',
     icon: 'icon iconfont icon-diannao',
-    breadcrumb: true
+    breadcrumb: true,
+    roles:['航线负责人','售中客服','售前客服','财务人员']
   },
   children:[{
     path: 'cargoTracking',
@@ -114,7 +117,7 @@ const cargoTrackingManage=[{
 
 },
 ]
-//管理模块
+//管理员
 const adminUserCenter = [{
   path: '/adminUser',
   component: Layout,
@@ -124,7 +127,8 @@ const adminUserCenter = [{
   meta: {
     title: '管理员',
     icon: 'icon iconfont icon-shengchan',
-    breadcrumb: true
+    breadcrumb: true,
+    roles:[]
   },
   children: [
     {
@@ -203,7 +207,8 @@ const routeManagementCenter = [{
   meta: {
     title: '航线管理',
     icon: 'icon iconfont icon-kucun',
-    breadcrumb: false
+    breadcrumb: false,
+    roles:['航线负责人','售中客服','售前客服','财务人员']
   },
   children: [
     {
@@ -272,7 +277,8 @@ const financeManagementCenter = [{
   meta: {
     title: '财务管理',
     icon: 'icon iconfont icon-kucun',
-    breadcrumb: false
+    breadcrumb: false,
+    roles:['财务人员']
   },
   children: [
     {
@@ -367,7 +373,8 @@ const billOverview = [{
   meta: {
     title: '账单总览',
     icon: 'icon iconfont icon-kucun',
-    breadcrumb: false
+    breadcrumb: false,
+    roles:['财务人员']
   },
   children: [
     {
@@ -402,7 +409,8 @@ const orderManagementCenter = [{
   meta: {
     title: '订单管理',
     icon: 'icon iconfont icon-kucun',
-    breadcrumb: false
+    breadcrumb: false,
+    roles:['航线负责人','售中客服','售前客服','财务人员']
   },
   children: [
     {
@@ -516,7 +524,8 @@ const adverManagementCenter = [{
   meta: {
     title: '广告管理',
     icon: 'icon iconfont icon-yuangongguanli',
-    breadcrumb: false
+    breadcrumb: false,
+    roles:['航线负责人','售中客服','售前客服','财务人员']
   },
   children: [
     {
@@ -564,7 +573,8 @@ const userManagementCenter = [{
   meta: {
     title: '用户管理',
     icon: 'icon iconfont icon-ECN',
-    breadcrumb: false
+    breadcrumb: false,
+    roles:['售中客服','售前客服']
   },
   children: [{
       path: 'userManage',
@@ -590,7 +600,8 @@ const courseManagement = [{
   meta: {
     title: '科目管理',
     icon: 'icon iconfont icon-ECN',
-    breadcrumb: false
+    breadcrumb: false,
+    roles:['航线负责人','售中客服','售前客服','财务人员']
   },
   children: [{
     path: 'exchangeRateManagement',
@@ -615,13 +626,14 @@ const workOrder = [{
   meta: {
     title:"工单",
     img: require("../assets/gongdan.svg"),
-    breadcrumb: false
+    breadcrumb: false,
+    roles:[]
   },
   children: [
     {
       path: 'serviceWorkOrder',
       component: () => import('@/pages/workOrder/serviceWorkOrder.vue'),
-      name: 'adverCenter',
+      name: 'serviceWorkOrder',
       meta: {
         title: '客服工单提交',
         keepAlive: false,
@@ -631,7 +643,7 @@ const workOrder = [{
     {
       path: 'airlineWorkOrder',
       component: () => import('@/pages/workOrder/airlineWorkOrder.vue'),
-      name: 'adverAdd',
+      name: 'airlineWorkOrder',
       meta: {
         title: '航线工单审核',
         keepAlive: false,
@@ -641,7 +653,7 @@ const workOrder = [{
     {
       path: 'workOrderStatistics',
       component: () => import('@/pages/workOrder/workOrderStatistics.vue'),
-      name: 'bannerNew',
+      name: 'workOrderStatistics',
       meta: {
         title: '工单目的港可视化',
         keepAlive: false,
@@ -650,7 +662,7 @@ const workOrder = [{
     },{
       path: 'overAllStatistics',
       component: () => import('@/pages/workOrder/overAllStatistics.vue'),
-      name: 'bannerNew',
+      name: 'overAllStatistics',
       meta: {
         title: '统计',
         keepAlive: false,
@@ -661,21 +673,28 @@ const workOrder = [{
 }]
 
 
-const routes = [
-  ...autoRoutes,
+// 权限控制路由
+export const asyncRoutes = [
   ...orderManagementCenter,
-  ...routeManagementCenter,
   ...financeManagementCenter,
   ...billOverview,
   ...adverManagementCenter,
   ...agentManagement,
   ...expenseManagement,
-  // ...dictManagement,
+
   ...userManagementCenter,
   ...adminUserCenter,
   ...courseManagement,
   ...cargoTrackingManage,
   ...workOrder
+  
 ]
 
-export default routes
+// 默认显示路由
+export const constantRoutes  = [
+  ...autoRoutes, 
+  ...routeManagementCenter,  // dashboard home
+  
+]
+
+export default constantRoutes 
