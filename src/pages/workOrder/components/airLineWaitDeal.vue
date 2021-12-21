@@ -222,6 +222,7 @@ export default {
           clearInterval(vm.timer)
         } else {
           console.log(222)
+          clearInterval(vm.timer)
           vm.timer = setInterval(()=>{
               vm.initData()
           },60000)
@@ -299,6 +300,7 @@ export default {
     // 查询
     searchClick() {
         this.initData();
+        this.$emit('requestData')
     },
     // 清空
     restClick() {
@@ -331,6 +333,7 @@ export default {
           this.$message.success("转单成功")
           this.data.splice(index,1)
           this.initData();
+          this.$emit('requestData')
         } else {
           this.$message.error(data.message)
         }
@@ -352,6 +355,7 @@ export default {
           this.$message.success("提交成功")
           this.data.splice(index,1)
           this.initData();
+          this.$emit('requestData')
         } else {
           this.$message.error(data.message)
         }

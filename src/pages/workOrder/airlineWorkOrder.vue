@@ -19,7 +19,7 @@
         </div>
       </div>
       <Table  v-if="pageShow == 'table'" :pageRoleId="pageRoleId"></Table>
-      <waitDeal v-if="pageShow == 'deal'" :pageRoleId="pageRoleId"> </waitDeal>
+      <waitDeal v-if="pageShow == 'deal'" :pageRoleId="pageRoleId" @requestData = "waitConfirm"> </waitDeal>
     </div>
   </div>
 </template>

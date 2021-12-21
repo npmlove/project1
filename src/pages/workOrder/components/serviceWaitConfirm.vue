@@ -187,6 +187,7 @@ export default {
     },
     // 查询
     searchClick() {
+        this.$emit('requestData')
         this.initData();
     },
     // 清空
@@ -215,6 +216,7 @@ export default {
             this.$message.success("提交工单成功")
             this.data.splice(index,1)
             this.initData();
+            this.$emit('requestData')
           } else {
             this.$message.error(data.message)
           }
@@ -226,6 +228,7 @@ export default {
               this.$message.success("关闭工单成功")
               this.data.splice(index,1)
               this.initData();
+              this.$emit('requestData')
           }
           else {
               this.$message.error(res.message)

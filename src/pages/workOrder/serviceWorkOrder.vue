@@ -20,7 +20,7 @@
       </div>
      <scrollNotice :textArr ="noticeData" ></scrollNotice>
       <Table @flashRight="getPageRight" v-if="pageShow == 'table'" ref="workOrderTable"></Table>
-      <workConfirm v-if="pageShow == 'confirm'"></workConfirm>
+      <workConfirm v-if="pageShow == 'confirm'" @requestData = "waitConfirm"></workConfirm>
     </div>
   </div>
 </template>
