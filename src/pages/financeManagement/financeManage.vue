@@ -433,8 +433,8 @@
             >
             <template slot-scope="scope">
               <span>
-                <div>客服：{{ scope.row.operator.split(",")[1] }}</div>
-                <div>销售：{{ scope.row.operator.split(",")[0] }}</div>
+                <div>售前：{{ scope.row.operator.split(",")[0] }}</div>
+                <div>售中：{{ scope.row.operator.split(",")[1] }}</div>
                 <div>航线：{{ scope.row.operator.split(",")[2] }}</div>
               </span>
             </template>
