@@ -709,7 +709,7 @@
             }
           }
         },
-        writeOffStatus:[{value:"全部",id:""},{value:"未对账",id:0},{value:"部分对账",id:1},{value:"已对账",id:2},{value:"部分对账部分核销",id:4},{value:"已对账部分核销",id:5},{value:"已对账已核销",id:8}],
+        writeOffStatus:[{value:"全部",id:""},{value:"未对账",id:'0'},{value:"部分对账",id:'1'},{value:"已对账",id:'2'},{value:"部分对账部分核销",id:'4'},{value:"已对账部分核销",id:'5'},{value:"已对账已核销",id:'8'}],
         agentOpt: [],
         polOpt: [],
         podOpt: [],
@@ -806,12 +806,25 @@
       },
        //搜索表单中多选框控制
       dealAllChange (){
-        if(this.selectResult.rcvWriteOffStatusList.indexOf("") != -1) {
-          this.selectResult.rcvWriteOffStatusList = [""]
+      if(this.selectResult.rcvWriteOffStatusList.indexOf("0") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("1") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("2") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("4") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("5") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("8") != -1) {
+        this.selectResult.rcvWriteOffStatusList = [""]
+      }
+      else if(this.selectResult.rcvWriteOffStatusList.indexOf("0") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("1") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("2") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("4") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("5") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("8") != -1  ) {
+          if(this.selectResult.rcvWriteOffStatusList.indexOf("") != -1){
+            let index = this.selectResult.rcvWriteOffStatusList.indexOf("")
+            this.selectResult.rcvWriteOffStatusList.splice(index,1)
+          } 
         }
-        if(this.selectResult.payWriteOffStatusList.indexOf("") != -1) {
-          this.selectResult.payWriteOffStatusList = [""]
+      if(this.selectResult.payWriteOffStatusList.indexOf("0") != -1 && this.selectResult.payWriteOffStatusList.indexOf("1") != -1 && this.selectResult.payWriteOffStatusList.indexOf("2") != -1 && this.selectResult.payWriteOffStatusList.indexOf("4") != -1 && this.selectResult.payWriteOffStatusList.indexOf("5") != -1 && this.selectResult.payWriteOffStatusList.indexOf("8") != -1) {
+        this.selectResult.payWriteOffStatusList = [""]
+      }
+      else if(this.selectResult.payWriteOffStatusList.indexOf("0") != -1 || this.selectResult.payWriteOffStatusList.indexOf("1") != -1 || this.selectResult.payWriteOffStatusList.indexOf("2") != -1 || this.selectResult.payWriteOffStatusList.indexOf("4") != -1 || this.selectResult.payWriteOffStatusList.indexOf("5") != -1 || this.selectResult.payWriteOffStatusList.indexOf("8") != -1  ) {
+        if(this.selectResult.payWriteOffStatusList.indexOf("") != -1){
+            let index = this.selectResult.payWriteOffStatusList.indexOf("")
+            this.selectResult.payWriteOffStatusList.splice(index,1)
+          } 
         }
+       
       },
       //数据统计
       getStatistData(){

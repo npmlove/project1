@@ -1056,8 +1056,14 @@ export default {
     },
     //控制多选框
     dealAllChange (){
-        if(this.selectResult.invoicingStatus.indexOf("") != -1) {
-          this.selectResult.invoicingStatus = [""]
+      if(this.selectResult.invoicingStatus.indexOf("0") != -1 && this.selectResult.invoicingStatus.indexOf("1") != -1 && this.selectResult.invoicingStatus.indexOf("2") != -1) {
+        this.selectResult.invoicingStatus = [""]
+      }
+      else if(this.selectResult.invoicingStatus.indexOf("0") != -1 || this.selectResult.invoicingStatus.indexOf("1") != -1 || this.selectResult.invoicingStatus.indexOf("2") != -1 ) {
+          if(this.selectResult.invoicingStatus.indexOf("") != -1){
+            let index = this.selectResult.invoicingStatus.indexOf("")
+            this.selectResult.invoicingStatus.splice(index,1)
+          } 
         }
       },
     //表格选择列显示drawer -全选
