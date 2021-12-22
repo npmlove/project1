@@ -783,6 +783,7 @@
                         aLink.click()
                         document.body.appendChild(aLink)
                       }
+                      vm.searchClick(true)
                   })
               } else {
                       aLink.href = URL.createObjectURL(blob)
@@ -981,8 +982,13 @@
             type: 'warning'
           });
         }
-        // if(this.pageSkipChecked) this.selectTableData = JSON.parse(JSON.stringify(this.copyTable))
-        else if(this.getDeleteNum()<1 || this.getDeleteNum()>10) {
+        else if (this.selectTableData.length==0) {
+          this.$message({
+            message: '请选择数据进行作废',
+            type: 'warning'
+          });
+        }
+        else if(this.getDeleteNum()>10) {
           this.$message({
             message: '所选数据发票超过十条',
             type: 'warning'
