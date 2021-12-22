@@ -763,6 +763,10 @@
       },
       //保存
       submitClick(type) {
+        if(!this.inboundNo){
+          this.$message.error('进仓编号没有填写')
+          return ;
+        }
         var order = {
           agentId: this.agentId.split('#')[0],
           agentName: this.agentId.split('#')[1],

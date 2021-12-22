@@ -4,7 +4,7 @@
       <el-form-item class="test" label="订单号" >
         <el-autocomplete
           class="inline-input"
-          v-model="formInline.orderNos"
+          v-model="formInline.orderNo"
           :fetch-suggestions="querySearch"
           placeholder="请输入订单号"
           clearable
@@ -370,7 +370,7 @@
         v-if="checkedIndex16"
         width="100">
         <template slot-scope="scope">
-          <span v-if="scope.row.payWay == 0">付款</span>
+          <span v-if="scope.row.payWay == 0">付款买单</span>
           <span v-if="scope.row.payWay == 1">月结</span>
         </template>
       </el-table-column>
