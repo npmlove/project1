@@ -64,14 +64,18 @@
             <span>{{initData.agentName}}</span>
           </div>
           <div>
+            <span>进仓编号</span>
+            <span>{{initData.inboundNo}}</span>
+          </div>
+          <div>
             <span>航线负责人</span>
             <span>    
-              <el-select v-model="principalId" filterable size="mini" placeholder="请选择">
+              <el-select v-model="initData.principalName" @change="getSelectPrincipalId"  filterable size="mini" placeholder="请选择">
                 <el-option
                   v-for="item in airLineList"
                   :key="item.id"
-                  :label="item.loginName"
-                  :value="item.id">
+                  :label="item.name"
+                  :value="item.name">
                 </el-option>
               </el-select>
             </span>
@@ -79,12 +83,12 @@
           <div>
             <span>售前客服</span>
             <span>        
-              <el-select v-model="pscsId" size="mini" filterable placeholder="请选择">
+              <el-select v-model="initData.pscsName" @change="getSelectPscsId" size="mini" filterable placeholder="请选择">
                 <el-option
                   v-for="item in preSaleList"
                   :key="item.id"
-                  :label="item.loginName"
-                  :value="item.id">
+                  :label="item.name"
+                  :value="item.name">
                 </el-option>
               </el-select>
             </span>
@@ -92,12 +96,12 @@
           <div>
             <span>售中客服</span>
             <span>        
-              <el-select v-model="input" filterable size="mini" placeholder="请选择">
+              <el-select v-model="initData.mscsName" @change="getSelectMscsId" filterable size="mini" placeholder="请选择">
                 <el-option
                   v-for="item in onSaleList"
                   :key="item.id"
-                  :label="item.loginName"
-                  :value="item.id">
+                  :label="item.name"
+                  :value="item.name">
                 </el-option>
               </el-select>
             </span>
@@ -337,7 +341,6 @@ import billOrder from './components/billOrder.vue'
 export default {
   data() {
     return {
-      input: '',
       radio1:'1',
       isDataDone:false,// 已经获取到数据在渲染界面
       isChangeJiaoDan:true, // 交单是否显示出来
@@ -345,9 +348,7 @@ export default {
       orderId:'',// 账单id
       creatNewBillBoolen:false, // 新建账单的状态
       preSaleList:[] ,// 售前客服初始数组
-      pscsId:'', // 售前客服id
       onSaleList:[] ,// 售中客服初始数组
-      mscsId:"",// 售中客服id
       airLineList:[] ,// 航线负责人初始数组
       principalId:'', // 航线负责人ID
       typeTwoProp:{}, //传递给typeTwo 对象
@@ -447,6 +448,34 @@ export default {
     billOrder
   },
   methods:{
+    // 选择框获取id 航线负责人
+    getSelectPrincipalId(e){
+      let arrayTest =  this.airLineList
+      arrayTest.filter(res=>{ 
+          if(res.name == e){
+            this.initData.principalId = res.id
+          }
+      })
+    },
+    // 获取售前客服 id
+    getSelectPscsId(e){
+      let arrayTest =  this.airLineList
+      arrayTest.filter(res=>{ 
+          if(res.name == e){
+            this.initData.pscsId = res.id
+          }
+      })
+    },
+    
+    // 获取售中客服 id
+    getSelectMscsId(e){
+      let arrayTest =  this.airLineList
+      arrayTest.filter(res=>{ 
+          if(res.name == e){
+            this.initData.mscsId = res.id
+          }
+      })
+    },
     // 判断是否能够账单删除
     judgeDeleteBIll(){
       return this.initData.financeStatus == 0 || this.initData.financeStatus == 4
@@ -454,10 +483,10 @@ export default {
     calcVwr(){
       let {inboundWeight,inboundCbm,bubblePoint} = this.initData
       if(inboundWeight && inboundCbm){
-        let scale = inboundCbm / inboundWeight
-        this.initData.inboundVwr = Math.ceil(scale > 1/167 ? scale : 1/167)
+
+        this.initData.inboundVwr = inboundCbm / inboundWeight
         if(bubblePoint == 10){
-          this.initData.inboundCw = inboundWeight
+          this.initData.inboundCw = Math.max(inboundCbm * 167, inboundWeight ) 
         }else if(bubblePoint == 9){
            this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.9 + inboundWeight * 0.1)
         }else if(bubblePoint == 8){
@@ -583,9 +612,6 @@ export default {
             this.$message.error(res.message)
           }
         })
-
-
-
     },
     // 创建一个新账单
     creatNewBill(e){
@@ -749,6 +775,7 @@ export default {
       let res2 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售中客服&pageSize=50000')
       let res3 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=航线负责人&pageSize=50000')
       Promise.all([res1,res2,res3]).then(res=>{
+        console.log(res)
         this.preSaleList = res[0].data.records
         this.onSaleList = res[1].data.records
         this.airLineList = res[2].data.records
