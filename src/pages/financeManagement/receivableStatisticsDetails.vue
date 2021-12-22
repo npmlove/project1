@@ -878,6 +878,7 @@
       },
       //查询
       searchClick() {
+        this.statistDataShow = false
         this.pageSize = 10
         this.pageNum = 1
         this.initData()
