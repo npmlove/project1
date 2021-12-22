@@ -555,7 +555,7 @@ export default {
     exdeOrder(e){
       // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
       if(this.initData.status == 17  && e ==1){
-        if(!this.initData,waybillNo){
+        if(!this.initData.waybillNo){
           this.$message.error('请输入运单号')
           return ;
         }
