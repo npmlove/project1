@@ -1158,7 +1158,7 @@
   }
   .allStatist {
     div {
-      flex:0 0 130px
+      flex:0 0 160px
     }
     .statists {
       margin-right:15px;
