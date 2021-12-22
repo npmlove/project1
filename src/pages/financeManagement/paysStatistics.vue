@@ -716,7 +716,7 @@ import {exportFile} from '../../util/util'
     async mounted() {
       await this.onSubmit()
       await this.getSysInitial()
-      await this.handleClick(0,false)
+      
 
     },
     components:{
@@ -923,6 +923,7 @@ import {exportFile} from '../../util/util'
         this.currentPage = 1
         let { formInline, currentPage, woStatus,slectAllDataStatic} = this ;
         await this.getTabelData(formInline,currentPage,woStatus,slectAllDataStatic)
+        await this.handleClick(woStatus,false)
       },
       async handleCurrentChange(e){
         let { formInline, woStatus,slectAllDataStatic} = this ;

@@ -26,7 +26,7 @@
                                     v-for="item in tempArray"
                                     :key="item"
                                     :label="item.userName"
-                                    :value="item">
+                                    :value="item.userName">
                                 </el-option>
                             </el-select>
                         </div>

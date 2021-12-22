@@ -18,8 +18,15 @@ Router.prototype.replace = function push (location, onResolve, onReject) {
   return originalReplace.call(this, location).catch(err => err)
 }
 
-const router = new Router({
+const createRouter = () => new Router({
   routes
 })
+
+const router = createRouter()
+
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
 
 export default router
