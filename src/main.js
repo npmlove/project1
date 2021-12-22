@@ -25,20 +25,6 @@ router.beforeEach(function (to, from, next) {
     //从cookie中获取用户信息，判断是否已登录
     var tokenId = sessionStorage.getItem('tokenId')
     // console.log(UserID)
-    //权限
-    const {loginName,roleName} = JSON.parse(sessionStorage.getItem('userInfo'))
-    let currentRoutes = []
-    // admin show all
-    if(loginName ==='admin'){
-      currentRoutes = asyncRoutes
-    }else{
-      const roles = [roleName]
-      currentRoutes = filterAsyncRoutes(asyncRoutes,roles)
-    }
-    router.options.routes = constantRoutes.concat([...currentRoutes])  // menu
-    resetRouter()  
-    router.addRoutes([...currentRoutes])
-
     if (tokenId) {
       next(); //表示已经登录
     } else {
