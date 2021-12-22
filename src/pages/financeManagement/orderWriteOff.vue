@@ -733,7 +733,7 @@
       //原币处理
       dealOrgn(orgn,extraWord) {
       if (!orgn) {
-        return 0;
+        return 0+'CNY';
       }
        orgn = JSON.parse(orgn);
       var totalOrgn = "";

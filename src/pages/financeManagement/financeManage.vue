@@ -321,7 +321,7 @@
             :data="tableData"
             border
             stripe
-            max-height="800px"
+            max-height="600px"
             header
             :cell-style="tableRowClassName"
             ref="multipleTable"
