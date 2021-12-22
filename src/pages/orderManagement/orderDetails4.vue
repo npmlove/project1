@@ -693,19 +693,6 @@ export default {
     },
     // 保存账单
     saveOrder(){
-      // 在修改账单的过程中不允许保存
-      let tempArray = this.initData.arOrderPriceList
-      let test = tempArray.filter(res=>{
-        return res.status == 2 || res.status == 1
-      })
-      if(test.length > 0){
-        this.$message.error("账单在修改")
-        return ;
-      }
-      if(this.initData.financeStatus == 0 || this.initData.financeStatus == 4){
-        this.$message.error('账单在交单')
-        return ;
-      }
       let {inboundWeight,inboundCbm, inboundCw , inboundPiece} = this.initData
       if(!inboundPiece){
         this.$message.error('请输入进仓件数')
@@ -731,8 +718,21 @@ export default {
         this.$message.error('进仓数据未填写')
         return ;
       }
-
-      let arrayTypeOne = this.$refs.typeBill0[0].tableData
+      // 获取应收账单的长度 为 12345
+      let tempLength = this.initData.arOrderPriceList.length ;
+      let arrayTypeOne = [];
+      console.log(tempLength)
+      if(tempLength == 1){
+        arrayTypeOne = this.$refs.typeBill0[0].tableData
+      }else if(tempLength == 2){
+        arrayTypeOne = [...this.$refs.typeBill0[0].tableData,...this.$refs.typeBill1[0].tableData]
+      }else if(tempLength == 3){
+        arrayTypeOne = [...this.$refs.typeBill0[0].tableData,...this.$refs.typeBill1[0].tableData,...this.$refs.typeBill2[0].tableData]
+      }else if(tempLength == 4){
+        arrayTypeOne = [...this.$refs.typeBill0[0].tableData,...this.$refs.typeBill1[0].tableData,...this.$refs.typeBill2[0].tableData,...this.$refs.typeBill3[0].tableData]
+      }else if(tempLength == 5){
+        arrayTypeOne = [...this.$refs.typeBill0[0].tableData,...this.$refs.typeBill1[0].tableData,...this.$refs.typeBill2[0].tableData,...this.$refs.typeBill3[0].tableData,...this.$refs.typeBill4[0].tableData]
+      }
       let arrayTypeTwo = this.$refs.typeTwo.tableData
       let order = this.initData
         delete order.arOrderPriceList
