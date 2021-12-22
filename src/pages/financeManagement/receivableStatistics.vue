@@ -1449,7 +1449,10 @@
       },
        //搜索表单中多选框控制
       dealAllChange (){
-        if(this.selectResult.rcvWriteOffStatusList.indexOf("0") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("1") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("2") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("4") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("5") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("8") != -1) {
+      if(this.selectResult.rcvWriteOffStatusList.indexOf("0") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("1") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("2") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("4") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("5") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("8") != -1) {
+        this.selectResult.rcvWriteOffStatusList = [""]
+      } 
+      else if (this.selectResult.rcvWriteOffStatusList.indexOf("")>0){
         this.selectResult.rcvWriteOffStatusList = [""]
       }
       else if(this.selectResult.rcvWriteOffStatusList.indexOf("0") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("1") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("2") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("4") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("5") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("8") != -1  ) {

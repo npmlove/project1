@@ -809,6 +809,9 @@
       if(this.selectResult.rcvWriteOffStatusList.indexOf("0") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("1") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("2") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("4") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("5") != -1 && this.selectResult.rcvWriteOffStatusList.indexOf("8") != -1) {
         this.selectResult.rcvWriteOffStatusList = [""]
       }
+       else if (this.selectResult.rcvWriteOffStatusList.indexOf("")>0){
+        this.selectResult.rcvWriteOffStatusList = [""]
+      }
       else if(this.selectResult.rcvWriteOffStatusList.indexOf("0") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("1") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("2") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("4") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("5") != -1 || this.selectResult.rcvWriteOffStatusList.indexOf("8") != -1  ) {
           if(this.selectResult.rcvWriteOffStatusList.indexOf("") != -1){
             let index = this.selectResult.rcvWriteOffStatusList.indexOf("")
@@ -816,6 +819,9 @@
           } 
         }
       if(this.selectResult.payWriteOffStatusList.indexOf("0") != -1 && this.selectResult.payWriteOffStatusList.indexOf("1") != -1 && this.selectResult.payWriteOffStatusList.indexOf("2") != -1 && this.selectResult.payWriteOffStatusList.indexOf("4") != -1 && this.selectResult.payWriteOffStatusList.indexOf("5") != -1 && this.selectResult.payWriteOffStatusList.indexOf("8") != -1) {
+        this.selectResult.payWriteOffStatusList = [""]
+      }
+       else if (this.selectResult.payWriteOffStatusList.indexOf("")>0){
         this.selectResult.payWriteOffStatusList = [""]
       }
       else if(this.selectResult.payWriteOffStatusList.indexOf("0") != -1 || this.selectResult.payWriteOffStatusList.indexOf("1") != -1 || this.selectResult.payWriteOffStatusList.indexOf("2") != -1 || this.selectResult.payWriteOffStatusList.indexOf("4") != -1 || this.selectResult.payWriteOffStatusList.indexOf("5") != -1 || this.selectResult.payWriteOffStatusList.indexOf("8") != -1  ) {
