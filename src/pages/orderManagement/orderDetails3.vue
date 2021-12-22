@@ -278,7 +278,7 @@
             <!-- 组件部分 -->
             <bill-order  :getList = item.list  :ref="`typeBill${index}`" />
             <!-- 操作部分 -->
-            <el-button  class="setWidth ml_20"   @click="fatherAddOneItem(index)" v-if="initData.financeStatus == 0 || initData.financeStatus == 4 " >添加费用</el-button>
+            <el-button  class="setWidth ml_20"   @click="fatherAddOneItem(index)" v-if="(initData.financeStatus == 0 || initData.financeStatus == 4) && item.status == 0 " >添加费用</el-button>
             <br>
             <br>
             <br>
@@ -430,16 +430,16 @@ export default {
         ],
     };
   },
-  computed:{
-    getInboundCw(){
-      return this.initData.inboundCw
-    }
-  },
-  watch:{
-    getInboundCw(newValue){
-      this.dealChildPrice(newValue)
-    }
-  },
+  // computed:{
+  //   getInboundCw(){
+  //     return this.initData.inboundCw
+  //   }
+  // },
+  // watch:{
+  //   getInboundCw(newValue){
+  //     this.dealChildPrice(newValue)
+  //   }
+  // },
 
    created(){
       this.orderId = this.$route.query.id
@@ -754,22 +754,24 @@ export default {
     // 如果子组件中有空运费 输入计费重的时候同时修改子组件单价
     dealChildPrice(num){
       // 取到子组件typeOne
-      let a = this.$refs.typeBill0[0].tableData
-      for(let i in a){
-        if(a[i].expenseName == '空运费'){
-          a.quantity = num
-          this.$set(a[i],'quantity',num)
+        if(num){
+          let a = this.$refs.typeBill0[0].tableData
+          for(let i in a){
+            if(a[i].expenseName == '空运费'){
+              a.quantity = num
+              this.$set(a[i],'quantity',num)
+            }
+          }
+          let b = this.$refs.typeTwo.tableData
+          for(let i in b){
+            if(b[i].expenseName == '空运费'){
+              b.quantity = num
+              this.$set(b[i],'quantity',num)
+            }
+          }
         }
-      }
-      let b = this.$refs.typeTwo.tableData
-      for(let i in b){
-        if(b[i].expenseName == '空运费'){
-          b.quantity = num
-          this.$set(b[i],'quantity',num)
-        }
-      }
-
-
+        
+    
     },
     // 获取页面初始配置
     async initSysSetTing(){
@@ -786,6 +788,7 @@ export default {
     async  getOriganData(){
       let res = await  this.$http.get(this.$service.orderSearchDetail+`?orderId=${this.orderId}`)
       if(res.code == 200){
+        console.log(res.data)
         let tempObj = res.data
           tempObj.trayDetail = JSON.parse(tempObj.trayDetail)
           for(let i in tempObj.arOrderPriceList){
@@ -808,33 +811,28 @@ export default {
       let {departureDate , fullLeg  ,orderNo ,waybillNo} = this.initData ;
       let userId = sessionStorage.getItem('userId')
       let  tempArray = []
-      let  totalCny = 0
+
       if(e == 0){
         tempArray = this.$refs.typeBill0[0].tableData
-        totalCny = this.$refs.typeBill0[0].totalCnyStr
+      
       }else if(e == 1){
         tempArray = this.$refs.typeBill1[0].tableData
-        totalCny = this.$refs.typeBill1[0].totalCnyStr
+     
       }else if(e == 2){
         tempArray = this.$refs.typeBill2[0].tableData
-        totalCny = this.$refs.typeBill2[0].totalCnyStr
+      
       }else if(e == 3){
         tempArray = this.$refs.typeBill3[0].tableData
-        totalCny = this.$refs.typeBill3[0].totalCnyStr
+      
       }else if(e == 4){
         tempArray = this.$refs.typeBill4[0].tableData
-        totalCny = this.$refs.typeBill4[0].totalCnyStr
+      
       }else if(e == 100){
         tempArray = this.$refs.typeNewBill.tableData
-        totalCny = this.$refs.typeNewBill.totalCnyStr
-      }
-
-
-      
+     
+      } 
       let typeTwo  =this.$refs.typeTwo.tableData
       tempArray = tempArray.concat(typeTwo)
-      console.log('ceshi')
-      if(totalCny > 0){
         let params = {
           departureDate:departureDate,
           fullLeg:fullLeg,
@@ -844,7 +842,6 @@ export default {
           userId:userId,
           prices:tempArray,
         }
-
         this.$http.post(this.$service.priceSendBill, params).then(res => {
               console.log(res)
             if (res.code == 200) {
@@ -857,10 +854,6 @@ export default {
           }).catch(err=>{
             console.log(err)
           })
-      }else{
-        this.$message.error(`${this.initData.customerName}，账单金额异常，发起对账失败`)
-        return
-      }
     },
   }
 }

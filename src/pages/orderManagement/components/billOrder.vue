@@ -53,7 +53,7 @@
           <el-table-column
             label="币种">
             <template slot-scope="scope">
-                <el-select v-model="scope.row.currency" :disabled="scope.row.ingStatic"  placeholder="请选择">
+                <el-select v-model="scope.row.currency" :disabled="scope.row.ingStatic"   placeholder="请选择">
                   <el-option
                     v-for="item in moneyList"
                     :key="item.value"
@@ -90,10 +90,6 @@
             </template>
           </el-table-column>
         </el-table>
-         <!-- <div class="operate" v-if="changeBill">
-           
-         </div> -->
-        
     </div>
     <div class="ccc"></div>
   </div>
@@ -136,21 +132,6 @@ class tableObj{
 }
 export default {
   props:['orderIdTemp','orderNoTemp','getList'],
-  // {
-  //   getList:{
-  //     type:Array
-  //   },
-  //   orderId:{
-  //     type:Number,
-  //     default(){
-  //       if(orderId == undefined){
-
-  //       }
-  //     }
-  //   }
-
-  // },
-  // 
   data() {
     return {
       tableData: [], // 
@@ -194,21 +175,21 @@ export default {
     // 初始化table prop
     if(this.orderNoTemp == undefined){
       let a = this.getList
+
       let {orderId,expenseType,orderNo,expenseUnitName,billId} = a[0]
         a.map((res)=>{
             res.ingStatic = true
-          delete res.createTime
-          delete res.updateTime
+            delete res.createTime
+            delete res.updateTime
         })
       this.tableData = a
       this.orderId = orderId
-      // console.log(orderId)
       this.expenseType = expenseType
       this.orderNo = orderNo
       this.expenseUnitName = expenseUnitName
       this.billId = billId
       this.title =  expenseType == 1 ? '应收账单' : '应付账单'
-      this.dealOriginData(this.tableData)
+      this.dealOriginData(a)
 
     }else{
       this.orderId = this.orderIdTemp
@@ -225,25 +206,24 @@ export default {
     tableData:{
       deep:true,
       handler(newValue){
-        for(let i in newValue){
-          this.$set(newValue[i],'exchangeRate', this.getCurrentRate(newValue[i].currency))
-          newValue[i].exchangeRate = newValue[i].exchangeRate == null ? this.getCurrentRate(newValue[i].currency) : newValue[i].exchangeRate
-          newValue[i].totalOrgn = Math.floor((isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)) * 100) /100 
-          newValue[i].totalCny =  Math.floor(( isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) *this.getCurrentRate(newValue[i].currency)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * this.getCurrentRate(newValue[i].currency) )*100)/100
-        }
-        this.totalCnyStr =this.calcTotalCny(newValue)
-        let {temArray,tempStr} =  this.calcTotalOrgn(newValue)
-        this.totalOrgnArr = temArray
-        this.totalOrgnStr = tempStr
+          for(let i in newValue){
+            newValue[i].exchangeRate =  this.getCurrentRate(newValue[i].currency) 
+            newValue[i].totalOrgn = Math.floor((isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)) * 100) /100 
+            newValue[i].totalCny =  Math.floor(( isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) * this.getCurrentRate(newValue[i].currency)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * this.getCurrentRate(newValue[i].currency) )*100)/100
+            console.log(this.getCurrentRate(newValue[i].currency))
+         }
+            this.totalCnyStr =this.calcTotalCny(newValue)
+            let {temArray,tempStr} =  this.calcTotalOrgn(newValue)
+            this.totalOrgnArr = temArray
+            this.totalOrgnStr = tempStr
       }
     }
   },
   methods:{
-
     // 处理原始传入数据
     dealOriginData(newValue){
         for(let i in newValue){
-          newValue[i].exchangeRate = newValue[i].exchangeRate == null ? this.getCurrentRate(newValue[i].currency) : newValue[i].exchangeRate
+          newValue[i].exchangeRate =  this.getCurrentRate(newValue[i].currency) 
           newValue[i].totalOrgn = Math.floor((isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)) * 100) /100 
           newValue[i].totalCny =  Math.floor(( isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) *this.getCurrentRate(newValue[i].currency)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * this.getCurrentRate(newValue[i].currency) )*100)/100
         }
@@ -251,6 +231,7 @@ export default {
         let {temArray,tempStr} =  this.calcTotalOrgn(newValue)
         this.totalOrgnArr = temArray
         this.totalOrgnStr = tempStr
+     
   
     },
     async getRates(){ // 获取当前订单的汇率
@@ -260,7 +241,8 @@ export default {
       }
     },
     // 获取指定币种的汇率
-    getCurrentRate(a){
+     getCurrentRate(a){
+
       let tempArray = this.rates
       for(let i in tempArray){
         if(i == a){
@@ -343,7 +325,6 @@ export default {
     // 删除
     deleOneTableObj(e){
       let index = e.$index
-      console.log(index)
       let ttt = this.$parent.judgeDeleteBIll()
       if(ttt){
         this.$message({
