@@ -278,8 +278,12 @@
             <!-- 组件部分 -->
             <bill-order  :getList = item.list  :ref="`typeBill${index}`" />
             <!-- 操作部分 -->
+            <el-button  class="setWidth ml_20"   @click="fatherAddOneItem(index)" v-if="initData.financeStatus == 0 || initData.financeStatus == 4 " >添加费用</el-button>
+            <br>
+            <br>
+            <br>
             <div class="ml_20" v-if="initData.canCheckFlag == 1  && item.status == 0 "  >
-              <el-button  class="setWidth"   @click="fatherAddOneItem(index)" >添加费用</el-button>
+             
               <el-button  class="setWidth"  type="primary" @click="reconciliationClient(index)" >发起客户对账</el-button>
             </div>
             <div  >
@@ -433,7 +437,6 @@ export default {
   },
   watch:{
     getInboundCw(newValue){
-      console.log(newValue)
       this.dealChildPrice(newValue)
     }
   },
@@ -752,7 +755,6 @@ export default {
     dealChildPrice(num){
       // 取到子组件typeOne
       let a = this.$refs.typeBill0[0].tableData
-
       for(let i in a){
         if(a[i].expenseName == '空运费'){
           a.quantity = num
@@ -775,7 +777,6 @@ export default {
       let res2 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售中客服&pageSize=50000')
       let res3 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=航线负责人&pageSize=50000')
       Promise.all([res1,res2,res3]).then(res=>{
-        console.log(res)
         this.preSaleList = res[0].data.records
         this.onSaleList = res[1].data.records
         this.airLineList = res[2].data.records
