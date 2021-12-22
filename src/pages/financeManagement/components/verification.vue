@@ -26,7 +26,7 @@
                                     v-for="item in tempArray"
                                     :key="item"
                                     :label="item.userName"
-                                    :value="item.userName">
+                                    :value="item">
                                 </el-option>
                             </el-select>
                         </div>
@@ -168,6 +168,7 @@ export default {
             handler(newValue,oldValue){
                 let {totalApCny,totalApUnwoOrgn,totalApWoOrgn} = newValue
                 if(totalApCny){
+                    
                     this.totalApCny = totalApCny
                     this.unwrittenOffAmountRmbString = totalApWoOrgn
                     this.payWriteOffAmountRmbString = totalApUnwoOrgn
