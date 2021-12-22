@@ -25,7 +25,7 @@
         <el-input v-model="formInline.expenseUnitName" clearable placeholder="请输入应付对象"></el-input>
       </el-form-item>
       <el-form-item label="订舱公司">
-        <el-input v-model="formInline.customerName" clearable placeholder="请输入应付对象"></el-input>
+        <el-input v-model="formInline.customerName" clearable placeholder="请输入订舱公司"></el-input>
       </el-form-item>
       <el-form-item label="航司">
         <el-select
