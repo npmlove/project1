@@ -137,7 +137,7 @@
             </div>
                        <table v-else-if=" column.label == '操作'&&column.prop == 'revoke'">
  <table v-for="(optItem,optIndex) in scope.row.log" :key="optIndex" :style="{'background':(optIndex%2===0?'':'')}">
-   <td v-if="optItem.status==0" style="padding: 0px"><a @click="revoke(optItem.id,scope.row)">撤销</a></td>
+   <td v-if="optItem.status==0" style="padding: 0px"><a @click="revoke(optIndex ,optItem.id,scope.row)">撤销</a></td>
   <td v-if="optItem.status==-1" style="padding: 0px">已撤销</td>
   <td v-if="optItem.status==2" style="padding: 0px"></td>
         </table>
@@ -429,8 +429,8 @@ export default {
       this.$emit('sortChange', column)
     },
     // 排序
-    revoke(id, row) {
-      this.$emit('revoke', id, row)
+    revoke(index,id, row) {
+      this.$emit('revoke', index,id, row)
     },
     // 操作，将操作类型和当前row数据作为参数传递
     handleClick(method, row, e) {
