@@ -248,7 +248,7 @@
               v-if="checkedTable.indexOf('订单号') !== -1"
             >
             <template slot-scope="scope">
-              <div @click="showData(scope.row.id)" style="color:skyBlue">
+              <div @click="showData(scope.row.id)" style="color:skyBlue;cursor:pointer">
                 {{scope.row.orderNo}}
               </div>
             </template>
@@ -733,7 +733,7 @@
       //原币处理
       dealOrgn(orgn,extraWord) {
       if (!orgn) {
-        return;
+        return 0;
       }
        orgn = JSON.parse(orgn);
       var totalOrgn = "";

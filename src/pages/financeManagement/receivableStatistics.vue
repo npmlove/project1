@@ -385,7 +385,7 @@
               v-if="checkedTable.indexOf('订单号') !== -1"
             >
             <template slot-scope="scope">
-              <div @click="showData(scope.row.id,scope.row.orderNo)" style="color:skyBlue">
+              <div @click="showData(scope.row.id,scope.row.orderNo)" style="color:skyBlue;cursor:pointer">
                 {{scope.row.orderNo}}
               </div>
             </template>
@@ -498,7 +498,7 @@
               v-if="checkedTable.indexOf('核销次数') !== -1"
             >
             <template slot-scope="scope">
-              <div @click="getRcvWrite(scope.row)" style="color:skyblue">{{scope.row.rcvWriteOffCount}}</div>
+              <div @click="getRcvWrite(scope.row)" style="color:skyblue;cursor:pointer">{{scope.row.rcvWriteOffCount}}</div>
             </template>
             </el-table-column>
             <el-table-column

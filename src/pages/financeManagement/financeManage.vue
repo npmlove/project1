@@ -347,7 +347,7 @@
               v-if="checkedTable.indexOf('订单号') !== -1"
             >
             <template slot-scope="scope">
-              <div style="color:skyblue" @click="showFees(scope.row,true)">
+              <div style="color:skyblue;cursor:pointer" @click="showFees(scope.row,true)">
                   {{scope.row.orderNo}}
               </div>
             </template>
@@ -510,7 +510,7 @@
               v-if="checkedTable.indexOf('订单状态') !== -1"
             >
             <template slot-scope="scope">
-                <div :style="{'color':scope.row.financeStatus ==2 || scope.row.financeStatus ==3 ? 'skyblue' : 'black' }" @click="scope.row.financeStatus ==2 || scope.row.financeStatus ==3?showFees(scope.row,false):''">
+                <div :style="{'color':scope.row.financeStatus ==2 || scope.row.financeStatus ==3 ? 'skyblue' : 'black','cursor':scope.row.financeStatus ==2 || scope.row.financeStatus ==3 ?'pointer':'' }" @click="scope.row.financeStatus ==2 || scope.row.financeStatus ==3?showFees(scope.row,false):''">
                   {{scope.row.financeStatus == 0 || scope.row.financeStatus == 1 ?
                     '正常' : scope.row.financeStatus == 2 ?
                       '修改申请' : scope.row.financeStatus == 3 ?

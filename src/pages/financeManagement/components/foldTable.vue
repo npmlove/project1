@@ -48,11 +48,11 @@
                         popper-class="invoicePopper"
                         >
                         <div v-for="(item11,index11) in item2.orderInfos" :key ="index11">{{item11.orderNo}}</div>
-                        <div slot="reference" @click="$emit('showOrderWayBill',item2)" style="color:skyblue">{{item2.orderNo}}</div>
+                        <div slot="reference" @click="$emit('showOrderWayBill',item2)" style="color:skyblue;cursor:pointer">{{item2.orderNo}}</div>
                      </el-popover>
                   </div>
                     <div v-else>
-                        <div@click="$emit('showOrderWayBill',item2)" style="color:skyblue">{{item2.orderNo}}</div>
+                        <div@click="$emit('showOrderWayBill',item2)" style="color:skyblue;cursor:pointer">{{item2.orderNo}}</div>
                     </div>
               </div>
               <div v-else-if="item.key =='waybillNo'">
@@ -64,11 +64,11 @@
                         popper-class="invoicePopper"
                         >
                         <div v-for="(item11,index11) in item2.orderInfos" :key ="index11">{{item11.waybillNo}}</div>
-                        <div slot="reference" @click="$emit('showOrderWayBill',item2)" style="color:skyblue">{{item2.waybillNo}}</div>
+                        <div slot="reference" @click="$emit('showOrderWayBill',item2)" style="color:skyblue;cursor:pointer">{{item2.waybillNo}}</div>
                      </el-popover>
                   </div>
                     <div v-else>
-                        <div@click="$emit('showOrderWayBill',item2)" style="color:skyblue">{{item2.waybillNo}}</div>
+                        <div@click="$emit('showOrderWayBill',item2)" style="color:skyblue;cursor:pointer">{{item2.waybillNo}}</div>
                     </div>
               </div>
               <div v-else-if="item.key =='departureDate'">
@@ -104,7 +104,7 @@
                   </div>
               </div>
               <div v-else-if="item.key=='showInvoice'">
-                <div @click="$emit('showInvoice',item2)" style="color:skyblue">查看</div>
+                <div @click="$emit('showInvoice',item2)" style="color:skyblue;cursor:pointer">查看</div>
               </div>
               <div v-else-if="item.key=='invoiceType'">
                 <div>{{item2.invoiceType==0?"增值税普通发票":item2.invoiceType==1?"增值税专用发票":item2.invoiceType==2?"增值税电子普通发票":""}}</div>
@@ -161,7 +161,7 @@
                 <div v-html="dealExpress(item2.expressInfo)" style="white-space:pre-line;text-align:left!important;width:100%"></div>
               </div>
               <div v-else-if="item.key=='expressStatus'">
-                <div @click="$emit('openPost',item2)" :style="{'color':item2.expressStatus=='未寄出'? 'skyblue':'black'}">
+                <div @click="$emit('openPost',item2)" :style="{'color':item2.expressStatus=='未寄出'? 'skyblue':'black','cursor':item2.expressStatus=='未寄出'? 'pointer':''}">
                     {{item2.expressStatus}}
                   </div>
                  </div>
