@@ -852,8 +852,12 @@
         })
       },
       //航线列表
-      revoke(id, row) {
-
+      revoke(index,id, row) {
+        this.$confirm(`确定核销"操作${index+1}"`, "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
         this.$http.post(this.$service.arRevoke + "?woId=" + id).then(data => {
           if (data.code == 200) {
             this.showWOLogs(row)
@@ -863,6 +867,9 @@
           }
         }).catch((e) => {
           console.log(e)
+        })
+      }).catch(() => {
+          console.log('取消')
         })
       },
       //查询

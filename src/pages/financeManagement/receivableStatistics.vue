@@ -607,7 +607,7 @@
                 <template slot-scope="scope">
                   <div v-for="(item,index) in scope.row.records" :key="index">
                     <div v-if="item.status == 2">操作{{index+1}}:{{item.writeOffOperator}} <span style="color:red;margin-left:10px">撤销"</span><span>操作{{item.deleteId}}" <span style="opacity:0">核销金额:XXXHKD</span> {{item.revokeTime}}</span> </div>
-                    <div v-else>操作{{index+1}}:{{item.writeOffOperator}} <span style="color:skyblue;margin-left:10px">核销</span><span>该订单,核销金额: {{item.writeOffAmount}}{{['CNY','HKD','USD','EUR','GBP'][item.currency]}}</span><span style="margin-left:10px">{{item.writeOffTime}}</span></div>
+                    <div v-else>操作{{index+1}}:{{item.writeOffOperator}} <span style="color:skyblue;margin-left:10px">核销</span><span>该订单,核销金额: {{item.writeOffAmount}}{{['CNY','HKD','USD','EUR','GBP'][item.currency-1]}}</span><span style="margin-left:10px">{{item.writeOffTime}}</span></div>
 
                   </div>
                 </template>
@@ -615,7 +615,7 @@
               <el-table-column width="100" label="操作">
                 <template slot-scope="scope">
                   <div v-for="(item,index) in scope.row.records" :key="index">
-                      <div v-if="item.status == 0" style="color:skyblue" @click="confirmReset(index,item.id,scope.row.copyId)">撤销</div>
+                      <div v-if="item.status == 0" style="color:skyblue;cursor:pointer" @click="confirmReset(index,item.id,scope.row.copyId)">撤销</div>
                       <div v-else-if="item.status ==2" style="opacity:0;">撤销</div>
                       <div v-else-if="item.status ==-1" >已撤销</div>
                   </div>
@@ -1062,11 +1062,11 @@
         }
       }
       totalOrgn = "";
-      totalOrgn += value1 || value1 == 0 ? value1 + "CNY" + "\n" : "";
-      totalOrgn += value2 ? value2 + "HKD" + "\n" : "";
-      totalOrgn += value3 ? value3 + "USD" + "\n" : "";
-      totalOrgn += value4 ? value4 + "EUR" + "\n" : "";
-      totalOrgn += value5 ? value5 + "GBP" + "\n": "";
+      totalOrgn += (value1 || value1 == 0) ? value1 + "CNY" + "\n" : "";
+      totalOrgn += (value2 || value2 == 0) ? value2 + "HKD" + "\n" : "";
+      totalOrgn += (value3 || value3 == 0) ? value3 + "USD" + "\n" : "";
+      totalOrgn += (value4 || value4 == 0) ? value4 + "EUR" + "\n" : "";
+      totalOrgn += (value5 || value5 == 0) ? value5 + "GBP" + "\n": "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return (extraWord?extraWord+":":"") +totalOrgn;
     },
@@ -1228,19 +1228,23 @@
             requestData.rcvIds = this.selectTableData.map(item=>item.id)
           }
 
-
           this.$http.post(this.$service.getWoFrameData,requestData).then(res=>{
             if(res.code == 200){
             let copyChargeMoney = res.data.currencyList
             this.moneyData[0] = res.data.totalArCny
-            copyChargeMoney.forEach((item,index)=>{
-              //弹框底部未核销金额和已核销金额（需要随币种选择框变化）
+            this.chargeMoney = []
+             //弹框底部未核销金额和已核销金额（需要随币种选择框变化）
             this.copyChargeNum[0] = res.data.arUnWoOrgn
             this.copyChargeNum[1] = res.data.arWoOrgn
+            copyChargeMoney.forEach((item,index)=>{
             //设置币种选项
             this.$set(this.chargeMoney,index,{label:this.currencyArray[item-1],value:item})
-            this.dialogFormVisibleThree = true;
           })
+            this.dialogFormVisibleThree = true;
+            if(this.chargeMoney.length>0) {
+              this.changeCurrency(this.chargeMoney[0].value)
+              this.chargeOffData.currency = this.chargeMoney[0].value
+            }
           } else {
             this.$message.error(res.message)
           }
@@ -1349,6 +1353,7 @@
         this.statistData = {}
         this.errorStatist = false
         this.statistDataShow = !this.statistDataShow
+        if(this.statistDataShow == false) return""
         this.$http.post(this.$service.receivableSum,this.searchDataDeal()).then(res=>{
           this.statistData = {
             totalArCny:res.data.totalArCny.toLocaleString('en-US'),

@@ -298,8 +298,8 @@
       </Table>
 
       <div class="finance-table-price">
-        <div>账单合计：{{ getOrgn(this.totalArOrgn) }}</div>
-        <div>人民币合计：￥{{ this.totalArCny }}</div>
+        <div>账单合计：{{ getOrgn(this.totalApOrgn) }}</div>
+        <div>人民币合计：￥{{ this.totalApCny}}</div>
       </div>
       <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">修改记录</div>
       <Table
@@ -839,8 +839,12 @@
         return result
       },
       //航线列表
-      revoke(id, row) {
-
+      revoke(index,id, row) {
+        this.$confirm(`确定核销"操作${index+1}"`, "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
         this.$http.post(this.$service.revokeRecords + "?id=" + id).then(data => {
           if (data.code == 200) {
             this.showWOLogs(row)
@@ -850,6 +854,9 @@
           }
         }).catch((e) => {
           console.log(e)
+        })
+        }).catch(() => {
+          console.log('取消')
         })
       },
       //查询

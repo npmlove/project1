@@ -1323,6 +1323,7 @@
       getStatistData(){
         console.log(this.tableData)
         this.statistDataShow = !this.statistDataShow
+        if(this.statistDataShow == false) return""
         this.statistData = {shouldGet:0,applyInvoice:0,invoicedMoney:0}
         let request = {financePageDTO:this.selectResultData()}
         this.$http.post(this.$service.invoiceStatistics,request).then(res=>{

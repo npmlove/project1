@@ -757,11 +757,11 @@
         }
       }
       totalOrgn = "";
-      totalOrgn += value1 || value1 == 0 ? value1 + "CNY" + "\n" : "";
-      totalOrgn += value2 ? value2 + "HKD" + "\n" : "";
-      totalOrgn += value3 ? value3 + "USD" + "\n" : "";
-      totalOrgn += value4 ? value4 + "EUR" + "\n" : "";
-      totalOrgn += value5 ? value5 + "GBP" + "\n": "";
+      totalOrgn += (value1 || value1 == 0) ? value1 + "CNY" + "\n" : "";
+      totalOrgn += (value2 || value2 == 0) ? value2 + "HKD" + "\n" : "";
+      totalOrgn += (value3 || value3 == 0) ? value3 + "USD" + "\n" : "";
+      totalOrgn += (value4 || value4 == 0) ? value4 + "EUR" + "\n" : "";
+      totalOrgn += (value5 || value5 == 0) ? value5 + "GBP" + "\n": "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return (extraWord?extraWord+":":"") +totalOrgn;
     },
@@ -841,11 +841,12 @@
         if(copyData.payWriteOffStatusList[0] === "") {
           delete copyData.payWriteOffStatusList
           }
+        this.statistDataShow = !this.statistDataShow
+        if(this.statistDataShow == false) return""
         this.$http.post(this.$service.subWoList,copyData).then(data=>{
           if(data.code == 200) {
           this.statistData = data.data
           this.errorStatist = data.data.hasAbNormal
-          this.statistDataShow = !this.statistDataShow
           }
         })
       },
@@ -1158,7 +1159,7 @@
   }
   .allStatist {
     div {
-      flex:0 0 130px
+      flex:0 0 160px
     }
     .statists {
       margin-right:15px;
