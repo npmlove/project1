@@ -11,7 +11,7 @@
 
         <div class="formItem">
           <el-form-item label="运单号:" label-width="80px">
-            <el-input v-model="selectResult.waybillNo" style="width: 210px;" size="medium" maxlength="11" clearable placeholder="请输入运单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.waybillNo = $event.target.value"></el-input>
+            <el-input v-model="selectResult.waybillNo" style="width: 210px;" size="medium" clearable placeholder="请输入运单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.waybillNo = $event.target.value.substr(0,11)"></el-input>
           </el-form-item>
         </div>
         <div class="formItem">
