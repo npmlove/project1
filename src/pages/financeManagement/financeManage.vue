@@ -1044,10 +1044,11 @@ export default {
             if(arrayIndex.indexOf(this.typeCode) != -1) {
               copyDate.financeStatus = arrayIndex.indexOf(this.typeCode)
             }
-      this.$http.post(this.$service.financeOrderCount,copyDate).then(data=>{
-        this.statistData = data.data
-      })
-      this.statistDataShow = !this.statistDataShow
+            this.statistDataShow = !this.statistDataShow
+            if(this.statistDataShow == false) return""
+            this.$http.post(this.$service.financeOrderCount,copyDate).then(data=>{
+              this.statistData = data.data
+            })
     },
     //获取表格选中数据
     handleSelectionChange (e) {

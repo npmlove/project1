@@ -841,11 +841,12 @@
         if(copyData.payWriteOffStatusList[0] === "") {
           delete copyData.payWriteOffStatusList
           }
+        this.statistDataShow = !this.statistDataShow
+        if(this.statistDataShow == false) return""
         this.$http.post(this.$service.subWoList,copyData).then(data=>{
           if(data.code == 200) {
           this.statistData = data.data
           this.errorStatist = data.data.hasAbNormal
-          this.statistDataShow = !this.statistDataShow
           }
         })
       },
