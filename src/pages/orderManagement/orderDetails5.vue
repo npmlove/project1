@@ -269,7 +269,7 @@
             <!-- 组件部分 -->
             <bill-order  :getList = item.list  :ref="`typeBill${index}`" />
             <!-- 操作部分 -->
-            <el-button  class="setWidth ml_20"   @click="fatherAddOneItem(index)" v-if="initData.financeStatus == 0 || initData.financeStatus == 4 " >添加费用</el-button>
+             <el-button  class="setWidth ml_20"   @click="fatherAddOneItem(index)" v-if="(initData.financeStatus == 0 || initData.financeStatus == 4) && item.status == 0 " >添加费用</el-button>
             <br>
             <br>
             <br>
@@ -805,31 +805,28 @@ export default {
       let {departureDate , fullLeg  ,orderNo ,waybillNo} = this.initData ;
       let userId = sessionStorage.getItem('userId')
       let  tempArray = []
-      let  totalCny = 0
+
       if(e == 0){
         tempArray = this.$refs.typeBill0[0].tableData
-        totalCny = this.$refs.typeBill0[0].totalCnyStr
+      
       }else if(e == 1){
         tempArray = this.$refs.typeBill1[0].tableData
-        totalCny = this.$refs.typeBill1[0].totalCnyStr
+     
       }else if(e == 2){
         tempArray = this.$refs.typeBill2[0].tableData
-        totalCny = this.$refs.typeBill2[0].totalCnyStr
+      
       }else if(e == 3){
         tempArray = this.$refs.typeBill3[0].tableData
-        totalCny = this.$refs.typeBill3[0].totalCnyStr
+      
       }else if(e == 4){
         tempArray = this.$refs.typeBill4[0].tableData
-        totalCny = this.$refs.typeBill4[0].totalCnyStr
+      
       }else if(e == 100){
         tempArray = this.$refs.typeNewBill.tableData
-        totalCny = this.$refs.typeNewBill.totalCnyStr
-      }
-
-
+     
+      } 
       let typeTwo  =this.$refs.typeTwo.tableData
       tempArray = tempArray.concat(typeTwo)
-      if(totalCny > 0){
         let params = {
           departureDate:departureDate,
           fullLeg:fullLeg,
@@ -839,7 +836,6 @@ export default {
           userId:userId,
           prices:tempArray,
         }
-
         this.$http.post(this.$service.priceSendBill, params).then(res => {
               console.log(res)
             if (res.code == 200) {
@@ -852,10 +848,6 @@ export default {
           }).catch(err=>{
             console.log(err)
           })
-      }else{
-        this.$message.error(`${this.initData.customerName}，账单金额异常，发起对账失败`)
-        return
-      }
     },
   }
 }

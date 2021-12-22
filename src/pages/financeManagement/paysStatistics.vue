@@ -1139,6 +1139,10 @@ import {exportFile} from '../../util/util'
       },
       // 处理利润异常样式
       backStyle({row,rowIndex}){
+        if( row.unwrittenOffAmountRmb < row.payCheckAmount < row.totalApCny){
+          console.log('第二种异常')
+          return 'background-color: #FA8072';
+        }
         if (-200 < row.orderProfit && row.orderProfit < 0 ) {
           return 'background-color: #FFDEAD';
         }else if (-500 <= row.orderProfit && row.orderProfit <= -200) {
@@ -1148,7 +1152,8 @@ import {exportFile} from '../../util/util'
         }else if(row.orderProfit < 0 ){
           return 'background-color: #CD5C5C'
         }
-        },
+        
+      },
       // 处理返回的原币string
       async dealApString(tempString){
 
