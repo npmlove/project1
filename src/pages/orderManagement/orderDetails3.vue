@@ -524,6 +524,9 @@ export default {
           inputPattern: /^(\s|\S){0,200}$/,
           inputErrorMessage: '限制200字'
         }).then(({ value }) => {
+            if(!value){
+              this.$message.error('请填写申请理由')
+            }else{
               var data = {
                 financeStatus: this.initData.financeStatus,
                 operationType: 1,
@@ -542,6 +545,8 @@ export default {
                   this.$message.error(res.message)
                 }
               })
+            }
+              
         }).catch(() => {
           this.$message({
             type: 'info',
