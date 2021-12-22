@@ -471,7 +471,7 @@ export default {
     calcVwr(){
       let {inboundWeight,inboundCbm,bubblePoint} = this.initData
       if(inboundWeight && inboundCbm){
-        this.initData.inboundVwr = inboundCbm / inboundWeight
+        this.initData.inboundVwr = Math.ceil*(inboundWeight/inboundCbm)
         if(bubblePoint == 10){
           this.initData.inboundCw = Math.max(inboundCbm * 167, inboundWeight ) 
         }else if(bubblePoint == 9){
