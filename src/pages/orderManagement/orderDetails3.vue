@@ -64,8 +64,8 @@
             <span>{{initData.agentName}}</span>
           </div>
           <div>
-            <span>进仓编号</span>
-            <span>{{initData.inboundNo}}</span>
+            <span class="flex">进仓编号</span>
+            <span> <el-input v-model="initData.inboundNo" size="mini" placeholder="请输入内容"></el-input></span>
           </div>
           <div>
             <span>航线负责人</span>
@@ -210,7 +210,7 @@
                       <div><el-input size="mini" class="ml_10" v-model="initData.inboundPiece" placeholder=""></el-input></div>
                       <div><el-input size="mini" class="ml_10" v-model="initData.inboundWeight" @change="calcVwr" placeholder=""></el-input></div>
                       <div><el-input size="mini" class="ml_10"  v-model="initData.inboundCbm" @change="calcVwr" placeholder=""></el-input></div>
-                      <div><el-input size="mini" class="ml_10" disabled :value="initData.inboundCbm + ':' + initData.inboundWeight" placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10" v-model="showCwr" placeholder=""></el-input></div>
                       <div>
                         <el-select class="ml_10" size="mini" v-model="initData.bubblePoint" @change="calcVwr" placeholder="请选择">
                             <el-option
@@ -221,7 +221,7 @@
                             </el-option>
                           </el-select>
                       </div>
-                      <div><el-input size="mini" class="ml_10" v-model="initData.inboundCw" placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10" disabled v-model="initData.inboundCw" placeholder=""></el-input></div>
                   </div>
                   <div class="flex_center mtop_10">
                       <div>件数</div>
@@ -346,6 +346,7 @@ export default {
   data() {
     return {
       radio1:'1',
+      showCwr:"",//显示的比重 不传给后台
       isDataDone:false,// 已经获取到数据在渲染界面
       isChangeJiaoDan:true, // 交单是否显示出来
       orderNo:'',// 运单号
@@ -486,8 +487,10 @@ export default {
     calcVwr(){
       let {inboundWeight,inboundCbm,bubblePoint} = this.initData
       if(inboundWeight && inboundCbm){
-
-        this.initData.inboundVwr = Math.ceil*(inboundWeight/inboundCbm)
+        
+        this.initData.inboundVwr = Math.ceil( Number(inboundWeight) / Number(inboundCbm))
+        console.log( this.initData.inboundVwr)
+        this.showCwr = `1:${ this.initData.inboundVwr}`
         if(bubblePoint == 10){
           this.initData.inboundCw = Math.max(inboundCbm * 167, inboundWeight ) 
         }else if(bubblePoint == 9){
@@ -752,27 +755,31 @@ export default {
       })
     },
     // 如果子组件中有空运费 输入计费重的时候同时修改子组件单价
-    dealChildPrice(num){
-      // 取到子组件typeOne
-        if(num){
-          let a = this.$refs.typeBill0[0].tableData
-          for(let i in a){
-            if(a[i].expenseName == '空运费'){
-              a.quantity = num
-              this.$set(a[i],'quantity',num)
-            }
-          }
-          let b = this.$refs.typeTwo.tableData
-          for(let i in b){
-            if(b[i].expenseName == '空运费'){
-              b.quantity = num
-              this.$set(b[i],'quantity',num)
-            }
-          }
-        }
+    // dealChildPrice(num){
+    //   // 取到子组件typeOne
+    //     if(num){
+          
+    //       // 应收
+    //       // let a = this.$refs.typeBill0[0].tableData
+    //       // for(let i in a){
+    //       //   if(a[i].expenseName == '空运费'){
+    //       //     a.quantity = num
+    //       //     this.$set(a[i],'quantity',num)
+             
+            
+    //       //   }
+    //       // }
+    //       // let b = this.$refs.typeTwo.tableData
+    //       // for(let i in b){
+    //       //   if(b[i].expenseName == '空运费'){
+    //       //     b.quantity = num
+    //       //     this.$set(b[i],'quantity',num)
+    //       //   }
+    //       // }
+    //     }
         
     
-    },
+    // },
     // 获取页面初始配置
     async initSysSetTing(){
       let res1 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000')
@@ -788,7 +795,6 @@ export default {
     async  getOriganData(){
       let res = await  this.$http.get(this.$service.orderSearchDetail+`?orderId=${this.orderId}`)
       if(res.code == 200){
-        console.log(res.data)
         let tempObj = res.data
           tempObj.trayDetail = JSON.parse(tempObj.trayDetail)
           for(let i in tempObj.arOrderPriceList){
@@ -830,7 +836,8 @@ export default {
       }else if(e == 100){
         tempArray = this.$refs.typeNewBill.tableData
      
-      } 
+      }
+ 
       let typeTwo  =this.$refs.typeTwo.tableData
       tempArray = tempArray.concat(typeTwo)
         let params = {

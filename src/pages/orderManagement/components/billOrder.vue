@@ -173,6 +173,7 @@ export default {
   },
   async mounted(){
     // 初始化table prop
+
     if(this.orderNoTemp == undefined){
       let a = this.getList
 
@@ -189,33 +190,22 @@ export default {
       this.expenseUnitName = expenseUnitName
       this.billId = billId
       this.title =  expenseType == 1 ? '应收账单' : '应付账单'
+      await this.getRates()
+      await this.initExpenseCode()
       this.dealOriginData(a)
-
     }else{
       this.orderId = this.orderIdTemp
       this.orderNo = this.orderNoTemp
+      await this.getRates()
+      await this.initExpenseCode()
       this.addOneTableObj()
     }
-    await this.getRates()
-    await this.initExpenseCode()
-    
-   
-
   },
   watch:{
     tableData:{
       deep:true,
       handler(newValue){
-          for(let i in newValue){
-            newValue[i].exchangeRate =  this.getCurrentRate(newValue[i].currency) 
-            newValue[i].totalOrgn = Math.floor((isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)) * 100) /100 
-            newValue[i].totalCny =  Math.floor(( isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) * this.getCurrentRate(newValue[i].currency)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * this.getCurrentRate(newValue[i].currency) )*100)/100
-            console.log(this.getCurrentRate(newValue[i].currency))
-         }
-            this.totalCnyStr =this.calcTotalCny(newValue)
-            let {temArray,tempStr} =  this.calcTotalOrgn(newValue)
-            this.totalOrgnArr = temArray
-            this.totalOrgnStr = tempStr
+         this.dealOriginData(newValue) 
       }
     }
   },
@@ -223,32 +213,38 @@ export default {
     // 处理原始传入数据
     dealOriginData(newValue){
         for(let i in newValue){
-          newValue[i].exchangeRate =  this.getCurrentRate(newValue[i].currency) 
+          newValue[i].exchangeRate = this.getCurrentRate(newValue[i].currency) 
           newValue[i].totalOrgn = Math.floor((isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)) * 100) /100 
-          newValue[i].totalCny =  Math.floor(( isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) *this.getCurrentRate(newValue[i].currency)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * this.getCurrentRate(newValue[i].currency) )*100)/100
-        }
+          newValue[i].totalCny =  Math.floor(( isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) * newValue[i].exchangeRate) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * newValue[i].exchangeRate )*100)/100
+       }
         this.totalCnyStr =this.calcTotalCny(newValue)
         let {temArray,tempStr} =  this.calcTotalOrgn(newValue)
         this.totalOrgnArr = temArray
         this.totalOrgnStr = tempStr
-     
-  
     },
     async getRates(){ // 获取当前订单的汇率
       let res = await this.$http.get(this.$service.getExchangeRatesForOrder+'?orderId='+this.orderId)
       if(res.code == 200){
-        this.rates = res.data 
+        let obj = res.data  
+        let arr = []
+        for(let i in obj){
+          arr.push({
+            key:i,
+            val:obj[i]
+          })
+        }
+        this.rates = arr
       }
     },
     // 获取指定币种的汇率
      getCurrentRate(a){
-
       let tempArray = this.rates
-      for(let i in tempArray){
-        if(i == a){
-          return tempArray[i]
+      let someRate  = tempArray.filter(res=>{
+        if(a == res.key){
+          return res
         }
-      }
+      })
+      return someRate[0].val
     },
 
     //费用名称 除了空运费
@@ -327,19 +323,19 @@ export default {
       let index = e.$index
       let ttt = this.$parent.judgeDeleteBIll()
       if(ttt){
+        if(index == 0){
+          this.$message({
+            message: '这条数据不能删除',
+            type: 'warning'
+          });
+        }else{
+          this.tableData.splice(index,1)
+        }
+      }else{
         this.$message({
           message: '交单时不允许删除',
           type: 'warning'
         });
-      }else{
-      if(index == 0){
-        this.$message({
-          message: '这条数据不能删除',
-          type: 'warning'
-        });
-      }else{
-        this.tableData.splice(index,1)
-      }
       }
 
     },

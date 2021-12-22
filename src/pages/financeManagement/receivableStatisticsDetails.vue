@@ -523,7 +523,7 @@
           disabledDate: time => {
             let beginDateVal = this.startPayTime
             if (beginDateVal) {
-              return time.getTime() < new Date(beginDateVal).getTime()
+              return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
           }
         },
@@ -539,7 +539,7 @@
           disabledDate: time => {
             let beginDateVal = this.startWriteOffTime
             if (beginDateVal) {
-              return time.getTime() < new Date(beginDateVal).getTime()
+              return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
           }
         },
@@ -642,8 +642,12 @@
         this.initData()
       },
       dealAllChange() {
-        if (this.rcvWriteOffStatus.indexOf("")!=-1) {
+        if (this.rcvWriteOffStatus.indexOf('') == this.rcvWriteOffStatus.length-1){
           this.rcvWriteOffStatus = ['']
+        }
+        else if (this.rcvWriteOffStatus.indexOf('') != -1&&this.rcvWriteOffStatus.length>1) {
+          let index = this.rcvWriteOffStatus.indexOf("")
+          this.rcvWriteOffStatus.splice(index,1)
         }
       },
       selectAllTable() {
@@ -821,8 +825,8 @@
       initData() {
 
         var json = {
-          orderNo: this.orderNo,
-          waybillNo: this.waybillNo,
+          orderNos: this.orderNo,
+          waybillNos: this.waybillNo,
           reconciliationUnit: this.reconciliationUnit,
           accountBank: this.accountBank,
           accountName: this.accountName,

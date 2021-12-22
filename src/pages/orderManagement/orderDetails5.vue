@@ -55,8 +55,8 @@
             <span>{{initData.agentName}}</span>
           </div>
           <div>
-            <span>进仓编号</span>
-            <span>{{initData.inboundNo}}</span>
+            <span class="flex">进仓编号</span>
+            <span> <el-input v-model="initData.inboundNo" size="mini" placeholder="请输入内容"></el-input></span>
           </div>
           <div>
             <span>航线负责人</span>
@@ -423,17 +423,17 @@ export default {
         ],
     };
   },
-  computed:{
-    getInboundCw(){
-      return this.initData.inboundCw
-    }
-  },
-  watch:{
-    getInboundCw(newValue){
-      console.log(newValue)
-      this.dealChildPrice(newValue)
-    }
-  },
+  // computed:{
+  //   getInboundCw(){
+  //     return this.initData.inboundCw
+  //   }
+  // },
+  // watch:{
+  //   getInboundCw(newValue){
+  //     console.log(newValue)
+  //     this.dealChildPrice(newValue)
+  //   }
+  // },
 
    created(){
       this.orderId = this.$route.query.id
