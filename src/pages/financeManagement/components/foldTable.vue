@@ -333,7 +333,7 @@ export default {
       if (e == true) {
         this.selectResult.push(i);
       } else {
-        let index = this.selectResult.findIndex((item) => (item.id = i.id));
+        let index = this.selectResult.findIndex((item) => (item.id == i.id));
         this.selectResult.splice(index, 1);
       }
       console.log(this.checked);
