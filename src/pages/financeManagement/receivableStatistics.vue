@@ -385,7 +385,7 @@
               v-if="checkedTable.indexOf('订单号') !== -1"
             >
             <template slot-scope="scope">
-              <div @click="showData(scope.row.id,scope.row.orderNo)" style="color:skyBlue;cursor:pointer">
+              <div @click="showData(scope.row.orderId,scope.row.orderNo)" style="color:skyBlue;cursor:pointer">
                 {{scope.row.orderNo}}
               </div>
             </template>
