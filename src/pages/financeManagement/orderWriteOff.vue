@@ -429,20 +429,20 @@
               >
               <div v-if="statistDataShow" style="margin-top:15px">
                 <div style="display:flex;" class="allStatist">
-                  <div>应收总金额:{{statistData.totalArCny.toLocaleString('en-US')}}</div>
-                  <div class="statists">已核销总金额:{{statistData.totalRcWoCny.toLocaleString('en-US')}}</div>
-                  <div class="statists">未核销总金额:{{statistData.totalRcUnwoCny.toLocaleString('en-US')}}</div>
-                  <div class="statists" v-html="dealOrgn(statistData.totalArOrgn,'应收原币')" style="white-space:pre-wrap;text-align:right"></div>
-                  <div class="statists" v-html="dealOrgn(statistData.totalRcWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right"></div>
-                  <div class="statists" v-html="dealOrgn(statistData.totalRcUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right"></div>
+                  <div>应收总金额:{{statistData.totalArCny}}</div>
+                  <div class="statists">已核销总金额:{{statistData.totalRcWoCny}}</div>
+                  <div class="statists">未核销总金额:{{statistData.totalRcUnwoCny}}</div>
+                  <div class="statists" v-html="dealOrgnS(statistData.totalArOrgn,'应收原币')" style="white-space:pre-wrap;text-align:right"></div>
+                  <div class="statists" v-html="dealOrgnS(statistData.totalRcWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right"></div>
+                  <div class="statists" v-html="dealOrgnS(statistData.totalRcUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right"></div>
                 </div>
                 <div style="display:flex" class="allStatist">
-                  <div>应付总金额:{{statistData.totalApCny.toLocaleString('en-US')}}</div>
-                  <div class="statists" >已核销总金额:{{statistData.totalApWoCny.toLocaleString('en-US')}}</div>
-                  <div class="statists" >未核销总金额:{{statistData.totalApUnwoCny.toLocaleString('en-US')}}</div>
-                  <div class="statists" v-html="dealOrgn(statistData.totalApOrgn,'应付原币')" style="white-space:pre-wrap;text-align:right"></div>
-                  <div class="statists" v-html="dealOrgn(statistData.totalApWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right"></div>
-                  <div class="statists" v-html="dealOrgn(statistData.totalApUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right"></div>
+                  <div>应付总金额:{{statistData.totalApCny}}</div>
+                  <div class="statists" >已核销总金额:{{statistData.totalApWoCny}}</div>
+                  <div class="statists" >未核销总金额:{{statistData.totalApUnwoCny}}</div>
+                  <div class="statists" v-html="dealOrgnS(statistData.totalApOrgn,'应付原币')" style="white-space:pre-wrap;text-align:right"></div>
+                  <div class="statists" v-html="dealOrgnS(statistData.totalApWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right"></div>
+                  <div class="statists" v-html="dealOrgnS(statistData.totalApUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right"></div>
                 </div>
               </div>
 
@@ -758,10 +758,44 @@
       }
       totalOrgn = "";
       totalOrgn += (value1 || value1 == 0) ? value1 + "CNY" + "\n" : "";
-      totalOrgn += (value2 || value2 == 0) ? value2 + "HKD" + "\n" : "";
-      totalOrgn += (value3 || value3 == 0) ? value3 + "USD" + "\n" : "";
-      totalOrgn += (value4 || value4 == 0) ? value4 + "EUR" + "\n" : "";
-      totalOrgn += (value5 || value5 == 0) ? value5 + "GBP" + "\n": "";
+      totalOrgn += value2 ? value2 + "HKD" + "\n" : "";
+      totalOrgn += value3 ? value3 + "USD" + "\n" : "";
+      totalOrgn += value4 ? value4 + "EUR" + "\n" : "";
+      totalOrgn += value5 ? value5 + "GBP" + "\n": "";
+      totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
+      return (extraWord?extraWord+":":"") +totalOrgn;
+    },
+      dealOrgnS(orgn,extraWord) {
+      if (!orgn) {
+        return 0+'CNY';
+      }
+       orgn = JSON.parse(orgn);
+      var totalOrgn = "";
+      var value1 = 0;
+      var value2 = 0;
+      var value3 = 0;
+      var value4 = 0;
+      var value5 = 0;
+      // HK$ $ € ￡
+      for (var i = 0; i < orgn.length; i++) {
+        if (orgn[i].currency == "1") {
+          value1 += orgn[i].amount;
+        } else if (orgn[i].currency == "2") {
+          value2 += orgn[i].amount;
+        } else if (orgn[i].currency == "3") {
+          value3 += orgn[i].amount;
+        } else if (orgn[i].currency == "4") {
+          value4 += orgn[i].amount;
+        } else if (orgn[i].currency == "5") {
+          value5 += orgn[i].amount;
+        }
+      }
+      totalOrgn = "";
+      totalOrgn += (value1 || value1 == 0) ? value1.toLocaleString('en-US') + "CNY" + "\n" : "";
+      totalOrgn += (value2 || value2 == 0) ? value2.toLocaleString('en-US') + "HKD" + "\n" : "";
+      totalOrgn += (value3 || value3 == 0) ? value3.toLocaleString('en-US') + "USD" + "\n" : "";
+      totalOrgn += (value4 || value4 == 0) ? value4.toLocaleString('en-US') + "EUR" + "\n" : "";
+      totalOrgn += (value5 || value5 == 0) ? value5.toLocaleString('en-US') + "GBP" + "\n": "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return (extraWord?extraWord+":":"") +totalOrgn;
     },
@@ -846,6 +880,12 @@
         this.$http.post(this.$service.subWoList,copyData).then(data=>{
           if(data.code == 200) {
           this.statistData = data.data
+          this.statistData.totalArCny = this.statistData.totalArCny.toLocaleString('en-US')
+          this.statistData.totalRcWoCny = this.statistData.totalRcWoCny.toLocaleString('en-US')
+          this.statistData.totalRcUnwoCny = this.statistData.totalRcUnwoCny.toLocaleString('en-US')
+          this.statistData.totalApCny = this.statistData.totalApCny.toLocaleString('en-US')
+          this.statistData.totalApWoCny = this.statistData.totalApWoCny.toLocaleString('en-US')
+          this.statistData.totalApUnwoCny = this.statistData.totalApUnwoCny.toLocaleString('en-US')
           this.errorStatist = data.data.hasAbNormal
           }
         })
