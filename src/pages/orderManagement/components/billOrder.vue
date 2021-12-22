@@ -226,9 +226,10 @@ export default {
       deep:true,
       handler(newValue){
         for(let i in newValue){
+          this.$set(newValue[i],'exchangeRate', this.getCurrentRate(newValue[i].currency))
           newValue[i].exchangeRate = newValue[i].exchangeRate == null ? this.getCurrentRate(newValue[i].currency) : newValue[i].exchangeRate
           newValue[i].totalOrgn = Math.floor((isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)) * 100) /100 
-          newValue[i].totalCny =  Math.floor(( isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) * Number(newValue[i].exchangeRate)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * Number(newValue[i].exchangeRate) )*100)/100
+          newValue[i].totalCny =  Math.floor(( isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) *this.getCurrentRate(newValue[i].currency)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * this.getCurrentRate(newValue[i].currency) )*100)/100
         }
         this.totalCnyStr =this.calcTotalCny(newValue)
         let {temArray,tempStr} =  this.calcTotalOrgn(newValue)
@@ -242,9 +243,9 @@ export default {
     // 处理原始传入数据
     dealOriginData(newValue){
         for(let i in newValue){
-           newValue[i].exchangeRate = newValue[i].exchangeRate == null ? this.getCurrentRate(newValue[i].currency) : newValue[i].exchangeRate
-          newValue[i].totalOrgn = isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)
-          newValue[i].totalCny =  isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) * Number(newValue[i].exchangeRate)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * Number(newValue[i].exchangeRate) 
+          newValue[i].exchangeRate = newValue[i].exchangeRate == null ? this.getCurrentRate(newValue[i].currency) : newValue[i].exchangeRate
+          newValue[i].totalOrgn = Math.floor((isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)) * 100) /100 
+          newValue[i].totalCny =  Math.floor(( isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) *this.getCurrentRate(newValue[i].currency)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * this.getCurrentRate(newValue[i].currency) )*100)/100
         }
         this.totalCnyStr =this.calcTotalCny(newValue)
         let {temArray,tempStr} =  this.calcTotalOrgn(newValue)

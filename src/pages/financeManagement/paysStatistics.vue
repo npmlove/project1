@@ -199,7 +199,7 @@
              <el-checkbox  v-model="checkedIndex0">全选</el-checkbox>
              <el-checkbox class="mycheckbox"  v-model="checkedIndex1">订单号</el-checkbox>
              <el-checkbox class="mycheckbox" v-model="checkedIndex2">运单号</el-checkbox>
-             <el-checkbox class="mycheckbox" v-model="checkedIndex3">应收对象</el-checkbox>
+             <el-checkbox class="mycheckbox" v-model="checkedIndex3">应付对象</el-checkbox>
              <el-checkbox class="mycheckbox" v-model="checkedIndex4">航班日期</el-checkbox>
              <el-checkbox class="mycheckbox" v-model="checkedIndex5">交单时间</el-checkbox>
              <el-checkbox class="mycheckbox" v-model="checkedIndex6">应收总金额</el-checkbox>
@@ -263,7 +263,7 @@
       <el-table-column
         prop="expenseUnitName"
          v-if="checkedIndex3"
-        label="应收对象"
+        label="应付对象"
         width="250">
       </el-table-column>
       <el-table-column
@@ -359,13 +359,6 @@
           </template>
         </el-table-column>
       </el-table-column>
-      <!-- <el-table-column
-        prop="totalApCny"
-        label="应付总金额"
-        v-if="checkedIndex14"
-        width="100">
-      </el-table-column> -->
-
       <el-table-column
         prop="exchangeRates"
         label="汇率"
@@ -1036,6 +1029,7 @@ import {exportFile} from '../../util/util'
             let res = await this.$http.post(this.$service.toWriteOffAmountCount,params)
             if(res.code == 200){
               this.verificationObj = res.data
+              console.log(res.data)
               setTimeout(()=>{
                 this.$refs.verificationData.showModal()
               },0)

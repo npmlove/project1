@@ -697,4 +697,4 @@ export const constantRoutes  = [
   
 ]
 
-export default constantRoutes 
+export default [...constantRoutes,...asyncRoutes]

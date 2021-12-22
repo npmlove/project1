@@ -260,8 +260,11 @@
             <!-- 组件部分 -->
             <bill-order  :getList = item.list  :ref="`typeBill${index}`" />
             <!-- 操作部分 -->
+            <el-button  class="setWidth ml_20"   @click="fatherAddOneItem(index)" v-if="initData.financeStatus == 0 || initData.financeStatus == 4 " >添加费用</el-button>
+            <br>
+            <br>
+            <br>
             <div class="ml_20" v-if="initData.canCheckFlag == 1  && item.status == 0 "  >
-              <el-button  class="setWidth"   @click="fatherAddOneItem(index)" >添加费用</el-button>
               <el-button  class="setWidth"  type="primary" @click="reconciliationClient(index)" >发起客户对账</el-button>
             </div>
             <div  >
@@ -468,7 +471,7 @@ export default {
     calcVwr(){
       let {inboundWeight,inboundCbm,bubblePoint} = this.initData
       if(inboundWeight && inboundCbm){
-        this.initData.inboundVwr = inboundCbm / inboundWeight
+        this.initData.inboundVwr = Math.ceil*(inboundWeight/inboundCbm)
         if(bubblePoint == 10){
           this.initData.inboundCw = Math.max(inboundCbm * 167, inboundWeight ) 
         }else if(bubblePoint == 9){
@@ -739,7 +742,6 @@ export default {
     dealChildPrice(num){
       // 取到子组件typeOne
       let a = this.$refs.typeBill0[0].tableData
-
       for(let i in a){
         if(a[i].expenseName == '空运费'){
           a.quantity = num
@@ -753,8 +755,6 @@ export default {
           this.$set(b[i],'quantity',num)
         }
       }
-
-
     },
     // 获取页面初始配置
     async initSysSetTing(){
@@ -813,8 +813,6 @@ export default {
         tempArray = this.$refs.typeNewBill.tableData
         totalCny = this.$refs.typeNewBill.totalCnyStr
       }
-
-
       let typeTwo  =this.$refs.typeTwo.tableData
       tempArray = tempArray.concat(typeTwo)  
       if(totalCny > 0){

@@ -283,8 +283,11 @@
             <!-- 组件部分 -->
             <bill-order  :getList = item.list  :ref="`typeBill${index}`" />
             <!-- 操作部分 -->
+            <el-button  class="setWidth ml_20"   @click="fatherAddOneItem(index)" v-if="initData.financeStatus == 0 || initData.financeStatus == 4 " >添加费用</el-button>
+            <br>
+            <br>
+            <br>
             <div class="ml_20" v-if="initData.canCheckFlag == 1  && item.status == 0 "  >
-              <el-button  class="setWidth"   @click="fatherAddOneItem(index)" >添加费用</el-button>
               <el-button  class="setWidth"  type="primary" @click="reconciliationClient(index)" >发起客户对账</el-button>
             </div>
             <div  >
@@ -491,7 +494,7 @@ export default {
     calcVwr(){
       let {inboundWeight,inboundCbm,bubblePoint} = this.initData
       if(inboundWeight && inboundCbm){
-        this.initData.inboundVwr = inboundCbm / inboundWeight
+        this.initData.inboundVwr = Math.ceil*(inboundWeight/inboundCbm)
         if(bubblePoint == 10){
           this.initData.inboundCw = Math.max(inboundCbm * 167, inboundWeight ) 
         }else if(bubblePoint == 9){
