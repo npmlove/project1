@@ -1139,7 +1139,7 @@ import {exportFile} from '../../util/util'
       },
       // 处理利润异常样式
       backStyle({row,rowIndex}){
-        if( row.unwrittenOffAmountRmb < row.payCheckAmount < row.totalApCny){
+        if( row.totalApOrgn < row.payCheckAmount < row.payWriteOffAmountRmb){
           console.log('第二种异常')
           return 'background-color: #FA8072';
         }
