@@ -1029,7 +1029,6 @@ import {exportFile} from '../../util/util'
             let res = await this.$http.post(this.$service.toWriteOffAmountCount,params)
             if(res.code == 200){
               this.verificationObj = res.data
-              console.log(res.data)
               setTimeout(()=>{
                 this.$refs.verificationData.showModal()
               },0)

@@ -283,7 +283,9 @@ agentBill: pulicWeb + '/t-bill/agentBill',
 // 导出供应商账单
   agentListExport:pulicWeb +'/t-bill/agentBillExport',
   // 导出pdf 托书
-  createAgentBookingNotePdf: pulicWeb + '/t-order/createAgentBookingNotePdf'
+  createAgentBookingNotePdf: pulicWeb + '/t-order/createAgentBookingNotePdf',
+  // 账单操作记录
+  billOpearteList: pulicWeb + '/t-order-present-log/list'
 
 }
 export default serviceApi

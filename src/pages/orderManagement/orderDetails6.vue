@@ -219,13 +219,13 @@
               </div>
               <h1 class="title">其他服务</h1>
               <div class="inData" style="background:rgb(240,240,240);padding-left:20px">
-                  <div>
+                  <!-- <div>
                       <span class="mr_25">报关服务</span>
                       <el-radio-group v-model="initData.customsType">
                         <el-radio :label="1">自行报关</el-radio>
                         <el-radio :label="2">委托报关</el-radio>
                       </el-radio-group>
-                  </div>
+                  </div> -->
                   <div class="mtop_10">
                       <span class="mr_25">国内提货</span>
                       <el-radio-group v-model="initData.isPickUp">
@@ -652,9 +652,8 @@ export default {
 
     // 交单
     commitionBill(){
-      // 账单暂时已经定 确认
-
-     console.log(this.initData.financeStatus)
+        // 账单暂时已经定 确认
+        this.saveOrder()
         let data = {
           financeStatus: this.initData.financeStatus,
           operationType: 0,

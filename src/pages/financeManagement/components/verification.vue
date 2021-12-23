@@ -171,12 +171,11 @@ export default {
                     this.totalApCny = totalApCny
                     this.unwrittenOffAmountRmbString = totalApWoOrgn
                     this.payWriteOffAmountRmbString = totalApUnwoOrgn
-                    this.options = this.setOptionArray(totalApUnwoOrgn)
+                    this.options = this.setOptionArray(totalApWoOrgn)
+                    this.currency = this.setOptionArray(totalApWoOrgn)[0].value
                     this.unwrittenOffAmountRmb = this.setOne(totalApWoOrgn)
                     this.payWriteOffAmountRmb  = this.setOne(totalApUnwoOrgn)
                 }
-                
-
             }
         }
 
