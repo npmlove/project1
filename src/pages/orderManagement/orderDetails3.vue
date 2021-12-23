@@ -235,13 +235,13 @@
               </div>
               <h1 class="title">其他服务</h1>
               <div class="inData" style="background:rgb(240,240,240);padding-left:20px">
-                  <div>
+                  <!-- <div>
                       <span class="mr_25">报关服务</span>
                       <el-radio-group v-model="initData.customsType">
                         <el-radio :label="1">自行报关</el-radio>
                         <el-radio :label="2">委托报关</el-radio>
                       </el-radio-group>
-                  </div>
+                  </div> -->
                   <div class="mtop_10">
                       <span class="mr_25">国内提货</span>
                       <el-radio-group v-model="initData.isPickUp">
@@ -319,20 +319,25 @@
               <el-button    class="setWidth ml_20" type="primary" @click="reconciliationClient(100)" >发起客户对账</el-button>
           </div>
           <div class="line"></div>
+            <div>
+
+            </div>
             <billOrder  :getList= "initData.apOrderPriceList"  ref="typeTwo" />
             <!-- 应收添加 -->
             <el-button  class="setWidth ml_20"  v-if="initData.financeStatus == 0 || initData.financeStatus == 4"  @click="fatherAddOneItem(200)" >添加费用</el-button>
             <br>
             <br>
             <br>
-            <span  class="ml_20 " v-if="initData.financeStatus == 0">未交单</span>
-            <span  class="ml_20" v-if="initData.financeStatus == 1">已交单</span>
-            <span  class="ml_20" v-if="initData.financeStatus == 2">请解锁</span>
-            <span  class="ml_20" v-if="initData.financeStatus == 3">交单待审核</span>
-            <span class="ml_20" v-if="initData.financeStatus == 4">修改中</span>
+            <span   class="ml_20 " v-if="initData.financeStatus == 0">未交单</span>
+            <span   class="ml_20" v-if="initData.financeStatus == 1">已交单</span>
+            <span   class="ml_20" v-if="initData.financeStatus == 2">请解锁</span>
+            <span   class="ml_20" v-if="initData.financeStatus == 3">交单待审核</span>
+            <span   class="ml_20" v-if="initData.financeStatus == 4">修改中</span>
             <el-button class="setWidth ml_20" :type="isChangeJiaoDan ? 'primary' : ''" :disabled="!isChangeJiaoDan" v-if="isChangeJiaoDan && isChangeJiaoDan2" @click="commitionBill()">交单</el-button>
             <el-button class="setWidth ml_20" v-if="initData.financeStatus == 1 " @click="recommiter" >申请解锁</el-button>
             <el-button class="setWidth ml_20" v-if="initData.financeStatus == 2 " >解锁已申请，等待审核</el-button>
+            <!-- <p class="opearte" ref="addOpearte" v-if="operateList.length > 0" >账单操作记录</p> -->
+            <opeartes />
           <div class="line"></div>
           <div class="paddingBottom"></div>
         </div>
@@ -342,6 +347,7 @@
 <script>
 import binList from './components/binList.vue'
 import billOrder from './components/billOrder.vue'
+import opeartes from './components/opeartes.vue'
 export default {
   data() {
     return {
@@ -352,6 +358,7 @@ export default {
       orderNo:'',// 运单号
       orderId:'',// 账单id
       creatNewBillBoolen:false, // 新建账单的状态
+      operateList:[],// 账单操作记录
       preSaleList:[] ,// 售前客服初始数组
       onSaleList:[] ,// 售中客服初始数组
       airLineList:[] ,// 航线负责人初始数组
@@ -452,12 +459,26 @@ export default {
       this.orderId = this.$route.query.id
       this.getOriganData()
       this.initSysSetTing()
+      this.getOPerateList()
   },
   components:{
     binList,
-    billOrder
+    billOrder,
+    opeartes
   },
   methods:{
+    // 获取账单操作记录
+    async getOPerateList(){
+      let res = await this.$http.get(this.$service.billOpearteList + `?orderId=${this.orderId}`)
+      console.log('操作记录 ')
+      if(res.code == 200){
+        if(res.data.length > 0){
+          console.log(res.data)
+          this.operateList = res.data
+        }
+      }
+     
+    },
     // 获取URl 协议
     async getUrl(){
       return window.location.protocol
@@ -669,42 +690,40 @@ export default {
     // 交单
     commitionBill(){
       // 账单暂时已经定 确认
-
-     console.log(this.initData.financeStatus)
-        let data = {
-          financeStatus: this.initData.financeStatus,
-          operationType: 0,
-          orderId: this.orderId,
-          info: ''
-        }
-        this.$http.post(this.$service.presentSavePresentLog, data).then(res => {
-          if (res.code == 200) {
-            if(this.initData.financeStatus == 0){
-              this.$alert('交单成功', {
-                confirmButtonText: '确定',
-                callback: () => {
-                  this.$router.push('/orderManagement/orderManage')
-                }
-              });
-            }else if(this.initData.financeStatus == 4){
-              this.$alert('交单已提交，待审核', {
-                confirmButtonText: '确定',
-                callback: () => {
-                  this.$router.push('/orderManagement/orderManage')
-                }
-              });
-            }
-
-          }else{
-            this.$message.error(res.message)
+      this.saveOrder()
+      let data = {
+        financeStatus: this.initData.financeStatus,
+        operationType: 0,
+        orderId: this.orderId,
+        info: ''
+      }
+      this.$http.post(this.$service.presentSavePresentLog, data).then(res => {
+        if (res.code == 200) {
+          if(this.initData.financeStatus == 0){
+            this.$alert('交单成功', {
+              confirmButtonText: '确定',
+              callback: () => {
+                this.$router.push('/orderManagement/orderManage')
+              }
+            });
+          }else if(this.initData.financeStatus == 4){
+            this.$alert('交单已提交，待审核', {
+              confirmButtonText: '确定',
+              callback: () => {
+                this.$router.push('/orderManagement/orderManage')
+              }
+            });
           }
-        })
+
+        }else{
+          this.$message.error(res.message)
+        }
+      })
     },
     // 创建一个新账单
     creatNewBill(e){
       this.creatNewBillBoolen = true
     },
-
     // Four组件的新增放到父组件触发
     fatherAddOneItem(e){
       if(e == 0){
@@ -822,8 +841,8 @@ export default {
         delete order.orderCargoDetailList
         delete order.orderPriceList
         delete order.trayDetail
-       let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
-       let orderCargoDetailList = arrayTypeThree
+      let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
+      let orderCargoDetailList = arrayTypeThree
 
 
       let params = {
@@ -832,15 +851,14 @@ export default {
         orderCargoDetailList:orderCargoDetailList,
       }
      this.$http.post(this.$service.orderSaveOrder,params).then((data) => {
-            if(data.code == 200){
-              this.$message('保存成功')
-              this.$router.push('/orderManagement/orderManage')
-            } else {
-              this.$message.error(data.message)
-            }
+        if(data.code == 200){
+          this.$message('保存成功')
+          this.$router.push('/orderManagement/orderManage')
+        } else {
+          this.$message.error(data.message)
+        }
       })
-    },
-    
+    },   
     // 获取页面初始配置
     async initSysSetTing(){
       let res1 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000')
@@ -1049,6 +1067,15 @@ export default {
   color: rgb(2, 175, 240);
   text-decoration: underline;
   margin-left: 15px;
-
+}
+.opearte{
+  color: rgb(2, 175, 240);
+  text-decoration: underline;
+  text-align: right;
+  margin-right: 30px;
+  position: relative;
+  top: -14px;
+  font-size: 16px;
+  cursor: pointer;
 }
 </style>
