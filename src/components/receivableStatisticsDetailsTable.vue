@@ -182,10 +182,12 @@
               }}
             </span>
                <span v-else-if="column.prop == 'rcvWriteOffCount' && column.label == '核销次数'">
-              <a @click="showWOLogs(scope.row)">{{ scope.row.rcvWriteOffCount }}</a>
+              <a v-if="scope.row.rcvWriteOffCount!=0" @click="showWOLogs(scope.row) ">{{ scope.row.rcvWriteOffCount }}</a>
+               <div v-if="scope.row.rcvWriteOffCount==0"> 0 </div>
             </span>
                <span v-else-if="column.prop == 'payWriteOffCount' && column.label == '核销次数'">
-              <a @click="showWOLogs(scope.row)">{{ scope.row.payWriteOffCount }}</a>
+              <a  v-if="scope.row.payWriteOffCount!=0" @click="showWOLogs(scope.row)">{{ scope.row.payWriteOffCount }}</a>
+                  <div v-if="scope.row.payWriteOffCount==0"> 0 </div>
             </span>
             <span v-else-if="column.prop == 'operationType' && column.label == '操作类型'">
               {{
@@ -241,7 +243,7 @@
             <!--              <span v-else-if="column.prop=='orderNo'&& column.label == '订单号'">-->
               <a v-else-if="column.prop=='orderNo'&& column.label == '订单号'"
                  @click="showFees(scope.row)"
-                 style="font-size: 12px;">{{ scope.row.orderNo }}</a>
+                 style="color:skyBlue;cursor:pointer">{{ scope.row.orderNo }}</a>
             <!--            </span>-->
             <!--            <div v-else >{{// scope[column.prop]}}</div>-->
             <span v-else v-html="getDataName(scope.row, column)"></span>

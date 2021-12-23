@@ -407,7 +407,7 @@ export default {
         {label: '付款日期', prop: 'legCount', show: true, width: '100'},
         {label: '核销时间', prop: 'writeOffTime', show: true, width: '150'},
         {label: '结算方式', prop: 'payWay', show: true, width: '100'},
-        {label: '核销次数', prop: 'payWriteOffCount', show: true, width: '50'},
+        {label: '核销次数', prop: 'payWriteOffCount', show: true, width: '100'},
         {label: '核销状态', prop: 'payWriteOffStatus', show: true, width: '100'},
       ],
       columns1: [
