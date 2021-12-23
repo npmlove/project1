@@ -210,7 +210,7 @@
                       <div><el-input size="mini" class="ml_10" v-model="initData.inboundPiece" placeholder=""></el-input></div>
                       <div><el-input size="mini" class="ml_10" v-model="initData.inboundWeight" @change="calcVwr" placeholder=""></el-input></div>
                       <div><el-input size="mini" class="ml_10"  v-model="initData.inboundCbm" @change="calcVwr" placeholder=""></el-input></div>
-                      <div><el-input size="mini" class="ml_10" :value="initData.inboundVwr == '' ? showCwr : '1:' + initData.inboundVwr  " placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10" :value="initData.inboundVwr == null ? showCwr : '1:' + initData.inboundVwr  " placeholder=""></el-input></div>
                       <div>
                         <el-select class="ml_10" size="mini" v-model="initData.bubblePoint" @change="calcVwr" placeholder="请选择">
                             <el-option
