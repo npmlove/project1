@@ -291,7 +291,7 @@
             >
           </div>
           <div class="operateButton">
-            <el-button size="mini" type="primary" @click="showFees(false)" v-if="this.typeCode == '修改申请'"
+            <el-button size="mini" type="primary" @click="showFees(false)" v-if="this.typeCode == '修改申请' || this.typeCode == '已交单'"
               >修改</el-button
             >
             <el-button size="mini" type="primary" @click="showFees(false)" v-if="this.typeCode == '修改审核'"
