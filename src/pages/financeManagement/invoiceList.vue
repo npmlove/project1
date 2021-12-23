@@ -1132,6 +1132,7 @@
           this.invoicingRight = []
           this.invoiceFootOne = this.selectTableData[0].applyAmount
           this.invoiceFootTwo = this.selectTableData[0].applyAmount - this.selectTableData[0].invoicedAmount
+          this.invoiceFootThree = 0
           this.invoicingLeft.id = ""
           this.invoicingDial = true
         }
@@ -1188,6 +1189,7 @@
               totalMoney+=item.invoiceAmount})
               this.invoiceFootThree = totalMoney
               this.$message.success("生成发票成功")
+              this.invoicingLeft = {id:'',invoiceNum:"",invoiceCount:"",invoicingTime:"",invoiceAmount:""}
             } else {
               this.$message.error(data.message)
             }
