@@ -19,7 +19,7 @@
         <template slot-scope="scope">
           <div v-if="column.label == '航线'" style="padding-top: 30px;">
             <div class="dingdan">
-              <div> <img src="@/assets/huixingzhen.png" style="width:15px;height:15px" alt="" v-if="scope.row.fastOrderFlag ==1"> 订单号：{{scope.row.orderNo}}</div>
+              <div> <img src="@/assets/huixingzhen.png" style="width:15px;height:15px" alt="" v-if="scope.row.fastOrderFlag == 1"> 订单号：{{scope.row.orderNo}}</div>
               <div>代理：{{scope.row.agentName}}</div>
               <div>客户：{{scope.row.customerName}}</div>
               <div>进仓编号：{{scope.row.inboundNo || '暂无'}}</div>

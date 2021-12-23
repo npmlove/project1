@@ -351,6 +351,10 @@ import opeartes from './components/opeartes.vue'
 export default {
   data() {
     return {
+      //pdf预览和下载
+        pdfDownLoad:"", 
+        pdfDialogVisible:false,
+
       radio1:'1',
       showCwr:"",//显示的比重 不传给后台
       isDataDone:false,// 已经获取到数据在渲染界面
@@ -467,6 +471,28 @@ export default {
     opeartes
   },
   methods:{
+//下载pdf
+        downLoadPDF(item){
+           axios({  
+               method: "get",
+			   url: item.xpath,
+			   responseType: 'arraybuffer',//接受使用分片方式
+			}).then((res) => {
+                const aLink = document.createElement("a");
+                let blob = new Blob([res], {
+                type: "application/pdf"
+                })
+                aLink.href = URL.createObjectURL(blob)
+                aLink.setAttribute('download', item.attachmentName) // 设置下载文件名称
+                aLink.click()
+                document.body.appendChild(aLink)})
+            },
+            //预览pdf
+            previewPDF(item){
+                this.pdfDialogVisible = true
+                this.filePath =item.xpath
+            },
+
     // 获取账单操作记录
     async getOPerateList(){
       let res = await this.$http.get(this.$service.billOpearteList + `?orderId=${this.orderId}`)

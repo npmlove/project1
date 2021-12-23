@@ -247,6 +247,7 @@
       },
       //详情
       orderDetails(scope) {
+    
         if(scope.row.status == '3' && scope.row.fastOrderFlag == '1') {
           this.$router.push({
             path: '/orderManagement/orderDetails8',
