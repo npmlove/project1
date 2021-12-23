@@ -762,7 +762,7 @@
           </el-form-item>
           <div style="margin:30px 0 20px 10px;fontSize:15px;fontWeight:bold">我司信息:</div>
           <el-form-item label="公司开户名" required label-width="100px">
-            <el-input type="text" v-model="dialCheckInfo.accountName" placeholder="请输入公司开户名" style="width:50%" maxlength="4"></el-input>
+            <el-input type="text" v-model="dialCheckInfo.accountName" placeholder="请输入公司开户名" style="width:50%" maxlength="40"></el-input>
           </el-form-item >
           <el-form-item label = "开户行" required label-width="100px">
             <el-input type="text" v-model="dialCheckInfo.accountBank" placeholder="请输入开户行" style="width:50%" maxlength="30"></el-input>
