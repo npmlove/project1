@@ -1,3 +1,4 @@
+import {asyncRoutes} from "@/router/config"
 /**
  * Use meta.role to determine if the current user has permission
  * @param roles
@@ -31,3 +32,15 @@
   
     return res
   }
+
+  function pathArr(asyncRoutes){
+    const arr = []
+    asyncRoutes.forEach(item=>{
+      item.children.forEach(v=>{
+        arr.push(item.path + "/" + v.path)
+      })
+    })
+    return arr
+  }
+
+  export const whiteList = pathArr(asyncRoutes)
