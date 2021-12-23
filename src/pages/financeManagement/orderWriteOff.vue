@@ -765,29 +765,29 @@
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return (extraWord?extraWord+":":"") +totalOrgn;
     },
-      dealOrgnS(orgn,extraWord) {
+     dealOrgnS(orgn,extraWord) {
       if (!orgn) {
         return 0+'CNY';
       }
        orgn = JSON.parse(orgn);
       var totalOrgn = "";
-      var value1 = 0;
-      var value2 = 0;
-      var value3 = 0;
-      var value4 = 0;
-      var value5 = 0;
+      var value1;
+      var value2;
+      var value3;
+      var value4;
+      var value5;
       // HK$ $ € ￡
       for (var i = 0; i < orgn.length; i++) {
         if (orgn[i].currency == "1") {
-          value1 += orgn[i].amount;
+          value1 = orgn[i].amount;
         } else if (orgn[i].currency == "2") {
-          value2 += orgn[i].amount;
+          value2 = orgn[i].amount;
         } else if (orgn[i].currency == "3") {
-          value3 += orgn[i].amount;
+          value3 = orgn[i].amount;
         } else if (orgn[i].currency == "4") {
-          value4 += orgn[i].amount;
+          value4 = orgn[i].amount;
         } else if (orgn[i].currency == "5") {
-          value5 += orgn[i].amount;
+          value5 = orgn[i].amount;
         }
       }
       totalOrgn = "";
