@@ -485,9 +485,10 @@ export default {
     },
     getOrgn(orgn) {
       if (!orgn) {
-        return;
+        return '0CNY';
       }
       orgn = JSON.parse(orgn);
+      console.log(orgn)
       var totalOrgn = ''
       var value1 = 0
       var value2 = 0
@@ -509,7 +510,7 @@ export default {
         }
       }
       totalOrgn = ''
-      totalOrgn += value1 || value1 == 0 ? value1 + 'CNY' + '\n' : ''
+      totalOrgn = value1 ? value1 + 'CNY' + '\n' : ''
       totalOrgn += value2 ? value2 + 'HKD' + '\n' : ''
       totalOrgn += value3 ? value3 + 'USD' + '\n' : ''
       totalOrgn += value4 ? value4 + 'EUR' + '\n' : ''
