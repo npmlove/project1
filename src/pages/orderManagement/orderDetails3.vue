@@ -458,6 +458,10 @@ export default {
     billOrder
   },
   methods:{
+    // 托书下载
+    downLoadPdf(){
+      
+    },
     // 如果子组件中有空运费 输入bookingPrice的时候同时修改子组件单价
     dealBookingPrice(e){
         console.log(e)
