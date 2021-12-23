@@ -123,7 +123,7 @@
             <table v-if="(optItem.status==0||optItem.status==-1)&&optItem.payWay==null" style="padding: 0px">
             <td style="margin: 0px;padding: 0px;">{{ "操作" + (optIndex + 1) + "：" + optItem.writeOffOperator }}</td><td
               style="color: cornflowerblue ;margin-right: 0">对账</td><td>{{
-                "该订单，核销金额：" + optItem.writeOffAmount + getCurrency(optItem.currency)
+                "该订单，对账金额：" + optItem.writeOffAmount + getCurrency(optItem.currency)
               }}</td><td
               style="padding-left: 20px">{{ optItem.writeOffTime }}</td>
           </table>
@@ -150,7 +150,8 @@
               {{ scope.row.exchangeRate }}
             </span>
             <span v-else-if="column.prop == 'payWay' && column.label == '结算方式'">
-              {{ scope.row.payWay === 0 ? "付款买单" : "月结" }}
+              {{ scope.row.payWay === 0 ? "付款买单" :
+              scope.row.payWay === 1?"月结":"" }}
             </span>
             <span v-else-if="column.prop == 'rcvWriteOffStatus' && column.label == '核销状态'">
               {{
