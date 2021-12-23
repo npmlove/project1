@@ -139,7 +139,7 @@
               <div><span class="ml_10">{{initData.pol}}-{{initData.pod}}</span></div>
             </div>
             <div class="flex mtop_15 ">
-              <div class="flex_message">托书下载</div>
+              <div class="flex_message">上家托书</div>
               <div>
                 <el-button class="ml_10" size="mini">点击下载<i class="el-icon-download el-icon--right"></i></el-button>
               </div>
@@ -194,7 +194,7 @@
                       <div><el-input size="mini" class="ml_10" v-model="initData.inboundPiece" placeholder=""></el-input></div>
                       <div><el-input size="mini" class="ml_10" v-model="initData.inboundWeight" @change="calcVwr" placeholder=""></el-input></div>
                       <div><el-input size="mini" class="ml_10"  v-model="initData.inboundCbm" @change="calcVwr" placeholder=""></el-input></div>
-                      <div><el-input size="mini" class="ml_10" disabled v-model="initData.inboundVwr" placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10" :value="initData.inboundVwr == null ? showCwr : '1:' + initData.inboundVwr  "  placeholder=""></el-input></div>
                       <div>
                         <el-select class="ml_10" size="mini" v-model="initData.bubblePoint" @change="calcVwr" placeholder="请选择">
                             <el-option
@@ -205,7 +205,7 @@
                             </el-option>
                           </el-select>
                       </div>
-                      <div><el-input size="mini" class="ml_10" v-model="initData.inboundCw" placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10"  v-model="initData.inboundCw" placeholder=""></el-input></div>
                   </div>
                   <div class="flex_center mtop_10">
                       <div>件数</div>
@@ -252,7 +252,9 @@
                       v-model="initData.remark">
                   </el-input>
               </div>
+
               <div class="paddingBottom"></div>
+
         </div>
         <div v-show="radio1=='2'" class="details">
           <!-- 应付账单可以最多有5个 做个循环 循环组件ref -->
@@ -260,11 +262,12 @@
             <!-- 组件部分 -->
             <bill-order  :getList = item.list  :ref="`typeBill${index}`" />
             <!-- 操作部分 -->
-             <el-button  class="setWidth ml_20"   @click="fatherAddOneItem(index)" v-if="(initData.financeStatus == 0 || initData.financeStatus == 4) && item.status == 0 " >添加费用</el-button>
+            <el-button  class="setWidth ml_20"   @click="fatherAddOneItem(index)" v-if="(initData.financeStatus == 0 || initData.financeStatus == 4) && item.status == 0 " >添加费用</el-button>
             <br>
             <br>
             <br>
             <div class="ml_20" v-if="initData.canCheckFlag == 1  && item.status == 0 "  >
+             
               <el-button  class="setWidth"  type="primary" @click="reconciliationClient(index)" >发起客户对账</el-button>
             </div>
             <div  >
@@ -326,17 +329,15 @@ import billOrder from './components/billOrder.vue'
 export default {
   data() {
     return {
-      input: '',
       radio1:'1',
+      showCwr:"",//显示的比重 不传给后台
       isDataDone:false,// 已经获取到数据在渲染界面
       isChangeJiaoDan:true, // 交单是否显示出来
       orderNo:'',// 运单号
       orderId:'',// 账单id
       creatNewBillBoolen:false, // 新建账单的状态
       preSaleList:[] ,// 售前客服初始数组
-      pscsId:'', // 售前客服id
       onSaleList:[] ,// 售中客服初始数组
-      mscsId:"",// 售中客服id
       airLineList:[] ,// 航线负责人初始数组
       principalId:'', // 航线负责人ID
       typeTwoProp:{}, //传递给typeTwo 对象
@@ -414,17 +415,22 @@ export default {
         ],
     };
   },
-  // computed:{
-  //   getInboundCw(){
-  //     return this.initData.inboundCw
-  //   }
-  // },
-  // watch:{
-  //   getInboundCw(newValue){
-  //     console.log(newValue)
-  //     this.dealChildPrice(newValue)
-  //   }
-  // },
+  computed:{
+    getInboundCw(){
+      return this.initData.inboundCw
+    },
+    getBookingPrice(){
+      return this.initData.bookingPrice
+    }
+  },
+  watch:{
+    getInboundCw(newValue){
+      this.dealChildPrice(newValue)
+    },
+    getBookingPrice(nv){
+      this.dealBookingPrice(nv)
+    }
+  },
 
    created(){
       this.orderId = this.$route.query.id
@@ -436,7 +442,49 @@ export default {
     billOrder
   },
   methods:{
-        // 选择框获取id 航线负责人
+    // 如果子组件中有空运费 输入bookingPrice的时候同时修改子组件单价
+    dealBookingPrice(e){
+        console.log(e)
+        if(e){        
+          // 应收
+          let a = this.$refs.typeBill0[0].tableData
+          for(let i in a){
+            if(a[i].expenseName == '空运费'){
+              a[i].price = e
+              this.$set(a[i],'price',e)
+            }
+          }
+          let b = this.$refs.typeTwo.tableData
+          for(let i in b){
+            if(b[i].expenseName == '空运费'){
+              b[i].price = e
+              this.$set(b[i],'price',e)
+            }
+          }
+        }
+    },
+    // 如果子组件中有空运费 输入计费重的时候同时修改子组件数量
+    dealChildPrice(num){
+      // 取到子组件typeOne
+        if(num){        
+          // 应收
+          let a = this.$refs.typeBill0[0].tableData
+          for(let i in a){
+            if(a[i].expenseName == '空运费'){
+              a[i].quantity = num
+              this.$set(a[i],'quantity',num)
+            }
+          }
+          let b = this.$refs.typeTwo.tableData
+          for(let i in b){
+            if(b[i].expenseName == '空运费'){
+              b[i].quantity = num
+              this.$set(b[i],'quantity',num)
+            }
+          }
+        }
+    },
+    // 选择框获取id 航线负责人
     getSelectPrincipalId(e){
       let arrayTest =  this.airLineList
       arrayTest.filter(res=>{ 
@@ -471,7 +519,10 @@ export default {
     calcVwr(){
       let {inboundWeight,inboundCbm,bubblePoint} = this.initData
       if(inboundWeight && inboundCbm){
-        this.initData.inboundVwr = Math.ceil*(inboundWeight/inboundCbm)
+        
+        this.initData.inboundVwr = Math.ceil( Number(inboundWeight) / Number(inboundCbm))
+        console.log( this.initData.inboundVwr)
+        this.showCwr = `1:${ this.initData.inboundVwr}`
         if(bubblePoint == 10){
           this.initData.inboundCw = Math.max(inboundCbm * 167, inboundWeight ) 
         }else if(bubblePoint == 9){
@@ -505,6 +556,9 @@ export default {
           inputPattern: /^(\s|\S){0,200}$/,
           inputErrorMessage: '限制200字'
         }).then(({ value }) => {
+            if(!value){
+              this.$message.error('请填写申请理由')
+            }else{
               var data = {
                 financeStatus: this.initData.financeStatus,
                 operationType: 1,
@@ -523,6 +577,8 @@ export default {
                   this.$message.error(res.message)
                 }
               })
+            }
+              
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -535,6 +591,12 @@ export default {
     // 操作完成 推进订单进程 不然没法对账
     exdeOrder(e){
       // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
+      if(this.initData.status == 17  && e ==1){
+        if(!this.initData.waybillNo){
+          this.$message.error('请输入运单号')
+          return ;
+        }
+      }
       let arrayTypeOne = this.$refs.typeBill0[0].tableData
       let arrayTypeTwo = this.$refs.typeTwo.tableData
       let order = this.initData
@@ -599,9 +661,6 @@ export default {
             this.$message.error(res.message)
           }
         })
-
-
-
     },
     // 创建一个新账单
     creatNewBill(e){
@@ -673,7 +732,11 @@ export default {
     },
     // 保存账单
     saveOrder(){
-      let {inboundWeight,inboundCbm, inboundCw , inboundPiece} = this.initData
+      let {inboundWeight,inboundCbm, inboundCw , inboundPiece,inboundNo} = this.initData
+      if(!inboundNo){
+        this.$message.error('请输入进仓编号')
+        return ;
+      }
       if(!inboundPiece){
         this.$message.error('请输入进仓件数')
         return ;
@@ -690,6 +753,7 @@ export default {
         this.$message.error('请输入计费重')
         return ;
       }
+      
       let arrayTypeThree = this.$refs.typeThree.tableData
       let tempthree = arrayTypeThree.filter(item=>{
         return (item.piece == undefined || item.piece == '') || (item.cbm == undefined || item.cbm == "") || (item.weight == undefined || item.weight == '')  || (item.cargoSize == undefined || item.cargoSize == '')
@@ -738,24 +802,7 @@ export default {
             }
       })
     },
-    // 如果子组件中有空运费 输入计费重的时候同时修改子组件单价
-    dealChildPrice(num){
-      // 取到子组件typeOne
-      let a = this.$refs.typeBill0[0].tableData
-      for(let i in a){
-        if(a[i].expenseName == '空运费'){
-          a.quantity = num
-          this.$set(a[i],'quantity',num)
-        }
-      }
-      let b = this.$refs.typeTwo.tableData
-      for(let i in b){
-        if(b[i].expenseName == '空运费'){
-          b.quantity = num
-          this.$set(b[i],'quantity',num)
-        }
-      }
-    },
+    
     // 获取页面初始配置
     async initSysSetTing(){
       let res1 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000')
@@ -812,7 +859,8 @@ export default {
       }else if(e == 100){
         tempArray = this.$refs.typeNewBill.tableData
      
-      } 
+      }
+ 
       let typeTwo  =this.$refs.typeTwo.tableData
       tempArray = tempArray.concat(typeTwo)
         let params = {
