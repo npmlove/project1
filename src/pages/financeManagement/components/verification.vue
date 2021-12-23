@@ -167,8 +167,7 @@ export default {
             immediate:true,
             handler(newValue,oldValue){
                 let {totalApCny,totalApUnwoOrgn,totalApWoOrgn} = newValue
-                if(totalApCny){
-                    
+                if(totalApCny){              
                     this.totalApCny = totalApCny
                     this.unwrittenOffAmountRmbString = totalApWoOrgn
                     this.payWriteOffAmountRmbString = totalApUnwoOrgn
