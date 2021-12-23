@@ -336,8 +336,8 @@
             <el-button class="setWidth ml_20" :type="isChangeJiaoDan ? 'primary' : ''" :disabled="!isChangeJiaoDan" v-if="isChangeJiaoDan && isChangeJiaoDan2" @click="commitionBill()">交单</el-button>
             <el-button class="setWidth ml_20" v-if="initData.financeStatus == 1 " @click="recommiter" >申请解锁</el-button>
             <el-button class="setWidth ml_20" v-if="initData.financeStatus == 2 " >解锁已申请，等待审核</el-button>
-            <!-- <p class="opearte" ref="addOpearte" v-if="operateList.length > 0" >账单操作记录</p> -->
-            <opeartes />
+            <p class="opearte"  @click="showoplist" v-if="operateList.length > 0" >账单操作记录</p>
+            <opeartes ref="addOpearte" :oplist= 'operateList' />
           <div class="line"></div>
           <div class="paddingBottom"></div>
         </div>
@@ -493,6 +493,10 @@ export default {
                 this.filePath =item.xpath
             },
 
+    // 点击账单操作记录
+    showoplist(){
+      this.$refs.addOpearte.show()
+    },
     // 获取账单操作记录
     async getOPerateList(){
       let res = await this.$http.get(this.$service.billOpearteList + `?orderId=${this.orderId}`)
@@ -500,10 +504,9 @@ export default {
       if(res.code == 200){
         if(res.data.length > 0){
           console.log(res.data)
-          this.operateList = res.data
+          this.operateList = res.data   
         }
       }
-     
     },
     // 获取URl 协议
     async getUrl(){
@@ -712,7 +715,6 @@ export default {
             }
       })
     },
-
     // 交单
     commitionBill(){
       // 账单暂时已经定 确认

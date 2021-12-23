@@ -1,35 +1,62 @@
 <template>
     <div>
         <el-dialog
-            title="提示"
             :visible.sync="dialogVisible"
-            width="30%"
+            width="60%"
+            
+            title="账单操作记录"
             :before-close="handleClose">
-            <span>这是一段信息</span>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-            </span>
+                <el-table
+                    :data="tableData"
+                    border
+                    class="metion"
+                   >
+                    <el-table-column
+                        prop="operationType"
+                        label="操作类型"
+                       >
+                    </el-table-column>
+                    <el-table-column
+                        prop="createTime"
+                        label="操作时间"
+                        >
+                    </el-table-column>
+                    <el-table-column
+                        prop="operationInfo"
+                        label="说明">
+                    </el-table-column>
+                    <el-table-column
+                        prop="operator"
+                        label="操作人">
+                    </el-table-column>
+                </el-table>
+                <div style="height:15px"></div>
         </el-dialog>
     </div>
 </template>
 <script>
 export default {
+    props:['oplist'],
     data() {
         return {
-           dialogVisible: false
+           dialogVisible: false,
+           tableData:this.oplist,
         };
     },
-    handleClose(done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {});
-      }
+    methods:{
+        show(){
+            this.dialogVisible = true
+        },
+        handleClose(done) {
+             this.dialogVisible = false
+        }
+    },
+    
 }
 </script>
 <style scoped>
-
+.metion{
+    padding-top: 15px;
+}
 </style>
 

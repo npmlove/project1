@@ -450,7 +450,7 @@ export default {
         {label: '到账时间', prop: 'legCount', show: true, width: '100'},
         {label: '核销时间', prop: 'writeOffTime', show: true, width: '150'},
         {label: '结算方式', prop: 'payWay', show: true, width: '100'},
-        {label: '核销次数', prop: 'rcvWriteOffCount', show: true, width: '50'},
+        {label: '核销次数', prop: 'rcvWriteOffCount', show: true, width: '100'},
         {label: '核销状态', prop: 'rcvWriteOffStatus', show: true, width: '100'},
       ],
       columns1: [
