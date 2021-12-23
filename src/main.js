@@ -55,8 +55,7 @@ router.beforeEach(function (to, from, next) {
     }
 
   }else{
-    if(to.path === "/" || to.path === "/login") { 
-      console.log('[0]') 
+    if(to.path === "/" || to.path === "/login") {
       sessionStorage.clear()
     }
     next()
