@@ -574,7 +574,7 @@
           </Table>
           <div class="finance-table-price">
             <div>账单合计：{{ this.totalArOrgn | getOrgn}}</div>
-            <div>人民币合计：￥{{ this.totalArCny }}</div>
+            <div>人民币合计：￥{{ this.totalArCny.toLocaleString('en-US') }}</div>
             <div>结算方式：{{ this.payWay == 0 ? "付款买单" : "月结买单" }}</div>
           </div>
           <div style="font-size: 18px;font-weight: 100;color: #333;padding: 10px 20px 10px 20px;">修改记录</div>
@@ -632,10 +632,10 @@
           </el-form-item>
           <el-form-item label="收款账户信息:"  required class="formItem" label-width="130px">
             <el-select
+              id="getAccountInfo"
               v-model="chargeOffData.userInfo"
               placeholder="请输入收款账户信息"
               :remote-method="chargeInfoMethod"
-              maxlength="15"
               clearable
               filterable
               remote
@@ -1062,7 +1062,7 @@
         }
       }
       totalOrgn = "";
-      totalOrgn += value1 ? value1 + "CNY" + "\n" : "";
+      totalOrgn += value1 || value1 == 0 ? value1 + "CNY" + "\n" : "";
       totalOrgn += value2 ? value2 + "HKD" + "\n" : "";
       totalOrgn += value3 ? value3 + "USD" + "\n" : "";
       totalOrgn += value4 ? value4 + "EUR" + "\n" : "";
@@ -1124,6 +1124,7 @@
          select5.setAttribute('maxLength',10)
          const select6 = document.querySelector('#principalId')
          select6.setAttribute('maxLength',10)
+          
       },
       //表格列全选控制
       handleCheckAllChange(val) {
@@ -1275,6 +1276,10 @@
             this.$set(this.chargeMoney,index,{label:this.currencyArray[item-1],value:item})
           })
             this.dialogFormVisibleThree = true;
+            this.$nextTick(()=>{
+               const select7 = document.querySelector('#getAccountInfo')
+              select7.setAttribute('maxLength',30)
+            })
             if(this.chargeMoney.length>0) {
               this.changeCurrency(this.chargeMoney[0].value)
               this.chargeOffData.currency = this.chargeMoney[0].value
@@ -1325,7 +1330,7 @@
       },
       //核销次数列点击事件
        getRcvWrite (row){
-
+         if(row.rcvWriteOffCount == 0) return ""
         this.receiveOperate= [{}]
         this.dialogFormVisibleTwo = true
         const copyData = [{}]
