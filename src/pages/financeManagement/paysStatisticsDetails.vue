@@ -9,7 +9,7 @@
           </el-form-item>
 
           <el-form-item label="运单号:" class="formItem" label-width="80px">
-            <el-input v-model="waybillNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
+            <el-input v-model="waybillNo" style="width: 200px;" size="medium" :maxlength="11"  onkeyup="value=value.replace(/[^\d]/g, '')" clearable
                       placeholder="请输入运单号"></el-input>
           </el-form-item>
 
