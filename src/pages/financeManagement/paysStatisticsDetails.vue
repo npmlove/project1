@@ -247,16 +247,36 @@
           <el-button size="mini" class="pageSkip">
             <el-checkbox v-model="pageSkipChecked" @change="selectAllTable">跨页全选</el-checkbox>
           </el-button>
-          <el-button size="mini" @click="getStatistData">数据统计</el-button>
-          <div style="margin-top:15px" v-if="statistDataShow">
-            <span>应收总金额:{{ statistData.totalApCny }}</span>
-            <span style="margin-left:15px">已核销总金额: {{ statistData.totalApWoCny }}</span>
-            <span style="margin-left:15px">未核销总金额:{{ statistData.totalApUnwoCny }}</span>
-            <span style="margin-left:15px">应收原币:{{ getOrgn(statistData.totalApOrgn) }}</span>
-            <span style="margin-left:15px">已核销原币:{{ getOrgn(statistData.totalApWoOrgn) }}</span>
-            <span style="margin-left:15px">未核销原币:{{ getOrgn(statistData.totalApUnwoOrgn) }}</span>
-            <span style="margin-left:15px;color: red">{{ statistData.hasAbNormal ? '存在异常订单!' : '' }}</span>
+          <el-button type="primary" size="mini" @click="getStatistData">数据统计</el-button>
+          <div style="margin-top: 15px;display:flex;font-size:12px" v-if="statistDataShow">
+            <div class="statist">
+              <div>应付总金额:{{ statistData.totalApCny }}</div>
+              <div v-html="dealOrgnS(statistData.totalApOrgn,'应付原币')" style="white-space:pre-wrap;text-align:right"
+                   class="statists"></div>
+            </div>
+            <div class="statist">
+              <div>已核销总金额:{{ statistData.totalApWoCny }}</div>
+              <div v-html="dealOrgnS(statistData.totalApWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right"
+                   class="statists"></div>
+            </div>
+            <div class="statist">
+              <div>未核销总金额:{{ statistData.totalApUnwoCny }}</div>
+              <div v-html="dealOrgnS(statistData.totalApUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right"
+                   class="statists"></div>
+            </div>
+            <div class="statist" style="color:red;font-size:20px" v-if="statistData.hasAbNormal">
+              <div>存在异常订单！</div>
+            </div>
           </div>
+<!--          <div style="margin-top:15px" v-if="statistDataShow">-->
+<!--            <span>应收总金额:{{ statistData.totalApCny }}</span>-->
+<!--            <span style="margin-left:15px">已核销总金额: {{ statistData.totalApWoCny }}</span>-->
+<!--            <span style="margin-left:15px">未核销总金额:{{ statistData.totalApUnwoCny }}</span>-->
+<!--            <span style="margin-left:15px">应收原币:{{ getOrgn(statistData.totalApOrgn) }}</span>-->
+<!--            <span style="margin-left:15px">已核销原币:{{ getOrgn(statistData.totalApWoOrgn) }}</span>-->
+<!--            <span style="margin-left:15px">未核销原币:{{ getOrgn(statistData.totalApUnwoOrgn) }}</span>-->
+<!--            <span style="margin-left:15px;color: red">{{ statistData.hasAbNormal ? '存在异常订单!' : '' }}</span>-->
+<!--          </div>-->
         </div>
       </div>
     </div>
@@ -642,6 +662,40 @@ export default {
     },
     selectAllTable() {
       this.$refs.child.selectAllTable(this.pageSkipChecked, this.tableData);
+    },
+    dealOrgnS(orgn, extraWord) {
+      if (!orgn) {
+        return 0 + 'CNY';
+      }
+      orgn = JSON.parse(orgn);
+      var totalOrgn = "";
+      var value1;
+      var value2;
+      var value3;
+      var value4;
+      var value5;
+      // HK$ $ € ￡
+      for (var i = 0; i < orgn.length; i++) {
+        if (orgn[i].currency == "1") {
+          value1 = orgn[i].amount;
+        } else if (orgn[i].currency == "2") {
+          value2 = orgn[i].amount;
+        } else if (orgn[i].currency == "3") {
+          value3 = orgn[i].amount;
+        } else if (orgn[i].currency == "4") {
+          value4 = orgn[i].amount;
+        } else if (orgn[i].currency == "5") {
+          value5 = orgn[i].amount;
+        }
+      }
+      totalOrgn = "";
+      totalOrgn += (value1 || value1 == 0) ? value1.toLocaleString('en-US') + "CNY" + "\n" : "";
+      totalOrgn += (value2 || value2 == 0) ? value2.toLocaleString('en-US') + "HKD" + "\n" : "";
+      totalOrgn += (value3 || value3 == 0) ? value3.toLocaleString('en-US') + "USD" + "\n" : "";
+      totalOrgn += (value4 || value4 == 0) ? value4.toLocaleString('en-US') + "EUR" + "\n" : "";
+      totalOrgn += (value5 || value5 == 0) ? value5.toLocaleString('en-US') + "GBP" + "\n" : "";
+      totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
+      return (extraWord ? extraWord + ":" : "") + totalOrgn;
     },
     showFees(row) {
 
@@ -1068,7 +1122,12 @@ export default {
     margin: 0px 10px 20px 10px;
   }
 }
-
+.statist {
+  margin-left:15px;
+  .statists {
+    margin-top:10px;
+  }
+}
 /deep/ .el-dialog {
   min-width: 480px;
   border-radius: 6px;
