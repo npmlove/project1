@@ -12,9 +12,16 @@
                     class="metion"
                    >
                     <el-table-column
-                        prop="operationType"
                         label="操作类型"
                        >
+                       <template slot-scope="scope">
+                           <span v-if="scope.row.operationType == 0">交单</span>
+                           <span v-if="scope.row.operationType == 1">解锁申请</span>
+                           <span v-if="scope.row.operationType == 2">解锁通过</span>
+                           <span v-if="scope.row.operationType == 3">解锁驳回</span>
+                           <span v-if="scope.row.operationType == 4">审核通过</span>
+                           <span v-if="scope.row.operationType == 5">审核驳回</span>
+                       </template>
                     </el-table-column>
                     <el-table-column
                         prop="createTime"
