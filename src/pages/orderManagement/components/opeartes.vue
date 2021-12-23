@@ -47,11 +47,12 @@ export default {
     data() {
         return {
            dialogVisible: false,
-           tableData:this.oplist,
+           tableData:[],
         };
     },
     methods:{
         show(){
+            this.tableData =  this.oplist
             this.dialogVisible = true
         },
         handleClose(done) {
