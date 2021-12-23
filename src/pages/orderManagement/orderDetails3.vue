@@ -157,7 +157,7 @@
             <div class="flex mtop_15 ">
               <div class="flex_message">上家托书</div>
               <div>
-                <el-button class="ml_10" size="mini">点击下载<i class="el-icon-download el-icon--right"></i></el-button>
+                <el-button class="ml_10" @click="downLoadPdf" size="mini">点击下载<i class="el-icon-download el-icon--right"></i></el-button>
               </div>
             </div>
             <h1 class="title mtop_15">订舱数据</h1>
@@ -458,9 +458,27 @@ export default {
     billOrder
   },
   methods:{
+    // 获取URl 协议
+    async getUrl(){
+      return window.location.protocol
+    },
+    // 获取url主机
+    async getHost(){
+      return window.location.host
+    },
     // 托书下载
-    downLoadPdf(){
-      
+
+    async downLoadPdf(){
+      let str = await this.getUrl() + '//'+ await this.getHost() + '/image/order-attach/'
+
+      this.$http.post(this.$service.createAgentBookingNotePdf,this.orderId).then(res=>{
+        console.log(res)
+        const a = document.createElement("a");
+        a.setAttribute('href',str+res.attachmentPath)
+        a.setAttribute('download', res.attachmentName)
+        a.click()
+        
+      })
     },
     // 如果子组件中有空运费 输入bookingPrice的时候同时修改子组件单价
     dealBookingPrice(e){

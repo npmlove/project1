@@ -281,7 +281,10 @@ const serviceApi = {
 // 供应商账单页面
 agentBill: pulicWeb + '/t-bill/agentBill',
 // 导出供应商账单
-  agentListExport:pulicWeb +'/t-bill/agentBillExport'
+  agentListExport:pulicWeb +'/t-bill/agentBillExport',
+  // 导出pdf 托书
+  createAgentBookingNotePdf: pulicWeb + '/t-order/createAgentBookingNotePdf'
 
 }
 export default serviceApi
+
