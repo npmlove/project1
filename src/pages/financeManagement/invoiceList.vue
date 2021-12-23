@@ -648,7 +648,8 @@
         }],
         //快递按钮弹出框是否显示
         postMessageDial:false,
-
+        //表格行内点击未寄出弹出弹框数据
+        tableRowPostData:'',
         //作废按钮弹出框是否显示
         delRequestDial:false,
         //作废按钮发票信息
@@ -925,7 +926,25 @@
       //表格内点出快递弹框
       openPost(message){
         if(message.expressStatus == "未寄出"){
-          this.postMessageDial=true
+          let datas = [message]
+          if (Boolean(datas.some(item=>item.invoicingStatus ==0))) {
+            this.$message({
+              message: '暂未开票,不能邮寄,请重新勾选',
+              type: 'warning'
+            });
+          }
+
+          else if (Boolean(datas.some(item=>item.invoiceType == 2))){
+            this.$message({
+              message: '电子发票不需要邮寄,请重新勾选',
+              type: 'warning'
+            });
+          }
+          else {
+            this.postMessage = {postOne:"",postTwo:"",postThree:""};
+            this.tableRowPostData = message
+            this.postMessageDial=true
+          }
         }
       },
       //表格运单号&订单号弹框
@@ -1132,6 +1151,7 @@
           this.invoicingRight = []
           this.invoiceFootOne = this.selectTableData[0].applyAmount
           this.invoiceFootTwo = this.selectTableData[0].applyAmount - this.selectTableData[0].invoicedAmount
+          this.invoiceFootThree = 0
           this.invoicingLeft.id = ""
           this.invoicingDial = true
         }
@@ -1188,6 +1208,7 @@
               totalMoney+=item.invoiceAmount})
               this.invoiceFootThree = totalMoney
               this.$message.success("生成发票成功")
+              this.invoicingLeft = {id:'',invoiceNum:"",invoiceCount:"",invoicingTime:"",invoiceAmount:""}
             } else {
               this.$message.error(data.message)
             }
@@ -1264,11 +1285,13 @@
           else {
           this.postMessage = {postOne:"",postTwo:"",postThree:""};
           this.postMessageDial = true;
+          this.tableRowPostData = ""
         }
         }
         else {
           this.postMessage = {postOne:"",postTwo:"",postThree:""};
           this.postMessageDial = true;
+          this.tableRowPostData = ""
         }
       },
 
@@ -1292,7 +1315,12 @@
         if(this.pageSkipChecked == false) {
           requestData.overPageCheck = this.pageSkipChecked
           requestData.expressDTOList =[]
-          var data = JSON.parse(JSON.stringify(this.selectTableData))
+          var data
+          if(this.tableRowPostData) {
+            data = [this.tableRowPostData]
+          } else {
+           data = JSON.parse(JSON.stringify(this.selectTableData))
+          }
             data.forEach((item,index)=>{
               requestData.expressDTOList[index]={}
               requestData.expressDTOList[index].expressInfo = item.expressInfo

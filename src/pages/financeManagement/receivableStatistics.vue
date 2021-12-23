@@ -318,8 +318,8 @@
             >
           </div>
           <div class="operateButton">
-            <el-button size="mini" type="primary" @click="getStatement">生成对账单</el-button>
-            <el-button size="mini" type="primary" @click="chargeOff">核销</el-button>
+            <el-button v-if="this.typeCode!= '业务修改中'" size="mini" type="primary" @click="getStatement">生成对账单</el-button>
+            <el-button v-if="this.typeCode!= '业务修改中'" size="mini" type="primary" @click="chargeOff">核销</el-button>
             <el-button size="mini" type="primary" @click="getExportExcel">导出列表</el-button>
             <el-button @click="drawer = true" type="primary" size="mini"
               >选择表格列</el-button

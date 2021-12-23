@@ -4,12 +4,6 @@
       <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
         <div style="position: fixed;right: 40px;font-size: 22px;font-weight: 100;color: #2273CE;width: 150px;text-align: center;">{{statusDesc}}</div>
 
-        <div v-if="status == '5'" style="display: flex;align-items: center;margin-bottom: 20px;">
-          <div style="font-size: 18px;font-weight: 100;color: #2273ce;">待客户确认备选方案</div>
-          <div style="margin: 0 20px;"><el-button @click="submitClick('取消')" style="width: auto;" size="medium" type="primary">取消订单</el-button></div>
-          <div style="font-size: 18px;font-weight: 100;color: #F00;">{{timeOut}}</div>
-        </div>
-
         <!-- 客户信息 -->
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">客户信息</div>
         <div>
@@ -51,7 +45,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item prop="pod" label="售中客服">
+          <el-form-item label="售中客服">
             <el-select :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="mscsId" placeholder="请输入售中客服" filterable clearable style="width: 216px;">
               <el-option
                 v-for="item in mscsIdOpt"
@@ -117,7 +111,6 @@
             <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryTel" placeholder="请输入联系电话" maxlength="20" style="width: 596px;"></el-input>
           </el-form-item>
         </div>
-
         <!-- 航线信息 -->
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">航线信息</div>
         <div style="padding-top:20px">
@@ -130,7 +123,7 @@
                     <el-input v-model="pod" :disabled="true" placeholder="请输入目的港" style="width: 216px;"></el-input>
                 </el-form-item>
                 <el-form-item label="航司">
-                    <el-input v-model="pod" :disabled="true" placeholder="请输入航司" style="width: 216px;"></el-input>
+                    <el-input v-model="airCompanyCode" :disabled="true" placeholder="请输入航司" style="width: 216px;"></el-input>
                 </el-form-item>
             </div>
           <el-form-item label="出发日期">
@@ -144,7 +137,9 @@
             </el-date-picker>
           </el-form-item>
            <el-form-item label="订舱单价">
-            <el-input v-model="bookingPrice" :disabled="true" placeholder="请输入订舱单价" style="width: 216px;"></el-input>
+            <el-input v-model="bookingPrice" :disabled="true" placeholder="请输入订舱单价" style="width: 216px;">
+                <template slot="append">元/kg</template>
+            </el-input>
           </el-form-item>
            <el-form-item label="分泡比例">
             <el-select  :disabled="true" v-model="bubblePoint"  filterable clearable placeholder="请选择分泡比例" style="width: 216;">
@@ -207,16 +202,20 @@
               </el-select>
             </el-form-item>
             <el-form-item label="是否中转" required>
-                <el-radio label="直达" v-model="orderOptionsList.agentId"></el-radio>
-                <el-radio label="中转" v-model="orderOptionsList.agentId"></el-radio>
+              <el-radio-group v-model="orderOptionsList.ifTransfer">
+                <el-radio label="直达" value="1"></el-radio>
+                <el-radio label="中转" value="2"></el-radio>
+              </el-radio-group>
             </el-form-item>
           </div>
           <div>
            <el-form-item label="订舱单价" required>
-              <el-input v-model="orderOptionsList.bookingPrice" @blur="priceBlur(orderOptionsList.bookingPrice,index,'推荐','订舱')" onkeyup="value=value.replace(/[^\d\.]/g, '')" placeholder="请输入订舱单价"  style="width: 216px;"></el-input>
+              <el-input v-model="orderOptionsList.bookingPrice" @blur="priceBlur(orderOptionsList.bookingPrice,index,'推荐','订舱')" onkeyup="value=value.replace(/[^\d\.]/g, '')" placeholder="请输入订舱单价"  style="width: 216px;">
+                <template slot="append">元/kg</template>
+              </el-input>
             </el-form-item>
             <el-form-item label="分泡比例">
-              <el-select v-model="orderOptionsList.bubblePoint" filterable clearable placeholder="请选择分泡比例" style="width: 216;">
+              <el-select v-model="orderOptionsList.bubblePoint" @change="getLastCw($event)" filterable clearable placeholder="请选择分泡比例" style="width: 216;">
                 <el-option
                   v-for="item in bubblePointOpt"
                   :key="item.Value"
@@ -260,18 +259,30 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item style="margin-left:80px">
+              <div v-for="(item,index) in pdfDownLoad" :key="index">
+                  <div @click="downLoadPDF(item)" style="text-align:center"><img src="../../assets/pdf.png" alt=""  v-if="item.attachmentType == 3"></div>
+                  <div @click="previewPDF(item)" style="width:70px;fontSize:10px;lineHeight:15px;margin-left:10"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
+              </div>
+          </el-form-item>
         </div>
         <div>
           <el-form-item label="件数">
-            <el-input v-model="bookingPiece" :disabled="true" placeholder="请输入件数" style="width: 216px;"></el-input>
+            <el-input v-model="bookingPiece" :disabled="true" placeholder="请输入件数" style="width: 216px;">
+                <template slot="append">PCS</template>
+            </el-input>
           </el-form-item>
           <el-form-item label="体积">
-            <el-input v-model="bookingCbm" :disabled="true" placeholder="请输入体积" style="width: 216px;"></el-input>
+            <el-input v-model="bookingCbm" :disabled="true" placeholder="请输入体积" style="width: 216px;">
+                <template slot="append">CBM</template>
+            </el-input>
           </el-form-item>
         </div>
         <div>
           <el-form-item label="重量">
-            <el-input :value="bookingWeight" :disabled="true" placeholder="请输入重量" style="width: 216px;"></el-input>
+            <el-input :value="bookingWeight" :disabled="true" placeholder="请输入重量" style="width: 216px;">
+                <template slot="append">KGS</template>
+            </el-input>
           </el-form-item>
           <el-form-item label="比重">
             <el-input :value="1+':'+bookingVwr" :disabled="true" placeholder="请输入比重" style="width: 216px;"></el-input>
@@ -279,7 +290,9 @@
         </div>
         <div>
           <el-form-item label="计费重">
-            <el-input v-model="bookingCw" :disabled="true" placeholder="请输入计费重" style="width: 216px;"></el-input>
+            <el-input v-model="bookingCw" :disabled="true" placeholder="请输入计费重" style="width: 216px;">
+                <template slot="append">KGS</template>
+            </el-input>
           </el-form-item>
         </div>
 
@@ -350,7 +363,7 @@
               </div>
               <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" size="small" style="flex: 0 0 10%;">
                 <a :style="{visibility: arOrderPriceList.length > 9 ? 'hidden' : 'visible'}" @click="addArOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
-                <a @click="delArOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
+                <a @click="delArOrderPriceList(childerIndex)" style="font-size: 18px;" v-if="childerIndex != 0"><i class="el-icon-delete"></i></a>
               </div>
             </div>
           </div>
@@ -440,7 +453,7 @@
               </div>
               <div v-if="orderStatus.indexOf(status) > -1" class="flight-template-li" size="small" style="flex: 0 0 10%;">
                 <a :style="{visibility: apOrderPriceList.length > 9 ? 'hidden' : 'visible'}" @click="addApOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-circle-plus-outline"></i></a>
-                <a @click="delApOrderPriceList(childerIndex)" style="font-size: 18px;"><i class="el-icon-delete"></i></a>
+                <a @click="delApOrderPriceList(childerIndex)" style="font-size: 18px;"  v-if="childerIndex != 0"><i class="el-icon-delete"></i></a>
               </div>
             </div>
           </div>
@@ -457,15 +470,21 @@
           </div>
         </div>
       </el-form>
-
+        	<el-dialog
+				title=""
+				:visible.sync="pdfDialogVisible"
+				width="80%"
+				top="0vh"
+				center>
+				<embed style="width: 100%;height: 90vh" :src="filePath"/>
+			</el-dialog>
       <!-- 航线价格 -->
       <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
         <div class="rest-style" style="padding-left: 20px;">
           <el-form-item label=" " label-width="150px">
             <el-button v-if="status == '3' || status == '5'" @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
             <el-button v-if="(status != '5')" @click="submitClick('取消')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >取消订单</el-button>
-            <el-button v-if="showMake && (status != '5')" @click="submitClick('失败')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核失败</el-button>
-            <el-button v-if="!showMake && (status != '5')" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核通过</el-button>
+            <el-button  @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核通过</el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -475,9 +494,15 @@
 
 <script>
   import {toData} from '@/util/assist'
+  import Axios from '../../../static/axios.min.js'
+
   export default {
     data() {
       return {
+          //pdf预览和下载
+        pdfDownLoad:"", 
+        pdfDialogVisible:false,
+
         orderStatus: [3],
         labelPosition: 'right',
         loading: false,
@@ -624,7 +649,6 @@
         bookingWeight: '',
         bookingVwr: '',
         bookingCw: '',
-        showMake: false,
         //航线信息
         orderOptionsList: {
             pol: '',
@@ -632,16 +656,13 @@
             airCompanyCode: '',
             agentId: '',
             agentName: '',
-            departureDate: '',
             bookingPrice: '',
             bubblePoint: '',
             flightNo: '',
-            id: '',
-            dow: '',
             orderId: '',
-            sortNo: '',
+            ifTransfer:"",
             fullLeg: '',
-            flightNoOpt: []
+            legCount:"",
           },
         polOpt: [],
         podOpt: [],
@@ -720,7 +741,44 @@
       this.initPolPod()
       this.companyMethod()
     },
+   
     methods: {
+        //下载pdf
+        downLoadPDF(item){
+           axios({  
+               method: "get",
+			   url: item.xpath,
+			   responseType: 'arraybuffer',//接受使用分片方式
+			}).then((res) => {
+                const aLink = document.createElement("a");
+                let blob = new Blob([res], {
+                type: "application/pdf"
+                })
+                aLink.href = URL.createObjectURL(blob)
+                aLink.setAttribute('download', item.attachmentName) // 设置下载文件名称
+                aLink.click()
+                document.body.appendChild(aLink)})
+            },
+            //预览pdf
+            previewPDF(item){
+                this.pdfDialogVisible = true
+                this.filePath =item.xpath
+            },
+        //分泡比例改变,计算计费重
+        getLastCw (e){
+            console.log(e)
+            // this.bookingCbm //体积
+            // this.bookingCw  //计费重
+            // this.bookingWeight //重量
+            let num1 = Number(this.bookingCbm)
+            let num2 = Number(this.bookingWeight)
+            let num3 = Number(this.bookingCw)
+            if(num1*167<=num2) {
+                this.bookingCw = num2
+            } else {
+                this.bookingCw =Math.ceil((167*e*num1)/10+(num2*(10-e))/10) 
+            }
+        },
       querenClick(item) {
         var data = {}
         var order = {
@@ -753,210 +811,126 @@
           }
         })
       },
-      //倒计时
-      countTime(totalTime) {
-        //获取当前时间
-        var date = new Date();
-        var now = date.getTime();
 
-        //设置截止时间
-        var endDate = new Date(totalTime);
-        var end = endDate.getTime()+24*60*60*1000;
-
-        //时间差
-        var leftTime = end-now;
-
-        //定义变量 d,h,m,s保存倒计时的时间
-        if (leftTime > 0) {
-          this.h = Math.floor(leftTime/1000/60/60%24);
-          this.m = Math.floor(leftTime/1000/60%60);
-          this.s = Math.floor(leftTime/1000%60);
-        }else{
-          this.submitClick('取消')
-        }
-        this.h = this.h > 9 ? this.h : '0'+this.h
-        this.m = this.m > 9 ? this.m : '0'+this.m
-        this.s = this.s > 9 ? this.s : '0'+this.s
-        this.timeOut = this.h +'时'+ this.m +'分'+ this.s +'秒'
-        setTimeout(() => {
-          this.countTime(this.updateTime)
-        },1000);
-      },
       //保存
-    //   submitClick(type) {
-    //     var order = {
-    //       agentId: this.agentId.split('#')[0],
-    //       agentName: this.agentId.split('#')[1],
-    //       airCompanyCode: this.airCompanyCode,
-    //       bookingCbm: this.bookingCbm,
-    //       bookingCw: this.bookingCw,
-    //       bookingPiece: this.bookingPiece,
-    //       bookingPrice: this.bookingPrice,
-    //       bookingWeight: this.bookingWeight,
-    //       bubblePoint: this.bubblePoint,
-    //       cargoName: this.cargoName,
-    //       cargoType: this.cargoType,
-    //       cclType: this.cclType,
-    //       customerId: this.customerId,
-    //       customsType: this.customsType,
-    //       deliveryAddress: this.deliveryAddress,
-    //       deliveryContacts: this.deliveryContacts,
-    //       deliveryTel: this.deliveryTel,
-    //       departureDate: this.departureDate,
-    //       dow: this.dow,
-    //       flightNo: this.flightNo,
-    //       fullLeg: this.fullLeg,
-    //       id: this.orderId,
-    //       isPickUp: this.isPickUp,
-    //       mscsId: this.mscsId.split('#')[0],
-    //       mscsName: this.mscsId.split('#')[1],
-    //       orderNo: this.orderNo,
-    //       orderProfit: this.totalArCny - this.totalApCny,
-    //       packageType: this.packageType,
-    //       pickUpAddress: this.pickUpAddress,
-    //       pickUpContacts: this.pickUpContacts,
-    //       pickUpTel: this.pickUpTel,
-    //       principalId: this.principalId.split('#')[0],
-    //       principalName: this.principalId.split('#')[1],
-    //       pscsId: this.pscsId.split('#')[0],
-    //       pscsName: this.pscsId.split('#')[1],
-    //       remark: this.remark,
-    //       payWay: this.payWay,
-    //       status: this.status,
-    //       totalApCny: this.totalApCny,
-    //       totalApOrgn: this.totalApOrgn,
-    //       totalArCny: this.totalArCny,
-    //       totalArOrgn: this.totalArOrgn,
-    //       waybillNo: this.waybillNo,
-    //       pod: this.pod,
-    //       pol: this.pol,
-    //       activityCodeDoing: this.activityCodeDoing,
-    //       activityCodeDone: this.activityCodeDone,
-    //       inboundNo: this.inboundNo
-    //     }
-    //     var orderPriceList = []
-    //     orderPriceList = this.arOrderPriceList.concat(this.apOrderPriceList)
-    //     if(orderPriceList.length > 0){
-    //       for(var m = 0; m < orderPriceList.length; m++){
-    //         if(!orderPriceList[m].expenseName){
-    //           this.$message.error('请选择账单费用名称')
-    //           return
-    //         }else if(!orderPriceList[m].price){
-    //           this.$message.error('请输入账单单价')
-    //           return
-    //         }else if(!orderPriceList[m].quantity){
-    //           this.$message.error('请输入账单数量')
-    //           return
-    //         }else if(!orderPriceList[m].currency){
-    //           this.$message.error('请选择账单币种')
-    //           return
-    //         }else if(!orderPriceList[m].exchangeRate){
-    //           this.$message.error('请输入账单汇率')
-    //           return
-    //         }
-    //       }
-    //     }
-    //     if(this.showMake){
-    //       var orderOptionsList = []
-    //         if(!this.orderOptionsList.pol){
-    //           this.$message.error('请选择起始港')
-    //           return
-    //         }else if(!this.orderOptionsList.pod){
-    //           this.$message.error('请选择目的港')
-    //           return
-    //         }else if(!this.orderOptionsList.airCompanyCode){
-    //           this.$message.error('请选择航司')
-    //           return
-    //         }else if(!this.orderOptionsList.agentId){
-    //           this.$message.error('请选择代理公司')
-    //           return
-    //         }else if(!this.orderOptionsList.departureDate){
-    //           this.$message.error('请选择出发日期')
-    //           return
-    //         }else if(!this.orderOptionsList.bookingPrice){
-    //           this.$message.error('请输入订舱单价')
-    //           return
-    //         }else if(!this.orderOptionsList.fullLeg){
-    //           this.$message.error('请选择航线')
-    //           return
-    //         }
-
-    //         var json = {
-    //           agentId: this.orderOptionsList.agentId.split('#')[0],
-    //           agentName: this.orderOptionsList.agentId.split('#')[1],
-    //           airCompanyCode: this.orderOptionsList.airCompanyCode.split('#')[0],
-    //           airCompanyName: this.orderOptionsList.airCompanyCode.split('#')[1],
-    //           bookingPrice: this.orderOptionsList.bookingPrice,
-    //           bubblePoint: this.orderOptionsList.bubblePoint,
-    //           departureDate: this.orderOptionsList.departureDate,
-    //           dow: new Date(this.orderOptionsList.departureDate).getDay() == 0 ? 7 : new Date(this.orderOptionsList.departureDate).getDay(),
-    //           flightNo: this.orderOptionsList.flightNo,
-    //           fullLeg: this.orderOptionsList.fullLeg,
-    //           pod: this.orderOptionsList.pod,
-    //           pol: this.orderOptionsList.pol,
-    //           sortNo: q+1,
-    //           id: this.orderOptionsList.id,
-    //           orderId: this.orderId
-    //         }
-    //         orderOptionsList.push(json)
-    //       var data = {
-    //         order: order,
-    //         orderOptionsList: orderOptionsList,
-    //         orderPriceList: orderPriceList,
-    //       }
-    //     } else {
-    //       var data = {
-    //         order: order,
-    //         orderPriceList: orderPriceList,
-    //       }
-    //     }
-    //     if (data.order.fullLeg) {
-    //       let fullLeg = data.order.fullLeg.split('-');
-    //       data.order.fullLeg = fullLeg.join(',');
-    //     }
-    //     if(type == '保存'){
-    //       this.$http.post(this.$service.orderSaveOrder,data).then((data) => {
-    //         if(data.code == 200){
-    //           this.$router.push('/orderManagement/orderManage')
-    //         } else {
-    //           this.$message.error(data.message)
-    //         }
-    //       })
-    //     }else if(type == '通过'){
-    //       data.ctrlMap = {
-    //         ctrlFlag: 1
-    //       }
-    //       this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
-    //         if(data.code == 200){
-    //           this.$router.push('/orderManagement/orderManage')
-    //         } else {
-    //           this.$message.error(data.message)
-    //         }
-    //       })
-    //     }else if(type == '失败'){
-    //       data.ctrlMap = {
-    //         ctrlFlag: 3
-    //       }
-    //       this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
-    //         if(data.code == 200){
-    //           this.$router.push('/orderManagement/orderManage')
-    //         } else {
-    //           this.$message.error(data.message)
-    //         }
-    //       })
-    //     }else if(type == '取消'){
-    //       data.ctrlMap = {
-    //         ctrlFlag: 2
-    //       }
-    //       this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
-    //         if(data.code == 200){
-    //           this.$router.push('/orderManagement/orderManage')
-    //         } else {
-    //           this.$message.error(data.message)
-    //         }
-    //       })
-    //     }
-    //   },
+      submitClick(type) {
+        var order = {
+          id:this.orderId,
+          status:this.status,
+          activityCodeDoing:this.activityCodeDoing,
+          activityCodeDone:this.activityCodeDone,
+          customerName:this.customerName, 
+          orderNo:this.orderNo,
+          inboundNo:this.inboundNo,
+          waybillNo:this.waybillNo,
+          principalId:this.principalId.split("#")[0],
+          pscsId:this.pscsId.split("#")[0],
+          mscsId:this.mscsId.split("#")[0],
+          remark:this.remark,
+          isPickUp:this.isPickUp,
+          pickUpAddress:this.pickUpAddress,
+          pickUpContacts:this.pickUpContacts,
+          pickUpTel:this.pickUpTel,
+          cclType:this.cclType,
+          deliveryAddress:this.deliveryAddress,
+          deliveryContacts:this.deliveryContacts,
+          deliveryTel:this.deliveryTel,
+          pol:this.orderOptionsList.pol,
+          pod:this.orderOptionsList.pod,
+          legCount:this.orderOptionsList.ifTransfer == "直达"?1:2,
+          fullLeg:this.orderOptionsList.ifTransfer == "直达"? `${this.orderOptionsList.pol},${this.orderOptionsList.pod}` : `${this.orderOptionsList.pol},中转,${this.orderOptionsList.pod}`,
+          airCompanyCode:this.orderOptionsList.airCompanyCode,
+          departureDate:this.departureDate,
+          agentId:this.orderOptionsList.agentId.split("#")[0],
+          bookingPrice:this.orderOptionsList.bookingPrice,
+          bubblePoint:this.orderOptionsList.bubblePoint,
+          flightNo:this.orderOptionsList.flightNo,
+          cargoName:this.cargoName,
+          cargoType:this.cargoType,
+          packageType:this.packageType,
+          bookingPiece:this.bookingPiece,
+          bookingCbm:this.bookingCbm,
+          bookingWeight:this.bookingWeight,
+          bookingVwr:this.bookingVwr,
+          bookingCw:this.bookingCw
+        }
+        if(!this.orderOptionsList.pol){
+              this.$message.error('请选择起始港')
+              return
+            }else if(!this.orderOptionsList.pod){
+              this.$message.error('请选择目的港')
+              return
+            }else if(!this.orderOptionsList.airCompanyCode){
+              this.$message.error('请选择航司')
+              return
+            }else if(!this.orderOptionsList.agentId){
+              this.$message.error('请选择代理公司')
+              return
+            }else if(!this.orderOptionsList.bookingPrice){
+              this.$message.error('请输入订舱单价')
+              return
+            }else if(!this.orderOptionsList.ifTransfer){
+              this.$message.error('请选择是否中转')
+              return
+            }
+        var orderPriceList = []
+        orderPriceList = this.arOrderPriceList.concat(this.apOrderPriceList)
+        if(orderPriceList.length > 0){
+          for(var m = 0; m < orderPriceList.length; m++){
+            if(!orderPriceList[m].expenseName){
+              this.$message.error('请选择账单费用名称')
+              return
+            }else if(!orderPriceList[m].price){
+              this.$message.error('请输入账单单价')
+              return
+            }else if(!orderPriceList[m].quantity){
+              this.$message.error('请输入账单数量')
+              return
+            }else if(!orderPriceList[m].currency){
+              this.$message.error('请选择账单币种')
+              return
+            }else if(!orderPriceList[m].exchangeRate){
+              this.$message.error('请输入账单汇率')
+              return
+            }
+          }
+        }
+          var data = {
+            order: order,
+            orderPriceList: orderPriceList,
+          }
+        if(type == '保存'){
+          this.$http.post(this.$service.orderSaveOrder,data).then((data) => {
+            if(data.code == 200){
+              this.$router.push('/orderManagement/orderManage')
+            } else {
+              this.$message.error(data.message)
+            }
+          })
+        }else if(type == '通过'){
+          data.ctrlMap = {
+            ctrlFlag: 1
+          }
+          this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
+            if(data.code == 200){
+              this.$router.push('/orderManagement/orderManage')
+            } else {
+              this.$message.error(data.message)
+            }
+          })
+        }else if(type == '取消'){
+          data.ctrlMap = {
+            ctrlFlag: 2
+          }
+          this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
+            if(data.code == 200){
+              this.$router.push('/orderManagement/orderManage')
+            } else {
+              this.$message.error(data.message)
+            }
+          })
+        }
+      },
       //账单合计、人民币合计
       totalPriceType(type) {
         if(type == '应收'){
@@ -1064,6 +1038,7 @@
               }else{
                 this.apOrderPriceList[index].totalCny = Math.ceil(this.apOrderPriceList[index].price*this.apOrderPriceList[index].quantity*this.apOrderPriceList[index].exchangeRate)
               }
+              
               this.totalPriceType('应付')
             }
           }
@@ -1123,9 +1098,14 @@
         }else if(type == '推荐'){
           if(!reg1.test(num) && (num != '')){
           	this.$message.error('单价最大输入四位正整数，小数保留四位')
-            this.orderOptionsList[index].bookingPrice = ''
+            this.orderOptionsList.bookingPrice = ''
             return
-          }
+          } 
+          this.apOrderPriceList[0].price = val
+          this.arOrderPriceList[0].price = val
+          this.priceBlur(val,0,'应付','单价')
+          this.priceBlur(val,0,'应收','单价')
+          this.$forceUpdate()
         }
       },
     
@@ -1348,6 +1328,27 @@
           if(data.code == 200){
             this.detailsArr = data.data
             var data = data.data
+            this.pdfDownLoad = data.orderAttachmentList
+            for(let i =0;i<this.pdfDownLoad.length;i++) {
+                var copyName = this.pdfDownLoad[i].attachmentName
+                var copyNames = copyName.split("")
+                copyNames.splice(10,6)
+                this.pdfDownLoad[i].attachmentName = copyNames.join("")
+            }
+              this.orderOptionsList= {
+                  pol: data.pol,
+                  pod: data.pod,
+                  airCompanyCode: data.airCompanyCode,
+                  agentId: data.agentId,
+                  agentName: data.agentName,
+                  bookingPrice: data.bookingPrice,
+                  bubblePoint: String(data.bubblePoint),
+                  flightNo: data.flightNo,
+                  orderId: data.orderId,
+                  fullLeg: "",
+                  legCount:""
+              },
+          console.warn(this.orderOptionsList)
             this.statusDesc = data.statusDesc
             this.status = data.status
             this.pscsName = data.pscsName
@@ -1413,22 +1414,22 @@
               }
             }
             this.arOrderPriceList = data.arOrderPriceList[0].list
-            if(data.orderOptionsList != null){
-              if(data.orderOptionsList.length != 0){
-                this.showMake = true
-                this.orderOptionsList = data.orderOptionsList
-                for(var q = 0; q < this.orderOptionsList.length; q++){
-                  this.orderOptionsList[q].flightNoOpt = []
-                  this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
-                  this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
-                  this.initAirlineSearchByPage(q,data.orderOptionsList[q])
-                }
-              }
-            }
-            if(data.status == '5'){
-              this.updateTime = data.updateTime
-              this.countTime(data.updateTime)
-            }
+            // if(data.orderOptionsList != null){
+            //   if(data.orderOptionsList.length != 0){
+            //     this.showMake = true
+            //     this.orderOptionsList = data.orderOptionsList
+            //     for(var q = 0; q < this.orderOptionsList.length; q++){
+            //       this.orderOptionsList[q].flightNoOpt = []
+            //       this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
+            //       this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
+            //       this.initAirlineSearchByPage(q,data.orderOptionsList[q])
+            //     }
+            //   }
+            // }
+            // if(data.status == '5'){
+            //   this.updateTime = data.updateTime
+            //   this.countTime(data.updateTime)
+            // }
           }else{
             this.$message.error(data.message)
           }
