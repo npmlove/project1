@@ -155,7 +155,7 @@
               <div><span class="ml_10">{{initData.pol}}-{{initData.pod}}</span></div>
             </div>
             <div class="flex mtop_15 ">
-              <div class="flex_message">托书下载</div>
+              <div class="flex_message">上家托书</div>
               <div>
                 <el-button class="ml_10" size="mini">点击下载<i class="el-icon-download el-icon--right"></i></el-button>
               </div>
@@ -210,7 +210,7 @@
                       <div><el-input size="mini" class="ml_10" v-model="initData.inboundPiece" placeholder=""></el-input></div>
                       <div><el-input size="mini" class="ml_10" v-model="initData.inboundWeight" @change="calcVwr" placeholder=""></el-input></div>
                       <div><el-input size="mini" class="ml_10"  v-model="initData.inboundCbm" @change="calcVwr" placeholder=""></el-input></div>
-                      <div><el-input size="mini" class="ml_10" v-model="showCwr" placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10" :value="initData.inboundVwr == '' ? showCwr : '1:' + initData.inboundVwr  " placeholder=""></el-input></div>
                       <div>
                         <el-select class="ml_10" size="mini" v-model="initData.bubblePoint" @change="calcVwr" placeholder="请选择">
                             <el-option
@@ -221,7 +221,7 @@
                             </el-option>
                           </el-select>
                       </div>
-                      <div><el-input size="mini" class="ml_10" disabled v-model="initData.inboundCw" placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10"  v-model="initData.inboundCw" placeholder=""></el-input></div>
                   </div>
                   <div class="flex_center mtop_10">
                       <div>件数</div>
@@ -431,16 +431,22 @@ export default {
         ],
     };
   },
-  // computed:{
-  //   getInboundCw(){
-  //     return this.initData.inboundCw
-  //   }
-  // },
-  // watch:{
-  //   getInboundCw(newValue){
-  //     this.dealChildPrice(newValue)
-  //   }
-  // },
+  computed:{
+    getInboundCw(){
+      return this.initData.inboundCw
+    },
+    getBookingPrice(){
+      return this.initData.bookingPrice
+    }
+  },
+  watch:{
+    getInboundCw(newValue){
+      this.dealChildPrice(newValue)
+    },
+    getBookingPrice(nv){
+      this.dealBookingPrice(nv)
+    }
+  },
 
    created(){
       this.orderId = this.$route.query.id
@@ -452,6 +458,48 @@ export default {
     billOrder
   },
   methods:{
+    // 如果子组件中有空运费 输入bookingPrice的时候同时修改子组件单价
+    dealBookingPrice(e){
+        console.log(e)
+        if(e){        
+          // 应收
+          let a = this.$refs.typeBill0[0].tableData
+          for(let i in a){
+            if(a[i].expenseName == '空运费'){
+              a[i].price = e
+              this.$set(a[i],'price',e)
+            }
+          }
+          let b = this.$refs.typeTwo.tableData
+          for(let i in b){
+            if(b[i].expenseName == '空运费'){
+              b[i].price = e
+              this.$set(b[i],'price',e)
+            }
+          }
+        }
+    },
+    // 如果子组件中有空运费 输入计费重的时候同时修改子组件数量
+    dealChildPrice(num){
+      // 取到子组件typeOne
+        if(num){        
+          // 应收
+          let a = this.$refs.typeBill0[0].tableData
+          for(let i in a){
+            if(a[i].expenseName == '空运费'){
+              a[i].quantity = num
+              this.$set(a[i],'quantity',num)
+            }
+          }
+          let b = this.$refs.typeTwo.tableData
+          for(let i in b){
+            if(b[i].expenseName == '空运费'){
+              b[i].quantity = num
+              this.$set(b[i],'quantity',num)
+            }
+          }
+        }
+    },
     // 选择框获取id 航线负责人
     getSelectPrincipalId(e){
       let arrayTest =  this.airLineList
@@ -770,32 +818,7 @@ export default {
             }
       })
     },
-    // 如果子组件中有空运费 输入计费重的时候同时修改子组件单价
-    // dealChildPrice(num){
-    //   // 取到子组件typeOne
-    //     if(num){
-          
-    //       // 应收
-    //       // let a = this.$refs.typeBill0[0].tableData
-    //       // for(let i in a){
-    //       //   if(a[i].expenseName == '空运费'){
-    //       //     a.quantity = num
-    //       //     this.$set(a[i],'quantity',num)
-             
-            
-    //       //   }
-    //       // }
-    //       // let b = this.$refs.typeTwo.tableData
-    //       // for(let i in b){
-    //       //   if(b[i].expenseName == '空运费'){
-    //       //     b.quantity = num
-    //       //     this.$set(b[i],'quantity',num)
-    //       //   }
-    //       // }
-    //     }
-        
     
-    // },
     // 获取页面初始配置
     async initSysSetTing(){
       let res1 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000')
