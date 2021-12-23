@@ -550,6 +550,12 @@
         rcvWriteOffStatus: null,
         payWayOpt: [
           //0=付款买单,1=月结买单
+
+          {
+            payWay: '全部',
+            value: ''
+          },
+
           {
             payWay: '付款买单',
             value: '0'
@@ -622,6 +628,7 @@
     mounted() {
       this.initData()
       this.initAgentList()
+      this.rcvWriteOffStatus = [""]
     },
     methods: {
       //表格选择列显示drawer -全选
