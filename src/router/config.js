@@ -676,6 +676,7 @@ const workOrder = [{
 // 权限控制路由
 export const asyncRoutes = [
   ...orderManagementCenter,
+  ...routeManagementCenter,  // dashboard home
   ...financeManagementCenter,
   ...billOverview,
   ...adverManagementCenter,
@@ -693,8 +694,6 @@ export const asyncRoutes = [
 // 默认显示路由
 export const constantRoutes  = [
   ...autoRoutes, 
-  ...routeManagementCenter,  // dashboard home
-  
 ]
 
-export default [...constantRoutes,...asyncRoutes]
+export default constantRoutes
