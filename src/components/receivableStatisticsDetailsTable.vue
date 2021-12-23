@@ -193,9 +193,8 @@
                   scope.row.operationType === 1 ? "解锁申请" :
                     scope.row.operationType === 2 ? "解锁通过" :
                       scope.row.operationType === 3 ? "解锁驳回" :
-                        scope.row.operationType === 4 ? "交单审核" :
-                          scope.row.operationType === 5 ? "审核通过" :
-                            scope.row.operationType === 6 ? "审核驳回" : ""
+                          scope.row.operationType === 4 ? "审核通过" :
+                            scope.row.operationType === 5 ? "审核驳回" : ""
               }}
             </span>
              <span v-else-if="column.prop == 'cargoInfo' && column.label == '货物信息'">
