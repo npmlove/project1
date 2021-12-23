@@ -488,7 +488,6 @@ export default {
         return '0CNY';
       }
       orgn = JSON.parse(orgn);
-      console.log(orgn)
       var totalOrgn = ''
       var value1 = 0
       var value2 = 0
