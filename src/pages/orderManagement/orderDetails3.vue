@@ -849,7 +849,6 @@ export default {
       // 获取应收账单的长度 为 12345
       let tempLength = this.initData.arOrderPriceList.length ;
       let arrayTypeOne = [];
-      console.log(tempLength)
       if(tempLength == 1){
         arrayTypeOne = this.$refs.typeBill0[0].tableData
       }else if(tempLength == 2){
@@ -863,11 +862,23 @@ export default {
       }
       let arrayTypeTwo = this.$refs.typeTwo.tableData
       let order = this.initData
-        delete order.arOrderPriceList
+      if(order.hasOwnProperty('apOrderPriceList')){
         delete order.apOrderPriceList
+      }
+      if(order.hasOwnProperty('orderCargoDetailList')){
         delete order.orderCargoDetailList
+      }
+      if(order.hasOwnProperty('orderPriceList')){
         delete order.orderPriceList
-        delete order.trayDetail
+      }
+      if(order.hasOwnProperty('trayDetail')){
+       delete order.trayDetail
+      }
+       
+        
+        
+        
+        
       let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
       let orderCargoDetailList = arrayTypeThree
 
