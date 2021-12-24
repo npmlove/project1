@@ -9,7 +9,7 @@
                 <div class="cont">
                     <div class="flex_line">
                         <div><span style="color:red">*</span><span>核销金额:</span></div>
-                        <div><el-input v-model="writeOffAmount"  size="small" placeholder="请输入核销金额"></el-input></div>
+                        <div><el-input v-model="writeOffAmount" maxlength="10" size="small" placeholder="请输入核销金额"></el-input></div>
                     </div>
                     <div class="flex_line">
                         <div><span style="color:red">*</span><span>付款账户信息:</span></div>
@@ -20,13 +20,16 @@
                                 remote
                                 size="small"
                                 reserve-keyword
-                                placeholder="请输入订舱代理上家"
+                                placeholder="请输入付款账户"
                                 :remote-method="remoteMethod">
                                 <el-option
                                     v-for="item in tempArray"
                                     :key="item"
-                                    :label="item.userName"
+                                    :label="item.accountBank + '-'+ item.userName + '-'+ item.bankAccount"
                                     :value="item">
+                                    <span>{{item.accountBank}}</span>-
+                                    <span>{{item.userName}}</span>-
+                                    <span>{{item.bankAccount}}</span>
                                 </el-option>
                             </el-select>
                         </div>
@@ -214,10 +217,11 @@ export default {
         async remoteMethod(e){
             if (e !== '') {
                 let res =  await this.$http.post(this.$service.searchBankAccount + `?userName=${e}`)
-                console.log(res)
                 this.tempArray = res.data
             } else {
-                this.tempArray = [];
+                let res =  await this.$http.post(this.$service.searchBankAccount)
+                console.log(res)
+                this.tempArray = res.data
             }
         },
         showModal(){
@@ -229,16 +233,16 @@ export default {
         },
         async onSubmit(){
             let { bankAccount, currency ,writeOffAmount , unwrittenOffAmountRmb , writeOffWay ,paymentTime,payWay} = this;
+            if(writeOffAmount > unwrittenOffAmountRmb ){
+                this.$message.error('核销金额>未核销金额,请重新输入')
+                return ;
+            }
             if(bankAccount == ''){
-                this.$message({ showClose: true, message: '请输入付款账户信息',type: 'error',duration:2})
+                this.$message.error('请输入付款账户信息')
                 return ;
             }
             if(paymentTime == ''){
-                this.$message({ showClose: true,message: '请选择付款时间', type: 'error',duration:2})
-                return ;
-            }
-            if(writeOffAmount > unwrittenOffAmountRmb ){
-                this.$message({ showClose: true,message: '核销金额>未核销金额,请重新输入', type: 'error',duration:2})
+                this.$message.error('请选择付款时间')
                 return ;
             }
             let params ={

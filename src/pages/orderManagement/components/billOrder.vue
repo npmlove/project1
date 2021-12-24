@@ -212,6 +212,7 @@ export default {
   methods:{
     // 处理原始传入数据
     dealOriginData(newValue){
+         
         for(let i in newValue){
           let {price,quantity,currency} = newValue[i]
           if(price && quantity && currency){
