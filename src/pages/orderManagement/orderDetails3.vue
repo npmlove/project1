@@ -699,13 +699,18 @@ export default {
       let arrayTypeOne = this.$refs.typeBill0[0].tableData
       let arrayTypeTwo = this.$refs.typeTwo.tableData
       let order = this.initData
-        delete order.arOrderPriceList
+      if(order.hasOwnProperty('apOrderPriceList')){
         delete order.apOrderPriceList
+      }
+      if(order.hasOwnProperty('orderCargoDetailList')){
         delete order.orderCargoDetailList
+      }
+      if(order.hasOwnProperty('orderPriceList')){
         delete order.orderPriceList
-        delete order.trayDetail
-        delete order.createTime
-        delete order.updateTime
+      }
+      if(order.hasOwnProperty('trayDetail')){
+       delete order.trayDetail
+      }
       let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
       let orderCargoDetailList = this.$refs.typeThree.tableData
       let params = {
