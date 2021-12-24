@@ -688,12 +688,12 @@ export const asyncRoutes = [
   ...courseManagement,
   ...cargoTrackingManage,
   ...workOrder
-  
+
 ]
 
 // 默认显示路由
 export const constantRoutes  = [
-  ...autoRoutes, 
+  ...autoRoutes,
 ]
 
 export default constantRoutes
