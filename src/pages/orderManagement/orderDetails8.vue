@@ -164,10 +164,8 @@
               </el-select>
             </el-form-item>
             <el-form-item label="是否中转" required>
-              <el-radio-group v-model="orderOptionsList.ifTransfer">
-                <el-radio label="直达" value="1"></el-radio>
-                <el-radio label="中转" value="2"></el-radio>
-              </el-radio-group>
+                <el-radio v-model="orderOptionsList.ifTransfer" label="1">直达</el-radio>
+                <el-radio v-model="orderOptionsList.ifTransfer" label="2">中转</el-radio>
             </el-form-item>
           </div>
           <div>
@@ -622,7 +620,7 @@
             bubblePoint: '',
             flightNo: '',
             orderId: '',
-            ifTransfer:"",
+            ifTransfer: '1',
             fullLeg: '',
             legCount:"",
           },
@@ -776,16 +774,7 @@
 
       //保存
       submitClick(type) {
-           if(!this.orderOptionsList.pol){
-              this.$message.error('请选择起始港')
-              return
-            }else if(!this.orderOptionsList.pod){
-              this.$message.error('请选择目的港')
-              return
-            }else if(!this.orderOptionsList.airCompanyCode){
-              this.$message.error('请选择航司')
-              return
-            }else if(!this.orderOptionsList.agentId){
+            if(!this.orderOptionsList.agentId){
               this.$message.error('请选择代理公司')
               return
             }else if(!this.orderOptionsList.bookingPrice){
@@ -793,6 +782,9 @@
               return
             }else if(!this.orderOptionsList.ifTransfer){
               this.$message.error('请选择是否中转')
+              return
+            } else if (!this.orderOptionsList.flightNo) {
+               this.$message.error('请输入航班号')
               return
             }
         var order = {
@@ -818,8 +810,8 @@
           deliveryTel:this.deliveryTel,
           pol:this.pol,
           pod:this.pod,
-          legCount:this.orderOptionsList.ifTransfer == "直达"?1:2,
-          fullLeg:this.orderOptionsList.ifTransfer == "直达"? `${this.orderOptionsList.pol},${this.orderOptionsList.pod}` : `${this.orderOptionsList.pol},中转,${this.orderOptionsList.pod}`,
+          legCount:this.orderOptionsList.ifTransfer,
+          fullLeg:this.orderOptionsList.ifTransfer == "1"? `${this.orderOptionsList.pol},${this.orderOptionsList.pod}` : `${this.orderOptionsList.pol},中转,${this.orderOptionsList.pod}`,
           airCompanyCode:this.airCompanyCode,
           departureDate:this.departureDate,
           agentId:this.orderOptionsList.agentId.split("#")[0],
@@ -835,7 +827,7 @@
           bookingVwr:this.bookingVwr,
           bookingCw:this.bookingCw
         }
-     
+        debugger
         var orderPriceList = []
         orderPriceList = this.arOrderPriceList.concat(this.apOrderPriceList)
         if(orderPriceList.length > 0){
@@ -1287,6 +1279,7 @@
                   bubblePoint: String(data.bubblePoint),
                   flightNo: data.flightNo,
                   orderId: data.orderId,
+                  ifTransfer:'1',
                   fullLeg: "",
                   legCount:""
               },

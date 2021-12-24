@@ -628,7 +628,7 @@
     <el-dialog title="应收核销" :visible.sync="dialogFormVisibleThree" width= "880px" style="margin:auto;">
       <el-form style="display:flex;flex-wrap:wrap;justify-content:space-between;margin-top:20px" label-position="left">
          <el-form-item label="核销金额:" required label-width="130px">
-            <el-input v-model.number="chargeOffData.writeOffAmount" placeholder="请输入核销金额" style="width:200px"></el-input>
+            <el-input v-model="chargeOffData.writeOffAmount" placeholder="请输入核销金额" style="width:200px"  onkeyup="this.value= this.value.match(/^-?\d{0,10}(\.\d{0,2})?/)? this.value.match(/^-?\d{0,10}(\.\d{0,2})?/)[0] : ''" @blur="chargeOffData.writeOffAmount = $event.target.value"></el-input>
           </el-form-item>
           <el-form-item label="收款账户信息:"  required class="formItem" label-width="130px">
             <el-select

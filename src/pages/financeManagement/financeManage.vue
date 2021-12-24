@@ -333,12 +333,6 @@
               <img class="data-pic" src="../../assets/kong-icon.png" />
               <p>暂无数据</p>
             </template>
-            <el-table-column
-              type="index"
-              width="40"
-              label="序号"
-              v-if="checkedTable.indexOf('序号') !== -1"
-            ></el-table-column>
             <el-table-column type="selection" width="50" :selectable="ifDisabled" fixed="left"></el-table-column>
             <el-table-column
               label="订单号"
@@ -730,7 +724,7 @@ export default {
       checkAll: false,
       isIndeterminate: true,
       direction: "rtl",
-      checkedTable: ["序号",
+      checkedTable: [
         "订单号",
         "运单号",
         "航班日期",
@@ -750,7 +744,6 @@ export default {
         "开票金额",
         "订单状态",],
       tableOptions: [
-        "序号",
         "订单号",
         "运单号",
         "航班日期",

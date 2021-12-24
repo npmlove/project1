@@ -166,7 +166,7 @@
               </div>
               <div v-for="(item,index) in pdfDownLoad" :key="index" style="margin-left:15px">
                   <div @click="downLoadPDF(item)" style="text-align:center"><img src="../../assets/pdf.png" alt=""  v-if="item.attachmentType == 3"></div>
-                  <div @click="previewPDF(item)" style="width:70px;fontSize:10px;lineHeight:15px;margin-left:10;text-align:center"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
+                  <div @click="previewPDF(item)" style="width:60px;fontSize:10px;lineHeight:15px;margin-left:10;text-align:center"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
               </div>
               	<el-dialog
                   title=""
@@ -368,7 +368,7 @@ import opeartes from './components/opeartes.vue'
 export default {
   data() {
     return {
-       //pdf预览和下载
+      //pdf预览和下载
         pdfDownLoad:"",
         pdfDialogVisible:false,
 
@@ -488,7 +488,7 @@ export default {
     opeartes
   },
   methods:{
-    //下载pdf
+      //下载pdf
         downLoadPDF(item){
            axios({
                method: "get",
@@ -509,6 +509,7 @@ export default {
                 this.pdfDialogVisible = true
                 this.filePath =item.xpath
             },
+
     // 点击账单操作记录
     showoplist(){
       this.$refs.addOpearte.show()
@@ -516,15 +517,12 @@ export default {
     // 获取账单操作记录
     async getOPerateList(){
       let res = await this.$http.get(this.$service.billOpearteList + `?orderId=${this.orderId}`)
-      console.log('操作记录 ')
       if(res.code == 200){
         if(res.data.length > 0){
           console.log(res.data)
           this.operateList = res.data
-
         }
       }
-
     },
     // 获取URl 协议
     async getUrl(){
@@ -706,13 +704,18 @@ export default {
       let arrayTypeOne = this.$refs.typeBill0[0].tableData
       let arrayTypeTwo = this.$refs.typeTwo.tableData
       let order = this.initData
-        delete order.arOrderPriceList
+      if(order.hasOwnProperty('apOrderPriceList')){
         delete order.apOrderPriceList
+      }
+      if(order.hasOwnProperty('orderCargoDetailList')){
         delete order.orderCargoDetailList
+      }
+      if(order.hasOwnProperty('orderPriceList')){
         delete order.orderPriceList
-        delete order.trayDetail
-        delete order.createTime
-        delete order.updateTime
+      }
+      if(order.hasOwnProperty('trayDetail')){
+       delete order.trayDetail
+      }
       let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
       let orderCargoDetailList = this.$refs.typeThree.tableData
       let params = {
@@ -868,7 +871,6 @@ export default {
       // 获取应收账单的长度 为 12345
       let tempLength = this.initData.arOrderPriceList.length ;
       let arrayTypeOne = [];
-      console.log(tempLength)
       if(tempLength == 1){
         arrayTypeOne = this.$refs.typeBill0[0].tableData
       }else if(tempLength == 2){
@@ -882,11 +884,23 @@ export default {
       }
       let arrayTypeTwo = this.$refs.typeTwo.tableData
       let order = this.initData
-        delete order.arOrderPriceList
+      if(order.hasOwnProperty('apOrderPriceList')){
         delete order.apOrderPriceList
+      }
+      if(order.hasOwnProperty('orderCargoDetailList')){
         delete order.orderCargoDetailList
+      }
+      if(order.hasOwnProperty('orderPriceList')){
         delete order.orderPriceList
-        delete order.trayDetail
+      }
+      if(order.hasOwnProperty('trayDetail')){
+       delete order.trayDetail
+      }
+
+
+
+
+
       let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
       let orderCargoDetailList = arrayTypeThree
 
@@ -921,7 +935,7 @@ export default {
       let res = await  this.$http.get(this.$service.orderSearchDetail+`?orderId=${this.orderId}`)
       if(res.code == 200){
         let tempObj = res.data
-         this.pdfDownLoad = tempObj.orderAttachmentList
+        this.pdfDownLoad = tempObj.orderAttachmentList
             for(let i =0;i<this.pdfDownLoad.length;i++) {
                 var copyName = this.pdfDownLoad[i].attachmentName
                 var copyNames = copyName.split("")
