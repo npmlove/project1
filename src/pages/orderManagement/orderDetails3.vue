@@ -530,7 +530,7 @@ export default {
     // 托书下载
 
     async downLoadPdf(){
-      let str = await this.getUrl() + '//'+ await this.getHost() + '/image/order-attach/'
+      let str = await this.getUrl() + '//'+ await this.getHost() + '/image/order-attach/bookingNote-agent/'
 
       this.$http.post(this.$service.createAgentBookingNotePdf,this.orderId).then(res=>{
         console.log(res)
@@ -886,11 +886,11 @@ export default {
       if(order.hasOwnProperty('trayDetail')){
        delete order.trayDetail
       }
-       
-        
-        
-        
-        
+
+
+
+
+
       let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
       let orderCargoDetailList = arrayTypeThree
 

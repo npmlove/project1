@@ -10,6 +10,13 @@
           clearable
           :trigger-on-focus="false" >
         </el-autocomplete>
+        <!-- <el-popover
+          width="180"
+          trigger="click">
+          <span>this is show me </span> 
+          <el-input  v-model="testNo" slot="reference" size="small" @blur="testChangeNo" ></el-input>
+        </el-popover> -->
+        
       </el-form-item>
       <el-form-item label="运单号">
         <el-autocomplete
@@ -183,8 +190,8 @@
     </el-form>
     <el-row type='flex' style="direction: rtl;" >
           <el-button size="small" @click="exportBillList">导出列表</el-button>
-          <el-button size="small" @click="fatherVerification">核销</el-button>
-          <el-button size="small" @click="fatherReconciliation">对账</el-button>
+          <el-button size="small" v-if="woStatus == 0" @click="fatherVerification">核销</el-button>
+          <el-button size="small" v-if="woStatus == 0" @click="fatherReconciliation">对账</el-button>
           <el-button size="small" @click="drawer = true" type="primary" >选择表格列</el-button>
           <el-button size="small" type="primary" @click="clearAllData">清空</el-button>
           <el-button size="small" type="primary" @click="onSubmit">查询</el-button>
@@ -560,6 +567,7 @@ import {exportFile} from '../../util/util'
     data() {
       return {
         // activeName:'0',
+        testNo:'', // 测试运单号
         drawer:false, // 右侧表格状态
         formInline: {
           orderNo:'',
@@ -709,7 +717,7 @@ import {exportFile} from '../../util/util'
     async mounted() {
       await this.onSubmit()
       await this.getSysInitial()
-
+      
 
     },
     components:{
@@ -959,9 +967,6 @@ import {exportFile} from '../../util/util'
                 }
               }
             }
-
-
-
             let {formInline} = this
             let params= Object.assign({},formInline,{ids:tempAds})
             let res = await this.$http.post(this.$service.toCheckAmount,params)
@@ -1030,7 +1035,9 @@ import {exportFile} from '../../util/util'
             if(res.code == 200){
               this.verificationObj = res.data
               setTimeout(()=>{
+                this.$refs.verificationData.remoteMethod('')
                 this.$refs.verificationData.showModal()
+                
               },0)
             }
 
@@ -1091,10 +1098,21 @@ import {exportFile} from '../../util/util'
           newobj.label = tempQuery[i]
           arrayt.push(newobj)
         }
-        console.log(arrayt)
-        this.arrayOne = this.arrayOne
         cb(arrayt)
       },
+      // testChangeNo(e){
+        
+      //   let tempStr = e.target.value.replace(/，/ig,',').replace(/\s/ig,',').replace(/\//g,',').replace(/-/ig,'') ;
+       
+      //   if(tempStr == ''){
+      //     console.log('nothing')
+      //   }else{
+      //       if(){
+
+      //       }
+      //      console.log(tempStr)
+      //   }
+      // },
       // 获取tabel数据
       async  getTabelData(formInline,currentPage,woStatus,slectAllDataStatic=false,pageSize=10){
         let tempObj = Object.assign({},formInline,{pageNum:currentPage,woStatus:woStatus},{pageSize:pageSize})
@@ -1130,7 +1148,6 @@ import {exportFile} from '../../util/util'
             }else{
                this.tableData = []
             }
-
           }
         } catch (error) {
           console.log(error)
@@ -1139,7 +1156,8 @@ import {exportFile} from '../../util/util'
       // 处理利润异常样式
       backStyle({row,rowIndex}){
         if( row.totalApOrgn < row.payCheckAmount < row.payWriteOffAmountRmb){
-          return 'background-color: #FA8072';
+          // console.log('第二种异常')
+          return 'background-color: #CD5C5C';
         }
         if (-200 < row.orderProfit && row.orderProfit < 0 ) {
           return 'background-color: #FFDEAD';
@@ -1150,7 +1168,7 @@ import {exportFile} from '../../util/util'
         }else if(row.orderProfit < 0 ){
           return 'background-color: #CD5C5C'
         }
-
+        
       },
       // 处理返回的原币string
       async dealApString(tempString){
