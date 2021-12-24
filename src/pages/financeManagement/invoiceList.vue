@@ -687,6 +687,9 @@
       
       uploadDisable(){
         if(this.pageSkipChecked == true){
+          if(this.tableData.length == 0) {
+            return true
+          }
           return false
         }
         else {
@@ -719,6 +722,11 @@
         else if (this.selectTableData.some(item=>item.invoiceType!=2)){
           this.$message.warning("所选数据存在非电子发票，不允许上传发票")
         }
+        }
+        else {
+          if(this.tableData.length == 0) {
+            this.$message.warning("暂无数据不支持上传发票")
+          }
         }
       },
       // 导入文件的上传
@@ -849,6 +857,12 @@
           });
           return false
         }
+        } 
+        if(this.pageSkipChecked == true) {
+          if(this.tableData.length == 0) {
+            this.$message.warning("暂无数据,不支持导出列表")
+          }
+          return false
         }
         let requestData = {}
         if(this.pageSkipChecked == true) {
@@ -866,6 +880,7 @@
         this.$http.post(this.$service.exportToExcel,requestData, {
             responseType: 'arraybuffer'
           }).then(res=>{
+          
             const aLink = document.createElement("a");
             let blob = new Blob([res], {
               type: "application/vnd.ms-excel"
@@ -1289,6 +1304,10 @@
         }
         }
         else {
+          if(this.tableData.length == 0) {
+            this.$message.warning("暂无数据不支持快递操作")
+            return
+          }
           this.postMessage = {postOne:"",postTwo:"",postThree:""};
           this.postMessageDial = true;
           this.tableRowPostData = ""
