@@ -58,7 +58,7 @@
             :key="item.id"
             style="margin-right: 40px;display:inline-block"
             >
-            <div class="title"><h1>{{ item.workOrderNo }}</h1></div>
+            <div class="title"><h1 style="margin:5px 0 0 10px">{{ item.workOrderNo }}</h1></div>
             <div class="textarea">
                 <div class="scroll">
                 <div  class="divLists" v-for="(item1, index1) in item.messages" :key="index1"
@@ -304,7 +304,6 @@ export default {
   border-top: 1px solid;
   border-left: 1px solid;
   border-right: 1px solid;
-  border-bottom: 1px solid rgb(193, 193, 193);
 }
 .textarea {
   height: 500px;
@@ -315,9 +314,7 @@ export default {
 .scroll {
   height: 200px;
   margin: 0 10px;
-  border-bottom: 1px solid rgb(193, 193, 193);
-  border-left: 1px solid rgb(193, 193, 193);
-  border-right: 1px solid rgb(193, 193, 193);
+  border: 1px solid rgb(193, 193, 193);
   overflow: auto;
   overflow-x: hidden;
 }

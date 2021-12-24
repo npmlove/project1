@@ -62,7 +62,7 @@
 
       </el-form>
       <!-- 新建工单弹框 -->
-        <el-dialog :visible.sync="workOrderDial" title="工单提交" width="40%;" style="padding-bottom:25px" :before-close="handleClose">
+        <el-dialog :visible.sync="workOrderDial" title="工单提交" width="900px" style="padding-bottom:25px" :before-close="handleClose">
             <div style="padding-top:10px">
                 <el-input
                     class="bigInput"
@@ -343,11 +343,15 @@ export default {
         //获取关键字
         getKeyWords(e){
             this.$http.post(this.$service.stringIfContent,e).then(data=>{
-                let copy = data.data
-                this.newMessage.pod = copy.pod
-                this.newMessage.piece = copy.piece
-                this.newMessage.cbm = copy.cbm
-                this.newMessage.weight = copy.weight
+                if(data.code == 200) {
+                     let copy = data.data
+                    this.newMessage.pod = copy.pod
+                    this.newMessage.piece = copy.piece
+                    this.newMessage.cbm = copy.cbm
+                    this.newMessage.weight = copy.weight
+                } else {
+                    this.$message.error(data.message)
+                }
             })
         },
          //新建工单确认关闭
@@ -400,6 +404,10 @@ export default {
         },
         //新建工单 弹框提交
         newWorkOrder(){
+            if(this.form.airLinePeople =="") {
+                this.$message.warning("请选择航线人员")
+                return 
+            }
             let request = {}
             request.roleName = this.pageRoleName
             request.workOrderType = this.form.workOrderType

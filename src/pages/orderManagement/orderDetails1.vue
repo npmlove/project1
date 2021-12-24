@@ -310,6 +310,12 @@
               </el-option>
             </el-select>
           </el-form-item>
+            <el-form-item style="margin-left:80px">
+              <div v-for="(item,index) in pdfDownLoad" :key="index">
+                  <div @click="downLoadPDF(item)" style="text-align:center"><img src="../../assets/pdf.png" alt=""  v-if="item.attachmentType == 3"></div>
+                  <div @click="previewPDF(item)" style="width:60px;fontSize:10px;lineHeight:15px;margin-left:10;text-align:center"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
+              </div>
+          </el-form-item>
         </div>
         <div>
           <el-form-item label="件数">
@@ -507,7 +513,14 @@
           </div>
         </div>
       </el-form>
-
+	    <el-dialog
+				title=""
+				:visible.sync="pdfDialogVisible"
+				width="80%"
+				top="0vh"
+				center>
+				<embed style="width: 100%;height: 90vh" :src="filePath"/>
+			</el-dialog>
       <!-- 航线价格 -->
       <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
         <div class="rest-style" style="padding-left: 20px;">
@@ -528,6 +541,10 @@
   export default {
     data() {
       return {
+         //pdf预览和下载
+        pdfDownLoad:"", 
+        pdfDialogVisible:false,
+
         orderStatus: [3],
         labelPosition: 'right',
         loading: false,
@@ -765,6 +782,27 @@
       this.companyMethod()
     },
     methods: {
+       //下载pdf
+        downLoadPDF(item){
+           axios({  
+               method: "get",
+			   url: item.xpath,
+			   responseType: 'arraybuffer',//接受使用分片方式
+			}).then((res) => {
+                const aLink = document.createElement("a");
+                let blob = new Blob([res], {
+                type: "application/pdf"
+                })
+                aLink.href = URL.createObjectURL(blob)
+                aLink.setAttribute('download', item.attachmentName) // 设置下载文件名称
+                aLink.click()
+                document.body.appendChild(aLink)})
+            },
+            //预览pdf
+            previewPDF(item){
+                this.pdfDialogVisible = true
+                this.filePath =item.xpath
+            },
       querenClick(item) {
         var data = {}
         var order = {
@@ -1429,6 +1467,13 @@
           if(data.code == 200){
             this.detailsArr = data.data
             var data = data.data
+            this.pdfDownLoad = data.orderAttachmentList
+            for(let i =0;i<this.pdfDownLoad.length;i++) {
+                var copyName = this.pdfDownLoad[i].attachmentName
+                var copyNames = copyName.split("")
+                copyNames.splice(7,9)
+                this.pdfDownLoad[i].attachmentName = copyNames.join("")
+            }
             this.statusDesc = data.statusDesc
             this.status = data.status
             this.pscsName = data.pscsName

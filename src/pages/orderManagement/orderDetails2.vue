@@ -240,7 +240,7 @@
            <el-form-item style="margin-left:80px">
               <div v-for="(item,index) in pdfDownLoad" :key="index">
                   <div @click="downLoadPDF(item)" style="text-align:center"><img src="../../assets/pdf.png" alt=""  v-if="item.attachmentType == 3"></div>
-                  <div @click="previewPDF(item)" style="width:70px;fontSize:10px;lineHeight:15px;margin-left:10"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
+                  <div @click="previewPDF(item)" style="width:60px;fontSize:10px;lineHeight:15px;margin-left:10;text-align:center"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
               </div>
           </el-form-item>
         </div>
@@ -1378,7 +1378,7 @@
             for(let i =0;i<this.pdfDownLoad.length;i++) {
                 var copyName = this.pdfDownLoad[i].attachmentName
                 var copyNames = copyName.split("")
-                copyNames.splice(10,6)
+                copyNames.splice(7,9)
                 this.pdfDownLoad[i].attachmentName = copyNames.join("")
             }
             this.statusDesc = data.statusDesc

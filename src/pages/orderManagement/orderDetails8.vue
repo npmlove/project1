@@ -153,46 +153,8 @@
           </el-form-item>
           <div style="background:#f3f6f9;margin:15px 0;padding-top:15px">
           <div>
-            <el-form-item label="起运港" required>
-              <el-select v-model="orderOptionsList.pol" :remote-method="polMethod" @change="initAirlineSearchByPage(index,orderOptionsList)" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择起运港" style="width: 216;">
-                <el-option
-                  v-for="item in polOpt"
-                  :key="item.threeLetterCode"
-                  :disabled="item.pod == item.threeLetterCode"
-                  :label="item.threeLetterCode"
-                  :value="item.threeLetterCode">
-                  <span style="margin-right: 5px;">{{item.threeLetterCode}}</span>
-                  <span>{{item.name}}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="目的港" required>
-              <el-select v-model="orderOptionsList.pod" :remote-method="podMethod" @change="initAirlineSearchByPage(index,orderOptionsList)" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择起运港" style="width: 216;">
-                <el-option
-                  v-for="item in podOpt"
-                  :key="item.threeLetterCode"
-                  :disabled="item.pol == item.threeLetterCode"
-                  :label="item.threeLetterCode"
-                  :value="item.threeLetterCode">
-                  <span style="margin-right: 5px;">{{item.threeLetterCode}}</span>
-                  <span>{{item.name}}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="航司" required>
-              <el-select v-model="orderOptionsList.airCompanyCode" @change="initAirlineSearchByPage(index,orderOptionsList)" :remote-method="companyMethod" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择航司" style="width: 216;">
-                <el-option
-                  v-for="item in airCompanyCodeOpt"
-                  :key="item.airCompanyCode"
-                  :label="item.name"
-                  :value="item.airCompanyCode">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </div>
-          <div>
             <el-form-item label="代理公司" required>
-              <el-select v-model="orderOptionsList.agentId" @change="initAirlineSearchByPage(index,orderOptionsList)" filterable clearable placeholder="请选择代理公司" style="width: 216;">
+              <el-select v-model="orderOptionsList.agentId" filterable clearable placeholder="请选择代理公司" style="width: 216;">
                 <el-option
                   v-for="item in agentIdOpt"
                   :key="item.id"
@@ -262,7 +224,7 @@
           <el-form-item style="margin-left:80px">
               <div v-for="(item,index) in pdfDownLoad" :key="index">
                   <div @click="downLoadPDF(item)" style="text-align:center"><img src="../../assets/pdf.png" alt=""  v-if="item.attachmentType == 3"></div>
-                  <div @click="previewPDF(item)" style="width:70px;fontSize:10px;lineHeight:15px;margin-left:10"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
+                  <div @click="previewPDF(item)" style="width:60px;fontSize:10px;lineHeight:15px;margin-left:10;text-align:center"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
               </div>
           </el-form-item>
         </div>
@@ -814,6 +776,25 @@
 
       //保存
       submitClick(type) {
+           if(!this.orderOptionsList.pol){
+              this.$message.error('请选择起始港')
+              return
+            }else if(!this.orderOptionsList.pod){
+              this.$message.error('请选择目的港')
+              return
+            }else if(!this.orderOptionsList.airCompanyCode){
+              this.$message.error('请选择航司')
+              return
+            }else if(!this.orderOptionsList.agentId){
+              this.$message.error('请选择代理公司')
+              return
+            }else if(!this.orderOptionsList.bookingPrice){
+              this.$message.error('请输入订舱单价')
+              return
+            }else if(!this.orderOptionsList.ifTransfer){
+              this.$message.error('请选择是否中转')
+              return
+            }
         var order = {
           id:this.orderId,
           status:this.status,
@@ -835,11 +816,11 @@
           deliveryAddress:this.deliveryAddress,
           deliveryContacts:this.deliveryContacts,
           deliveryTel:this.deliveryTel,
-          pol:this.orderOptionsList.pol,
-          pod:this.orderOptionsList.pod,
+          pol:this.pol,
+          pod:this.pod,
           legCount:this.orderOptionsList.ifTransfer == "直达"?1:2,
           fullLeg:this.orderOptionsList.ifTransfer == "直达"? `${this.orderOptionsList.pol},${this.orderOptionsList.pod}` : `${this.orderOptionsList.pol},中转,${this.orderOptionsList.pod}`,
-          airCompanyCode:this.orderOptionsList.airCompanyCode,
+          airCompanyCode:this.airCompanyCode,
           departureDate:this.departureDate,
           agentId:this.orderOptionsList.agentId.split("#")[0],
           bookingPrice:this.orderOptionsList.bookingPrice,
@@ -854,25 +835,7 @@
           bookingVwr:this.bookingVwr,
           bookingCw:this.bookingCw
         }
-        if(!this.orderOptionsList.pol){
-              this.$message.error('请选择起始港')
-              return
-            }else if(!this.orderOptionsList.pod){
-              this.$message.error('请选择目的港')
-              return
-            }else if(!this.orderOptionsList.airCompanyCode){
-              this.$message.error('请选择航司')
-              return
-            }else if(!this.orderOptionsList.agentId){
-              this.$message.error('请选择代理公司')
-              return
-            }else if(!this.orderOptionsList.bookingPrice){
-              this.$message.error('请输入订舱单价')
-              return
-            }else if(!this.orderOptionsList.ifTransfer){
-              this.$message.error('请选择是否中转')
-              return
-            }
+     
         var orderPriceList = []
         orderPriceList = this.arOrderPriceList.concat(this.apOrderPriceList)
         if(orderPriceList.length > 0){
@@ -1113,28 +1076,7 @@
         this.orderOptionsList.splice(index,1)
       },
       
-      //航线
-      initAirlineSearchByPage(index,item) {
-        if(!item.agentId || !item.pol || !item.pod || !item.airCompanyCode){
-          return
-        }
-        var json = {
-          airCompanyCode: item.airCompanyCode,
-          pol: item.pol,
-          pod: item.pod,
-          pageNum: 1,
-          agentName: item.agentId.split('#')[1]
-        }
-        this.$http.post(this.$service.airlineSearchByPage,json).then((data) => {
-          if(data.code == 200){
-            this.orderOptionsList[index].flightNoOpt = data.data.records
-            this.$forceUpdate()
-          }else{
-            this.$message.error(data.message)
-          }
-        })
-
-      },
+     
      //表格 费用名称列选项
       initExpenseCode() {
         var json = {
@@ -1332,7 +1274,7 @@
             for(let i =0;i<this.pdfDownLoad.length;i++) {
                 var copyName = this.pdfDownLoad[i].attachmentName
                 var copyNames = copyName.split("")
-                copyNames.splice(10,6)
+                copyNames.splice(7,9)
                 this.pdfDownLoad[i].attachmentName = copyNames.join("")
             }
               this.orderOptionsList= {
@@ -1348,7 +1290,6 @@
                   fullLeg: "",
                   legCount:""
               },
-          console.warn(this.orderOptionsList)
             this.statusDesc = data.statusDesc
             this.status = data.status
             this.pscsName = data.pscsName
@@ -1414,22 +1355,6 @@
               }
             }
             this.arOrderPriceList = data.arOrderPriceList[0].list
-            // if(data.orderOptionsList != null){
-            //   if(data.orderOptionsList.length != 0){
-            //     this.showMake = true
-            //     this.orderOptionsList = data.orderOptionsList
-            //     for(var q = 0; q < this.orderOptionsList.length; q++){
-            //       this.orderOptionsList[q].flightNoOpt = []
-            //       this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
-            //       this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
-            //       this.initAirlineSearchByPage(q,data.orderOptionsList[q])
-            //     }
-            //   }
-            // }
-            // if(data.status == '5'){
-            //   this.updateTime = data.updateTime
-            //   this.countTime(data.updateTime)
-            // }
           }else{
             this.$message.error(data.message)
           }

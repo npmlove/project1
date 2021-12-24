@@ -159,6 +159,18 @@
               <div>
                 <el-button class="ml_10" @click="downLoadPdf" size="mini">点击下载<i class="el-icon-download el-icon--right"></i></el-button>
               </div>
+              <div v-for="(item,index) in pdfDownLoad" :key="index" style="margin-left:15px">
+                  <div @click="downLoadPDF(item)" style="text-align:center"><img src="../../assets/pdf.png" alt=""  v-if="item.attachmentType == 3"></div>
+                  <div @click="previewPDF(item)" style="width:60px;fontSize:10px;lineHeight:15px;margin-left:10;text-align:center"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
+              </div>
+              	<el-dialog
+                  title=""
+                  :visible.sync="pdfDialogVisible"
+                  width="80%"
+                  top="0vh"
+                  center>
+                  <embed style="width: 100%;height: 90vh" :src="filePath"/>
+                </el-dialog>
             </div>
             <h1 class="title mtop_15">订舱数据</h1>
               <div class="bg_dark">
@@ -471,11 +483,11 @@ export default {
     opeartes
   },
   methods:{
-//下载pdf
+      //下载pdf
         downLoadPDF(item){
            axios({  
                method: "get",
-			   url: item.xpath,
+			         url: item.xpath,
 			   responseType: 'arraybuffer',//接受使用分片方式
 			}).then((res) => {
                 const aLink = document.createElement("a");
@@ -903,6 +915,13 @@ export default {
       let res = await  this.$http.get(this.$service.orderSearchDetail+`?orderId=${this.orderId}`)
       if(res.code == 200){
         let tempObj = res.data
+        this.pdfDownLoad = tempObj.orderAttachmentList
+            for(let i =0;i<this.pdfDownLoad.length;i++) {
+                var copyName = this.pdfDownLoad[i].attachmentName
+                var copyNames = copyName.split("")
+                copyNames.splice(7,9)
+                this.pdfDownLoad[i].attachmentName = copyNames.join("")
+            }
           tempObj.trayDetail = JSON.parse(tempObj.trayDetail)
           for(let i in tempObj.arOrderPriceList){
            tempObj.arOrderPriceList[i].changeBillAddOne = false
