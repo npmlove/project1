@@ -408,6 +408,10 @@ export default {
                 this.$message.warning("请选择航线人员")
                 return 
             }
+            else if(this.newMessage.pod == ""){
+                this.$message.warning("请在输入框中输入内容获取目的港")
+                return
+            }
             let request = {}
             request.roleName = this.pageRoleName
             request.workOrderType = this.form.workOrderType
