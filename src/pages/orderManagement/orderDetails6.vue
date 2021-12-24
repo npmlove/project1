@@ -348,7 +348,7 @@ export default {
   data() {
     return {
       //pdf预览和下载
-        pdfDownLoad:"", 
+        pdfDownLoad:"",
         pdfDialogVisible:false,
       radio1:'1',
       showCwr:"",//显示的比重 不传给后台
@@ -468,7 +468,7 @@ export default {
   methods:{
     //下载pdf
         downLoadPDF(item){
-           axios({  
+           axios({
                method: "get",
 			         url: item.xpath,
 			   responseType: 'arraybuffer',//接受使用分片方式
@@ -514,7 +514,7 @@ export default {
     // 托书下载
 
     async downLoadPdf(){
-      let str = await this.getUrl() + '//'+ await this.getHost() + '/image/order-attach/'
+      let str = await this.getUrl() + '//'+ await this.getHost() + '/image/order-attach/bookingNote-agent/'
 
       this.$http.post(this.$service.createAgentBookingNotePdf,this.orderId).then(res=>{
         console.log(res)
