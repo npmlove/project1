@@ -221,11 +221,11 @@ export default {
         return [
           { checkBox: true, width: 50 },
           { label: "订单号", width: 140, key: "orderNo" },
-          { label: "运单号", width: 140, key: "waybillNo" },
+          { label: "运单号", width: 110, key: "waybillNo" },
           { label: "订舱公司", width: 160, key: "customerName" },
-          { label: "航班日期", width: 140, key: "departureDate" },
-          { label: "交单时间", width: 160, key: "presentationTime" },
-          { label: "发票抬头", width: 160, key: "invoiceTitle" },
+          { label: "航班日期", width: 110, key: "departureDate" },
+          { label: "交单时间", width: 110, key: "presentationTime" },
+          { label: "发票抬头", width: 140, key: "invoiceTitle" },
           { label: "开票信息", width: 60, key: "showInvoice" },
           { label: "应收费用总金额", width: 100, key: "totalArCny" },
           {
@@ -380,7 +380,7 @@ export default {
       .tb-father {
         display: flex;
         &:nth-child(odd) {
-          min-width: 2520px;
+          min-width: 2390px;
           background-color: #ffffff;
           .tb-td {
             &:first-child {
@@ -392,7 +392,7 @@ export default {
           }
         }
         &:nth-child(even) {
-          min-width: 2520px;
+          min-width: 2390px;
           background-color: #f2f6ff;
           .tb-td {
             &:first-child {
@@ -458,7 +458,7 @@ export default {
         .tb-tr {
           display: flex;
           &:nth-child(odd) {
-            min-width: 2520px;
+            min-width: 2390px;
             background-color: #ffffff;
             .tb-td {
               &:first-child {
@@ -470,7 +470,7 @@ export default {
             }
           }
           &:nth-child(even) {
-            min-width: 2520px;
+            min-width: 2390px;
             background-color: #f2f6ff;
             .tb-td {
               &:first-child {
