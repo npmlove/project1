@@ -535,7 +535,7 @@
                 <span style="margin-left: 15px"
                   >利润:{{ statistData.orderProfit?statistData.orderProfit.toLocaleString('en-US'):0 }}</span
                 >
-                <span style="fontSize:17px;color:red;margin-left:10px" v-if="statistData.abnormalFlag != 0">存在异常订单！</span>
+                <span style="fontSize:17px;color:red;margin-left:10px" v-if="tabNum[6] > 0">存在异常订单！</span>
               </div>
             </div>
 
@@ -985,8 +985,10 @@ export default {
       }
     },
      tableRowClassName({row, rowIndex}) {
-        // if(row.orderProfit > 0  )
-      if (row.orderProfit<0 &&  row.orderProfit>-200 ) {
+      if(row.orderProfit >= 0 && (row.abnormalFlag== 1 || row.abnormalFlag== 4 || row.abnormalFlag== 5 || row.abnormalFlag== 7) ) {
+        return 'background-color:#CD5C5C '; 
+      }
+      else if (row.orderProfit<0 &&  row.orderProfit>-200 ) {
         return 'background-color: #FFDEAD';
       }
         else if (row.orderProfit<=-200 && row.orderProfit>-500) {
