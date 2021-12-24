@@ -74,7 +74,7 @@
           </div>
           <div>
             <span>航线负责人</span>
-            <span>    
+            <span>
               <el-select v-model="initData.principalName" @change="getSelectPrincipalId"  filterable size="mini" placeholder="请选择">
                 <el-option
                   v-for="item in airLineList"
@@ -87,7 +87,7 @@
           </div>
           <div>
             <span>售前客服</span>
-            <span>        
+            <span>
               <el-select v-model="initData.pscsName" @change="getSelectPscsId" size="mini" filterable placeholder="请选择">
                 <el-option
                   v-for="item in preSaleList"
@@ -100,7 +100,7 @@
           </div>
           <div>
             <span>售中客服</span>
-            <span>        
+            <span>
               <el-select v-model="initData.mscsName" @change="getSelectMscsId" filterable size="mini" placeholder="请选择">
                 <el-option
                   v-for="item in onSaleList"
@@ -300,7 +300,7 @@
             <br>
             <br>
             <div class="ml_20" v-if="initData.canCheckFlag == 1  && item.status == 0 "  >
-             
+
               <el-button  class="setWidth"  type="primary" @click="reconciliationClient(index)" >发起客户对账</el-button>
             </div>
             <div  >
@@ -369,7 +369,7 @@ export default {
   data() {
     return {
        //pdf预览和下载
-        pdfDownLoad:"", 
+        pdfDownLoad:"",
         pdfDialogVisible:false,
 
       radio1:'1',
@@ -490,7 +490,7 @@ export default {
   methods:{
     //下载pdf
         downLoadPDF(item){
-           axios({  
+           axios({
                method: "get",
 			         url: item.xpath,
 			   responseType: 'arraybuffer',//接受使用分片方式
@@ -521,10 +521,10 @@ export default {
         if(res.data.length > 0){
           console.log(res.data)
           this.operateList = res.data
-          
+
         }
       }
-     
+
     },
     // 获取URl 协议
     async getUrl(){
@@ -537,7 +537,7 @@ export default {
     // 托书下载
 
     async downLoadPdf(){
-      let str = await this.getUrl() + '//'+ await this.getHost() + '/image/order-attach/'
+      let str = await this.getUrl() + '//'+ await this.getHost() + '/image/order-attach/bookingNote-agent/'
 
       this.$http.post(this.$service.createAgentBookingNotePdf,this.orderId).then(res=>{
         console.log(res)
@@ -545,13 +545,13 @@ export default {
         a.setAttribute('href',str+res.attachmentPath)
         a.setAttribute('download', res.attachmentName)
         a.click()
-        
+
       })
     },
     // 如果子组件中有空运费 输入bookingPrice的时候同时修改子组件单价
     dealBookingPrice(e){
         console.log(e)
-        if(e){        
+        if(e){
           // 应收
           let a = this.$refs.typeBill0[0].tableData
           for(let i in a){
@@ -572,7 +572,7 @@ export default {
     // 如果子组件中有空运费 输入计费重的时候同时修改子组件数量
     dealChildPrice(num){
       // 取到子组件typeOne
-        if(num){        
+        if(num){
           // 应收
           let a = this.$refs.typeBill0[0].tableData
           for(let i in a){
@@ -593,7 +593,7 @@ export default {
     // 选择框获取id 航线负责人
     getSelectPrincipalId(e){
       let arrayTest =  this.airLineList
-      arrayTest.filter(res=>{ 
+      arrayTest.filter(res=>{
           if(res.name == e){
             this.initData.principalId = res.id
           }
@@ -602,17 +602,17 @@ export default {
     // 获取售前客服 id
     getSelectPscsId(e){
       let arrayTest =  this.airLineList
-      arrayTest.filter(res=>{ 
+      arrayTest.filter(res=>{
           if(res.name == e){
             this.initData.pscsId = res.id
           }
       })
     },
-    
+
     // 获取售中客服 id
     getSelectMscsId(e){
       let arrayTest =  this.airLineList
-      arrayTest.filter(res=>{ 
+      arrayTest.filter(res=>{
           if(res.name == e){
             this.initData.mscsId = res.id
           }
@@ -625,12 +625,12 @@ export default {
     calcVwr(){
       let {inboundWeight,inboundCbm,bubblePoint} = this.initData
       if(inboundWeight && inboundCbm){
-        
+
         this.initData.inboundVwr = Math.ceil( Number(inboundWeight) / Number(inboundCbm))
         console.log( this.initData.inboundVwr)
         this.showCwr = `1:${ this.initData.inboundVwr}`
         if(bubblePoint == 10){
-          this.initData.inboundCw = Math.max(inboundCbm * 167, inboundWeight ) 
+          this.initData.inboundCw = Math.max(inboundCbm * 167, inboundWeight )
         }else if(bubblePoint == 9){
            this.initData.inboundCw = Math.ceil(inboundCbm * 167 * 0.9 + inboundWeight * 0.1)
         }else if(bubblePoint == 8){
@@ -684,7 +684,7 @@ export default {
                 }
               })
             }
-              
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -856,7 +856,7 @@ export default {
         this.$message.error('请输入计费重')
         return ;
       }
-      
+
       let arrayTypeThree = this.$refs.typeThree.tableData
       let tempthree = arrayTypeThree.filter(item=>{
         return (item.piece == undefined || item.piece == '') || (item.cbm == undefined || item.cbm == "") || (item.weight == undefined || item.weight == '')  || (item.cargoSize == undefined || item.cargoSize == '')
@@ -904,7 +904,7 @@ export default {
           this.$message.error(data.message)
         }
       })
-    },   
+    },
     // 获取页面初始配置
     async initSysSetTing(){
       let res1 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000')
@@ -952,24 +952,24 @@ export default {
 
       if(e == 0){
         tempArray = this.$refs.typeBill0[0].tableData
-      
+
       }else if(e == 1){
         tempArray = this.$refs.typeBill1[0].tableData
-     
+
       }else if(e == 2){
         tempArray = this.$refs.typeBill2[0].tableData
-      
+
       }else if(e == 3){
         tempArray = this.$refs.typeBill3[0].tableData
-      
+
       }else if(e == 4){
         tempArray = this.$refs.typeBill4[0].tableData
-      
+
       }else if(e == 100){
         tempArray = this.$refs.typeNewBill.tableData
-     
+
       }
- 
+
       let typeTwo  =this.$refs.typeTwo.tableData
       tempArray = tempArray.concat(typeTwo)
         let params = {
