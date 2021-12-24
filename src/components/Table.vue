@@ -186,7 +186,7 @@
         this.$emit('sortChange', column)
       },
       checkEdit(row) {
-        var today = new Date(2022,1,27);
+        var today = new Date();
         var date = new Date(row.createTime)
         var oneDay=1000*60*60*24;
         var currentMonth=row.monthNo;
