@@ -121,20 +121,20 @@
                               v-if="item2.invoiceInfos"
                               >
                               <div v-for="(item11,index11) in item2.invoiceInfos" :key ="index11">{{item11.invoiceNum}}</div>
-                              <div slot="reference"> <template v-if="item2.hasChild">
+                              <div slot="reference" @click="foldRow(item2, index2)" :style="{'color':item2.hasChild?'skyblue':'black'}" > 
+                                {{item2.invoiceNum}}
+                                <template v-if="item2.hasChild">
     <img
-                  src="../../../assets/xiajiantou.png"
+                  src="../../../assets/shangjiantou.png"
                   class="foldImg"
                   v-if="item2.ifFold"
-                  @click="foldRow(item2, index2)"
                 />
                 <img
-                  src="../../../assets/youjiantou.png"
+                  src="../../../assets/xiajiantou.png"
                   class="foldImg"
                   v-else
-                  @click="foldRow(item2, index2)"
                 />
-  </template>{{item2.invoiceNum}}
+  </template>
   
                
                               </div>
