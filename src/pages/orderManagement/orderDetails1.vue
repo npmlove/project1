@@ -1478,6 +1478,7 @@
                 copyNames.splice(7,9)
                 this.pdfDownLoad[i].attachmentName = copyNames.join("")
             }
+           
             this.statusDesc = data.statusDesc
             this.status = data.status
             this.pscsName = data.pscsName
@@ -1550,6 +1551,12 @@
                 this.showMake = true
                 this.orderOptionsList = data.orderOptionsList
                 for(var q = 0; q < this.orderOptionsList.length; q++){
+
+                if(this.orderOptionsList[q].fullLeg.split(",").length>2) {
+                    this.orderOptionsList[q].ifTransfer = "2"
+                } else {
+                    this.orderOptionsList[q].ifTransfer = "1"
+                }
                   this.orderOptionsList[q].flightNoOpt = []
                   this.orderOptionsList[q].bubblePoint = data.orderOptionsList[q].bubblePoint.toString()
                   this.orderOptionsList[q].agentId = data.orderOptionsList[q].agentId+'#'+data.orderOptionsList[q].agentName
