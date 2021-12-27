@@ -170,7 +170,7 @@
               </div>
             </div>
           </div>
-          <div style="min-width:2540px;height:300px;overflow-y:scroll;" v-if="item2.ifFold && item2.hasChild" class="tb-son">
+          <div style="height:300px;overflow-y:scroll;" v-if="item2.ifFold && item2.hasChild" class="tb-son">
           <template v-for="(item3, key) in item2.invoiceInfos" id="fold">
             <div class="tb-tr" v-show="item2.ifFold && item2.hasChild" :key="key + '' + index2">
               <div
@@ -454,11 +454,11 @@ export default {
         }
       }
       .tb-son {
-        min-width:2520px;
+        min-width:2395px;
         .tb-tr {
           display: flex;
           &:nth-child(odd) {
-            min-width: 2390px;
+            min-width: 2380px;
             background-color: #ffffff;
             .tb-td {
               &:first-child {
@@ -470,7 +470,7 @@ export default {
             }
           }
           &:nth-child(even) {
-            min-width: 2390px;
+            min-width: 2380px;
             background-color: #f2f6ff;
             .tb-td {
               &:first-child {
