@@ -1236,8 +1236,6 @@ import {exportFile} from '../../util/util'
           return 'background-color: #F4A460';
         }else if ( row.orderProfit < -500 ) {
           return 'background-color: #FA8072';
-        }else if(row.orderProfit < 0 ){
-          return 'background-color: #CD5C5C'
         }
         
       },
