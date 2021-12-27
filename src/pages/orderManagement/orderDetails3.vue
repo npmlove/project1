@@ -691,6 +691,36 @@ export default {
     },
     // 操作完成 推进订单进程 不然没法对账
     exdeOrder(e){
+      let {inboundWeight,inboundCbm, inboundCw , inboundPiece,inboundNo} = this.initData
+      if(!inboundNo){
+        this.$message.error('请输入进仓编号')
+        return ;
+      }
+      if(!inboundPiece){
+        this.$message.error('请输入进仓件数')
+        return ;
+      }
+      if(!inboundWeight){
+        this.$message.error('请输入毛重')
+        return ;
+      }
+      if(!inboundCbm){
+        this.$message.error('请输入体积')
+        return ;
+      }
+      if(!inboundCw){
+        this.$message.error('请输入计费重')
+        return ;
+      }
+
+      let arrayTypeThree = this.$refs.typeThree.tableData
+      let tempthree = arrayTypeThree.filter(item=>{
+        return (item.piece == undefined || item.piece == '') || (item.cbm == undefined || item.cbm == "") || (item.weight == undefined || item.weight == '')  || (item.cargoSize == undefined || item.cargoSize == '')
+      })
+      if(tempthree.length > 0){
+        this.$message.error('请填写进仓数据')
+        return ;
+      }
       // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
       if(this.initData.status == 17  && e ==1){
         if(!this.initData.waybillNo){
