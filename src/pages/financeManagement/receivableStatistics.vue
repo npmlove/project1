@@ -118,11 +118,10 @@
 
           <el-form-item label="起运港:" class="formItem" label-width="80px">
             <el-select
+              @blur="autoValue($event.target.value.toUpperCase(),'pol')"
               v-model="selectResult.pol"
               id="pol"
               placeholder="起运港三字码"
-              :remote-method="polMethod"
-              :loading="loading"
               clearable
               filterable
               maxlength="15"
@@ -144,12 +143,11 @@
 
           <el-form-item label="目的港:" class="formItem" label-width="80px">
             <el-select
+              @blur="autoValue($event.target.value.toUpperCase(),'pod')"
               v-model="selectResult.pod"
               placeholder="目的港三字码"
-              :remote-method="podMethod"
               id="pod"
               maxlength="15"
-              :loading="loading"
               clearable
               filterable
               remote
@@ -1001,6 +999,15 @@
       this.dom()
     },
     methods:{
+      autoValue(e,type){
+        if(this.polOpt.some(item=>item.threeLetterCode == e)){
+          if(type == "pod") {
+            this.selectResult.pod = e
+          } else {
+            this.selectResult.pol = e
+          }
+        }
+      },
       //汇率处理
       getExchangeRate(exchangeRate) {
          let copy = JSON.parse(exchangeRate)

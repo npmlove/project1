@@ -37,7 +37,8 @@ router.beforeEach(function (to, from, next) {
           currentRoutes = asyncRoutes
         }else{
           const roles = [roleName]
-          currentRoutes = filterAsyncRoutes(asyncRoutes,roles)
+          // currentRoutes = filterAsyncRoutes(asyncRoutes,roles)
+          currentRoutes = asyncRoutes
         }
         router.options.routes = constantRoutes.concat([...currentRoutes])  // menu
         resetRouter()  
