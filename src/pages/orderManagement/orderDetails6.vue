@@ -145,7 +145,7 @@
               </div>
               <div style="display:flex">
                <div v-for="(item,index) in pdfDownLoad" :key="index" style="margin-left:20px">
-                  <div @click="downLoadPDF(item)" style="text-align:center"><img src="../../assets/pdf.png" alt=""  v-if="item.attachmentType == 3"></div>
+                  <div @click="downLoadPDFs(item)" style="text-align:center"><img src="../../assets/pdf.png" alt=""  v-if="item.attachmentType == 3"></div>
                   <div @click="previewPDF(item)" style="width:60px;fontSize:10px;lineHeight:15px;margin-left:10;text-align:center;cursor:pointer"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
               </div>
              </div>
@@ -470,7 +470,7 @@ export default {
   },
   methods:{
       //下载pdf
-        downLoadPDF(item){
+        downLoadPDFs(item){
            axios({
                method: "get",
 			         url: item.xpath,

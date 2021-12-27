@@ -72,3 +72,12 @@ export const payWayArray = [
   }
 ]
 
+export function judgeWaybillNo(str){
+    let reg = /^\d{11}$/;
+    if(str.indexOf('-') == -1){
+        return reg.test(str)
+    }else{
+        let testStr = str.replace('-','')
+        return  reg.test(testStr)
+    }
+}

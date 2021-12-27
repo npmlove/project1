@@ -63,8 +63,8 @@
                 label="操作">
                 <template slot-scope="scope">
                     <div >
-                        <span v-if="tableData.length - 1 == scope.$index" @click="addOneTableObj(scope)">新增</span>
-                        <span @click="deleOneTableObj(scope)" >删除</span>
+                        <span class="tips" v-if="tableData.length - 1 == scope.$index" @click="addOneTableObj(scope)">新增</span>
+                        <span v-if="scope.$index != 0" @click="deleOneTableObj(scope)" >删除</span>
                     </div>
                 </template>
             </el-table-column>
@@ -170,5 +170,7 @@ export default {
 </script>
 
 <style  scoped>
-    
+    .tips{
+        color: rgb(2, 175, 240);
+    }
 </style>
