@@ -783,10 +783,7 @@
             }else if(!this.orderOptionsList.ifTransfer){
               this.$message.error('请选择是否中转')
               return
-            } else if (!this.orderOptionsList.flightNo) {
-               this.$message.error('请输入航班号')
-              return
-            }
+            } 
         var order = {
           id:this.orderId,
           status:this.status,
