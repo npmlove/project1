@@ -150,31 +150,31 @@
         </el-select>
       </el-form-item>
       <el-form-item label="售前客服">
-        <el-select v-model="formInline.pscsId" filterable clearable placeholder="请选择">
+        <el-select id="selectOne" v-model="formInline.pscsId" filterable clearable placeholder="请选择">
           <el-option
             v-for="item in preSaleList"
             :key="item.id"
-            :label="item.loginName"
+            :label="item.name"
             :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="航线负责人">
-        <el-select v-model="formInline.principalId" filterable clearable placeholder="请选择">
+        <el-select id="selectTwo" v-model="formInline.principalId" filterable clearable placeholder="请选择">
           <el-option
             v-for="item in airLineList"
             :key="item.id"
-            :label="item.loginName"
+            :label="item.name"
             :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="售中客服" >
-        <el-select v-model="formInline.mscsId" filterable clearable placeholder="请选择">
+        <el-select id="selectThree" v-model="formInline.mscsId" filterable clearable placeholder="请选择">
           <el-option
             v-for="item in onSaleList"
             :key="item.id"
-            :label="item.loginName"
+            :label="item.name"
             :value="item.id">
           </el-option>
         </el-select>
@@ -717,6 +717,7 @@ import {exportFile} from '../../util/util'
       }
     },
     async mounted() {
+      this.selectSet()
       await this.onSubmit()
       await this.getSysInitial()
       
@@ -739,6 +740,15 @@ import {exportFile} from '../../util/util'
       verification
     },
     methods: {
+      // 输入控制
+      selectSet(){
+        let one  = document.querySelector('#selectOne')
+        let two  = document.querySelector('#selectTwo')
+        let three  = document.querySelector('#selectThree')
+        one.setAttribute('maxLength',10)
+        two.setAttribute('maxLength',10)
+        three.setAttribute('maxLength',10)
+      },
       // 多选状态判断
       dealPayList(val){
         let allValues = []
