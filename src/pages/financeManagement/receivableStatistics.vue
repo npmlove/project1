@@ -7,7 +7,7 @@
         class="demo-form-inline"
         label-position="left"
       >
-        <div class="content-search-normal">
+        <div class="content-search-normal" style="position:relative">
           <el-form-item label="订单号:" class="formItem" label-width="80px">
             <el-popover
                placement="right"
@@ -90,7 +90,12 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="航司:" class="formItem" label-width="80px">
+           <div style="position:absolute;cursor:pointer;top:15px;right:20px" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span> 
+          </div>
+          <el-form-item label="航司:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               v-model="selectResult.airCompanyCode"
               id="airCompany"
@@ -116,7 +121,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="起运港:" class="formItem" label-width="80px">
+          <el-form-item label="起运港:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               @blur="autoValue($event.target.value.toUpperCase(),'pol')"
               v-model="selectResult.pol"
@@ -141,7 +146,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="目的港:" class="formItem" label-width="80px">
+          <el-form-item label="目的港:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               @blur="autoValue($event.target.value.toUpperCase(),'pod')"
               v-model="selectResult.pod"
@@ -165,7 +170,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-         <el-form-item label="核销状态" label-width="80px" style="width:320px">
+         <el-form-item label="核销状态" label-width="80px" style="width:320px" v-show="selectControl">
             <el-select v-model="selectResult.rcvWriteOffStatusList" placeholder="核销状态" clearable multiple collapse-tags  @change="dealAllChange" style="width: 190px;">
               <el-option
                 v-for="(item,index) in writeOffStatus"
@@ -176,7 +181,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="售前客服:" class="formItem" label-width="80px">
+          <el-form-item label="售前客服:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               id="pscsId"
               v-model="selectResult.pscsId"
@@ -197,7 +202,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="售中客服:" class="formItem" label-width="80px">
+          <el-form-item label="售中客服:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               id="mscsId"
               v-model="selectResult.mscsId"
@@ -223,7 +228,7 @@
             label="航班日期:"
             style="width: 480px"
             label-width="80px"
-          >
+            v-show="selectControl">
             <el-date-picker
               style="width: 180px"
               value-format="yyyy-MM-dd"
@@ -245,7 +250,7 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item label="下单时间:" style="width: 480px">
+          <el-form-item label="下单时间:" style="width: 480px" v-show="selectControl">
             <el-date-picker
               value-format="yyyy-MM-dd"
               style="width: 180px"
@@ -266,7 +271,7 @@
             >
             </el-date-picker>
           </el-form-item>
-           <el-form-item label="结算方式:" label-width="80px" style="width:320px">
+           <el-form-item label="结算方式:" label-width="80px" style="width:320px" v-show="selectControl">
             <el-select
               v-model="selectResult.payWay"
               placeholder="请选择结算方式"
@@ -281,7 +286,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="航线:" class="formItem" label-width="80px">
+          <el-form-item label="航线:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               id="principalId"
               v-model="selectResult.principalId"
@@ -315,14 +320,7 @@
               >清空</el-button
             >
           </div>
-          <div class="operateButton">
-            <el-button v-if="this.typeCode!= '业务修改中'" size="mini" type="primary" @click="getStatement">生成对账单</el-button>
-            <el-button v-if="this.typeCode!= '业务修改中'" size="mini" type="primary" @click="chargeOff">核销</el-button>
-            <el-button size="mini" type="primary" @click="getExportExcel">导出列表</el-button>
-            <el-button @click="drawer = true" type="primary" size="mini"
-              >选择表格列</el-button
-            >
-          </div>
+      
           <!-- 表格控制列显示 -->
       <el-drawer
         title="表格列控制"
@@ -358,6 +356,7 @@
             border
             stripe
             header
+            max-height="450px"
             class="finance-table"
             :cell-style="tableRowClassName"
             @selection-change="handleSelectionChange"
@@ -512,7 +511,7 @@
             </template>
             </el-table-column>
           </el-table>
-          <div>
+          <div style="display:flex;justify-content:space-between">
             <div>
               <el-button size="mini" class="pageSkip"><el-checkbox v-model="pageSkipChecked" @change="selectAllTable">跨页全选</el-checkbox></el-button>
               <el-button type="primary" size="mini" @click="getStatistData"
@@ -536,7 +535,15 @@
                 </div>
               </div>
             </div>
-          </div>
+          <div style="display:flex">
+            <div style="margin:23px 10px 0 0">
+              <el-button v-if="typeCode!= '业务修改中'" size="mini" type="primary" @click="getStatement">生成对账单</el-button>
+              <el-button v-if="typeCode!= '业务修改中'" size="mini" type="primary" @click="chargeOff">核销</el-button>
+              <el-button size="mini" type="primary" @click="getExportExcel">导出列表</el-button>
+              <el-button @click="drawer = true" type="primary" size="mini"
+                >选择表格列</el-button
+              >
+            </div>
             <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
@@ -552,6 +559,9 @@
               "
             >
             </el-pagination>
+          </div>
+          </div>
+            
         </el-tab-pane>
       </el-tabs>
       <el-dialog :title="dialogTitleOne+' 订单详情'" :visible.sync="dialogFormVisibleOne" width="80%">
@@ -789,6 +799,7 @@
   export default {
     data() {
       return {
+        selectControl:false,
         pageSkipChecked:false,//跨页全选
         statistDataShow:false,//数据统计
         statistData:{},//数据统计数据
@@ -840,7 +851,7 @@
         tabNum:[0,0,0],
         typeCode:"可操作",
         //核销状态
-        writeOffStatus:[{value:"全部",id:""},{value:"未对账",id:'0'},{value:"部分对账",id:'1'},{value:"已对账",id:'2'},{value:"部分对账部分核销",id:'4'},{value:"已对账部分核销",id:'5'},{value:"已对账已核销",id:'8'}],
+        writeOffStatus:[{value:"全部",id:""},{value:"未对账未核销",id:'0'},{value:"部分对账未核销",id:'1'},{value:"已对账未核销",id:'2'},{value:"部分对账部分核销",id:'4'},{value:"已对账部分核销",id:'5'},{value:"已对账已核销",id:'8'}],
         payWayData:[{value:"全部",id:""},{value:"付款买单",id:0},{value:"月结买单",id:1}],
         //搜索框结果
       selectResult:{
@@ -999,6 +1010,10 @@
       this.dom()
     },
     methods:{
+      //下拉框搜索框控制
+    shiftSelectControl(){
+      this.selectControl = !this.selectControl
+    },
       autoValue(e,type){
         if(this.polOpt.some(item=>item.threeLetterCode == e)){
           if(type == "pod") {

@@ -7,7 +7,7 @@
         class="demo-form-inline"
         label-position="left"
       >
-        <div class="content-search-normal">
+        <div class="content-search-normal" style="position: relative">
           <el-form-item label="订单号:" class="formItem" label-width="80px">
             <el-input
               v-model="selectResult.orderNo"
@@ -93,8 +93,11 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <img v-if="selectControl" @click="shiftSelectControl" src="../../assets/shangjiantou.png" alt="" style="width:30px;height:30px;float:right;margin:0px 30px 0 0">
-          <img v-if="!selectControl" @click="shiftSelectControl" src="../../assets/xiajiantou.png" alt="" style="width:30px;height:30px;float:right;margin:0px 30px 0 0">
+            <div style="position:absolute;cursor:pointer;top:15px;right:20px" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span> 
+          </div>
           <el-form-item label="起运港:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               v-model="selectResult.pol"
@@ -320,7 +323,7 @@
             :data="tableData"
             border
             stripe
-            max-height="430px"
+            max-height="450px"
             header
             :cell-style="tableRowClassName"
             ref="multipleTable"

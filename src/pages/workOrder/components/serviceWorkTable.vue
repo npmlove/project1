@@ -241,7 +241,8 @@
                   <el-button disabled type="info" size="mini" style="width:68px;background-color:#909399;color:#fff;border:0" v-if="scope.row.status == 3">已关闭</el-button>
                   <el-button @click="remindOrder(scope.row.id)" type="primary" size="mini" style="width:68px" v-else-if="scope.row.canRemind == 1 && scope.row.roundsRemindCount == 0">催单</el-button>
                   <el-button disabled type="info" size="mini" style="width:68px;background-color:#909399;color:#fff;border:0" v-else-if="scope.row.canRemind == 0 && scope.row.roundsRemindCount == 0">催单</el-button>
-                  <el-button @click="remindOrder(scope.row.id)" :disabled="scope.row.canRemind" type="warning" size="mini" style="background:rgb(245, 154, 35) !important" v-else-if="scope.row.timeOutFlag == 1 && scope.row.remindFlag == 1">已催单{{scope.row.roundsRemindCount}}</el-button>
+                  <el-button @click="remindOrder(scope.row.id)" type="warning" size="mini" style="background:rgb(245, 154, 35) !important" v-else-if="scope.row.canRemind == 1 && scope.row.roundsRemindCount">已催单{{scope.row.roundsRemindCount}}</el-button>
+                  <el-button disabled type="warning" size="mini" style="width:68px;background-color:#909399;color:#fff;border:0" v-else-if="scope.row.canRemind == 0 && scope.row.roundsRemindCount">已催单{{scope.row.roundsRemindCount}}</el-button>
                 </template>
               </el-table-column>
               <el-table-column label="目的港" prop="pod" min-width="40"></el-table-column>

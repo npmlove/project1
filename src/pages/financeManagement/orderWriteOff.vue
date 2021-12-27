@@ -2,7 +2,7 @@
   <div class="content-wrapper">
     <div class="content">
       <el-form :inline="true" size="medium" class="demo-form-inline" label-position="right">
-        <div class="content-search-normal">
+        <div class="content-search-normal" style="position:relative">
           <el-form-item label="订单号" label-width="100px">
             <el-input v-model="selectResult.orderNo" style="width: 200px;" size="medium" maxlength="15" clearable placeholder="请输入订单号"></el-input>
           </el-form-item>
@@ -39,7 +39,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="航司" label-width="100px">
+          <el-form-item label="航司" label-width="100px" >
             <el-select v-model="selectResult.airCompanyCode" placeholder="请输入航司" id="airCompany" :remote-method="companyMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
               <el-option
                 v-for="(item,index) in airCompanyCodeOpt"
@@ -51,8 +51,13 @@
               </el-option>
             </el-select>
           </el-form-item>
-
-        <div style="width:455px" class="formItem">
+          <div style="position:absolute;cursor:pointer;top:20px;right:20px" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span> 
+          </div>
+   
+        <div style="width:455px" class="formItem"  v-show="selectControl">
           <el-form-item label="下单时间:" label-width="100px">
             <el-date-picker
              style="width:165px"
@@ -73,7 +78,7 @@
           </el-form-item>
         </div>
 
-        <div style="width:455px" class="formItem">
+        <div style="width:455px" class="formItem" v-show="selectControl">
           <el-form-item label="航班日期" label-width="100px">
              <el-date-picker
              style="width:165px"
@@ -93,7 +98,7 @@
             </el-date-picker>
           </el-form-item>
         </div>
-         <el-form-item label="售前客服" class="formItem" label-width="100px">
+         <el-form-item label="售前客服" class="formItem" label-width="100px" v-show="selectControl">
             <el-select
               id="pscsId"
               v-model="selectResult.pscsId"
@@ -115,7 +120,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="应收核销状态" label-width="100px">
+          <el-form-item label="应收核销状态" label-width="100px" v-show="selectControl">
             <el-select v-model="selectResult.rcvWriteOffStatusList" placeholder="应收核销状态" clearable multiple collapse-tags  @change="dealAllChange" style="width: 200px;">
               <el-option
                 v-for="(item,index) in writeOffStatus"
@@ -126,7 +131,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="应付核销状态" label-width="100px">
+          <el-form-item label="应付核销状态" label-width="100px" v-show="selectControl">
             <el-select v-model="selectResult.payWriteOffStatusList" placeholder="应付核销状态" clearable multiple collapse-tags  @change="dealAllChange" style="width: 200px;">
               <el-option
                 v-for="(item,index) in writeOffStatus"
@@ -137,7 +142,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="起运港" label-width="100px">
+          <el-form-item label="起运港" label-width="100px" v-show="selectControl">
             <el-select v-model="selectResult.pol" placeholder="起运港三字码" id="pol" :remote-method="polMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
               <el-option
                 v-for="(item,index) in polOpt"
@@ -150,7 +155,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="目的港" label-width="100px">
+          <el-form-item label="目的港" label-width="100px" v-show="selectControl">
             <el-select v-model="selectResult.pod" placeholder="目的港三字码" id="pod" :remote-method="podMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
               <el-option
                 v-for="item in podOpt"
@@ -163,7 +168,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="售中客服" class="formItem" label-width="100px">
+          <el-form-item label="售中客服" class="formItem" label-width="100px" v-show="selectControl">
             <el-select
               id="mscsId"
               v-model="selectResult.mscsId"
@@ -184,7 +189,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-           <el-form-item label="航线:" class="formItem" label-width="80px">
+           <el-form-item label="航线:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               id="principalId"
               v-model="selectResult.principalId"
@@ -209,10 +214,7 @@
               <el-button @click="searchClick(true)" size="mini" type="primary" icon="el-icon-search">查询</el-button>
               <el-button @click="restClick" size="mini" type="primary">清空</el-button>
               </div>
-                <div class="operateButton">
-                  <el-button size='mini' type="primary" @click="exportList">导出列表</el-button>
-                  <el-button @click="drawer = true" type="primary" size='mini'>选择表格列</el-button>
-                </div>
+               
         </div>
       </el-form>
       <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData" value="可操作">
@@ -222,6 +224,7 @@
             ref="multipleTable"
             border
             stripe
+            max-height="450px"
             header
             class="finance-table"
             :cell-style="tableRowClassName"
@@ -421,7 +424,7 @@
               v-if="checkedTable.indexOf('利润') !== -1"
             ></el-table-column>
           </el-table>
-          <div>
+          <div style="display:flex;justify-content:space-between">
             <div>
               <el-button size="mini" class="pageSkip"><el-checkbox v-model="pageSkipChecked" @change="selectAllTable">跨页全选</el-checkbox></el-button>
               <el-button type="primary" size="mini" @click="getStatistData"
@@ -447,7 +450,11 @@
               </div>
 
             </div>
-          </div>
+            <div style="display:flex;">
+               <div style="widht:100%;margin:25px 15px 0 0">
+                  <el-button size='mini' type="primary" @click="exportList">导出列表</el-button>
+                  <el-button @click="drawer = true" type="primary" size='mini'>选择表格列</el-button>
+            </div>
             <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
@@ -463,6 +470,9 @@
               "
             >
             </el-pagination>
+            </div>
+          </div>
+          
         </el-tab-pane>
       </el-tabs>
         <!-- 表格控制列显示 -->
@@ -538,7 +548,7 @@
   export default {
     data() {
       return {
-
+      selectControl:false,
        //表格控制列drawer
       drawer: false,
       checkAll: false,
@@ -709,7 +719,7 @@
             }
           }
         },
-        writeOffStatus:[{value:"全部",id:""},{value:"未对账",id:'0'},{value:"部分对账",id:'1'},{value:"已对账",id:'2'},{value:"部分对账部分核销",id:'4'},{value:"已对账部分核销",id:'5'},{value:"已对账已核销",id:'8'}],
+        writeOffStatus:[{value:"全部",id:""},{value:"未对账未核销",id:'0'},{value:"部分对账未核销",id:'1'},{value:"已对账未核销",id:'2'},{value:"部分对账部分核销",id:'4'},{value:"已对账部分核销",id:'5'},{value:"已对账已核销",id:'8'}],
         agentOpt: [],
         polOpt: [],
         podOpt: [],
@@ -730,6 +740,10 @@
       this.dom()
     },
     methods: {
+    //下拉框搜索框控制
+    shiftSelectControl(){
+      this.selectControl = !this.selectControl
+    },
       //原币处理
       dealOrgn(orgn,extraWord) {
       if (!orgn) {

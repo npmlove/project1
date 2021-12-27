@@ -352,6 +352,7 @@ export default {
 <style lang="less"  scoped>
 .comm-table-back {
   .tb-table {
+    max-height:450px;
     overflow: scroll;
     margin: 0 auto;
     .tb-thead {

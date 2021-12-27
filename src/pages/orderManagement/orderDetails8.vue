@@ -442,9 +442,9 @@
       <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
         <div class="rest-style" style="padding-left: 20px;">
           <el-form-item label=" " label-width="150px">
-            <el-button v-if="status == '3' || status == '5'" @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
-            <el-button v-if="(status != '5')" @click="submitClick('取消')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >取消订单</el-button>
-            <el-button  @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核通过</el-button>
+            <el-button  @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
+            <el-button v-if="!canNotOperate" @click="submitClick('取消')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >取消订单</el-button>
+            <el-button v-if="!canNotOperate" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核通过</el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -459,6 +459,7 @@
   export default {
     data() {
       return {
+        canNotOperate:false,
           //pdf预览和下载
         pdfDownLoad:"", 
         pdfDialogVisible:false,
@@ -823,6 +824,7 @@
           airCompanyCode:this.airCompanyCode,
           departureDate:this.departureDate,
           agentId:this.orderOptionsList.agentId.split("#")[0],
+          agentName:this.orderOptionsList.agentId.split("#")[1],
           bookingPrice:this.orderOptionsList.bookingPrice,
           bubblePoint:this.orderOptionsList.bubblePoint,
           flightNo:this.orderOptionsList.flightNo,
@@ -1305,7 +1307,11 @@
             this.customerName = data.customerName
             this.inboundNo = data.inboundNo
             this.waybillNo = data.waybillNo
-            this.principalId = data.principalId+'#'+data.principalName
+            if(!data.principalId) {
+              this.canNotOperate = true
+            } else {
+              this.principalId = data.principalId+'#'+data.principalName
+            }
             this.pscsId = data.pscsId+'#'+data.pscsName
             this.mscsId = data.mscsId+'#'+data.mscsName
             this.remark = data.remark

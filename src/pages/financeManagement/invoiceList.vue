@@ -2,7 +2,7 @@
   <div class="content-wrapper">
     <div class="content">
       <el-form :inline="true" size="medium" :model="selectResult" class="demo-form-inline" label-position="left">
-        <div class="content-search-normal">
+        <div class="content-search-normal" style="position:relative">
           <div class="formItem">
           <el-form-item label="订单号:" label-width="80px">
             <el-input v-model="selectResult.orderNo" style="width: 210px;" size="medium" maxlength="15" clearable placeholder="请输入订单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.orderNo = $event.target.value"></el-input>
@@ -36,12 +36,17 @@
             </el-select>
           </el-form-item>
         </div>
-        <div class="formItem">
+          <div style="position:absolute;cursor:pointer;top:15px;right:20px" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span> 
+          </div>
+         <div class="formItem" v-show="selectControl">
           <el-form-item label="发票号:" label-width="80px">
             <el-input v-model="selectResult.invoiceNum" style="width: 210px;" size="medium" maxlength="8" clearable placeholder="请输入发票号" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" @blur="selectResult.invoiceNum = $event.target.value"></el-input>
           </el-form-item>
         </div>
-        <div class="formItem">
+        <div class="formItem" v-show="selectControl">
           <el-form-item label="发票类型:" label-width="80px">
             <el-select v-model="selectResult.invoiceType" multiple  collapse-tags style="width: 210px;" @change="dealAllChange">
               <el-option
@@ -53,7 +58,7 @@
             </el-select>
           </el-form-item>
         </div>
-        <div class="formItem">
+        <div class="formItem" v-show="selectControl">
           <el-form-item label="开票进度:" label-width="80px">
             <el-select v-model="selectResult.invoicingStatus" multiple  collapse-tags style="width: 210px;" @change="dealAllChange">
               <el-option
@@ -65,7 +70,7 @@
             </el-select>
           </el-form-item>
         </div>
-        <div class="formItem">
+        <div class="formItem" v-show="selectControl">
           <el-form-item label="发票状态:" label-width="80px">
             <el-select v-model="selectResult.invoiceStatus" style="width: 210px;">
               <el-option
@@ -78,7 +83,7 @@
             </el-select>
           </el-form-item>
         </div>
-        <div class="formItem">
+        <div class="formItem" v-show="selectControl">
           <el-form-item label="快递状态:" label-width="80px">
             <el-select v-model="selectResult.expressStatus" style="width: 210px;">
               <el-option
@@ -90,7 +95,7 @@
             </el-select>
           </el-form-item>
         </div>
-       <div style="width:400px" class="formItem">
+       <div style="width:400px" class="formItem" v-show="selectControl">
           <el-form-item label="航班日期" label-width="80px">
              <el-date-picker
              style="width:150px"
@@ -110,7 +115,7 @@
             </el-date-picker>
           </el-form-item>
         </div>
-        <div style="width:400px" class="formItem">
+        <div style="width:400px" class="formItem" v-show="selectControl">
           <el-form-item label="交单时间:" label-width="80px">
             <el-date-picker
              style="width:150px"
@@ -130,7 +135,7 @@
             </el-date-picker>
           </el-form-item>
         </div>
-        <div style="width:400px" class="formItem">
+        <div style="width:400px" class="formItem" v-show="selectControl">
           <el-form-item label="申请时间:" label-width="80px">
             <el-date-picker
              style="width:150px"
@@ -150,7 +155,7 @@
             </el-date-picker>
           </el-form-item>
         </div>
-        <div style="width:400px" class="formItem">
+        <div style="width:400px" class="formItem"  v-show="selectControl">
           <el-form-item label="开票日期:" label-width="80px">
             <el-date-picker
              style="width:140px"
@@ -174,24 +179,7 @@
               <el-button @click="searchClick(true)" size="mini" type="primary" icon="el-icon-search" style="margin-right:0">查询</el-button>
               <el-button @click="restClick" size="mini" type="primary">清空</el-button>
         </div>
-           <div class="operateButton">
-            <el-button size='mini' type="primary" @click="invoicing()">开票</el-button>
-            <el-button size='mini' type="primary" @click="delInvoice()">作废</el-button>
-            <el-button size='mini' type="primary" @click="delivery()">快递</el-button>
-            <el-upload
-              :disabled="uploadDisable()"
-              style="width:100px;height:28px;margin-right:10px"
-              action="#"
-              accept=".zip"
-              class="upLoad"
-              :on-change="handleChange"
-              :multiple = "true"
-              :auto-upload="false">
-              <el-button type="primary" size="medium" @click="uploadResolve">上传发票</el-button>
-            </el-upload>
-            <el-button size='mini' type="primary" @click="exportList">导出列表</el-button>
-            <!-- <el-button @click="drawer = true" type="primary" size='mini'>选择表格列</el-button> -->
-          </div>
+           
         </div>
       </el-form>
       <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData" value="全部">
@@ -207,18 +195,38 @@
                    <span style="margin-left:15px">已开票金额:{{statistData.invoicedMoney.toLocaleString('en-US')}}</span>
                  </div>
                </div>
-
-               <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="pageNum"
-                :page-sizes="[10,30,50]"
-                :page-size="pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="total"
-                style="text-align: right;padding: 19px 30px 18px 0;background: #fff"
-                >
-              </el-pagination>
+                <div style="display:flex">
+                    <div class="operateButton" style="margin:20px 10px 0 0">
+                      <el-button size='mini' type="primary" @click="invoicing()" style="height:28px">开票</el-button>
+                      <el-button size='mini' type="primary" @click="delInvoice()" style="height:28px">作废</el-button>
+                      <el-button size='mini' type="primary" @click="delivery()" style="height:28px">快递</el-button>
+                      <el-upload
+                        :disabled="uploadDisable()"
+                        style="width:100px;height:28px;margin-right:10px"
+                        action="#"
+                        accept=".zip"
+                        class="upLoad"
+                        :on-change="handleChange"
+                        :multiple = "true"
+                        :auto-upload="false">
+                        <el-button type="primary" size="medium" @click="uploadResolve">上传发票</el-button>
+                      </el-upload>
+                      <el-button size='mini' type="primary" @click="exportList" style="height:28px">导出列表</el-button>
+                      <!-- <el-button @click="drawer = true" type="primary" size='mini'>选择表格列</el-button> -->
+                    </div>
+                  <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="pageNum"
+                    :page-sizes="[10,30,50]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total"
+                    style="text-align: right;padding: 19px 30px 18px 0;background: #fff"
+                    >
+                  </el-pagination>
+                </div>
+               
              </div>
         </el-tab-pane>
       </el-tabs>
@@ -459,6 +467,7 @@
     },
     data() {
       return {
+        selectControl:false,
         tableKey :1,
         ifDisable:true,
         //表格控制列drawer
@@ -684,7 +693,10 @@
         this.searchClick(true)
     },
     methods: {
-      
+       //下拉框搜索框控制
+    shiftSelectControl(){
+      this.selectControl = !this.selectControl
+    },
       uploadDisable(){
         if(this.pageSkipChecked == true){
           if(this.tableData.length == 0) {
