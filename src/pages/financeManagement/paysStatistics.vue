@@ -605,13 +605,13 @@ import {exportFile} from '../../util/util'
           label: '全部'
         }, {
           value: '0',
-          label: '未对账'
+          label: '未对账未核销'
         }, {
           value: '1',
-          label: '部分对账'
+          label: '部分对账未核销'
         }, {
           value: '2',
-          label: '已对账'
+          label: '已对账未核销'
         }, {
           value: '4',
           label: '部分对账部分核销'

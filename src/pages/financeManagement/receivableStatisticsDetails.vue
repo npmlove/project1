@@ -588,15 +588,15 @@ export default {
       },
         //应收核销状态 0=未对账未核销,1=部分对账未核销,2=已对账未核销,3=未对账部分核销,4=部分对账部分核销,5=已对账部分核销,6=未对账已核销,7=部分对账已核销,8=已对账已核销
         {
-          rcvWriteOffStatus: '未对账',
+          rcvWriteOffStatus: '未对账未核销',
           value: '0'
         },
         {
-          rcvWriteOffStatus: '部分对账',
+          rcvWriteOffStatus: '部分对账未核销',
           value: '1'
         },
         {
-          rcvWriteOffStatus: '已对账',
+          rcvWriteOffStatus: '已对账未核销',
           value: '2'
         },
         /*      {
