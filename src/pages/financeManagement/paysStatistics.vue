@@ -4,28 +4,23 @@
       <el-form-item class="test" label="订单号" >
         <el-autocomplete
           class="inline-input"
-          v-model="formInline.orderNo"
+          v-model="testNos"
           :fetch-suggestions="querySearch"
           placeholder="请输入订单号"
-          clearable
-          :trigger-on-focus="false" >
+          clearable       
+          @select="dealNo"
+          :trigger-on-focus="true" >
         </el-autocomplete>
-        <!-- <el-popover
-          width="180"
-          trigger="click">
-          <span>this is show me </span> 
-          <el-input  v-model="testNo" slot="reference" size="small" @blur="testChangeNo" ></el-input>
-        </el-popover> -->
-        
       </el-form-item>
       <el-form-item label="运单号">
         <el-autocomplete
           class="inline-input"
           clearable
-          v-model="formInline.waybillNo"
-          :fetch-suggestions="querySearch"
-          placeholder="请输入订单号"
-          :trigger-on-focus="false" >
+          v-model="testBIllNos"
+          @select="dealNo2"
+          :fetch-suggestions="querySearch2"
+          placeholder="请输入运单号"
+          :trigger-on-focus="true" >
         </el-autocomplete>
       </el-form-item>
       <el-form-item label="应付对象">
@@ -145,7 +140,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="核销状态">
-        <el-select v-model="formInline.payWriteOffStatus"  placeholder="请选择">
+        <el-select v-model="value5" @change="dealPayList" multiple collapse-tags  placeholder="请选择">
           <el-option
             v-for="item in payWriteOffStatusArray"
             :key="item.value"
@@ -567,11 +562,18 @@ import {exportFile} from '../../util/util'
     data() {
       return {
         // activeName:'0',
-        testNo:'', // 测试运单号
+        testNo:'', // 测试订单号
+        testNos:'', //订单号 多个的时候
+        testBIllNo:"", // 测试运单号
+        testBIllNos:"", // 测试运单号
+        oldOptions:[],// 多选 保存上一次选择
+        value5: ['','0','1','2','4','5','8'], // 页面上所选择的value 默认全选
         drawer:false, // 右侧表格状态
         formInline: {
           orderNo:'',
+          orderNos:'',
           waybillNo:'',
+          waybillNos:'',
           customerName:'',
           airCompanyCode:'',
           agentName:'',
@@ -583,6 +585,7 @@ import {exportFile} from '../../util/util'
           pod:"",
           payWay:'',
           payWriteOffStatus:'',
+          payWriteOffStatusList:[],
           pscsId:'',
           principalId:'',
           mscsId:'',
@@ -623,7 +626,6 @@ import {exportFile} from '../../util/util'
         payWriteOffCountData:[],// 模态框展示的数据
         woStatus:0,// 正常0，业务修改中1，异常2
         tableData: [],
-        // slectAllDataArray:[],// 全选后返回的所在状态下的数据 不展示
         dataStaticObj:{},// 数据统计对象
         countAuth:"",// 可操作数量
         countErr:'',// 异常数量
@@ -720,16 +722,62 @@ import {exportFile} from '../../util/util'
       
 
     },
+    watch:{
+      'value5':{
+        deep:true,
+        handler(newValue){
+          if(newValue.includes('')){
+            this.formInline.payWriteOffStatusList = []
+          }else{
+            this.formInline.payWriteOffStatusList = newValue
+          }
+        }
+      }
+    },
     components:{
       reconciliation,
       verification
     },
     methods: {
+      // 多选状态判断
+      dealPayList(val){
+        let allValues = []
+        //保留所有值
+  
+        for (let item of this.payWriteOffStatusArray) {
+            allValues.push(item.value)
+        }
+        // 用来储存上一次的值，可以进行对比
+        const oldVal = this.oldOptions
 
+        // 若是全部选择
+        if (val.includes('')) this.value5 = allValues
+
+        // 取消全部选中  上次有 当前没有 表示取消全选
+        if (oldVal.includes('') && !val.includes('')) this.value5 = []
+
+        // 点击非全部选中  需要排除全部选中 以及 当前点击的选项 
+        // 新老数据都有全部选中 
+        if (oldVal.includes('') && val.includes('')) {
+            const index = val.indexOf('')
+            val.splice(index, 1) // 排除全选选项
+            this.value5 = val
+        }
+
+        //全选未选 但是其他选项全部选上 则全选选上 上次和当前 都没有全选
+        if (!oldVal.includes('') && !val.includes('')) {
+            console.log(11)
+            if (val.length === allValues.length - 1) this.value5 = [''].concat(val)
+        }
+
+        //储存当前最后的结果 作为下次的老数据 
+        this.oldOptions = this.value5
+      },
       // 清空搜索数据
       clearAllData(){
         this.formInline= {
           orderNo:'',
+          orderNos:'',
           waybillNo:'',
           customerName:'',
           airCompanyCode:'',
@@ -757,8 +805,6 @@ import {exportFile} from '../../util/util'
       // 撤销
       async cheXiao(e){
         let { id } = this.payWriteOffCountData[0].tempObj[e]
-        console.log()
-
         this.$confirm(`确认撤销 “操作${e+1}” 吗？`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -802,9 +848,7 @@ import {exportFile} from '../../util/util'
           setTimeout(()=>{
             this.payWriteOffCountBoolen = true
           },10)
-
         }
-
       },
       // 导出列表
       async exportBillList(){
@@ -834,7 +878,6 @@ import {exportFile} from '../../util/util'
       },
 
       async  handleClick(e,initBoolen = true) {
-
         this.woStatus = e
         this.currentPage = 1
         let { formInline, currentPage, woStatus,slectAllDataStatic, countAuth,countErr,countNoAuth} = this
@@ -860,8 +903,6 @@ import {exportFile} from '../../util/util'
 
           await this.getTabelData(formInline,currentPage,woStatus,slectAllDataStatic,this.pageSize)
         }
-
-
       },
       // 输入代理上家的时候返回值
       async remoteMethod(e){
@@ -1079,7 +1120,7 @@ import {exportFile} from '../../util/util'
         })
      },
 
-      // 处理input的输入选择
+      // 处理订单input的输入选择
       querySearch(q,cb){
         let tempQuery = []
         let arrayt = []
@@ -1087,10 +1128,16 @@ import {exportFile} from '../../util/util'
         if(q.charAt(q.length - 1) == ','){
           q = q.slice(0,q.length - 1)
         }
-        if(q.indexOf(',')){
+
+        if(q.indexOf(',') != -1){
           tempQuery = q.split(",")
+          this.formInline.orderNos = q
+          this.formInline.orderNo = ''
+          
         }else{
           tempQuery[0] = q
+          this.formInline.orderNo = q
+          this.formInline.orderNos = ''
         }
         for(let i in tempQuery){
           let newobj = {}
@@ -1098,21 +1145,45 @@ import {exportFile} from '../../util/util'
           newobj.label = tempQuery[i]
           arrayt.push(newobj)
         }
+        this.testNo = q 
         cb(arrayt)
       },
-      // testChangeNo(e){
-        
-      //   let tempStr = e.target.value.replace(/，/ig,',').replace(/\s/ig,',').replace(/\//g,',').replace(/-/ig,'') ;
-       
-      //   if(tempStr == ''){
-      //     console.log('nothing')
-      //   }else{
-      //       if(){
+      // 处理运单input的输入选择
+      querySearch2(q,cb){
+       let tempQuery = []
+        let arrayt = []
+        q =  q.replace(/，/ig,',').replace(/\s/ig,',').replace(/\//g,',').replace(/-/ig,'')
+        if(q.charAt(q.length - 1) == ','){
+          q = q.slice(0,q.length - 1)
+        }
 
-      //       }
-      //      console.log(tempStr)
-      //   }
-      // },
+        if(q.indexOf(',') != -1){
+          tempQuery = q.split(",")
+          this.formInline.waybillNos = q
+          this.formInline.waybillNo = ''
+          
+        }else{
+          tempQuery[0] = q
+          this.formInline.waybillNo = q
+          this.formInline.waybillNos = ''
+        }
+        for(let i in tempQuery){
+          let newobj = {}
+          newobj.value = tempQuery[i]
+          newobj.label = tempQuery[i]
+          arrayt.push(newobj)
+        }
+        this.testBIllNo = q 
+        cb(arrayt)
+      }, 
+      dealNo(){
+        // 选择的时候将处理后的输入数据赋值给所选择的内容
+        this.testNos = this.testNo
+      },
+       dealNo2(){
+        // 选择的时候将处理后的输入数据赋值给所选择的内容
+        this.testBIllNos = this.testBIllNo
+      },
       // 获取tabel数据
       async  getTabelData(formInline,currentPage,woStatus,slectAllDataStatic=false,pageSize=10){
         let tempObj = Object.assign({},formInline,{pageNum:currentPage,woStatus:woStatus},{pageSize:pageSize})
