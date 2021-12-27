@@ -144,6 +144,12 @@
               <div>
                 <el-button class="ml_10" @click="downLoadPdf" size="mini">点击下载<i class="el-icon-download el-icon--right"></i></el-button>
               </div>
+              <div style="display:flex">
+               <div v-for="(item,index) in pdfDownLoad" :key="index" style="margin-left:20px">
+                  <div @click="downLoadPDFs(item)" style="text-align:center"><img src="../../assets/pdf.png" alt=""  v-if="item.attachmentType == 3"></div>
+                  <div @click="previewPDF(item)" style="width:60px;fontSize:10px;lineHeight:15px;margin-left:10;text-align:center;cursor:pointer"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
+                </div>
+              </div>
               	<el-dialog
                   title=""
                   :visible.sync="pdfDialogVisible"
@@ -281,6 +287,9 @@ import {judgeWaybillNo} from '@/util/util'
 export default {
   data() {
     return {
+      //pdf预览和下载
+      pdfDownLoad:"",
+      pdfDialogVisible:false,
       orderNo:"",
       orderId:'',
       initData:{},
@@ -317,6 +326,27 @@ export default {
     await this.initSysSetTing()
   },
   methods:{
+          //下载pdf
+      downLoadPDFs(item){
+           axios({
+               method: "get",
+			         url: item.xpath,
+			   responseType: 'arraybuffer',//接受使用分片方式
+			}).then((res) => {
+                const aLink = document.createElement("a");
+                let blob = new Blob([res], {
+                type: "application/pdf"
+                })
+                aLink.href = URL.createObjectURL(blob)
+                aLink.setAttribute('download', item.attachmentName) // 设置下载文件名称
+                aLink.click()
+                document.body.appendChild(aLink)})
+            },
+            //预览pdf
+            previewPDF(item){
+                this.pdfDialogVisible = true
+                this.filePath =item.xpath
+            },
     exdeOrder(e){
       // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
       let arrayTypeOne = this.$refs.typeOne.tableData
@@ -374,7 +404,6 @@ export default {
           if(order.hasOwnProperty('trayDetail')){
           delete order.trayDetail
           }
-
           let arrayTypeOne = this.$refs.typeOne.tableData
           let arrayTypeTwo = this.$refs.typeTwo.tableData
           let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
