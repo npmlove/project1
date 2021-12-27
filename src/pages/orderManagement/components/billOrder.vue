@@ -110,7 +110,7 @@
 // ingStatic        修改当前数据状态 主要是为了初始化第一条数据
 
 class tableObj{
-  constructor(expenseName , expenseUnitName , quantity, price , currency  , exchangeRate = 1, remark, ingStatic = false,){
+  constructor(expenseName , expenseUnitName , quantity, price , currency = 1  , exchangeRate = 1, remark, ingStatic = false,){
     this.expenseName = expenseName
     this.expenseUnitName = expenseUnitName
     this.price = price

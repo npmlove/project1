@@ -237,10 +237,12 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <div v-for="(item,index) in pdfDownLoad" :key="index" style="margin-left:15px">
+            <div style="display:flex">
+               <div v-for="(item,index) in pdfDownLoad" :key="index" style="margin-left:20px">
                   <div @click="downLoadPDF(item)" style="text-align:center"><img src="../../assets/pdf.png" alt=""  v-if="item.attachmentType == 3"></div>
                   <div @click="previewPDF(item)" style="width:60px;fontSize:10px;lineHeight:15px;margin-left:10;text-align:center"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
               </div>
+             </div>
               	<el-dialog
                   title=""
                   :visible.sync="pdfDialogVisible"
