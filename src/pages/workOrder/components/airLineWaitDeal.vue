@@ -8,13 +8,13 @@
               v-model="selectResult.workOrderNo"
               clearable
               maxlength="11"
-              style="width: 200px"
+              style="width: 150px"
               placeholder="请输入工单编号"
             ></el-input>
           </el-form-item>
           <el-form-item label="提交日期" label-width="80px">
             <el-date-picker
-              style="width: 150px"
+              style="width: 120px"
               format="yyyy-MM-dd"
               value-format="yyyy-MM-dd"
               v-model="selectResult.startCommitDate"
@@ -25,7 +25,7 @@
             </el-date-picker
             >-
             <el-date-picker
-              style="width: 150px"
+              style="width: 120px"
               v-model="selectResult.endCommitDate"
               format="yyyy-MM-dd"
               value-format="yyyy-MM-dd"
@@ -39,6 +39,7 @@
            <el-form-item label="工单状态">
             <el-select
               clearable
+              style="width: 150px"
               v-model="selectResult.status"
               placeholder="请选择工单状态"
             >
@@ -50,6 +51,7 @@
           </el-form-item>
           <el-form-item label="客服姓名">
             <el-select
+              style="width: 150px"
               v-model="selectResult.customerId"
               placeholder="请输入客服姓名"
               clearable
@@ -68,10 +70,10 @@
           </el-form-item>
           <el-form-item label="关键字搜索">
             <el-input
-              v-model="selectResult.workOrderNo"
+              v-model="selectResult.keyWord"
               clearable
               maxlength="11"
-              style="width: 200px"
+              style="width: 150px"
               placeholder="请输入关键字"
             ></el-input>
           </el-form-item>
@@ -81,7 +83,7 @@
           </el-form-item>
         </div>
       </el-form>
-   <transition-group name="slide" style="display:flex;justify-content:center">
+   <transition-group name="slide" style="display:flex;justify-content:center;margin-top:15px">
             <div
             :id="'workOrder'+index"
             @click="startInterval(index)"
@@ -94,7 +96,7 @@
                 <div class="warn">注:请于10分钟内处理工单</div>
                 <div class="time">
                   <i class="el-icon-time" style="width:25px;height:25px"></i>
-                  <h1 class="timi" style="margin-top:3px">{{ leaveTimer[index] }}</h1>
+                  <h1 class="timi" style="margin-top:3px" :style="{'color':leaveTimerNum[index] == 0 ? 'gray' : 'red'}">{{ leaveTimer[index] }}</h1>
                 </div>
               </div>
               <div class="sad"></div>
@@ -189,7 +191,8 @@ export default {
         endCommitDate: "",
         roleName:"",
         status:"",
-        customerId:""
+        customerId:"",
+        keyWord:""
       },
       pickerOptionsStartOne: {
         // 限制航班日期
@@ -431,7 +434,7 @@ export default {
   overflow-x: scroll;
 }
 .common {
-  flex:0 0 450px;
+  flex:0 0 27%;
   border: 3px solid gray;
   margin-right: 60px;
   display:inline-block;
@@ -568,7 +571,6 @@ h1{
   margin-left: -5px;
   padding-bottom: 5px;
   margin-top:2px;
-  color:red
 }
 .text {
   height: 240px;

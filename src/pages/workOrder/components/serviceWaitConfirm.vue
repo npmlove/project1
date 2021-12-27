@@ -37,7 +37,7 @@
           </el-form-item>
           <el-form-item label="关键字搜索">
             <el-input
-              v-model="selectResult.workOrderNo"
+              v-model="selectResult.keyWord"
               clearable
               maxlength="11"
               style="width: 200px"
@@ -50,7 +50,7 @@
           </el-form-item>
         </div>
       </el-form>
-   <transition-group name="slide" style="display:flex;justify-content:center">
+   <transition-group name="slide" style="display:flex;justify-content:center;margin-top:15px">
             <div
             :id="'workOrder'+index"
             class="common"
@@ -126,6 +126,7 @@ export default {
         workOrderNo: "",
         startCommitDate: "",
         endCommitDate: "",
+        keyWord:""
       },
       pickerOptionsStartOne: {
         // 限制航班日期
@@ -296,7 +297,7 @@ export default {
   overflow-x: scroll;
 }
 .common {
-  flex:0 0 400px;
+  flex:0 0 25%;
 }
 
 .title {
