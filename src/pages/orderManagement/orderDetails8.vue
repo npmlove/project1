@@ -222,7 +222,7 @@
           <el-form-item style="margin-left:80px">
               <div v-for="(item,index) in pdfDownLoad" :key="index">
                   <div @click="downLoadPDF(item)" style="text-align:center"><img src="../../assets/pdf.png" alt=""  v-if="item.attachmentType == 3"></div>
-                  <div @click="previewPDF(item)" style="width:60px;fontSize:10px;lineHeight:15px;margin-left:10;text-align:center"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
+                  <div @click="previewPDF(item)" style="width:60px;fontSize:10px;lineHeight:15px;margin-left:10;text-align:center;cursor:pointer"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
               </div>
           </el-form-item>
         </div>
@@ -774,6 +774,7 @@
 
       //保存
       submitClick(type) {
+        if(type == '保存' || type == '通过')
             if(!this.orderOptionsList.agentId){
               this.$message.error('请选择代理公司')
               return
@@ -784,6 +785,15 @@
               this.$message.error('请选择是否中转')
               return
             } 
+            else if (type == '取消') {
+              if(!this.orderOptionsList.bookingPrice){
+              this.$message.error('请输入订舱单价')
+              return
+            }else if(!this.orderOptionsList.ifTransfer){
+              this.$message.error('请选择是否中转')
+              return
+            } 
+            }
         var order = {
           id:this.orderId,
           status:this.status,
@@ -824,7 +834,6 @@
           bookingVwr:this.bookingVwr,
           bookingCw:this.bookingCw
         }
-        debugger
         var orderPriceList = []
         orderPriceList = this.arOrderPriceList.concat(this.apOrderPriceList)
         if(orderPriceList.length > 0){
@@ -1270,7 +1279,7 @@
                   pol: data.pol,
                   pod: data.pod,
                   airCompanyCode: data.airCompanyCode,
-                  agentId: data.agentId,
+                  agentId: '',
                   agentName: data.agentName,
                   bookingPrice: data.bookingPrice,
                   bubblePoint: String(data.bubblePoint),
