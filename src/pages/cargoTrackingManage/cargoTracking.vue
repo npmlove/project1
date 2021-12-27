@@ -543,49 +543,6 @@ export default {
         }
       })
     },
-    //操作
-    handleClick(row) {
-      // this.airCPCode = row.airCPCode
-      this.checkButtonTwo = 8
-      this.awb = null
-      this.airCPCode = row.airCPCode
-      this.isSuccess = null
-      this.initDetailSearch()
-    },
-    sortByDate1(obj1, obj2) {
-      let val1 = obj1.totalNum
-      let val2 = obj2.totalNum
-      return val1 - val2
-    },
-    sortByDate2(obj1, obj2) {
-      let val1 = obj1.successNum
-      let val2 = obj2.successNum
-      return val1 - val2
-    },
-    sortByDate3(obj1, obj2) {
-      let val1 = obj1.failNum
-      let val2 = obj2.failNum
-      return val1 - val2
-    },
-    tableRowClassName({
-      row,
-      rowIndex
-    }) {
-      if (row.rate == '0.0') {
-        return 'warning-row';
-      } else if (rowIndex % 2 == 0) {
-        return 'row1';
-      } else {
-        return 'row2';
-
-      }
-    },
-    sortByDate4(obj1, obj2) {
-      let val1 = obj1.rate
-      let val2 = obj2.rate
-      return val1 - val2
-    }
-
   },
   watch: {
     tableData(idx) {
