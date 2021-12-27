@@ -774,8 +774,8 @@
 
       //保存
       submitClick(type) {
-        if(type == '保存' || type == '通过')
-            if(!this.orderOptionsList.agentId){
+        if(type == '保存' || type == '通过') {
+          if(!this.orderOptionsList.agentId){
               this.$message.error('请选择代理公司')
               return
             }else if(!this.orderOptionsList.bookingPrice){
@@ -785,15 +785,16 @@
               this.$message.error('请选择是否中转')
               return
             } 
-            else if (type == '取消') {
+        }
+        else if (type == '取消') {
               if(!this.orderOptionsList.bookingPrice){
-              this.$message.error('请输入订舱单价')
-              return
-            }else if(!this.orderOptionsList.ifTransfer){
-              this.$message.error('请选择是否中转')
-              return
-            } 
-            }
+                this.$message.error('请输入订舱单价')
+                return
+              }else if(!this.orderOptionsList.ifTransfer){
+                this.$message.error('请选择是否中转')
+                return
+              } 
+       }
         var order = {
           id:this.orderId,
           status:this.status,
@@ -864,6 +865,7 @@
           this.$http.post(this.$service.orderSaveOrder,data).then((data) => {
             if(data.code == 200){
               this.$router.push('/orderManagement/orderManage')
+              this.$message.success("订单保存成功")
             } else {
               this.$message.error(data.message)
             }
@@ -875,6 +877,7 @@
           this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
             if(data.code == 200){
               this.$router.push('/orderManagement/orderManage')
+              this.$message.success("订单审核通过")
             } else {
               this.$message.error(data.message)
             }
@@ -886,6 +889,7 @@
           this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
             if(data.code == 200){
               this.$router.push('/orderManagement/orderManage')
+              this.$message.success("订单已取消")
             } else {
               this.$message.error(data.message)
             }
