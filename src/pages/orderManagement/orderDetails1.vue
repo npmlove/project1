@@ -189,7 +189,7 @@
           <img @click="delTableMack(index)"  v-if="orderOptionsList.length > 1" class="close-img" src="../../assets/gaungbi.png" />
           <div>
             <el-form-item label="起运港" required>
-              <el-select v-model="item.pol" :remote-method="polMethod" @change="initAirlineSearchByPage(index,item)" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择起运港" style="width: 216;">
+              <el-select v-model="item.pol" :remote-method="polMethod" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择起运港" style="width: 216;">
                 <el-option
                   v-for="item in polOpt"
                   :key="item.threeLetterCode"
@@ -202,7 +202,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="目的港" required>
-              <el-select v-model="item.pod" :remote-method="podMethod" @change="initAirlineSearchByPage(index,item)" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择起运港" style="width: 216;">
+              <el-select v-model="item.pod" :remote-method="podMethod" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择起运港" style="width: 216;">
                 <el-option
                   v-for="item in podOpt"
                   :key="item.threeLetterCode"
@@ -217,7 +217,7 @@
           </div>
           <div>
             <el-form-item label="航司" required>
-              <el-select v-model="item.airCompanyCode" @change="initAirlineSearchByPage(index,item)" :remote-method="companyMethod" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择航司" style="width: 216;">
+              <el-select v-model="item.airCompanyCode" :remote-method="companyMethod" :loading="loading" clearable filterable remote reserve-keyword placeholder="请选择航司" style="width: 216;">
                 <el-option
                   v-for="item in airCompanyCodeOpt"
                   :key="item.airCompanyCode"
@@ -227,7 +227,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="代理公司" required>
-              <el-select v-model="item.agentId" @change="initAirlineSearchByPage(index,item)" filterable clearable placeholder="请选择代理公司" style="width: 216;">
+              <el-select v-model="item.agentId" filterable clearable placeholder="请选择代理公司" style="width: 216;">
                 <el-option
                   v-for="item in agentIdOpt"
                   :key="item.id"
@@ -267,11 +267,9 @@
             </el-form-item>
           </div>
           <div>
-            <el-form-item label="航线" required>
-              <div v-if="item.flightNoOpt.length == 0" style="color: #2273ce;">选择起运港、目的港、航司、代理公司后才会有推荐航线</div>
-              <el-radio-group v-else v-model="item.fullLeg">
-                <el-radio v-for="(optItem,optIndex) in item.flightNoOpt" :key="optIndex" :label="optItem.fullLeg">{{optItem.fullLeg}}</el-radio>
-              </el-radio-group>
+             <el-form-item label="是否中转" required>
+                <el-radio v-model="item.ifTransfer" label="1">直达</el-radio>
+                <el-radio v-model="item.ifTransfer" label="2">中转</el-radio>
             </el-form-item>
           </div>
           <div class="rest-style">
@@ -314,7 +312,7 @@
               <div style="display:flex">
                 <div v-for="(item,index) in pdfDownLoad" :key="index" style="margin-left:20px">
                   <div @click="downLoadPDF(item)" style="text-align:center"><img src="../../assets/pdf.png" alt=""  v-if="item.attachmentType == 3"></div>
-                  <div @click="previewPDF(item)" style="width:60px;fontSize:10px;lineHeight:15px;margin-left:10;text-align:center"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
+                  <div @click="previewPDF(item)" style="width:60px;fontSize:10px;lineHeight:15px;margin-left:10;text-align:center;cursor:pointer"  v-if="item.attachmentType == 3">{{item.attachmentName}}</div>
               </div>
               </div>
           </el-form-item>
@@ -708,6 +706,7 @@
             dow: '',
             orderId: '',
             sortNo: '',
+            ifTransfer:"1",
             fullLeg: '',
             flightNoOpt: []
           }
@@ -961,9 +960,6 @@
             }else if(!this.orderOptionsList[q].bookingPrice){
               this.$message.error('请输入订舱单价')
               return
-            }else if(!this.orderOptionsList[q].fullLeg){
-              this.$message.error('请选择航线')
-              return
             }
 
             var json = {
@@ -976,7 +972,8 @@
               departureDate: this.orderOptionsList[q].departureDate,
               dow: new Date(this.orderOptionsList[q].departureDate).getDay() == 0 ? 7 : new Date(this.orderOptionsList[q].departureDate).getDay(),
               flightNo: this.orderOptionsList[q].flightNo,
-              fullLeg: this.orderOptionsList[q].fullLeg,
+              legCount:this.orderOptionsList[q].ifTransfer,
+              fullLeg:this.orderOptionsList[q].ifTransfer == "1"? `${this.orderOptionsList[q].pol},${this.orderOptionsList[q].pod}` : `${this.orderOptionsList[q].pol},中转,${this.orderOptionsList[q].pod}`,
               pod: this.orderOptionsList[q].pod,
               pol: this.orderOptionsList[q].pol,
               sortNo: q+1,
@@ -1004,6 +1001,7 @@
           this.$http.post(this.$service.orderSaveOrder,data).then((data) => {
             if(data.code == 200){
               this.$router.push('/orderManagement/orderManage')
+              this.$message.success("订单保存成功")
             } else {
               this.$message.error(data.message)
             }
@@ -1015,6 +1013,7 @@
           this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
             if(data.code == 200){
               this.$router.push('/orderManagement/orderManage')
+              this.$message.success("订单审核通过")
             } else {
               this.$message.error(data.message)
             }
@@ -1026,6 +1025,7 @@
           this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
             if(data.code == 200){
               this.$router.push('/orderManagement/orderManage')
+              this.$message.success("订单审核失败")
             } else {
               this.$message.error(data.message)
             }
@@ -1037,6 +1037,7 @@
           this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
             if(data.code == 200){
               this.$router.push('/orderManagement/orderManage')
+              this.$message.success("取消订单成功")
             } else {
               this.$message.error(data.message)
             }
@@ -1236,8 +1237,8 @@
           return
         }
         var json = {
-          pol: '',
-          pod: '',
+          pol: this.pol,
+          pod: this.pod,
           airCompanyCode: '',
           agentId: '',
           agentName: '',
@@ -1250,6 +1251,7 @@
           orderId: '',
           sortNo: '',
           fullLeg: '',
+          ifTransfer:"1",
           flightNoOpt: []
         }
         this.orderOptionsList.push(json)
@@ -1494,6 +1496,8 @@
             this.remark = data.remark
             this.pol = data.pol
             this.pod = data.pod
+            this.orderOptionsList[0].pol = this.pol
+            this.orderOptionsList[0].pod = this.pod
             this.dow = data.dow
             this.customsType = data.customsType
             this.airCompanyCode = data.airCompanyCode
