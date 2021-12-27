@@ -543,15 +543,15 @@ export default {
           value: ''
         },
         {
-          rcvWriteOffStatus: '未对账',
+          rcvWriteOffStatus: '未对账未核销',
           value: '0'
         },
         {
-          rcvWriteOffStatus: '部分对账',
+          rcvWriteOffStatus: '部分对账未核销',
           value: '1'
         },
         {
-          rcvWriteOffStatus: '已对账',
+          rcvWriteOffStatus: '已对账未核销',
           value: '2'
         },
         /*    {
