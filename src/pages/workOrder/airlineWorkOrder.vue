@@ -19,7 +19,7 @@
         </div>
       </div>
       <Table  v-if="pageShow == 'table'" :pageRoleId="pageRoleId"></Table>
-      <waitDeal v-if="pageShow == 'deal'" :pageRoleId="pageRoleId" @requestData = "waitConfirm"> </waitDeal>
+      <waitDeal v-if="pageShow == 'deal'" :pageRoleId="pageRoleId" @requestData = "waitConfirm('son')" ref="waitDeal"> </waitDeal>
     </div>
   </div>
 </template>
@@ -48,8 +48,11 @@
     },
     methods: {
       //待我确认
-      waitConfirm(){
+      waitConfirm(e){
         this.pageShow = "deal"
+        if(e!="son" && this.pageShow != 'table') {
+          this.$refs.waitDeal && this.$refs.waitDeal.initData()
+        }
         this.getPageRight()
       },
       //获取页面右上角数据

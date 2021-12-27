@@ -20,7 +20,7 @@
       </div>
      <scrollNotice :textArr ="noticeData" ></scrollNotice>
       <Table @flashRight="getPageRight" v-if="pageShow == 'table'" ref="workOrderTable"></Table>
-      <workConfirm v-if="pageShow == 'confirm'" @requestData = "waitConfirm"></workConfirm>
+      <workConfirm v-if="pageShow == 'confirm'" @requestData = "waitConfirm('son')" ref="workConfirm"></workConfirm>
     </div>
   </div>
 </template>
@@ -63,8 +63,11 @@
         this.$refs.workOrderTable.searchClick(true)
       },
       //待我确认
-      waitConfirm(){
+      waitConfirm(e){
         this.pageShow = "confirm"
+        if(e!='son') {
+          this.$refs.workConfirm.initData()
+        }
         this.getPageRight()
       },
       //获取页面右上角数据

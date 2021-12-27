@@ -304,7 +304,7 @@ export default {
             //航线搜索框
             airManger:[],
             //工单状态搜索框
-            workOrderStatus:[{value:"",label:"全部"},{value:"0",label:"工单待处理"},{value:"1",label:"工单处理中"},{value:"2",label:"待客服确认"},{value:"3",label:"已关闭"}],
+            workOrderStatus:[{value:"",label:"全部"},{value:"0",label:"工单待处理"},{value:"1",label:"工单处理中"},{value:"2",label:"待您确认"},{value:"3",label:"已关闭"}],
             //搜索框结果
             selectResult:{
                 workOrderNo:"",

@@ -270,6 +270,7 @@ export default {
                   this.$set(this.leaveTimer,index, m + ":" + s);
                   if (num == 0) {
                     clearInterval(this.timerInterval[index]);
+                    this.leaveTimerNum[index] = 0
                   }
                 }, 1000);
       }

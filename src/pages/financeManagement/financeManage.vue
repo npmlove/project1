@@ -93,8 +93,9 @@
               </el-option>
             </el-select>
           </el-form-item>
-
-          <el-form-item label="起运港:" class="formItem" label-width="80px">
+          <img v-if="selectControl" @click="shiftSelectControl" src="../../assets/shangjiantou.png" alt="" style="width:30px;height:30px;float:right;margin:0px 30px 0 0">
+          <img v-if="!selectControl" @click="shiftSelectControl" src="../../assets/xiajiantou.png" alt="" style="width:30px;height:30px;float:right;margin:0px 30px 0 0">
+          <el-form-item label="起运港:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               v-model="selectResult.pol"
               id="pol"
@@ -120,7 +121,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="目的港:" class="formItem" label-width="80px">
+          <el-form-item label="目的港:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               v-model="selectResult.pod"
               id="pod"
@@ -146,7 +147,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="开票进度:" class="formItem" label-width="80px">
+          <el-form-item label="开票进度:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               v-model="selectResult.invoicingStatus"
               placeholder="请选择开票进度"
@@ -164,7 +165,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="售前客服:" class="formItem" label-width="80px">
+          <el-form-item label="售前客服:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               id="pscsId"
               v-model="selectResult.pscsId"
@@ -186,7 +187,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="售中客服:" class="formItem" label-width="80px">
+          <el-form-item label="售中客服:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               id="mscsId"
               v-model="selectResult.mscsId"
@@ -213,6 +214,7 @@
             label="航班日期:"
             style="width: 480px"
             label-width="80px"
+             v-show="selectControl"
           >
             <el-date-picker
               style="width: 180px"
@@ -235,7 +237,7 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item label="交单时间:" style="width: 480px">
+          <el-form-item label="交单时间:" style="width: 480px" v-show="selectControl">
             <el-date-picker
               value-format="yyyy-MM-dd"
               style="width: 180px"
@@ -256,7 +258,7 @@
             >
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="航线:" class="formItem" label-width="80px">
+          <el-form-item label="航线:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
             id="principalId"
               v-model="selectResult.principalId"
@@ -278,7 +280,7 @@
             </el-select>
           </el-form-item>
 
-          <div class="operateButton">
+          <div class="operateButton" style="margin-bottom:10px">
             <el-button
               @click="searchClick('search')"
               size="mini"
@@ -297,10 +299,7 @@
             <el-button size="mini" type="primary" @click="showFees(false)" v-if="this.typeCode == '修改审核'"
               >审核</el-button
             >
-            <el-button size="mini" type="primary" @click="getExportExcel">导出列表</el-button>
-            <el-button @click="drawer = true" type="primary" size="mini"
-              >选择表格列</el-button
-            >
+         
           </div>
         </div>
       </el-form>
@@ -321,13 +320,13 @@
             :data="tableData"
             border
             stripe
-            max-height="600px"
+            max-height="430px"
             header
             :cell-style="tableRowClassName"
             ref="multipleTable"
             class="finance-table"
             @selection-change="handleSelectionChange"
-            style="width: 100%"
+            style="width: 100%;overflow:scroll;"
           >
             <template slot="empty">
               <img class="data-pic" src="../../assets/kong-icon.png" />
@@ -532,7 +531,12 @@
                 <span style="fontSize:17px;color:red;margin-left:10px" v-if="tabNum[6] > 0">存在异常订单！</span>
               </div>
             </div>
-
+            <div style="display:flex;">
+               <div style="widht:100%;margin:5px 10px 0 0">
+              <el-button size="mini" type="primary" @click="getExportExcel" style="height:28px;margin-top:19px">导出列表</el-button>
+              <el-button @click="drawer = true" type="primary" size="mini" style="height:28px;margin-top:19px">选择表格列</el-button>
+            </div>
+              
             <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
@@ -548,6 +552,8 @@
               "
             >
             </el-pagination>
+            </div>
+           
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -717,6 +723,7 @@ import { toData } from "@/util/assist";
 export default {
   data() {
     return {
+      selectControl:false,
       //判断是否是表格行点击
       onlyShow:true,
       //表格控制列drawer
@@ -941,6 +948,9 @@ export default {
     this.dom()
   },
   methods: {
+    shiftSelectControl(){
+      this.selectControl = !this.selectControl
+    },
     //限制搜索条件的最大位数
     dom(){
       //代理上家
