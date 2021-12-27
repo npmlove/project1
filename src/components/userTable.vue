@@ -43,7 +43,12 @@
               <span v-else style="color: #f00;">未认证</span>
             </span>
             <span v-else-if="column.prop == 'creditTerm' && column.label == '账期'">
-              {{getCreditTerm(scope.row.creditTerm)}}
+              <span v-if=" getCreditTerm(scope.row.creditTerm)!=''" v-html="getCreditTerm(scope.row.creditTerm)"></span>
+              <span v-else style="color: #f00;" >未设置</span>
+            </span>
+            <span v-else-if="column.prop == 'quota' && column.label == '额度'">
+              <span v-if="scope.row.quota" v-html="scope.row.quota"></span>
+              <span v-else style="color: #f00;" >未设置</span>
             </span>
             <span v-else-if="column.prop == 'sex' && column.label == '性别'">
               {{scope.row.sex==1?'男':scope.row.sex==2?'女':'未知'}}
@@ -168,8 +173,8 @@ export default {
   },
   methods: {
     getCreditTerm(creditTerm){
-      console.log(creditTerm)
     if (typeof (creditTerm)=='undefined'||creditTerm==null){
+
       return ''
     }
       creditTerm= JSON.parse(creditTerm)
