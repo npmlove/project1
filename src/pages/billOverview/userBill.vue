@@ -239,16 +239,25 @@ export default {
           this.totalUncollectedAmount = data.data.totalUncollectedAmount;
           this.totalOrderCount = data.data.totalOrderCount;
           for (var item in this.tableData) {
-            const res = JSON.parse(this.tableData[item].creditTerm);
-            if (res) {
-              this.tableData[item].creditTerm =
-                res.unit == 0 ? (res.creditTerm==''?0:red.creditTerm)+ "天" : res.creditTerm + "月";
-            }
+              this.tableData[item].creditTerm =this.getCreditTerm(this.tableData[item].creditTerm)
+              this.tableData[item].quota =this.tableData[item].quota?this.tableData[item].quota:'未设置'
           }
         } else {
           this.$message.error(data.message);
         }
       });
+    },
+    getCreditTerm(creditTerm){
+      if (typeof (creditTerm)=='undefined'||creditTerm==null){
+
+        return '未设置'
+      }
+      creditTerm= JSON.parse(creditTerm)
+      if (creditTerm.creditTerm==''){
+        return '未设置'
+      }
+      var unit=creditTerm.unit == 0?"天":"个月";
+      return creditTerm.creditTerm+unit;
     },
     // 页面大小
     handleSizeChange(e) {
@@ -290,7 +299,6 @@ export default {
       for (var item of this.selectTableData) {
         userIds.push(item.userId);
       }
-      console.log(userIds);
       var params = {
         certificationBody: this.selectResult.certificationBod,
         endDepartureDate: this.selectResult.endDepartureDate,
