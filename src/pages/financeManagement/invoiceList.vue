@@ -201,7 +201,7 @@
                     <div class="operateButton" style="margin:20px 10px 0 0">
                       <el-button size='mini' type="primary" @click="invoicing()" style="height:28px">开票</el-button>
                       <el-button size='mini' type="primary" @click="delInvoice()" style="height:28px">作废</el-button>
-                      <el-button size='mini' type="primary" @click="delivery()" style="height:28px">快递</el-button>
+                      <el-button size='mini' type="primary" @click="delivery()" style="height:28px">邮寄</el-button>
                       <el-upload
                         :disabled="uploadDisable()"
                         style="width:100px;height:28px;margin-right:10px"

@@ -242,7 +242,7 @@ export default {
           { label: "发票号码", width: 160, key: "invoiceNum" },
           { label: "开票时间", width: 160, key: "invoicingTime" },
           { label: "快递信息", width: 160, key: "expressInfo" },
-          { label: "快递状态", width: 100, key: "expressStatus" },
+          { label: "邮寄状态", width: 100, key: "expressStatus" },
           { label: "发票状态", width: 100, key: "invoiceStatus" },
           { label: "是否上传", width: 100, key: "upload" },
         ];
