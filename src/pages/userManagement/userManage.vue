@@ -87,7 +87,7 @@
             </el-select>
           </el-form-item>
           <el-form-item prop="qqInput" label="QQ">
-            <el-input style="width: 270px;" v-model="ruleForm.qqInput" clearable placeholder="请输入QQ号"  maxlength="11"  onkeyup="this.value=this.value.replace(/[^\d]/g,'')"
+            <el-input style="width: 270px;" v-model="ruleForm.qqInput" clearable placeholder="请输入QQ号"  maxlength="16"  onkeyup="this.value=this.value.replace(/[^\d]/g,'')"
                     ></el-input>
           </el-form-item>
         <el-form-item  prop="certificationBody" label="额度">
@@ -160,7 +160,7 @@
         rules: {
           // customerServiceId: [{required: true, message: '请选择售前客服', trigger: 'change'}],
           certificationBody: [{max: 20, message: '认证主体最长20个字符', trigger: 'change'}],
-          qqInput:[{max:11,min:6,message:'QQ长度在6到11位',trigger: 'blur'}]
+          qqInput:[{max:16,min:6,message:'QQ长度在6到16位',trigger: 'blur'}]
         },
         creditTerm:{
           creditTerm:'',
