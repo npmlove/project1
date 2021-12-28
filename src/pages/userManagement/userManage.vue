@@ -86,6 +86,10 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item prop="qqInput" label="QQ">
+            <el-input style="width: 270px;" v-model="ruleForm.qqInput" clearable placeholder="请输入QQ号"  maxlength="11"  onkeyup="this.value=this.value.replace(/[^\d]/g,'')"
+                    ></el-input>
+          </el-form-item>
         <el-form-item  prop="certificationBody" label="额度">
           <el-input style="width: 270px;" v-model="ruleForm.quota" clearable placeholder="请输入额度"
                     :maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')"></el-input> 元
@@ -126,6 +130,7 @@
           {label: '注册时间', prop: 'createTime', show: true, width: '150'},
           {label: '绑定售前客服', prop: 'customerService', show: true, width: '100'},
           {label: '额度', prop: 'quota', show: true, width: '100'},
+          {label:'QQ',prop:'qq',show:true,width:'150'},
           {label: '账期', prop: 'creditTerm', show: true, width: '100'}
         ],
         // 操作
@@ -154,7 +159,8 @@
         dialogFormVisible: false,
         rules: {
           // customerServiceId: [{required: true, message: '请选择售前客服', trigger: 'change'}],
-          certificationBody: [{max: 20, message: '认证主体最长20个字符', trigger: 'change'}]
+          certificationBody: [{max: 20, message: '认证主体最长20个字符', trigger: 'change'}],
+          qqInput:[{max:11,min:6,message:'QQ长度在6到11位',trigger: 'blur'}]
         },
         creditTerm:{
           creditTerm:'',
@@ -167,7 +173,8 @@
           unit:1,
           quota:'',
           id: '',
-          payWay:''
+          payWay:'',
+          qqInput:''
         }
       }
     },
@@ -191,6 +198,7 @@
           if (data.code == 200) {
             this.total = data.data.total
             this.tableData = data.data.records
+
           }
         }).catch((e) => {
           console.log(e)
@@ -238,6 +246,7 @@
         this.ruleForm.certificationBody = val.row.certificationBody
         this.ruleForm.unit = creditTerm==''?1:creditTerm.unit
         this.ruleForm.quota = val.row.quota
+        this.ruleForm.qqInput=val.row.qq
         this.ruleForm.payWay = val.row.payWay
         this.ruleForm.creditTerm = creditTerm==''?'':creditTerm.creditTerm
 
@@ -250,6 +259,7 @@
             this.creditTerm.creditTerm=this.ruleForm.creditTerm
             var params = {
               id: this.ruleForm.id,
+              qq:this.ruleForm.qqInput,
               customerServiceId:typeof this.ruleForm.customerServiceId=="string"&&this.ruleForm.customerServiceId!==""?this.customerServiceId:this.ruleForm.customerServiceId ,
               certificationBody: this.ruleForm.certificationBody===""?null:this.ruleForm.certificationBody,
               quota:this.ruleForm.quota,

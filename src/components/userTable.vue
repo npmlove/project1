@@ -38,6 +38,10 @@
               <span v-if="scope.row.customerService" @click="bingdingKefu(scope)" v-html="getDataName(scope.row, column)"></span>
               <span v-else style="color: #f00;" @click="bingdingKefu(scope)">未设置</span>
             </span>
+              <span v-else-if="column.prop == 'qq' && column.label == 'QQ'">
+              <span v-if="scope.row.qq" @click="bingdingKefu(scope)"  v-html="getDataName(scope.row, column)"></span>
+              <span v-else style="color: #f00;" @click="bingdingKefu(scope)">未设置</span>
+            </span>
             <span v-else-if="column.prop == 'certificationBody' && column.label == '认证主体'">
               <span v-if="scope.row.certificationBody" v-html="getDataName(scope.row, column)"></span>
               <span v-else style="color: #f00;">未认证</span>
@@ -54,7 +58,7 @@
               {{scope.row.sex==1?'男':scope.row.sex==2?'女':'未知'}}
             </span>
             <span v-else-if="column.prop == 'payWay' && column.label == '结算方式'">
-              {{scope.row.payWay==0?'付款买单':
+               {{scope.row.payWay==0?'付款买单':
               scope.row.payWay==1?'月结':'********'}}
             </span>
             <span v-else v-html="getDataName(scope.row, column)"></span>
@@ -173,8 +177,8 @@ export default {
   },
   methods: {
     getCreditTerm(creditTerm){
+      console.log(creditTerm)
     if (typeof (creditTerm)=='undefined'||creditTerm==null){
-
       return ''
     }
       creditTerm= JSON.parse(creditTerm)
