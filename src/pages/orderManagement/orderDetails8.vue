@@ -154,7 +154,7 @@
           <div style="background:#f3f6f9;margin:15px 0;padding-top:15px">
           <div>
             <el-form-item label="代理公司" required>
-              <el-select v-model="orderOptionsList.agentId" filterable clearable placeholder="请选择代理公司" style="width: 216;">
+              <el-select v-model="orderOptionsList.agentId" filterable clearable placeholder="请选择代理公司" style="width: 216;" @change="changeAgent">
                 <el-option
                   v-for="item in agentIdOpt"
                   :key="item.id"
@@ -707,6 +707,10 @@
     },
    
     methods: {
+      changeAgent(value){
+        let name = value.split('#')[1]
+        this.apOrderPriceList[0].expenseUnitName = name
+      },
         //下载pdf
         downLoadPDF(item){
            axios({  
@@ -742,6 +746,11 @@
             } else {
                 this.bookingCw =Math.ceil((167*e*num1)/10+(num2*(10-e))/10) 
             }
+          this.apOrderPriceList[0].quantity = this.bookingCw
+          this.arOrderPriceList[0].quantity = this.bookingCw
+          this.priceBlur(this.bookingCw,0,'应付','数量')
+          this.priceBlur(this.bookingCw,0,'应收','数量')
+          this.$forceUpdate()
         },
       querenClick(item) {
         var data = {}
@@ -1320,6 +1329,7 @@
                   fullLeg: "",
                   legCount:""
               },
+              this.agentId = data.agentId+'#'+data.agentName
             this.statusDesc = data.statusDesc
             this.status = data.status
             this.pscsName = data.pscsName
@@ -1353,7 +1363,7 @@
             this.fullLeg = fullLeg.join('-');
             this.bubblePoint = data.bubblePoint.toString()
             this.departureDate = data.departureDate
-            this.agentId = data.agentId+'#'+data.agentName
+            this.orderOptionsList.agentId = data.agentId+'#'+data.agentName
             this.flightNo = data.flightNo
             this.cargoName = data.cargoName
             this.cargoType = data.cargoType.toString()
@@ -1391,6 +1401,7 @@
               }
             }
             this.arOrderPriceList = data.arOrderPriceList[0].list
+            this.apOrderPriceList[0].expenseUnitName = data.agentName
           }else{
             this.$message.error(data.message)
           }
