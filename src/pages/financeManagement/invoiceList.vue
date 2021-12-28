@@ -36,11 +36,6 @@
             </el-select>
           </el-form-item>
         </div>
-          <div style="position:absolute;cursor:pointer;top:15px;right:20px" @click="shiftSelectControl">
-            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span> 
-          </div>
          <div class="formItem" v-show="selectControl">
           <el-form-item label="发票号:" label-width="80px">
             <el-input v-model="selectResult.invoiceNum" style="width: 210px;" size="medium" maxlength="8" clearable placeholder="请输入发票号" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" @blur="selectResult.invoiceNum = $event.target.value"></el-input>
@@ -175,6 +170,13 @@
             </el-date-picker>
           </el-form-item>
         </div>
+         <div style="text-align:center">
+              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span> 
+          </div>
+          </div>
         <div class="operateButton">
               <el-button @click="searchClick(true)" size="mini" type="primary" icon="el-icon-search" style="margin-right:0">查询</el-button>
               <el-button @click="restClick" size="mini" type="primary">清空</el-button>

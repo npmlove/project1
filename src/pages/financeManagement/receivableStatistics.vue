@@ -89,12 +89,6 @@
               </el-option>
             </el-select>
           </el-form-item>
-
-           <div style="position:absolute;cursor:pointer;top:15px;right:20px" @click="shiftSelectControl">
-            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span> 
-          </div>
           <el-form-item label="航司:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               v-model="selectResult.airCompanyCode"
@@ -307,7 +301,13 @@
               </el-option>
             </el-select>
           </el-form-item>
-
+             <div style="text-align:center">
+              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span> 
+          </div>
+          </div>
           <div class="operateButton">
             <el-button
               @click="searchClick"
