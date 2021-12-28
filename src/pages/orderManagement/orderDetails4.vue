@@ -367,6 +367,7 @@
 import binList from './components/binList.vue'
 import billOrder from './components/billOrder.vue'
 import opeartes from './components/opeartes.vue'
+import {judgeWaybillNo} from '@/util/util'
 export default {
   data() {
     return {
