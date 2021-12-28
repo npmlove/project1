@@ -226,7 +226,7 @@ export default {
     }
   },
   methods:{
-          //代理公司
+    //代理公司
     initAgent() {
         var data = {
           pageSize: 50000,
@@ -238,7 +238,7 @@ export default {
             this.$message.error(data.message)
           }
         })
-      },
+    },
     // 处理原始传入数据
     dealOriginData(newValue){
          

@@ -489,7 +489,7 @@ export default {
               }
             })
         }else{
-          this.$message.error('进仓编号格式为13位数字')
+          this.$message.error('进仓编号只能输入20位')
         }
       }
     },
