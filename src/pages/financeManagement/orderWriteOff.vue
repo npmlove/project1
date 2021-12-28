@@ -884,6 +884,7 @@
       //数据统计
       getStatistData(){
         let copyData = JSON.parse(JSON.stringify(this.selectResult))
+         copyData.woStatus = this.typeCode == "可操作" ? 0 :this.typeCode == "业务修改中" ? 1 :this.typeCode == "异常" ?  2 :""
         if(copyData.rcvWriteOffStatusList[0] === "") {
           delete copyData.rcvWriteOffStatusList
           }

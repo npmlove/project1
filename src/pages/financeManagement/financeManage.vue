@@ -297,15 +297,7 @@
               >清空</el-button
             >
           </div>
-          <div class="operateButton">
-            <el-button size="mini" type="primary" @click="showFees(false)" v-if="this.typeCode == '修改申请' || this.typeCode == '已交单'"
-              >修改</el-button
-            >
-            <el-button size="mini" type="primary" @click="showFees(false)" v-if="this.typeCode == '修改审核'"
-              >审核</el-button
-            >
-
-          </div>
+         
         </div>
       </el-form>
       <el-tabs
@@ -538,6 +530,8 @@
             </div>
             <div style="display:flex;">
                <div style="widht:100%;margin:5px 10px 0 0">
+              <el-button size="mini" type="primary" @click="showFees(false)" v-if="typeCode == '修改申请' || typeCode == '已交单'"  style="height:28px;margin-top:19px">修改</el-button>
+              <el-button size="mini" type="primary" @click="showFees(false)" v-if="typeCode == '修改审核'" style="height:28px;margin-top:19px">审核</el-button>
               <el-button size="mini" type="primary" @click="getExportExcel" style="height:28px;margin-top:19px">导出列表</el-button>
               <el-button @click="drawer = true" type="primary" size="mini" style="height:28px;margin-top:19px">选择表格列</el-button>
             </div>
