@@ -459,6 +459,9 @@
   export default {
     data() {
       return {
+        //保存 判断是否代理公司必须
+        saveIfAgentId:false,
+        //审核通过，取消按钮控制
         canNotOperate:false,
           //pdf预览和下载
         pdfDownLoad:"", 
@@ -776,10 +779,13 @@
       //保存
       submitClick(type) {
         if(type == '保存' || type == '通过') {
-          if(!this.orderOptionsList.agentId){
+          if(!this.canNotOperate && !this.saveIfAgentId) {
+             if(!this.orderOptionsList.agentId){
               this.$message.error('请选择代理公司')
               return
-            }else if(!this.orderOptionsList.bookingPrice){
+            }
+          }
+         else if(!this.orderOptionsList.bookingPrice){
               this.$message.error('请输入订舱单价')
               return
             }else if(!this.orderOptionsList.ifTransfer){
@@ -1272,8 +1278,15 @@
       initDetails() {
         this.$http.get(this.$service.orderSearchDetail+'?orderId='+this.orderId).then((data) => {
           if(data.code == 200){
+
             this.detailsArr = data.data
             var data = data.data
+            if(!data.pscsId || !data.mscsId ) {
+              this.saveIfAgentId = true
+            } else {
+              this.saveIfAgentId = false
+            }
+            
             this.pdfDownLoad = data.orderAttachmentList
             for(let i =0;i<this.pdfDownLoad.length;i++) {
                 var copyName = this.pdfDownLoad[i].attachmentName
@@ -1310,8 +1323,10 @@
             if(!data.principalId) {
               this.canNotOperate = true
             } else {
+              this.canNotOperate = false
               this.principalId = data.principalId+'#'+data.principalName
             }
+            console.log(!this.canNotOperate && !this.saveIfAgentId,111233)
             this.pscsId = data.pscsId+'#'+data.pscsName
             this.mscsId = data.mscsId+'#'+data.mscsName
             this.remark = data.remark
