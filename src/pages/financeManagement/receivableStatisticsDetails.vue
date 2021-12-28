@@ -62,7 +62,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="结算方式:" class="formItem" label-width="80px">
+          <el-form-item label="结算方式:" class="formItem" label-width="80px" v-if="this.selectControl">
             <el-select v-model="payWay" placeholder="结算方式" :remote-method="agentMethod" :loading="loading" clearable
                        filterable remote reserve-keyword style="width: 200px;">
               <el-option
@@ -73,7 +73,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="核销状态:" class="formItem" label-width="80px">
+          <el-form-item label="核销状态:" class="formItem" label-width="80px" v-if="this.selectControl">
             <el-select v-model="rcvWriteOffStatus" multiple collapse-tags placeholder="核销状态" @change="dealAllChange"
                        :loading="loading"
                        clearable filterable remote reserve-keyword style="width: 230px;">
@@ -90,6 +90,7 @@
             label="付款日期:"
             style="width: 480px"
             label-width="80px"
+            v-if="this.selectControl"
           >
             <el-date-picker
               style="width: 180px"
@@ -118,6 +119,7 @@
             label="核销日期:"
             style="width: 480px"
             label-width="80px"
+            v-if="this.selectControl"
           >
             <el-date-picker
               style="width: 180px"
@@ -140,7 +142,13 @@
             >
             </el-date-picker>
           </el-form-item>
-
+          <div style="text-align:center">
+            <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
+              <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+              <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+              <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span>
+            </div>
+          </div>
           <div class="operateButton">
             <el-button
               @click="searchClick"
@@ -349,6 +357,7 @@ import axios from "axios";
 export default {
   data() {
     return {
+      selectControl:false,
       dialogFormVisible: false,
       logDialogVisible: false,
       statistDataShow: false,
@@ -648,6 +657,9 @@ export default {
     this.rcvWriteOffStatus = [""]
   },
   methods: {
+    shiftSelectControl(){
+      this.selectControl = !this.selectControl
+    },
     //表格选择列显示drawer -全选
     handleCheckAllChange(val) {
       this.checkedTable = val ? this.tableOptions : [];
