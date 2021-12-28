@@ -573,7 +573,7 @@ export default {
       endWriteOffTime: null,
       payWay: '',
       payWayTab: '',
-      rcvWriteOffStatus: null,
+      rcvWriteOffStatus: '',
       payWayOpt: [
         //0=付款买单,1=月结买单
 
