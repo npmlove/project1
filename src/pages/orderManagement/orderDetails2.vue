@@ -299,6 +299,75 @@ export default {
       preSaleList:[] ,// 售前客服初始数组
       onSaleList:[] ,// 售中客服初始数组
       airLineList:[] ,// 航线负责人初始数组
+            bubblePointArray:[
+        {
+          value:1,
+          lable:"1/9"
+        },
+        {
+          value:2,
+          lable:"2/8"
+        },
+        {
+          value:3,
+          lable:"3/7"
+        },
+        {
+          value:4,
+          lable:'4/6'
+        },
+        {
+          value:5,
+          lable:'5/5'
+        },
+        {
+          value:6,
+          lable:'6/4'
+        },
+        {
+          value:7,
+          lable:'7/3'
+        },
+        {
+          value:8,
+          lable:'8/2'
+        },
+        {
+          value:9,
+          lable:'9/1'
+        },
+        {
+          value:10,
+          lable:'不分泡'
+        },
+
+      ], // 分泡比率数组
+            cargoTypeArray:[
+        {
+          value:1,
+          lable:"普货"
+        },
+        {
+          value:2,
+          lable:"化工"
+        },
+        {
+          value:3,
+          lable:"危险品"
+        },
+        {
+          value:5,
+          lable:"防疫物资"
+        }],
+      packageTypeArray:[
+        {
+          value:1,
+          lable:"散货"
+        },{
+          value:2,
+          lable:"托盘"
+        },
+        ],
     };
   },
   components:{

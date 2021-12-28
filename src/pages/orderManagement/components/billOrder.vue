@@ -216,7 +216,7 @@ export default {
         for(let i in newValue){
           let {price,quantity,currency} = newValue[i]
           if(price && quantity && currency){
-            newValue[i].exchangeRate = newValue[i].exchangeRate != null ?  newValue[i].exchangeRate : this.getCurrentRate(newValue[i].currency) 
+            newValue[i].exchangeRate =  this.getCurrentRate(newValue[i].currency) 
             newValue[i].totalOrgn = Math.floor((isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)) * 100) /100 
             newValue[i].totalCny =  Math.floor(( isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) * newValue[i].exchangeRate) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * newValue[i].exchangeRate )*100)/100
           }
