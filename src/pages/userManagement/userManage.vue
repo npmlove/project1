@@ -87,7 +87,7 @@
             </el-select>
           </el-form-item>
           <el-form-item prop="qqInput" label="QQ">
-            <el-input style="width: 270px;" v-model="ruleForm.qqInput" clearable placeholder="请输入QQ号"  maxlength="16"  onkeyup="this.value=this.value.replace(/[^\d]/g,'')"
+            <el-input style="width: 270px;" v-model="ruleForm.qqInput" clearable placeholder="请输入QQ号"  maxlength="16"  onkeyup="this.value=this.value.replace(/[^\d]/g,'')" @blur="ruleForm.qqInput = $event.target.value"
                     ></el-input>
           </el-form-item>
         <el-form-item  prop="certificationBody" label="额度">
