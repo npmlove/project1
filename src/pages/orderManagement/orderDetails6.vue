@@ -346,6 +346,7 @@
 import binList from './components/binList.vue'
 import billOrder from './components/billOrder.vue'
 import opeartes from './components/opeartes.vue'
+import {judgeWaybillNo} from '@/util/util'
 export default {
   data() {
     return {
@@ -818,7 +819,7 @@ export default {
       })
     },
     // 保存账单
-    saveOrder(){
+saveOrder(){
       let {inboundWeight,inboundCbm, inboundCw , inboundPiece,inboundNo} = this.initData
       if(!inboundNo){
         this.$message.error('请输入进仓编号')
@@ -840,7 +841,8 @@ export default {
         this.$message.error('请输入计费重')
         return ;
       }
-
+      let boolenNo =  judgeWaybillNo(inboundNo)
+      if(boolenNo){
       let arrayTypeThree = this.$refs.typeThree.tableData
       let tempthree = arrayTypeThree.filter(item=>{
         return (item.piece == undefined || item.piece == '') || (item.cbm == undefined || item.cbm == "") || (item.weight == undefined || item.weight == '')  || (item.cargoSize == undefined || item.cargoSize == '')
@@ -849,56 +851,53 @@ export default {
         this.$message.error('进仓数据未填写')
         return ;
       }
-      // 获取应收账单的长度 为 12345
-      let tempLength = this.initData.arOrderPriceList.length ;
-      let arrayTypeOne = [];
-      if(tempLength == 1){
-        arrayTypeOne = this.$refs.typeBill0[0].tableData
-      }else if(tempLength == 2){
-        arrayTypeOne = [...this.$refs.typeBill0[0].tableData,...this.$refs.typeBill1[0].tableData]
-      }else if(tempLength == 3){
-        arrayTypeOne = [...this.$refs.typeBill0[0].tableData,...this.$refs.typeBill1[0].tableData,...this.$refs.typeBill2[0].tableData]
-      }else if(tempLength == 4){
-        arrayTypeOne = [...this.$refs.typeBill0[0].tableData,...this.$refs.typeBill1[0].tableData,...this.$refs.typeBill2[0].tableData,...this.$refs.typeBill3[0].tableData]
-      }else if(tempLength == 5){
-        arrayTypeOne = [...this.$refs.typeBill0[0].tableData,...this.$refs.typeBill1[0].tableData,...this.$refs.typeBill2[0].tableData,...this.$refs.typeBill3[0].tableData,...this.$refs.typeBill4[0].tableData]
-      }
-      let arrayTypeTwo = this.$refs.typeTwo.tableData
-      let order = this.initData
-      if(order.hasOwnProperty('apOrderPriceList')){
-        delete order.apOrderPriceList
-      }
-      if(order.hasOwnProperty('orderCargoDetailList')){
-        delete order.orderCargoDetailList
-      }
-      if(order.hasOwnProperty('orderPriceList')){
-        delete order.orderPriceList
-      }
-      if(order.hasOwnProperty('trayDetail')){
-       delete order.trayDetail
-      }
-
-
-
-
-
-      let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
-      let orderCargoDetailList = arrayTypeThree
-
-
-      let params = {
-        order:order,
-        orderPriceList:orderPriceList,
-        orderCargoDetailList:orderCargoDetailList,
-      }
-     this.$http.post(this.$service.orderSaveOrder,params).then((data) => {
-        if(data.code == 200){
-          this.$message('保存成功')
-          this.$router.push('/orderManagement/orderManage')
-        } else {
-          this.$message.error(data.message)
+        // 获取应收账单的长度 为 12345
+        let tempLength = this.initData.arOrderPriceList.length ;
+        let arrayTypeOne = [];
+        if(tempLength == 1){
+          arrayTypeOne = this.$refs.typeBill0[0].tableData
+        }else if(tempLength == 2){
+          arrayTypeOne = [...this.$refs.typeBill0[0].tableData,...this.$refs.typeBill1[0].tableData]
+        }else if(tempLength == 3){
+          arrayTypeOne = [...this.$refs.typeBill0[0].tableData,...this.$refs.typeBill1[0].tableData,...this.$refs.typeBill2[0].tableData]
+        }else if(tempLength == 4){
+          arrayTypeOne = [...this.$refs.typeBill0[0].tableData,...this.$refs.typeBill1[0].tableData,...this.$refs.typeBill2[0].tableData,...this.$refs.typeBill3[0].tableData]
+        }else if(tempLength == 5){
+          arrayTypeOne = [...this.$refs.typeBill0[0].tableData,...this.$refs.typeBill1[0].tableData,...this.$refs.typeBill2[0].tableData,...this.$refs.typeBill3[0].tableData,...this.$refs.typeBill4[0].tableData]
         }
-      })
+        let arrayTypeTwo = this.$refs.typeTwo.tableData
+        let order = this.initData
+        if(order.hasOwnProperty('apOrderPriceList')){
+          delete order.apOrderPriceList
+        }
+        if(order.hasOwnProperty('orderCargoDetailList')){
+          delete order.orderCargoDetailList
+        }
+        if(order.hasOwnProperty('orderPriceList')){
+          delete order.orderPriceList
+        }
+        if(order.hasOwnProperty('trayDetail')){
+        delete order.trayDetail
+        }
+        let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
+        let orderCargoDetailList = arrayTypeThree
+        let params = {
+          order:order,
+          orderPriceList:orderPriceList,
+          orderCargoDetailList:orderCargoDetailList,
+        }
+        this.$http.post(this.$service.orderSaveOrder,params).then((data) => {
+            if(data.code == 200){
+              this.$message('保存成功')
+              this.$router.push('/orderManagement/orderManage')
+            } else {
+              this.$message.error(data.message)
+            }
+        })
+      }else{
+         this.$message.error('进仓编号只能输入20位')
+      }
+
     },
     // 获取页面初始配置
     async initSysSetTing(){

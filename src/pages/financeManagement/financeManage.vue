@@ -93,7 +93,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          
+
           <el-form-item label="起运港:" class="formItem" label-width="80px" v-show="selectControl">
             <el-select
               v-model="selectResult.pol"
@@ -282,7 +282,7 @@
               <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
             <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
             <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span> 
+             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span>
           </div>
           </div>
           <div class="operateButton" style="margin-bottom:10px">
@@ -304,7 +304,7 @@
             <el-button size="mini" type="primary" @click="showFees(false)" v-if="this.typeCode == '修改审核'"
               >审核</el-button
             >
-         
+
           </div>
         </div>
       </el-form>
@@ -533,7 +533,7 @@
                 <span style="margin-left: 15px"
                   >利润:{{ statistData.orderProfit?statistData.orderProfit.toLocaleString('en-US'):0 }}</span
                 >
-                <span style="fontSize:17px;color:red;margin-left:10px" v-if="tabNum[6] > 0">存在异常订单！</span>
+                <span style="fontSize:17px;color:red;margin-left:10px" v-if="statistData.abnormalFlag != 0">存在异常订单！</span>
               </div>
             </div>
             <div style="display:flex;">
@@ -541,7 +541,7 @@
               <el-button size="mini" type="primary" @click="getExportExcel" style="height:28px;margin-top:19px">导出列表</el-button>
               <el-button @click="drawer = true" type="primary" size="mini" style="height:28px;margin-top:19px">选择表格列</el-button>
             </div>
-              
+
             <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
@@ -558,7 +558,7 @@
             >
             </el-pagination>
             </div>
-           
+
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -994,7 +994,7 @@ export default {
     },
      tableRowClassName({row, rowIndex}) {
       if(row.orderProfit >= 0 && (row.abnormalFlag== 1 || row.abnormalFlag== 4 || row.abnormalFlag== 5 || row.abnormalFlag== 7) ) {
-        return 'background-color:#CD5C5C '; 
+        return 'background-color:#CD5C5C ';
       }
       else if (row.orderProfit<0 &&  row.orderProfit>-200 ) {
         return 'background-color: #FFDEAD';
@@ -1069,7 +1069,7 @@ export default {
     dealAllChange (){
       if(this.selectResult.invoicingStatus.indexOf("0") != -1 && this.selectResult.invoicingStatus.indexOf("1") != -1 && this.selectResult.invoicingStatus.indexOf("2") != -1) {
         this.selectResult.invoicingStatus = [""]
-      } 
+      }
       else if (this.selectResult.invoicingStatus.indexOf("")>0) {
         this.selectResult.invoicingStatus = [""]
       }
@@ -1077,7 +1077,7 @@ export default {
           if(this.selectResult.invoicingStatus.indexOf("") != -1){
             let index = this.selectResult.invoicingStatus.indexOf("")
             this.selectResult.invoicingStatus.splice(index,1)
-          } 
+          }
         }
       },
     //表格选择列显示drawer -全选

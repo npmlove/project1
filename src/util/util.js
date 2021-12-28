@@ -71,13 +71,12 @@ export const payWayArray = [
       label:'月结'
   }
 ]
-
+// 限制进仓编号
 export function judgeWaybillNo(str){
-    let reg = /^\d{11}$/;
     if(str.indexOf('-') == -1){
-        return reg.test(str)
-    }else{
-        let testStr = str.replace('-','')
-        return  reg.test(testStr)
+      return str.length == 20
+    }else {
+      let testStr = str.replace('-','')
+      return testStr.length == 20
     }
 }

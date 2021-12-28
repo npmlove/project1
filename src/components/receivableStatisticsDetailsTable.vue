@@ -207,15 +207,15 @@
                 <div>1:{{ scope.row.inboundVwr }}</div>
             </span>
              <span v-else-if="column.prop == 'operator' && column.label == '操作人员'">
-               <div>客服：{{ scope.row.pscsName }}</div>
-                <div>销售：{{ scope.row.mscsName }}</div>
-                <div>航线：{{ scope.row.principalName }}</div>
+               <div v-if="scope.row.pscsName">售前客服：{{ scope.row.pscsName }}</div>
+                <div v-if="scope.row.mscsName">售中客服：{{ scope.row.mscsName }}</div>
+                <div v-if="scope.row.principalName">航线：{{ scope.row.principalName }}</div>
             </span>
               <span v-else-if=" column.label == '对账金额'&&column.prop == 'rcvCheckAmount'">
-              {{ scope.row.rcvCheckAmount }}CNY
+              {{ scope.row.rcvCheckAmount }}
             </span>
               <span v-else-if=" column.label == '对账金额'&&column.prop == 'payCheckAmount'">
-              {{ scope.row.payCheckAmount }}CNY
+              {{ scope.row.payCheckAmount }}
             </span>
               <span v-else-if=" column.label == '开票进度'">
                {{
