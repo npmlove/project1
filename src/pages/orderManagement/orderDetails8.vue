@@ -1332,8 +1332,8 @@
                   ifTransfer:'1',
                   fullLeg: "",
                   legCount:""
-              },
-              this.agentId = data.agentId+'#'+data.agentName
+              }
+              
             this.statusDesc = data.statusDesc
             this.status = data.status
             this.pscsName = data.pscsName
@@ -1352,7 +1352,6 @@
               this.canNotOperate = false
               this.principalId = data.principalId+'#'+data.principalName
             }
-            console.log(!this.canNotOperate && !this.saveIfAgentId,111233)
             this.pscsId = data.pscsId+'#'+data.pscsName
             this.mscsId = data.mscsId+'#'+data.mscsName
             this.remark = data.remark
@@ -1367,7 +1366,9 @@
             this.fullLeg = fullLeg.join('-');
             this.bubblePoint = data.bubblePoint.toString()
             this.departureDate = data.departureDate
-            this.orderOptionsList.agentId = data.agentId+'#'+data.agentName
+            if(data.agentId) {
+              this.orderOptionsList.agentId = data.agentId+'#'+data.agentName
+            }
             this.flightNo = data.flightNo
             this.cargoName = data.cargoName
             this.cargoType = data.cargoType.toString()
