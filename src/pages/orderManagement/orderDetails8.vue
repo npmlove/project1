@@ -778,6 +778,18 @@
 
       //保存
       submitClick(type) {
+        if (!this.pscsId) {
+          this.$message.warning("请选择售前客服")
+          return
+        } 
+        else if(!this.pscsId) {
+          this.$message.warning("请选择售中客服")
+          return
+        } 
+        else if (!this.principalId) {
+          this.$message.warning("请选择航线人员")
+          return
+        }
         if(type == '保存' || type == '通过') {
           if(!this.canNotOperate && !this.saveIfAgentId) {
              if(!this.orderOptionsList.agentId){
