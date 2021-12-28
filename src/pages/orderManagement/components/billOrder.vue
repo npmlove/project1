@@ -35,7 +35,19 @@
             label="付款单位"
             >
             <template slot-scope="scope">
-                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.expenseUnitName" clearable></el-input>    
+              <span v-if="expenseType == 1">
+                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.expenseUnitName" clearable></el-input>
+              </span>
+              <span v-if="expenseType == 2">
+                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择">
+                    <el-option
+                      v-for="item in agentIdList"
+                      :key="item.id"
+                      :label="item.label"
+                      :value="item.agentName">
+                    </el-option>
+                  </el-select>
+              </span>      
             </template>
           </el-table-column>
           <el-table-column
@@ -135,6 +147,7 @@ export default {
   data() {
     return {
       tableData: [], // 
+      agentIdList:[],
       title:'',
       expenseType:1,
       expenseUnitName:'',
@@ -190,6 +203,9 @@ export default {
       this.expenseUnitName = expenseUnitName
       this.billId = billId
       this.title =  expenseType == 1 ? '应收账单' : '应付账单'
+      if(expenseType == 2){
+        this.initAgent()
+      }
       await this.getRates()
       await this.initExpenseCode()
       this.dealOriginData(a)
@@ -210,6 +226,19 @@ export default {
     }
   },
   methods:{
+          //代理公司
+    initAgent() {
+        var data = {
+          pageSize: 50000,
+        }
+        this.$http.post(this.$service.agentList,data).then((data) => {
+          if(data.code == 200){
+            this.agentIdList = data.data.records
+          }else{
+            this.$message.error(data.message)
+          }
+        })
+      },
     // 处理原始传入数据
     dealOriginData(newValue){
          
