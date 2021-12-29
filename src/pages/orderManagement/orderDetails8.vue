@@ -154,7 +154,7 @@
           <div style="background:#f3f6f9;margin:15px 0;padding-top:15px">
           <div>
             <el-form-item label="代理公司" required>
-              <el-select v-model="orderOptionsList.agentId" filterable clearable placeholder="请选择代理公司" style="width: 216;" @change="changeAgent">
+              <el-select v-model="orderOptionsList.agentId" filterable clearable placeholder="请选择代理公司" style="width: 216;" @change="changeAgent" :disabled="ifShopML">
                 <el-option
                   v-for="item in agentIdOpt"
                   :key="item.id"
@@ -459,6 +459,8 @@
   export default {
     data() {
       return {
+        //判断是否售前售中、
+        ifShopML:false,
         //保存 判断是否代理公司必须
         saveIfAgentId:false,
         //审核通过，取消按钮控制
@@ -690,6 +692,12 @@
       }
     },
     created() {
+      let mession = sessionStorage.getItem("userInfo")
+      console.log(JSON.parse(mession).roleName,123)
+      if(JSON.parse(mession).roleName == "售前客服" || JSON.parse(mession).roleName == "售中客服") {
+        this.ifShopML = true
+      }
+      console.log(this.ifShopML)
       this.orderId = this.$route.query.id
       //航线负责人下拉框数据
       this.initPrincipal()
