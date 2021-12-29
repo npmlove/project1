@@ -1197,6 +1197,7 @@ export default {
         this.dialogFormVisible =false
     },
     showFees(linedata,onlyShow,pageSkip) {
+      this.info = ''
       this.dialogTitle = linedata.orderNo
       let orderId = linedata.id
       let payWay = linedata.payWay
@@ -1217,6 +1218,7 @@ export default {
           });
           return false
         } else {
+          this.dialPage = 1
           this.showFeesPage = true
           orderId = this.selectTableData[0].id
           financeStatus = this.selectTableData[0].financeStatus
