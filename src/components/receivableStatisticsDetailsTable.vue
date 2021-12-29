@@ -266,18 +266,18 @@
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <div v-show="total > 10">
-      <el-pagination
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        :page-sizes="[10, 20, 30, 40, 50]"
-        :page-size="pageSize"
-        :current-page="currentPage"
-        @current-change="handleCurrent"
-        @size-change="handleSize"
-        style="text-align: right;padding: 19px 30px 18px 0;background: #fff">
-      </el-pagination>
-    </div>
+<!--    <div v-show="total > 10">-->
+<!--      <el-pagination-->
+<!--        layout="total, sizes, prev, pager, next, jumper"-->
+<!--        :total="total"-->
+<!--        :page-sizes="[10, 20, 30, 40, 50]"-->
+<!--        :page-size="pageSize"-->
+<!--        :current-page="currentPage"-->
+<!--        @current-change="handleCurrent"-->
+<!--        @size-change="handleSize"-->
+<!--        style="text-align: right;padding: 19px 30px 18px 0;background: #fff">-->
+<!--      </el-pagination>-->
+<!--    </div>-->
   </div>
 
 </template>
@@ -569,6 +569,40 @@ export default {
     //开关
     switchChangeUser(val) {
       this.$emit('switchChangeUser', val)
+    },
+    dealOrgnS(orgn, extraWord) {
+      if (!orgn) {
+        return 0 + 'CNY';
+      }
+      orgn = JSON.parse(orgn);
+      var totalOrgn = "";
+      var value1;
+      var value2;
+      var value3;
+      var value4;
+      var value5;
+      // HK$ $ € ￡
+      for (var i = 0; i < orgn.length; i++) {
+        if (orgn[i].currency == "1") {
+          value1 = orgn[i].amount;
+        } else if (orgn[i].currency == "2") {
+          value2 = orgn[i].amount;
+        } else if (orgn[i].currency == "3") {
+          value3 = orgn[i].amount;
+        } else if (orgn[i].currency == "4") {
+          value4 = orgn[i].amount;
+        } else if (orgn[i].currency == "5") {
+          value5 = orgn[i].amount;
+        }
+      }
+      totalOrgn = "";
+      totalOrgn += (value1 || value1 == 0) ? value1.toLocaleString('en-US') + "CNY" + "\n" : "";
+      totalOrgn += (value2 || value2 == 0) ? value2.toLocaleString('en-US') + "HKD" + "\n" : "";
+      totalOrgn += (value3 || value3 == 0) ? value3.toLocaleString('en-US') + "USD" + "\n" : "";
+      totalOrgn += (value4 || value4 == 0) ? value4.toLocaleString('en-US') + "EUR" + "\n" : "";
+      totalOrgn += (value5 || value5 == 0) ? value5.toLocaleString('en-US') + "GBP" + "\n" : "";
+      totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
+      return (extraWord ? extraWord + ":" : "") + totalOrgn;
     },
     //去重
     unique1(arr) {
