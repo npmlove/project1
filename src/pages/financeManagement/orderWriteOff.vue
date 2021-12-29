@@ -1189,7 +1189,9 @@
   // /deep/.el-table tbody tr:hover>td {
     // background-color:blue!important
 // }
-
+  /deep/ .el-tag.el-tag--info{
+  max-width: 100px;
+}
  /deep/.el-input--medium{
      .el-input__inner {
         text-overflow: ellipsis!important;

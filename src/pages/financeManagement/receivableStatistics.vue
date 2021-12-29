@@ -1762,6 +1762,10 @@
 </style>
 <style scoped lang="less">
 
+/deep/ .el-tag.el-tag--info{
+  max-width: 100px;
+}
+
 .statist {
     margin-left:15px;
     .statists {
