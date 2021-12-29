@@ -74,9 +74,9 @@ export const payWayArray = [
 // 限制进仓编号
 export function judgeWaybillNo(str){
     if(str.indexOf('-') == -1){
-      return str.length == 20
+      return str.length <= 20
     }else {
       let testStr = str.replace('-','')
-      return testStr.length == 20
+      return testStr.length <= 20
     }
 }
