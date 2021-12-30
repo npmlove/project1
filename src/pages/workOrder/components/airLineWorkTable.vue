@@ -236,6 +236,8 @@
             </el-popover>
           </template>
         </el-table-column>
+        <el-table-column label="目的港" prop="pod" min-width="40"></el-table-column>
+        <el-table-column label="件/毛/体" prop="cargoInfo" min-width="80"></el-table-column>
       </el-table>
 
       <div class="footer">
@@ -414,7 +416,7 @@ export default {
       this.$set(this.tableData, index, data);
       var withPrcps = "";
 
-      if (data.statusStr == "工单已关闭") {
+      if (data.statusStr == "工单已关闭" || data.statusStr == "工单待关闭") {
         withPrcps = false;
         this.statuShow = false;
       } else {
