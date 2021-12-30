@@ -15,9 +15,18 @@
         <span>起运港 </span>
         <span>{{initData.pol}}</span>
       </div>
-      <div>
+      <div class="flex">
         <span>航司 </span>
-        <span>{{initData.airCompanyName}}</span>
+        <span>
+          <el-select v-model="initData.airCompanyCode"   filterable size="mini" placeholder="请选择">
+            <el-option
+              v-for="item in airCompanyCodeList"
+              :key="item.airCompanyCode"
+              :label="item.airCompanyCode +'-'+ item.name "
+              :value="item.airCompanyCode">
+            </el-option>
+          </el-select>
+        </span>
       </div>
       <div class="flex">
         <span>订舱单价 </span>
@@ -283,7 +292,6 @@
 </template>
 <script>
 import billOrder from './components/billOrder.vue'
-import {judgeWaybillNo} from '@/util/util'
 export default {
   data() {
     return {
@@ -299,7 +307,8 @@ export default {
       preSaleList:[] ,// 售前客服初始数组
       onSaleList:[] ,// 售中客服初始数组
       airLineList:[] ,// 航线负责人初始数组
-            bubblePointArray:[
+      airCompanyCodeList:[], // 航司初始数组
+      bubblePointArray:[
         {
           value:1,
           lable:"1/9"
@@ -453,13 +462,6 @@ export default {
       })
     },
      saveOrder(){
-      let {inboundNo} = this.initData
-      if(!inboundNo){
-        this.$message.error('请输入进仓编号')
-        return ;
-      }else{
-        let boolenNo =  judgeWaybillNo(inboundNo)
-        if(boolenNo){
           let order = this.initData
           if(order.hasOwnProperty('apOrderPriceList')){
             delete order.apOrderPriceList
@@ -488,10 +490,6 @@ export default {
                 this.$message.error(data.message)
               }
             })
-        }else{
-          this.$message.error('进仓编号只能输入20位')
-        }
-      }
     },
         // 获取URl 协议
     async getUrl(){
@@ -633,10 +631,12 @@ export default {
       let res1 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000')
       let res2 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售中客服&pageSize=50000')
       let res3 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=航线负责人&pageSize=50000')
-      Promise.all([res1,res2,res3]).then(res=>{
+      let res4 = await  this.$http.get(this.$service.companySearchByPage+'?pageSize=50000')
+      Promise.all([res1,res2,res3,res4]).then(res=>{
         this.preSaleList = res[0].data.records
         this.onSaleList = res[1].data.records
         this.airLineList = res[2].data.records
+        this.airCompanyCodeList = res[3].data.records
       })
     },
     // 获取订单详情

@@ -21,9 +21,18 @@
             <span>起运港 </span>
             <span>{{initData.pol}}</span>
           </div>
-          <div>
+          <div class="flex">
             <span>航司 </span>
-            <span>{{initData.airCompanyName}}</span>
+            <span>
+              <el-select v-model="initData.airCompanyCode"   filterable size="mini" placeholder="请选择">
+                <el-option
+                  v-for="item in airCompanyCodeList"
+                  :key="item.airCompanyCode"
+                  :label="item.airCompanyCode +'-'+ item.name "
+                  :value="item.airCompanyCode">
+                </el-option>
+              </el-select>
+            </span>
           </div>
           <div class="flex">
             <span>订舱单价 </span>
@@ -372,6 +381,7 @@ export default {
       preSaleList:[] ,// 售前客服初始数组
       onSaleList:[] ,// 售中客服初始数组
       airLineList:[] ,// 航线负责人初始数组
+      airCompanyCodeList:[], // 航司初始数组
       principalId:'', // 航线负责人ID
       typeTwoProp:{}, //传递给typeTwo 对象
       billIdTwo:'',//传递给账单id
@@ -902,7 +912,7 @@ saveOrder(){
             }
         })
       }else{
-         this.$message.error('进仓编号只能输入20位')
+         this.$message.error('进仓编号最大输入20位')
       }
 
     },
@@ -911,10 +921,12 @@ saveOrder(){
       let res1 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000')
       let res2 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=售中客服&pageSize=50000')
       let res3 = await this.$http.get(this.$service.userSearchNoAuth+'?roleName=航线负责人&pageSize=50000')
-      Promise.all([res1,res2,res3]).then(res=>{
+      let res4 = await  this.$http.get(this.$service.companySearchByPage+'?pageSize=50000')
+      Promise.all([res1,res2,res3,res4]).then(res=>{
         this.preSaleList = res[0].data.records
         this.onSaleList = res[1].data.records
         this.airLineList = res[2].data.records
+        this.airCompanyCodeList = res[3].data.records
       })
     },
     // 获取订单详情

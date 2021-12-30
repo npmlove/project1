@@ -137,12 +137,12 @@
             </el-button
             >
           </div>
-          <div class="operateButton">
+<!--          <div class="operateButton">
             <el-button size='mini' type="primary" @click="exportList">导出列表</el-button>
             <el-button @click="drawer = true" type="primary" size="mini"
             >选择表格列
             </el-button>
-          </div>
+          </div>-->
         </div>
       </el-form>
       <el-tabs class="nth9_class" v-model="woStatus" type="border-card" @tab-click="tabClickData">
@@ -226,7 +226,7 @@
           >
         </el-checkbox-group>
       </el-drawer>
-      <div style="display:flex;justify-content:space-between">
+      <div style="display:flex;justify-content:space-between ;background: rgb(255, 255, 255)">
         <div>
           <el-button size="mini" class="pageSkip">
             <el-checkbox v-model="pageSkipChecked" @change="selectAllTable">跨页全选</el-checkbox>
@@ -252,15 +252,27 @@
               <div>存在异常订单！</div>
             </div>
           </div>
-<!--          <div style="margin-top:15px" v-if="statistDataShow">-->
-<!--            <span>应收总金额:{{ statistData.totalApCny }}</span>-->
-<!--            <span style="margin-left:15px">已核销总金额: {{ statistData.totalApWoCny }}</span>-->
-<!--            <span style="margin-left:15px">未核销总金额:{{ statistData.totalApUnwoCny }}</span>-->
-<!--            <span style="margin-left:15px">应收原币:{{ getOrgn(statistData.totalApOrgn) }}</span>-->
-<!--            <span style="margin-left:15px">已核销原币:{{ getOrgn(statistData.totalApWoOrgn) }}</span>-->
-<!--            <span style="margin-left:15px">未核销原币:{{ getOrgn(statistData.totalApUnwoOrgn) }}</span>-->
-<!--            <span style="margin-left:15px;color: red">{{ statistData.hasAbNormal ? '存在异常订单!' : '' }}</span>-->
-<!--          </div>-->
+        </div>
+
+
+        <div style="display:flex;">
+          <div style="widht:100%;margin:5px 10px 0 0">
+            <el-button size='mini' type="primary" @click="exportList" style="height:28px;margin-top:19px">导出列表</el-button>
+            <el-button @click="drawer = true" type="primary" size="mini" style="height:28px;margin-top:19px"
+            >选择表格列
+            </el-button>
+          </div>
+
+          <el-pagination
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            :page-sizes="[10, 20, 30, 40, 50]"
+            :page-size="pageSize"
+            :current-page="currentPage"
+            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange"
+            style="text-align: right;padding: 19px 30px 18px 0;background: #fff">
+          </el-pagination>
         </div>
       </div>
     </div>
@@ -379,7 +391,7 @@ export default {
         {label: '序号', show: true, width: '50'},
         {label: '订单号', prop: 'orderNo', show: true, width: '150'},
         {label: '运单号', prop: 'waybillNo', show: true, width: '150'},
-        {label: '应付对象', prop: 'expenseUnitName', show: true, width: '100'},
+        {label: '应付对象', prop: 'expenseUnitName', show: true, width: '160'},
         {label: '应付费用名称', prop: 'expenseName', show: true, width: '100'},
         {label: '应付金额', show: true, width: '100'},
         {label: '对账金额', prop: 'payCheckAmount', show: true, width: '80'},
@@ -399,7 +411,7 @@ export default {
         {label: '序号', show: true, width: '50'},
         {label: '订单号', prop: 'orderNo', show: true, width: '100'},
         {label: '运单号', prop: 'waybillNo', show: true, width: '100'},
-        {label: '应付对象', prop: 'expenseUnitName', show: true, width: '100'},
+        {label: '应付对象', prop: 'expenseUnitName', show: true, width: '160'},
         {label: '应付金额', prop: 'totalArCny', show: true, width: '100'},
         {label: '记录', prop: 'log', show: true, width: '500'},
         {label: '操作', prop: 'revoke', show: true, width: '100'},

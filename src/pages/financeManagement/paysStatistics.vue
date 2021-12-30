@@ -217,9 +217,6 @@
              <el-checkbox class="mycheckbox" v-model="checkedIndex16">结算方式</el-checkbox>
              <el-checkbox class="mycheckbox" v-model="checkedIndex17">核销次数</el-checkbox>
              <el-checkbox class="mycheckbox" v-model="checkedIndex14">核销状态</el-checkbox>
-
-
-
         </div>
 
       </el-drawer>
