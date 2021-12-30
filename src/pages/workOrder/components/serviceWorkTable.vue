@@ -203,7 +203,7 @@
                             </div>
                             <el-form v-if="scope.row.status == 0 ||scope.row.status == 2">
                                 <el-form-item label="反馈待定" label-width="70px">
-                                    <div style="width:80%;text-align:left;border:1px solid silver;padding-left:5px">{{workOrderDetail.unFeedbackUsers}}</div>
+                                    <div style="width:80%;text-align:left;border:1px solid silver;padding-left:5px;height:42px">{{workOrderDetail.unFeedbackUsers}}</div>
                                 </el-form-item>
                                 <el-form-item>
                                     <el-input placeholder="请输入工单内容" v-model="workOrderDetail.content"></el-input>
