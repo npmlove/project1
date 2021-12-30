@@ -644,6 +644,13 @@ export default {
       let res = await  this.$http.get(this.$service.orderSearchDetail+`?orderId=${this.orderId}`)
       if(res.code == 200){
         let tempObj = res.data
+          this.pdfDownLoad = tempObj.orderAttachmentList
+            for(let i =0;i<this.pdfDownLoad.length;i++) {
+                var copyName = this.pdfDownLoad[i].attachmentName
+                var copyNames = copyName.split("")
+                copyNames.splice(7,9)
+                this.pdfDownLoad[i].attachmentName = copyNames.join("")
+            }
           tempObj.trayDetail = JSON.parse(tempObj.trayDetail) 
           for(let i in tempObj.arOrderPriceList){
            tempObj.arOrderPriceList[i].changeBillAddOne = false
