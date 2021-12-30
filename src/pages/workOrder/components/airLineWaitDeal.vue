@@ -83,6 +83,10 @@
           </el-form-item>
         </div>
       </el-form>
+      <div style="text-align:center;margin-top:100px" v-if="data.length == 0">
+        <img src="../../../assets/kong-icon.png" alt="" style="width:200px;height:150px">
+        <p style="margin-top:20px;fontSize:15px;fontWeight:bolder">暂无数据</p>
+      </div>
    <transition-group name="slide" style="display:flex;justify-content:center;margin-top:15px">
             <div
             :id="'workOrder'+index"
