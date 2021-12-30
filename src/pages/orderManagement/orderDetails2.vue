@@ -292,6 +292,7 @@
 </template>
 <script>
 import billOrder from './components/billOrder.vue'
+import {judgeWaybillNo} from '@/util/util'
 export default {
   data() {
     return {
@@ -427,41 +428,53 @@ export default {
             },
     exdeOrder(e){
       // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
-      let arrayTypeOne = this.$refs.typeOne.tableData
-      let arrayTypeTwo = this.$refs.typeTwo.tableData
-      let order = this.initData
-      if(order.hasOwnProperty('apOrderPriceList')){
-        delete order.apOrderPriceList
-      }
-      if(order.hasOwnProperty('orderCargoDetailList')){
-        delete order.orderCargoDetailList
-      }
-      if(order.hasOwnProperty('orderPriceList')){
-        delete order.orderPriceList
-      }
-      if(order.hasOwnProperty('trayDetail')){
-       delete order.trayDetail
-      }
-      let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
-     
-      let params = {
-        order:order,
-        orderPriceList:orderPriceList,
-        ctrlMap:{
-          ctrlFlag:e
-        }
-
-      }
-     this.$http.post(this.$service.orderExecuteOrder,params).then((data) => {
-            if(data.code == 200){
-              this.$message('成功')
-              this.$router.push('/orderManagement/orderManage')
-            } else {
-              this.$message.error(data.message)
+      if(e == 1){
+          let {inboundNo} = this.initData
+          if(!inboundNo){
+            this.$message.error('请输入进仓编号')
+            return ;
+          }
+          let boolenNo =  judgeWaybillNo(inboundNo)
+          if(boolenNo){
+            let arrayTypeOne = this.$refs.typeOne.tableData
+            let arrayTypeTwo = this.$refs.typeTwo.tableData
+            let order = this.initData
+            if(order.hasOwnProperty('apOrderPriceList')){
+              delete order.apOrderPriceList
             }
-      })
-    },
-     saveOrder(){
+            if(order.hasOwnProperty('orderCargoDetailList')){
+              delete order.orderCargoDetailList
+            }
+            if(order.hasOwnProperty('orderPriceList')){
+              delete order.orderPriceList
+            }
+            if(order.hasOwnProperty('trayDetail')){
+            delete order.trayDetail
+            }
+            let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
+          
+            let params = {
+              order:order,
+              orderPriceList:orderPriceList,
+              ctrlMap:{
+                ctrlFlag:e
+              }
+
+            }
+            this.$http.post(this.$service.orderExecuteOrder,params).then((data) => {
+                  if(data.code == 200){
+                    this.$message('成功')
+                    this.$router.push('/orderManagement/orderManage')
+                  } else {
+                    this.$message.error(data.message)
+                  }
+            })
+          }else{
+             this.$message.error('进仓编号最大输入20位')
+          }
+      }else{
+          let arrayTypeOne = this.$refs.typeOne.tableData
+          let arrayTypeTwo = this.$refs.typeTwo.tableData
           let order = this.initData
           if(order.hasOwnProperty('apOrderPriceList')){
             delete order.apOrderPriceList
@@ -475,21 +488,61 @@ export default {
           if(order.hasOwnProperty('trayDetail')){
           delete order.trayDetail
           }
-          let arrayTypeOne = this.$refs.typeOne.tableData
-          let arrayTypeTwo = this.$refs.typeTwo.tableData
           let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
+        
           let params = {
-              order:order,
-              orderPriceList:orderPriceList,
+            order:order,
+            orderPriceList:orderPriceList,
+            ctrlMap:{
+              ctrlFlag:e
             }
-          this.$http.post(this.$service.orderSaveOrder,params).then((data) => {
-              if(data.code == 200){
-                this.$message('保存成功')
-                this.$router.push('/orderManagement/orderManage')
-              } else {
-                this.$message.error(data.message)
+
+          }
+        this.$http.post(this.$service.orderExecuteOrder,params).then((data) => {
+                if(data.code == 200){
+                  this.$message('成功')
+                  this.$router.push('/orderManagement/orderManage')
+                } else {
+                  this.$message.error(data.message)
+                }
+          })
+      }
+
+    },
+     saveOrder(){
+
+              let order = this.initData
+              if(order.hasOwnProperty('apOrderPriceList')){
+                delete order.apOrderPriceList
               }
-            })
+              if(order.hasOwnProperty('orderCargoDetailList')){
+                delete order.orderCargoDetailList
+              }
+              if(order.hasOwnProperty('orderPriceList')){
+                delete order.orderPriceList
+              }
+              if(order.hasOwnProperty('trayDetail')){
+              delete order.trayDetail
+              }
+              let arrayTypeOne = this.$refs.typeOne.tableData
+              let arrayTypeTwo = this.$refs.typeTwo.tableData
+              let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
+              let params = {
+                  order:order,
+                  orderPriceList:orderPriceList,
+                }
+              this.$http.post(this.$service.orderSaveOrder,params).then((data) => {
+                  if(data.code == 200){
+                    this.$message('保存成功')
+                    this.$router.push('/orderManagement/orderManage')
+                  } else {
+                    this.$message.error(data.message)
+                  }
+                })
+          // }else{
+          //   this.$message.error('进仓编号最大输入20位')
+          // }
+
     },
         // 获取URl 协议
     async getUrl(){
