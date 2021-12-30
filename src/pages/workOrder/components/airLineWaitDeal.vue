@@ -36,12 +36,12 @@
             </el-date-picker>
           </el-form-item>
 
-           <el-form-item label="工单状态">
+           <el-form-item label="处理状态">
             <el-select
               clearable
               style="width: 150px"
               v-model="selectResult.status"
-              placeholder="请选择工单状态"
+              placeholder="请选择处理状态"
             >
               <el-option label="全部" value="null"></el-option>
               <el-option label="工单待处理" value="0"></el-option>
