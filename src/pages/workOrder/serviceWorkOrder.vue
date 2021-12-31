@@ -63,8 +63,10 @@
         this.$refs.workOrderTable.searchClick(true)
       },
       //待我确认
-      waitConfirm(e){
-        this.pageShow = "confirm"
+      waitConfirm(e,ifTable){
+        if(ifTable) {
+          this.pageShow = "confirm"
+        }
         if(e!='son') {
           this.$refs.workConfirm.initData()
         }

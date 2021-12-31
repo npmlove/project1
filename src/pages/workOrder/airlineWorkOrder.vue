@@ -18,7 +18,7 @@
           </div>
         </div>
       </div>
-      <Table  v-if="pageShow == 'table'" :pageRoleId="pageRoleId"></Table>
+      <Table  v-if="pageShow == 'table'" :pageRoleId="pageRoleId"  @requestData = "waitConfirm('son','table')"></Table>
       <waitDeal v-if="pageShow == 'deal'" :pageRoleId="pageRoleId" @requestData = "waitConfirm('son')" ref="waitDeal"> </waitDeal>
     </div>
   </div>
@@ -48,8 +48,10 @@
     },
     methods: {
       //待我确认
-      waitConfirm(e){
-        this.pageShow = "deal"
+      waitConfirm(e,ifTable){
+        if(!ifTable) {
+          this.pageShow = "deal"
+        }
         if(e!="son" && this.pageShow != 'table') {
           this.$refs.waitDeal && this.$refs.waitDeal.initData()
         }

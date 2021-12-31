@@ -136,6 +136,7 @@
                     style="margin-top: 10px;"
                     type="textarea"
                     placeholder="反馈内容"
+                    @focus = "airlineReplying(item.id)"
                     v-model="waitDeal[index].feedBack"
                     maxlength="150"
                     show-word-limit
@@ -237,6 +238,16 @@ export default {
       }
   },
   methods: {
+    airlineReplying(id){
+      this.$http.post(this.$service.prcpProcessing+'?workOrderId='+id).then(res=>{
+        if(res.code == 200 ){
+
+        }
+        else {
+          this.$message.error(res.message)
+        }
+      })
+    },
     //点击下拉框停止定时器
     clearIntervalss(){
      clearInterval(this.timer)

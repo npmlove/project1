@@ -261,6 +261,8 @@ const serviceApi = {
    countWork4Prcp: pulicWeb + '/t-work-order/countWork4Prcp',
   //航线工单 - 代我处理查询
   searchDealingWork4Prcp: pulicWeb +'/t-work-order/searchDealingWork4Prcp',
+  //航线工单 - 航线正在回复
+  prcpProcessing: pulicWeb + '/t-work-order/prcpProcessing',
    // 工单 - 统计
   orderStatistics: pulicWeb + '/t-work-order/sumUserWorkData',
   //工单 - 统计 导出统计数据

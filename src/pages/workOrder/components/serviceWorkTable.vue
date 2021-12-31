@@ -462,6 +462,7 @@ export default {
             this.$http.post(this.$service.closeWorkOrder+"?workOrderId="+id).then(res=>{
                 if(res.code==200){
                     this.$message.success("关闭工单成功")
+                    this.$emit("flashRight")
                 }
                 else {
                     this.$message.error(res.message)
@@ -505,6 +506,7 @@ export default {
             this.searchClick()
             clearInterval(this.tableTimer)
             this.tableTimer = setInterval(()=>{this.searchClick()},60000)
+
        },
        //表格催单
        remindOrder(id){

@@ -508,6 +508,7 @@ export default {
            this.dataTimer = setInterval(() => {
             this.initData();
           }, 60000);
+          this.$emit('requestData')
         } else {
           this.$message.error(data.message);
         }
@@ -535,6 +536,7 @@ export default {
             this.initData();
           }, 60000);
           this.initData();
+          this.$emit('requestData')
         } else {
           this.$message.error(data.message);
         }
