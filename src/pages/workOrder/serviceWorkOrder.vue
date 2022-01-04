@@ -11,7 +11,7 @@
         <div class="titleParts" @click="allWorkOrder">
           全部工单
         </div>
-        <div class="titlePartss" @click="waitConfirm">
+        <div class="titlePartss" @click="waitConfirm('',true)">
           <div>
              <div>待我确认</div>
              <div style="margin-top:15px;text-align:center">{{workNumber}}</div>
@@ -60,7 +60,9 @@
       //全部工单栏 点击事件
       allWorkOrder(){
         this.pageShow = "table"
-        this.$refs.workOrderTable.searchClick(true)
+        if(this.$refs.workOrderTable) {
+          this.$refs.workOrderTable.searchClick(true)
+        }
       },
       //待我确认
       waitConfirm(e,ifTable){
@@ -68,7 +70,9 @@
           this.pageShow = "confirm"
         }
         if(e!='son') {
-          this.$refs.workConfirm.initData()
+          if(this.$refs.workConfirm) {
+           this.$refs.workConfirm.initData()
+          }
         }
         this.getPageRight()
       },
