@@ -627,7 +627,7 @@ const workOrder = [{
     title:"工单",
     img: require("../assets/gongdan.svg"),
     breadcrumb: false,
-    roles:[]
+    roles:["售前客服","航线负责人"]
   },
   children: [
     {
@@ -637,7 +637,8 @@ const workOrder = [{
       meta: {
         title: '客服工单提交',
         keepAlive: false,
-        needLogin: true
+        needLogin: true,
+        roles:["售前客服"]
       }
     },
     {
@@ -647,7 +648,8 @@ const workOrder = [{
       meta: {
         title: '航线工单审核',
         keepAlive: false,
-        needLogin: true
+        needLogin: true,
+        roles:["航线负责人"]
       }
     },
     {
@@ -657,7 +659,8 @@ const workOrder = [{
       meta: {
         title: '工单目的港可视化',
         keepAlive: false,
-        needLogin: true
+        needLogin: true,
+        roles:[""]
       },
     },{
       path: 'overAllStatistics',
@@ -666,7 +669,8 @@ const workOrder = [{
       meta: {
         title: '统计',
         keepAlive: false,
-        needLogin: true
+        needLogin: true,
+        roles:[""]
       }
     }
   ]
