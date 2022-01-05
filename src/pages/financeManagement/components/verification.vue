@@ -23,10 +23,10 @@
                                 placeholder="请输入付款账户"
                                 :remote-method="remoteMethod">
                                 <el-option
-                                    v-for="item in tempArray"
-                                    :key="item"
+                                    v-for="(item,index) in tempArray"
+                                    :key="index"
                                     :label="item.accountBank + '-'+ item.userName + '-'+ item.bankAccount"
-                                    :value="item">
+                                    :value="item.id">
                                     <span>{{item.accountBank}}</span>-
                                     <span>{{item.userName}}</span>-
                                     <span>{{item.bankAccount}}</span>
@@ -125,7 +125,7 @@ export default {
     data() {
         return {
             dialogVisible: false,
-            bankAccount: {}, // 付款账户信息
+            bankAccount: '', // 付款账户信息
             currency:'1',// 默认选择CNY
             writeOffAmount:0,//输入的核销金额
             writeOffWay:'1', //核销方式 0=银行转账 1=应付对冲
@@ -233,6 +233,10 @@ export default {
         },
         async onSubmit(){
             let { bankAccount, currency ,writeOffAmount , unwrittenOffAmountRmb , writeOffWay ,paymentTime,payWay} = this;
+            if(writeOffAmount <= 0) {
+                this.$message.error('核销金额需要大于0，请重新输入')
+                return ;
+            }
             if(writeOffAmount > unwrittenOffAmountRmb ){
                 this.$message.error('核销金额>未核销金额,请重新输入')
                 return ;
@@ -246,7 +250,7 @@ export default {
                 return ;
             }
             let params ={
-                bankAccount:bankAccount,
+                bankAccount:this.tempArray.filter(item=>item.id == bankAccount)[0],
                 currency:currency,
                 payWay:payWay,
                 paymentTime:paymentTime,
@@ -256,8 +260,10 @@ export default {
             }
             let res = await this.$http.post(this.$service.writeOff,params);
             if(res.code == 200){
-                this.$message({ showClose: true, message: '成功',type: 'success',duration:2})
+                this.$message.success("核销成功")
                 await this.cancle()
+            } else {
+                this.$message.error(res.message)
             }
         }
     }
