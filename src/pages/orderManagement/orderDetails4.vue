@@ -18,7 +18,7 @@
         <el-button type="" disabled class="setWidth"   >{{initData.statusDesc}}</el-button>
         <el-button type="primary" @click="saveOrder" >保存</el-button>
         <el-button type="primary" class="setWidth" @click="exdeOrder(1)" >处理成功</el-button>
-        <el-button type="danger" @click="exdeOrder(2)" >检查处理失败，取消订单</el-button>  
+        <el-button type="danger" @click="exdeOrder(2)" >查验处理失败，取消订单</el-button>  
         <!-- 安检异常，待处理 -->
       </div>
       <div v-if="initData.status == 31">
