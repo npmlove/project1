@@ -1842,6 +1842,7 @@ export default {
       background: #fff;
       /deep/.el-form-item {
         margin-left: 15px;
+        margin-bottom:18px!important
       }
       .formItem {
         width: 320px;
