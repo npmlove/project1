@@ -606,7 +606,7 @@
                 }}
               </div>
               <div class="dataCount">
-                应付已核销总金额:
+                已核销总金额:
                 {{
                   dataStaticObj.totalApWoCny
                     ? dataStaticObj.totalApWoCny.toLocaleString("en-US")
@@ -614,7 +614,7 @@
                 }}
               </div>
               <div class="dataCount">
-                应付已核销原币:
+                未核销总金额:
                 {{
                   dataStaticObj.totalApUnwoCny
                     ? dataStaticObj.totalApUnwoCny.toLocaleString("en-US")
@@ -623,23 +623,7 @@
               </div>
             </div>
             <div class="calcDataContont">
-              <div style="display: flex" class="dataCount">
-                <div>应付未核销总金额:</div>
-                <div>
-                  <div
-                    v-for="(item, index) in dataStaticObj.totalApWoOrgn"
-                    :key="index"
-                  >
-                    <div v-if="item.currency == 1">{{ item.amount }}CNY</div>
-                    <div v-if="item.currency == 2">{{ item.amount }}HKD</div>
-                    <div v-if="item.currency == 3">{{ item.amount }}USD</div>
-                    <div v-if="item.currency == 4">{{ item.amount }}EUR</div>
-                    <div v-if="item.currency == 5">{{ item.amount }}GBP</div>
-                  </div>
-                  <div v-if="!dataStaticObj.totalApWoOrgn"> 0CNY
-                  </div>
-                </div>
-              </div>
+              
               <div style="display: flex" class="dataCount">
                 <div>应付原币:</div>
                 <div>
@@ -657,9 +641,25 @@
                   </div>
                 </div>
               </div>
-
+<div style="display: flex" class="dataCount">
+                <div>已核销原币:</div>
+                <div>
+                  <div
+                    v-for="(item, index) in dataStaticObj.totalApWoOrgn"
+                    :key="index"
+                  >
+                    <div v-if="item.currency == 1">{{ item.amount }}CNY</div>
+                    <div v-if="item.currency == 2">{{ item.amount }}HKD</div>
+                    <div v-if="item.currency == 3">{{ item.amount }}USD</div>
+                    <div v-if="item.currency == 4">{{ item.amount }}EUR</div>
+                    <div v-if="item.currency == 5">{{ item.amount }}GBP</div>
+                  </div>
+                  <div v-if="!dataStaticObj.totalApWoOrgn"> 0CNY
+                  </div>
+                </div>
+              </div>
               <div style="display: flex" class="dataCount">
-                <div>应付未核销:</div>
+                <div>未核销原币:</div>
                 <div>
                   <div
                     v-for="(item, index) in dataStaticObj.totalApUnwoOrgn"
@@ -687,14 +687,14 @@
             <el-button
               size="mini"
               type="primary"
-              v-if="woStatus == 0"
+              v-if="woStatus != 1"
               @click="fatherVerification"
               >核销</el-button
             >
             <el-button
               size="mini"
               type="primary"
-              v-if="woStatus == 0"
+              v-if="woStatus != 1"
               @click="fatherReconciliation"
               >对账</el-button
             >
