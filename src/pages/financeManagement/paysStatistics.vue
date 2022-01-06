@@ -631,10 +631,10 @@
                     :key="index"
                   >
                     <div v-if="item.currency == 1">{{ item.amount }}CNY</div>
-                    <div v-if="item.currency == 2">{{ item.amount }}港币</div>
-                    <div v-if="item.currency == 3">{{ item.amount }}美元</div>
-                    <div v-if="item.currency == 4">{{ item.amount }}欧元</div>
-                    <div v-if="item.currency == 5">{{ item.amount }}英镑</div>
+                    <div v-if="item.currency == 2">{{ item.amount }}HKD</div>
+                    <div v-if="item.currency == 3">{{ item.amount }}USD</div>
+                    <div v-if="item.currency == 4">{{ item.amount }}EUR</div>
+                    <div v-if="item.currency == 5">{{ item.amount }}GBP</div>
                   </div>
                   <div v-if="!dataStaticObj.totalApWoOrgn"> 0CNY
                   </div>
@@ -648,10 +648,10 @@
                     :key="index"
                   >
                     <div v-if="item.currency == 1">{{ item.amount }}CNY</div>
-                    <div v-if="item.currency == 2">{{ item.amount }}港币</div>
-                    <div v-if="item.currency == 3">{{ item.amount }}美元</div>
-                    <div v-if="item.currency == 4">{{ item.amount }}欧元</div>
-                    <div v-if="item.currency == 5">{{ item.amount }}英镑</div>
+                    <div v-if="item.currency == 2">{{ item.amount }}HKD</div>
+                    <div v-if="item.currency == 3">{{ item.amount }}USD</div>
+                    <div v-if="item.currency == 4">{{ item.amount }}EUR</div>
+                    <div v-if="item.currency == 5">{{ item.amount }}GBP</div>
                   </div>
                   <div v-if="!dataStaticObj.totalApOrgn"> 0CNY
                   </div>
@@ -666,10 +666,10 @@
                     :key="index"
                   >
                     <div v-if="item.currency == 1">{{ item.amount }}CNY</div>
-                    <div v-if="item.currency == 2">{{ item.amount }}港币</div>
-                    <div v-if="item.currency == 3">{{ item.amount }}美元</div>
-                    <div v-if="item.currency == 4">{{ item.amount }}欧元</div>
-                    <div v-if="item.currency == 5">{{ item.amount }}英镑</div>
+                    <div v-if="item.currency == 2">{{ item.amount }}HKD</div>
+                    <div v-if="item.currency == 3">{{ item.amount }}USD</div>
+                    <div v-if="item.currency == 4">{{ item.amount }}EUR</div>
+                    <div v-if="item.currency == 5">{{ item.amount }}GBP</div>
                   </div>
                   <div v-if="!dataStaticObj.totalApUnwoOrgn"> 0CNY
                   </div>
