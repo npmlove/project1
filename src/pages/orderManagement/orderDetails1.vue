@@ -319,7 +319,7 @@
                       <div>计费重</div>
                   </div>
               </div>
-              <h1 class="title">进仓数据</h1>
+              <!-- <h1 class="title">进仓数据</h1>
               <div class="inData ">
                   <div class="flex_center">
                       <div><el-input size="mini" class="ml_10" v-model="initData.inboundPiece" placeholder=""></el-input></div>
@@ -346,7 +346,7 @@
                       <div>分泡比例</div>
                       <div>计费重</div>
                   </div>
-              </div>
+              </div> -->
               <h1 class="title">其他服务</h1>
               <div class="inData" style="background:rgb(240,240,240);padding-left:20px">
                   <!-- <div>
