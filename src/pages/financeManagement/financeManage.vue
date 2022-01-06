@@ -668,6 +668,8 @@
             rows="2"
             placeholder="请输入操作说明"
             v-model="info"
+            maxlength="200"
+            show-word-limit
           >
           </el-input>
           <div
