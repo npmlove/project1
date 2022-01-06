@@ -681,8 +681,13 @@
 
         <div style="display: flex">
           <div style="margin: 10px 10px 0 0">
-            <el-button size="mini" type="primary" @click="exportBillList"
-              >导出列表</el-button
+            
+            <el-button
+              size="mini"
+              type="primary"
+              v-if="woStatus != 1"
+              @click="fatherReconciliation"
+              >对账</el-button
             >
             <el-button
               size="mini"
@@ -691,12 +696,8 @@
               @click="fatherVerification"
               >核销</el-button
             >
-            <el-button
-              size="mini"
-              type="primary"
-              v-if="woStatus != 1"
-              @click="fatherReconciliation"
-              >对账</el-button
+            <el-button size="mini" type="primary" @click="exportBillList"
+              >导出列表</el-button
             >
             <el-button size="mini" @click="drawer = true" type="primary"
               >选择表格列</el-button
