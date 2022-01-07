@@ -48,20 +48,20 @@
            <div class="common" style="margin-top:20px">
                 <div><span  class="textStyle">更新航线条数</span><span class="textData">{{overviewData.updateRoutes}}</span></div>
                 <div><span  class="textStyle">更新航线占比</span><span class="textData">{{overviewData.updateRoutesProportion}}</span></div>
-                <div><span  class="textStyle">较上一周期统计</span><span class="textData" :style="{color:overviewData.updateRoutesProportionCount>0?'red':overviewData.updateRoutesProportionCount == 0?'':'green'}">{{overviewData.updateRoutesProportionCount}}</span></div>
+                <div><span  class="textStyle">较上一周期统计</span><span class="textData" :style="{color:overviewData.updateRoutesProportionCount>0?'red':overviewData.updateRoutesProportionCount < 0?'green':'black'}">{{overviewData.updateRoutesProportionCount? (overviewData.updateRoutesProportionCount*100).toFixed(2)+"%":"0%"}}</span></div>
            </div>
            <div class="common" style="margin-top:20px">
                <div><span  class="textStyle">未更新航线条数</span><span class="textData">{{overviewData.unUpdateRoutes}}</span></div>
                 <div><span  class="textStyle">未更新航线占比</span><span class="textData">{{overviewData.unUpdateRoutesProportion}}</span></div>
-                <div><span  class="textStyle">较上一周期统计</span><span class="textData" :style="{color:overviewData.unUpdateRoutesProportionCount>0?'red':overviewData.unUpdateRoutesProportionCount == 0?'':'green'}">{{overviewData.unUpdateRoutesProportionCount}}</span></div>
+                <div><span  class="textStyle">较上一周期统计</span><span class="textData" :style="{color:overviewData.unUpdateRoutesProportionCount>0?'red':overviewData.unUpdateRoutesProportionCount < 0?'green':'black'}">{{overviewData.unUpdateRoutesProportionCount? (overviewData.unUpdateRoutesProportionCount*100).toFixed(2)+"%":"0%"}}</span></div>
            </div>
            <div class="common" style="margin-top:20px">
                  <div><span  class="textStyle">已完善航线总数</span><span class="textData">{{overviewData.perfectRoutes}}</span></div>
-                <div><span  class="textStyle">已完善航线占比</span><span class="textData">{{overviewData.perfectRoutesCount}}</span></div>
+                <div><span  class="textStyle">已完善航线占比</span><span class="textData">{{(overviewData.perfectRoutesCount*100).toFixed(2)+"%"}}</span></div>
            </div>
            <div class="common" style="margin-top:20px">
                  <div><span  class="textStyle">未完善航线条数</span><span class="textData">{{overviewData.unPerfectRoutes}}</span></div>
-                <div><span  class="textStyle">未完善航线占比</span><span class="textData">{{overviewData.unPerfectRoutesCount}}</span></div>
+                <div><span  class="textStyle">未完善航线占比</span><span class="textData">{{(overviewData.unPerfectRoutesCount*100).toFixed(2)+"%"}}</span></div>
            </div>
        </div>
 
