@@ -178,13 +178,8 @@
         </span>
       </div>
     </div>
-    <div class="radioTap">
-      <el-radio-group v-model="radio1">
-        <el-radio-button label="1">订舱信息</el-radio-button>
-        <el-radio-button label="2">账单</el-radio-button>
-      </el-radio-group>
-    </div>
-    <div style="height: 60vh">
+    <tab-bar :tab.sync="radio1" :order="initData" :showEntryGuide="false" />
+    <div class="order-tab-details-wrap">
       <div v-show="radio1 == '1'" class="details">
         <div class="addNewWays" v-if="isShow5">
           <!-- v-if="initData.orderOptionsList.length > 0 " -->
@@ -688,6 +683,7 @@
 </template>
 <script>
 import billOrder from "./components/billOrder.vue";
+import TabBar from './components/TabBar.vue'
 class orderSecondWays {
   constructor(
     pol,
@@ -817,8 +813,9 @@ export default {
       ],
     };
   },
-  components: {
+  components:{
     billOrder,
+    TabBar,
   },
   computed: {
     getInboundCw() {
