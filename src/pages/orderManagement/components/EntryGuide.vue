@@ -63,12 +63,13 @@
           </el-form-item>
         </el-form>
         <aside class="aside">
-          <div class="map-download" @click="downloadMap">
+          <div class="map-download" v-show="mapData.xpath">
             <img
               src="@/assets/entry-guide_map-download.png"
               style="width: 40px"
+              @click="downloadMap"
             />
-            <el-button type="text" class="text">进仓地图</el-button>
+            <el-button type="text" class="text" @click="dialogVisible = true">{{ mapData.attachmentNameCopy }}</el-button>
           </div>
         </aside>
       </div>
@@ -91,6 +92,9 @@
         </ul> -->
       </div>
     </div>
+    <!-- <el-dialog title="预览地图" :visible.sync="dialogVisible" width="40%" center>
+      <iframe :src="computedDocUrl"></iframe>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -131,6 +135,7 @@ export default {
       },
       mapData: {},
       flowChart,
+      dialogVisible: false,
     };
   },
   computed: {
@@ -142,11 +147,15 @@ export default {
         };
       });
     },
+    // computedDocUrl() {
+    //   // 处理域名前缀问题
+    //   return `https://docs.google.com/viewer?embedded=true&url=${encodeURIComponent(mapData.xpath)}`
+    // },
   },
   methods: {
     // 下载进仓地图
     downloadMap() {
-      const { xpath: url, attachmentName } = this.mapData;
+      const { xpath: url, attachmentNameCopy } = this.mapData;
       if (!url) {
         this.$message.error("暂无地图");
         return;
@@ -161,7 +170,7 @@ export default {
           type: "application/msword",
         });
         aLink.href = URL.createObjectURL(blob);
-        aLink.setAttribute("download", attachmentName); // 设置下载文件名称
+        aLink.setAttribute("download", attachmentNameCopy); // 设置下载文件名称
         aLink.click();
         document.body.appendChild(aLink);
       });
@@ -242,11 +251,11 @@ export default {
       .aside {
         margin-top: auto;
         .map-download {
+          display: flex;
+          flex-direction: column;
           margin-left: 20px;
-          width: 80px;
-          height: 80px;
+          align-items: center;
           text-align: center;
-          cursor: pointer;
           .text {
             margin-top: 10px;
           }

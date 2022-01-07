@@ -844,6 +844,7 @@ export default {
           this.pdfDownLoad = tempObj.orderAttachmentList
             for(let i =0;i<this.pdfDownLoad.length;i++) {
                 var copyName = this.pdfDownLoad[i].attachmentName
+                this.pdfDownLoad[i].attachmentNameCopy = this.pdfDownLoad[i].attachmentName
                 var copyNames = copyName.split("")
                 copyNames.splice(7,9)
                 this.pdfDownLoad[i].attachmentName = copyNames.join("")
