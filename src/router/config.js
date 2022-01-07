@@ -113,7 +113,17 @@ const cargoTrackingManage=[{
       title: '货物追踪详情',
       keepAlive:true,
       needLogin: true
-    },},]
+    }},
+    {
+      path: 'routeDataStatistics',
+      component: () => import('@/pages/cargoTrackingManage/routeDataStatistics.vue'),
+      name: 'routeDataStatistics',
+      meta: {
+        title: '航线运营数据统计',
+        keepAlive:true,
+        needLogin: true
+      },}
+  ]
 
 },
 ]
@@ -419,6 +429,16 @@ const orderManagementCenter = [{
       name: 'orderManage',
       meta: {
         title: '订单列表',
+        keepAlive: false,
+        needLogin: true
+      }
+    },
+    {
+      path: 'ladingBillDownLoad',
+      component: () => import('@/pages/orderManagement/ladingBillDownLoad.vue'),
+      name: 'ladingBillDownLoad',
+      meta: {
+        title: '提单下载',
         keepAlive: false,
         needLogin: true
       }
