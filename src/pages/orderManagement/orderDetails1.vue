@@ -518,7 +518,7 @@
           </div>
           <div
             class="flex_center border padding_contont contont-box"
-            v-for="(item, index) in initData.trayDetail"
+            v-for="(item, index) in DataCope.trayDetail"
             :key="index"
           >
             <div>
@@ -564,9 +564,9 @@
             <div>
               <el-button
                 v-show="
-                  initData.trayDetail.length < 10 &&
-                  initData.trayDetail.length > 0 &&
-                  initData.trayDetail.length-1 == index
+                  DataCope.trayDetail.length < 10 &&
+                  DataCope.trayDetail.length > 0 &&
+                  DataCope.trayDetail.length-1 == index
                 "
                 class="tianjia "
                 @click="trayAddClick(index,key)"
@@ -576,14 +576,14 @@
               <el-button
                 type="danger"
                 class="de_n"
-                v-show="initData.trayDetail.length-1 !== index||
-                              initData.trayDetail.length == 10"
+                v-show="DataCope.trayDetail.length-1 !== index||
+                              DataCope.trayDetail.length == 10"
                 style="margin-left: 15px"
               ></el-button>
               <el-button
                 type="danger"
                 class="de"
-                v-show="initData.trayDetail.length > 1"
+                v-show="DataCope.trayDetail.length > 1"
                 @click="trayDeleteClick(index)"
                 style="margin-left: 15px"
                 >删除</el-button
@@ -591,7 +591,7 @@
               <el-button
                 type="danger"
                 class="de_n"
-                v-show="initData.trayDetail.length == 1"
+                v-show="DataCope.trayDetail.length == 1"
                 style="margin-left: 15px"
               ></el-button>
             </div>
@@ -729,6 +729,7 @@ export default {
   data() {
     return {
       //pdf预览和下载
+      DataCope: [],
       pdfDownLoad: "",
       pdfDialogVisible: false,
       orderNo: "",
@@ -850,10 +851,10 @@ export default {
         trayWidth: "",
         trayHeight: "",
       };
-      this.initData.trayDetail.push(json);
+      this.DataCope.trayDetail.push(json);
     },
     trayDeleteClick(index) {
-      this.initData.trayDetail.splice(index, 1);
+      this.DataCope.trayDetail.splice(index, 1);
       // console.log(this.initData.trayDetail);
     },
     // 获取备选方案重航空公司的name
@@ -916,21 +917,25 @@ export default {
       this.filePath = item.xpath;
     },
     exdeOrder(e) {
-      let order = this.initData;
-      for (var i = 0; i < order.trayDetail.length; i++) {
+      let irder = this.DataCope;
+      if(this.initData.packageType !== 1 ){
+      for (var i = 0; i < irder.trayDetail.length; i++) {
         if (
-          order.trayDetail[i].trayNumber == "" ||
-          order.trayDetail[i].traySize == "" ||
-          order.trayDetail[i].trayWidth == "" ||
-          order.trayDetail[i].trayHeight == ""
+          irder.trayDetail[i].trayNumber == "" ||
+          irder.trayDetail[i].traySize == "" ||
+          irder.trayDetail[i].trayWidth == "" ||
+          irder.trayDetail[i].trayHeight == ""
         ) {
           return this.$message.error("请完整填写订舱托盘数据");
         }
       }
-      order.trayDetail = JSON.stringify(order.trayDetail);
+      }
+      
+      this.initData.trayDetail = JSON.stringify(irder.trayDetail);
       // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
       let arrayTypeOne = this.$refs.typeOne.tableData;
       let arrayTypeTwo = this.$refs.typeTwo.tableData;
+      let order = this.initData;
       // let order = this.initData
       if (order.hasOwnProperty("apOrderPriceList")) {
         delete order.apOrderPriceList;
@@ -1003,19 +1008,22 @@ export default {
       });
     },
     saveOrder() {
-      let order = this.initData;
-      for (var i = 0; i < order.trayDetail.length; i++) {
+      let irder = this.DataCope;
+      if(this.initData.packageType !== 1 ){
+      for (var i = 0; i < irder.trayDetail.length; i++) {
         if (
-          order.trayDetail[i].trayNumber == "" ||
-          order.trayDetail[i].traySize == "" ||
-          order.trayDetail[i].trayWidth == "" ||
-          order.trayDetail[i].trayHeight == ""
+          irder.trayDetail[i].trayNumber == "" ||
+          irder.trayDetail[i].traySize == "" ||
+          irder.trayDetail[i].trayWidth == "" ||
+          irder.trayDetail[i].trayHeight == ""
         ) {
           return this.$message.error("请完整填写订舱托盘数据");
         }
       }
-      order.trayDetail = JSON.stringify(order.trayDetail);
-      // let order = this.initData;
+      }
+      this.initData.trayDetail = JSON.stringify(irder.trayDetail);
+
+      let order = this.initData;
       if (order.hasOwnProperty("apOrderPriceList")) {
         delete order.apOrderPriceList;
       }
@@ -1313,8 +1321,12 @@ export default {
           }
         }
         this.orderNo = tempObj.orderNo;
-        tempObj.trayDetail = JSON.parse(tempObj.trayDetail);
         this.initData = tempObj;
+        let DataCop =  JSON.parse(JSON.stringify(tempObj))
+        // console.log(DataCop);
+        this.DataCope = DataCop
+        this.DataCope.trayDetail =JSON.parse(DataCop.trayDetail)
+        // console.log(this.DataCope.trayDetail);
         this.isDataDone = true;
       }
     },
