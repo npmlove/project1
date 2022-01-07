@@ -234,9 +234,38 @@
                         <div>{{item.trayWidth}}</div>
                         <div>{{item.trayHeight}}</div> -->
                         <div>
-                          <el-button v-if="initData.trayDetail.length<10 && initData.trayDetail.length>0" class="tianjia" @click="trayAddClick" style="margin-left: 30px;">添加</el-button>
-                          <el-button type="danger" class="de" v-show="initData.trayDetail.length>1"  @click="trayDeleteClick(index)">删除</el-button>
-                          <el-button type="danger" class="de_n" v-show="initData.trayDetail.length==1" ></el-button>
+                          <el-button
+                              v-show="
+                                initData.trayDetail.length < 10 &&
+                                initData.trayDetail.length > 0 &&
+                                initData.trayDetail.length-1 == index
+                              "
+                              class="tianjia "
+                              @click="trayAddClick(index,key)"
+                              style="margin-left: 15px"
+                              >添加</el-button
+                            >
+                            <el-button
+                              type="danger"
+                              class="de_n"
+                              v-show="initData.trayDetail.length-1 !== index ||
+                              initData.trayDetail.length == 10"
+                              style="margin-left: 15px"
+                            ></el-button>
+                            <el-button
+                              type="danger"
+                              class="de"
+                              v-show="initData.trayDetail.length > 1"
+                              @click="trayDeleteClick(index)"
+                              style="margin-left: 15px"
+                              >删除</el-button
+                            >
+                            <el-button
+                              type="danger"
+                              class="de_n"
+                              v-show="initData.trayDetail.length == 1"
+                              style="margin-left: 15px"
+                            ></el-button>
                         </div>
                         
                   </div>
@@ -341,7 +370,7 @@ export default {
       airLineList:[] ,// 航线负责人初始数组
       airCompanyCodeList:[], // 航司初始数组
       
-      trayDetail_number:{},
+      // trayDetail_number:{},
       bubblePointArray:[
         {
           value:1,
@@ -446,10 +475,8 @@ export default {
                   trayHeight: ''
                 }
       this.initData.trayDetail.push(json)
-      console.log(this.trayDetail_number[0].trayNumber );
     },
       trayDeleteClick(index){
-        // console.log(index);
         this.initData.trayDetail.splice(index,1)
         console.log(this.initData.trayDetail)
       },
@@ -480,7 +507,7 @@ export default {
                 this.filePath =item.xpath
             },
     exdeOrder(e){
-        var order = this.initData;
+        let order = this.initData;
         // var edg = this.trayDetail_number;
         // console.log(edg[0]);
         // if(order.trayDetail.length !==  edg.length ){
@@ -509,7 +536,7 @@ export default {
           if(boolenNo){
             let arrayTypeOne = this.$refs.typeOne.tableData
             let arrayTypeTwo = this.$refs.typeTwo.tableData
-            let order = this.initData
+            // let order = this.initData
             if(order.hasOwnProperty('apOrderPriceList')){
               delete order.apOrderPriceList
             }
@@ -591,7 +618,7 @@ export default {
               }
               order.trayDetail=JSON.stringify(order.trayDetail)
               // debugger
-                console.log(order.hasOwnProperty,order.trayDetail);
+                // console.log(order.hasOwnProperty,order.trayDetail);
               if(order.hasOwnProperty('apOrderPriceList')){
                 delete order.apOrderPriceList
               }
@@ -604,7 +631,7 @@ export default {
               // if(order.hasOwnProperty('trayDetail')){
               // delete order.trayDetail
               // }
-              console.log(order.trayDetail);
+              // console.log(order.trayDetail);
               let arrayTypeOne = this.$refs.typeOne.tableData
               let arrayTypeTwo = this.$refs.typeTwo.tableData
               let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
