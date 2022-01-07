@@ -297,6 +297,7 @@ export default {
     display: flex;
     position: absolute;
     top: 5px;
+    min-width: 1600px;
   }
   .dingdan > div{
     margin-right: 50px;

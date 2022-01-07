@@ -664,7 +664,8 @@ textarea {
 .el-switch__label.is-active{
   color: #2273CE;
 }
-.order_table .el-table tr{
+.order_table .el-table__row td:nth-child(1) {
+  overflow: visible;
   position: relative;
 }
 .avatar-uploader {
