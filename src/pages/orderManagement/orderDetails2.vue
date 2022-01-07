@@ -130,7 +130,7 @@
             <div class="flex mtop_10">
               <div class="flex_message">包装类型</div>
               <div>
-                <el-select class="ml_10" size="mini" v-model="initData.packageType" placeholder="请选择">
+                <el-select class="ml_10" size="mini" v-model="initData.packageType" @change="selectTrigger" placeholder="请选择">
                   <el-option
                     v-for="item in packageTypeArray"
                     :key="item.value"
@@ -198,21 +198,81 @@
                       <div>计费重</div>
                   </div>
               </div>
-              <div class="bg_table" v-if="initData.trayDetail.length > 0 ">
+              <!-- <div class="bg_table" v-if="(initData.trayDetail[0].trayNumber !== '')"> -->
+              <div class="bg_table" v-show="initData.packageType !== 1 ">
+                <!-- <input type="text" :value="initData.packageType"> -->
                   <div class="flex_center border padding_contont " >
                       <div>托盘数量</div>
                       <div>长（cm）</div>
                       <div>宽（cm）</div>
                       <div>高（cm）</div>
+                      <div></div>
                   </div>
-                  <div class="flex_center border padding_contont "  v-for="(item,index) in initData.trayDetail" :key="index">
-                        <div>{{item.trayNumber}}</div>
-                        <div>{{item.traySize}}</div>
+                  <div class="flex_center border padding_contont contont-box"  v-for="(item,index) in initData.trayDetail" :key="index">
+                        <div>
+                          <div class="booking-form-item-content">
+											      <input v-model="item.trayNumber" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="3"  type="text" />
+										      </div>
+                        </div>
+                        <div>
+                          <div class="booking-form-item-content">
+											      <input v-model="item.traySize" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="3"  type="text" />
+										      </div>
+                        </div>
+                        <div>
+                          <div class="booking-form-item-content">
+											      <input v-model="item.trayWidth" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="3"  type="text" />
+										      </div>
+                        </div>
+                        <div>
+                          <div class="booking-form-item-content">
+											      <input v-model="item.trayHeight" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="3"  type="text" />
+										      </div>
+                        </div>
+                        <!-- <div>{{item.trayNumber}}</div> -->
+                        <!-- <div>{{item.traySize}}</div>
                         <div>{{item.trayWidth}}</div>
-                        <div>{{item.trayHeight}}</div>
+                        <div>{{item.trayHeight}}</div> -->
+                        <div>
+                          <el-button
+                              v-show="
+                                initData.trayDetail.length < 10 &&
+                                initData.trayDetail.length > 0 &&
+                                initData.trayDetail.length-1 == index
+                              "
+                              class="tianjia "
+                              @click="trayAddClick(index,key)"
+                              style="margin-left: 15px"
+                              >添加</el-button
+                            >
+                            <el-button
+                              type="danger"
+                              class="de_n"
+                              v-show="initData.trayDetail.length-1 !== index ||
+                              initData.trayDetail.length == 10"
+                              style="margin-left: 15px"
+                            ></el-button>
+                            <el-button
+                              type="danger"
+                              class="de"
+                              v-show="initData.trayDetail.length > 1"
+                              @click="trayDeleteClick(index)"
+                              style="margin-left: 15px"
+                              >删除</el-button
+                            >
+                            <el-button
+                              type="danger"
+                              class="de_n"
+                              v-show="initData.trayDetail.length == 1"
+                              style="margin-left: 15px"
+                            ></el-button>
+                        </div>
+                        
                   </div>
               </div>
-              <h1 class="title">进仓数据</h1>
+                  
+                
+              <!-- <h1 class="title">进仓数据</h1>
               <div class="inData ">
                   <div class="flex_center">
                       <div><el-input size="mini" class="ml_10" v-model="initData.inboundPiece" placeholder=""></el-input></div>
@@ -239,7 +299,7 @@
                       <div>分泡比例</div>
                       <div>计费重</div>
                   </div>
-              </div>
+              </div> -->
               <h1 class="title">其他服务</h1>
               <div class="inData" style="background:rgb(240,240,240);padding-left:20px">
                   <!-- <div>
@@ -309,6 +369,8 @@ export default {
       onSaleList:[] ,// 售中客服初始数组
       airLineList:[] ,// 航线负责人初始数组
       airCompanyCodeList:[], // 航司初始数组
+      
+      // trayDetail_number:{},
       bubblePointArray:[
         {
           value:1,
@@ -405,6 +467,24 @@ export default {
     await this.initSysSetTing()
   },
   methods:{
+    trayAddClick(){
+      var json = {
+                  trayNumber: '',
+                  traySize: '',
+                  trayWidth: '',
+                  trayHeight: ''
+                }
+      this.initData.trayDetail.push(json)
+    },
+      trayDeleteClick(index){
+        this.initData.trayDetail.splice(index,1)
+        console.log(this.initData.trayDetail)
+      },
+      // selectTrigger(e){
+      //   console.log(e);
+      //   this.initData.packageType=e
+      //   // 将更改数据传进后台
+      // },
           //下载pdf
       downLoadPDFs(item){
            axios({
@@ -427,6 +507,24 @@ export default {
                 this.filePath =item.xpath
             },
     exdeOrder(e){
+        let order = this.initData;
+        // var edg = this.trayDetail_number;
+        // console.log(edg[0]);
+        // if(order.trayDetail.length !==  edg.length ){
+        //   return this.$message.error('请保存后提交')
+        // }else{
+        //       for(var i=0;i<order.trayDetail.length;i++) {
+        //         if((order.trayDetail[i].trayNumber !== edg[i].trayNumber) || (order.trayDetail[i].traySize !==  edg[i].traySize) ||order.trayDetail[i].trayWidth !== edg[i].trayWidth || (order.trayDetail[i].trayHeight !== edg[i].trayHeight)){
+        //           return this.$message.error('请保存后提交')
+        //         }
+        //       }
+        // }
+        for(var i=0;i<order.trayDetail.length;i++) {
+                if(order.trayDetail[i].trayNumber==''||order.trayDetail[i].traySize==''||order.trayDetail[i].trayWidth==''||order.trayDetail[i].trayHeight==''){
+                  return this.$message.error('请完整填写订舱托盘数据')
+                }
+              }
+        order.trayDetail=JSON.stringify(order.trayDetail)
       // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
       if(e == 1){
           let {inboundNo} = this.initData
@@ -438,7 +536,7 @@ export default {
           if(boolenNo){
             let arrayTypeOne = this.$refs.typeOne.tableData
             let arrayTypeTwo = this.$refs.typeTwo.tableData
-            let order = this.initData
+            // let order = this.initData
             if(order.hasOwnProperty('apOrderPriceList')){
               delete order.apOrderPriceList
             }
@@ -448,9 +546,9 @@ export default {
             if(order.hasOwnProperty('orderPriceList')){
               delete order.orderPriceList
             }
-            if(order.hasOwnProperty('trayDetail')){
-            delete order.trayDetail
-            }
+            // if(order.hasOwnProperty('trayDetail')){
+            // delete order.trayDetail
+            // }
             let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
           
             let params = {
@@ -485,9 +583,9 @@ export default {
           if(order.hasOwnProperty('orderPriceList')){
             delete order.orderPriceList
           }
-          if(order.hasOwnProperty('trayDetail')){
-          delete order.trayDetail
-          }
+          // if(order.hasOwnProperty('trayDetail')){
+          // delete order.trayDetail
+          // }
           let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
         
           let params = {
@@ -510,8 +608,17 @@ export default {
 
     },
      saveOrder(){
-
-              let order = this.initData
+                // console.log(this.initData.trayDetail);
+              let order = this.initData;
+          
+              for(var i=0;i<order.trayDetail.length;i++) {
+                if(order.trayDetail[i].trayNumber==''||order.trayDetail[i].traySize==''||order.trayDetail[i].trayWidth==''||order.trayDetail[i].trayHeight==''){
+                  return this.$message.error('请完整填写订舱托盘数据')
+                }
+              }
+              order.trayDetail=JSON.stringify(order.trayDetail)
+              // debugger
+                // console.log(order.hasOwnProperty,order.trayDetail);
               if(order.hasOwnProperty('apOrderPriceList')){
                 delete order.apOrderPriceList
               }
@@ -521,9 +628,10 @@ export default {
               if(order.hasOwnProperty('orderPriceList')){
                 delete order.orderPriceList
               }
-              if(order.hasOwnProperty('trayDetail')){
-              delete order.trayDetail
-              }
+              // if(order.hasOwnProperty('trayDetail')){
+              // delete order.trayDetail
+              // }
+              // console.log(order.trayDetail);
               let arrayTypeOne = this.$refs.typeOne.tableData
               let arrayTypeTwo = this.$refs.typeTwo.tableData
               let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
@@ -697,6 +805,7 @@ export default {
       let res = await  this.$http.get(this.$service.orderSearchDetail+`?orderId=${this.orderId}`)
       if(res.code == 200){
         let tempObj = res.data
+        // this.trayDetail_number=JSON.parse(res.data.trayDetail)
           this.pdfDownLoad = tempObj.orderAttachmentList
             for(let i =0;i<this.pdfDownLoad.length;i++) {
                 var copyName = this.pdfDownLoad[i].attachmentName
@@ -710,7 +819,9 @@ export default {
           }
           this.orderNo = tempObj.orderNo
           this.initData = tempObj
+          // console.log(this.initData.packageType);
           this.isDataDone = true
+          
       }
     },
   }
@@ -784,14 +895,16 @@ export default {
 }
 .bg_dark{
     width: 60%;
+    /* min-width: 650px; */
     background: rgb(128,128,128);
     padding: 10px 0;
     margin-left: 80px;
     font-weight: 900;
-
+    position: relative;
 }
 .flex_center{
     display: flex;
+    position: relative;
     align-content: center;
 }
 .flex_center>div{
@@ -801,6 +914,7 @@ export default {
 }
 .bg_table,.inData{
     width: 60%;
+    /* min-width: 650px; */
     padding: 10px 0;
     margin-left: 80px;
     font-weight: 900;
@@ -815,7 +929,12 @@ export default {
 .padding_contont>div{
     padding: 10px 0;
 }
-
+.contont-box{
+  display: flex;
+}
+.contont-box input{
+  width: 30%;
+}
 .paddingBottom{
   width: 100%;
   height: 160px;
@@ -841,4 +960,35 @@ export default {
   margin-left: 15px;
 
 }
+.de{
+  /* position: absolute; */
+  /* background: orange; */
+  width: 40px;
+  height: 20px;
+  font-size: 16px;
+  padding: 0;
+  right: -50px;
+  top: 5px;
+  border: 0;
+  background: rgb(128,128,128);
+}
+.de_n{
+  width: 40px;
+  height: 20px;
+  background: rgba(255,255,255,0);
+  cursor: auto;
+  border: 0;
+}
+.tianjia{
+   width: 40px;
+  height: 20px;
+  background: rgb(2, 175, 240);
+  color: white;
+  /* margin: 40px; */
+  cursor:pointer;
+  padding:0;
+}
+/* .tianjia:hover{
+
+} */
 </style>
