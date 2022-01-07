@@ -287,8 +287,16 @@ agentBill: pulicWeb + '/t-bill/agentBill',
   // 导出pdf 托书
   createAgentBookingNotePdf: pulicWeb + '/t-order/createAgentBookingNotePdf',
   // 账单操作记录
-  billOpearteList: pulicWeb + '/t-order-present-log/list'
+  billOpearteList: pulicWeb + '/t-order-present-log/list',
 
+  //航线运营数据统计
+  searchAirData: pulicWeb + '/t-air-data/searchAirData',
+  // 航线操作人员数据导出
+  exportOperator: pulicWeb + '/t-air-data/exportOperator',
+  // 区域航线导出
+  exportArea: pulicWeb + '/t-air-data/exportArea'
+
+  
 }
 export default serviceApi
 
