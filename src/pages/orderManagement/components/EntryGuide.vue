@@ -225,6 +225,7 @@ export default {
       display: flex;
       .form {
         margin-top: 10px;
+        background: transparent;
         .el-form-item {
           margin-bottom: 10px;
           .inline-item {
