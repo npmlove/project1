@@ -47,21 +47,25 @@
            </div>
            <div class="common" style="margin-top:20px">
                 <div><span  class="textStyle">更新航线条数</span><span class="textData">{{overviewData.updateRoutes}}</span></div>
-                <div><span  class="textStyle">更新航线占比</span><span class="textData">{{overviewData.updateRoutesProportion}}</span></div>
-                <div><span  class="textStyle">较上一周期统计</span><span class="textData" :style="{color:overviewData.updateRoutesProportionCount>0?'red':overviewData.updateRoutesProportionCount < 0?'green':'black'}">{{overviewData.updateRoutesProportionCount? (overviewData.updateRoutesProportionCount*100).toFixed(2)+"%":"0%"}}</span></div>
+                <div><span  class="textStyle">更新航线占比</span><span class="textData">{{(overviewData.updateRoutesProportion*100).toFixed(2)+'%'}}</span></div>
+                <div><span  class="textStyle">较上一周期统计</span><span class="textData" :style="{color:overviewData.updateRoutesProportionCount>0?'red':overviewData.updateRoutesProportionCount < 0?'green':'black'}">{{overviewData.updateRoutesProportionCount == null? "-" :overviewData.updateRoutesProportionCount>0?'+'+(overviewData.updateRoutesProportionCount*100).toFixed(2)+'%':(overviewData.updateRoutesProportionCount*100).toFixed(2)+'%'}}</span></div>
            </div>
            <div class="common" style="margin-top:20px">
                <div><span  class="textStyle">未更新航线条数</span><span class="textData">{{overviewData.unUpdateRoutes}}</span></div>
-                <div><span  class="textStyle">未更新航线占比</span><span class="textData">{{overviewData.unUpdateRoutesProportion}}</span></div>
-                <div><span  class="textStyle">较上一周期统计</span><span class="textData" :style="{color:overviewData.unUpdateRoutesProportionCount>0?'red':overviewData.unUpdateRoutesProportionCount < 0?'green':'black'}">{{overviewData.unUpdateRoutesProportionCount? (overviewData.unUpdateRoutesProportionCount*100).toFixed(2)+"%":"0%"}}</span></div>
+                <div><span  class="textStyle">未更新航线占比</span><span class="textData">{{(overviewData.unUpdateRoutesProportion*100).toFixed(2)+'%'}}</span></div>
+                <div><span  class="textStyle">较上一周期统计</span><span class="textData" :style="{color:overviewData.unUpdateRoutesProportionCount>0?'red':overviewData.unUpdateRoutesProportionCount < 0?'green':'black'}">{{overviewData.unUpdateRoutesProportionCount == null? "-":overviewData.unUpdateRoutesProportionCount>0?'+'+(overviewData.unUpdateRoutesProportionCount*100).toFixed(2)+'%':(overviewData.unUpdateRoutesProportionCount*100).toFixed(2)+'%'}}</span></div>
            </div>
-           <div class="common" style="margin-top:20px">
-                 <div><span  class="textStyle">已完善航线总数</span><span class="textData">{{overviewData.perfectRoutes}}</span></div>
-                <div><span  class="textStyle">已完善航线占比</span><span class="textData">{{(overviewData.perfectRoutesCount*100).toFixed(2)+"%"}}</span></div>
+           <div class="common" style="margin-top:20px;display:flex;align-items:center">
+             <div>
+                <div><span  class="textStyle">已完善航线总数</span><span class="textData">{{overviewData.perfectRoutes}}</span></div>
+                <div style="margin-top:10px"><span  class="textStyle">已完善航线占比</span><span class="textData">{{(overviewData.perfectRoutesCount*100).toFixed(2)+"%"}}</span></div>
+             </div>
            </div>
-           <div class="common" style="margin-top:20px">
+           <div class="common" style="margin-top:20px;display:flex;align-items:center;">
+             <div>
                  <div><span  class="textStyle">未完善航线条数</span><span class="textData">{{overviewData.unPerfectRoutes}}</span></div>
-                <div><span  class="textStyle">未完善航线占比</span><span class="textData">{{(overviewData.unPerfectRoutesCount*100).toFixed(2)+"%"}}</span></div>
+                <div style="margin-top:10px"><span  class="textStyle">未完善航线占比</span><span class="textData">{{(overviewData.unPerfectRoutesCount*100).toFixed(2)+"%"}}</span></div>
+             </div>
            </div>
        </div>
 
@@ -185,13 +189,25 @@ export default{
         }
         this.$http.post(this.$service.searchAirData,params).then((res)=>{
             if(res.code == 200) {
-                 this.overviewData = res.data
+                  this.overviewData = res.data
                  let json = JSON.parse(JSON.stringify(res.data.operatorRoutesVOList))
                  for(let i =0;;i++){
                      this.tableData[i] = json.splice(0,10)
                      if(json.length == 0) break
                  }
                 this.table = res.data.areaRoutesVOList
+                for(var item of this.table) {
+                  if(item.newlyAddRoutes ==null) {
+                    item.newlyAddRoutes = 0
+                  }
+                  if( item.totalRoutes==null) {
+                     item.totalRoutes = 0
+                  }
+                  if(item.updateRoutesCounts==null) {
+                      item.updateRoutesCounts = 0
+                  }
+                }
+                
                   
             }
             else {
@@ -255,6 +271,11 @@ export default{
 }
 </script>
 <style scoped lang="less">
+/deep/ .el-table .cell {
+    text-overflow: inherit;
+    padding-right: 0;
+    text-align: center;
+}
 /deep/ .el-table__header-wrapper {
     width:550px;
   
@@ -311,6 +332,7 @@ export default{
     font-style: normal;
     font-size: 13px;
     letter-spacing: normal;
+    white-space: nowrap;
     margin-left:10px;
     color: rgba(0, 0, 0, 0.419607843137255);
 
@@ -319,7 +341,8 @@ export default{
     font-weight: 700;
     font-style: normal;
     font-size: 20px;
-    margin-left:25px
+    margin-left:10px;
+    color:black;
 }
 .table-one{
     background-color:#fff;
@@ -331,4 +354,5 @@ export default{
     padding-bottom:20px;
     margin-top:20px;
 }
+
 </style>

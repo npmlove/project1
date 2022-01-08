@@ -12,6 +12,7 @@ import {filterAsyncRoutes,whiteList} from "@/util/permission"
 import '@/assets/icon/iconfont.css'
 import '@/assets/custom.css'
 import '@/assets/reset.css'
+import '@/assets/styles/common.less'
 
 Vue.config.productionTip = false
 // Vue.prototype.$message = Message

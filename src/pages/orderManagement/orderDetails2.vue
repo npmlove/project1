@@ -101,14 +101,10 @@
         </span>
       </div>
     </div>
-    <div class="radioTap">
-        <el-radio-group v-model="radio1">
-          <el-radio-button label="1">订舱信息</el-radio-button>
-          <el-radio-button label="2">账单</el-radio-button>
-        </el-radio-group>
-    </div>
-    <div style="height:60vh">
-      <div v-show="radio1=='1'" class="details">
+    <!-- 标签切换 -->
+    <tab-bar :tab.sync="radio1" :order="initData" />
+    <div class="order-tab-details-wrap">
+      <div v-show="radio1=='1'">
             <h1 class="title">订舱信息</h1>
             <div class="flex ">
               <div class="flex_message">品名</div>
@@ -199,77 +195,95 @@
                   </div>
               </div>
               <!-- <div class="bg_table" v-if="(initData.trayDetail[0].trayNumber !== '')"> -->
-              <div class="bg_table" v-show="initData.packageType !== 1 ">
-                <!-- <input type="text" :value="initData.packageType"> -->
-                  <div class="flex_center border padding_contont " >
-                      <div>托盘数量</div>
-                      <div>长（cm）</div>
-                      <div>宽（cm）</div>
-                      <div>高（cm）</div>
-                      <div></div>
-                  </div>
-                  <div class="flex_center border padding_contont contont-box"  v-for="(item,index) in initData.trayDetail" :key="index">
-                        <div>
-                          <div class="booking-form-item-content">
-											      <input v-model="item.trayNumber" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="3"  type="text" />
-										      </div>
-                        </div>
-                        <div>
-                          <div class="booking-form-item-content">
-											      <input v-model="item.traySize" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="3"  type="text" />
-										      </div>
-                        </div>
-                        <div>
-                          <div class="booking-form-item-content">
-											      <input v-model="item.trayWidth" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="3"  type="text" />
-										      </div>
-                        </div>
-                        <div>
-                          <div class="booking-form-item-content">
-											      <input v-model="item.trayHeight" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="3"  type="text" />
-										      </div>
-                        </div>
-                        <!-- <div>{{item.trayNumber}}</div> -->
-                        <!-- <div>{{item.traySize}}</div>
-                        <div>{{item.trayWidth}}</div>
-                        <div>{{item.trayHeight}}</div> -->
-                        <div>
-                          <el-button
-                              v-show="
-                                initData.trayDetail.length < 10 &&
-                                initData.trayDetail.length > 0 &&
-                                initData.trayDetail.length-1 == index
-                              "
-                              class="tianjia "
-                              @click="trayAddClick(index,key)"
-                              style="margin-left: 15px"
-                              >添加</el-button
-                            >
-                            <el-button
-                              type="danger"
-                              class="de_n"
-                              v-show="initData.trayDetail.length-1 !== index ||
-                              initData.trayDetail.length == 10"
-                              style="margin-left: 15px"
-                            ></el-button>
-                            <el-button
-                              type="danger"
-                              class="de"
-                              v-show="initData.trayDetail.length > 1"
-                              @click="trayDeleteClick(index)"
-                              style="margin-left: 15px"
-                              >删除</el-button
-                            >
-                            <el-button
-                              type="danger"
-                              class="de_n"
-                              v-show="initData.trayDetail.length == 1"
-                              style="margin-left: 15px"
-                            ></el-button>
-                        </div>
-                        
-                  </div>
+              <div class="bg_table" v-show="initData.packageType !== 1">
+          <div class="flex_center border padding_contont">
+            <div>托盘数量</div>
+            <div>长（cm）</div>
+            <div>宽（cm）</div>
+            <div>高（cm）</div>
+            <div></div>
+          </div>
+          <div
+            class="flex_center border padding_contont contont-box"
+            v-for="(item, index) in DataCope.trayDetail"
+            :key="index"
+          >
+            <div>
+              <div class="booking-form-item-content">
+                <input
+                  v-model="item.trayNumber"
+                  onkeyup="value=value.replace(/[^\d]/g, '')"
+                  maxlength="3"
+                  type="text"
+                />
               </div>
+            </div>
+            <div>
+              <div class="booking-form-item-content">
+                <input
+                  v-model="item.traySize"
+                  onkeyup="value=value.replace(/[^\d]/g, '')"
+                  maxlength="3"
+                  type="text"
+                />
+              </div>
+            </div>
+            <div>
+              <div class="booking-form-item-content">
+                <input
+                  v-model="item.trayWidth"
+                  onkeyup="value=value.replace(/[^\d]/g, '')"
+                  maxlength="3"
+                  type="text"
+                />
+              </div>
+            </div>
+            <div>
+              <div class="booking-form-item-content">
+                <input
+                  v-model="item.trayHeight"
+                  onkeyup="value=value.replace(/[^\d]/g, '')"
+                  maxlength="3"
+                  type="text"
+                />
+              </div>
+            </div>
+            <div>
+              <el-button
+                v-show="
+                  DataCope.trayDetail.length < 10 &&
+                  DataCope.trayDetail.length > 0 &&
+                  DataCope.trayDetail.length-1 == index
+                "
+                class="tianjia "
+                @click="trayAddClick(index,key)"
+                style="margin-left: 15px"
+                >添加</el-button
+              >
+              <el-button
+                type="danger"
+                class="de_n"
+                v-show="DataCope.trayDetail.length-1 !== index||
+                              DataCope.trayDetail.length == 10"
+                style="margin-left: 15px"
+              ></el-button>
+              <el-button
+                type="danger"
+                class="de"
+                v-show="DataCope.trayDetail.length > 1"
+                @click="trayDeleteClick(index)"
+                style="margin-left: 15px"
+                >删除</el-button
+              >
+              <el-button
+                type="danger"
+                class="de_n"
+                v-show="DataCope.trayDetail.length == 1"
+                style="margin-left: 15px"
+              ></el-button>
+            </div>
+          </div>
+        </div>
                   
                 
               <!-- <h1 class="title">进仓数据</h1>
@@ -339,7 +353,7 @@
               <div class="paddingBottom"></div>
 
       </div>
-      <div v-show="radio1=='2'" class="details">
+      <div v-show="radio1=='2'">
         <bill-order  :getList = initData.arOrderPriceList[0].list  ref="typeOne" />
         <el-button  class="setWidth ml_20"    @click="fatherAddOneItem(1)" >添加费用</el-button>
         <div class="line"></div>
@@ -347,18 +361,23 @@
         <el-button  class="setWidth ml_20"    @click="fatherAddOneItem(2)" >添加费用</el-button>
         <div class="line"></div>
       </div>
+      <!-- 进仓指引 -->
+        <entry-guide v-show="radio1=='3'" :entryData="initData" @change="(data) => { initData = { ...initData, ...data } }" />
     </div>
   </div>
 </template>
 <script>
 import billOrder from './components/billOrder.vue'
 import {judgeWaybillNo} from '@/util/util'
+import TabBar from  './components/TabBar.vue'
+import EntryGuide from './components/EntryGuide.vue'
 export default {
   data() {
     return {
       //pdf预览和下载
       pdfDownLoad:"",
       pdfDialogVisible:false,
+      DataCope:[],
       orderNo:"",
       orderId:'',
       initData:{},
@@ -443,7 +462,9 @@ export default {
     };
   },
   components:{
-    billOrder
+    billOrder,
+    TabBar,
+    EntryGuide,
   },
   computed:{
     getInboundCw(){
@@ -466,19 +487,19 @@ export default {
     await this.getOriganData()
     await this.initSysSetTing()
   },
-  methods:{
-    trayAddClick(){
+  methods: {
+    trayAddClick(index,key) {
       var json = {
-                  trayNumber: '',
-                  traySize: '',
-                  trayWidth: '',
-                  trayHeight: ''
-                }
-      this.initData.trayDetail.push(json)
+        trayNumber: "",
+        traySize: "",
+        trayWidth: "",
+        trayHeight: "",
+      };
+      this.DataCope.trayDetail.push(json);
     },
       trayDeleteClick(index){
-        this.initData.trayDetail.splice(index,1)
-        console.log(this.initData.trayDetail)
+        this.DataCope.trayDetail.splice(index,1)
+        // console.log(this.DataCope.trayDetail)
       },
       // selectTrigger(e){
       //   console.log(e);
@@ -507,7 +528,6 @@ export default {
                 this.filePath =item.xpath
             },
     exdeOrder(e){
-        let order = this.initData;
         // var edg = this.trayDetail_number;
         // console.log(edg[0]);
         // if(order.trayDetail.length !==  edg.length ){
@@ -519,12 +539,21 @@ export default {
         //         }
         //       }
         // }
-        for(var i=0;i<order.trayDetail.length;i++) {
-                if(order.trayDetail[i].trayNumber==''||order.trayDetail[i].traySize==''||order.trayDetail[i].trayWidth==''||order.trayDetail[i].trayHeight==''){
-                  return this.$message.error('请完整填写订舱托盘数据')
-                }
-              }
-        order.trayDetail=JSON.stringify(order.trayDetail)
+        let irder = this.DataCope;
+      if(this.initData.packageType !== 1 ){
+      for (var i = 0; i < irder.trayDetail.length; i++) {
+        if (
+          irder.trayDetail[i].trayNumber == "" ||
+          irder.trayDetail[i].traySize == "" ||
+          irder.trayDetail[i].trayWidth == "" ||
+          irder.trayDetail[i].trayHeight == ""
+        ) {
+          return this.$message.error("请完整填写订舱托盘数据");
+        }
+      }
+      }
+      this.initData.trayDetail = JSON.stringify(irder.trayDetail);
+      // let order = this.initData
       // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
       if(e == 1){
           let {inboundNo} = this.initData
@@ -536,7 +565,7 @@ export default {
           if(boolenNo){
             let arrayTypeOne = this.$refs.typeOne.tableData
             let arrayTypeTwo = this.$refs.typeTwo.tableData
-            // let order = this.initData
+            let order = this.initData
             if(order.hasOwnProperty('apOrderPriceList')){
               delete order.apOrderPriceList
             }
@@ -608,17 +637,21 @@ export default {
 
     },
      saveOrder(){
-                // console.log(this.initData.trayDetail);
-              let order = this.initData;
-          
-              for(var i=0;i<order.trayDetail.length;i++) {
-                if(order.trayDetail[i].trayNumber==''||order.trayDetail[i].traySize==''||order.trayDetail[i].trayWidth==''||order.trayDetail[i].trayHeight==''){
-                  return this.$message.error('请完整填写订舱托盘数据')
+              let irder = this.DataCope;
+              if(this.initData.packageType !== 1 ){
+                for (var i = 0; i < irder.trayDetail.length; i++) {
+                  if (
+                    irder.trayDetail[i].trayNumber == "" ||
+                    irder.trayDetail[i].traySize == "" ||
+                    irder.trayDetail[i].trayWidth == "" ||
+                    irder.trayDetail[i].trayHeight == ""
+                  ) {
+                    return this.$message.error("请完整填写订舱托盘数据");
+                  }
                 }
               }
-              order.trayDetail=JSON.stringify(order.trayDetail)
-              // debugger
-                // console.log(order.hasOwnProperty,order.trayDetail);
+              this.initData.trayDetail = JSON.stringify(irder.trayDetail);
+              let order = this.initData;
               if(order.hasOwnProperty('apOrderPriceList')){
                 delete order.apOrderPriceList
               }
@@ -629,7 +662,7 @@ export default {
                 delete order.orderPriceList
               }
               // if(order.hasOwnProperty('trayDetail')){
-              // delete order.trayDetail
+              //   delete order.trayDetail
               // }
               // console.log(order.trayDetail);
               let arrayTypeOne = this.$refs.typeOne.tableData
@@ -641,7 +674,9 @@ export default {
                 }
               this.$http.post(this.$service.orderSaveOrder,params).then((data) => {
                   if(data.code == 200){
+                    debugger
                     this.$message('保存成功')
+                    debugger
                     this.$router.push('/orderManagement/orderManage')
                   } else {
                     this.$message.error(data.message)
@@ -809,17 +844,20 @@ export default {
           this.pdfDownLoad = tempObj.orderAttachmentList
             for(let i =0;i<this.pdfDownLoad.length;i++) {
                 var copyName = this.pdfDownLoad[i].attachmentName
+                this.pdfDownLoad[i].attachmentNameCopy = this.pdfDownLoad[i].attachmentName
                 var copyNames = copyName.split("")
                 copyNames.splice(7,9)
                 this.pdfDownLoad[i].attachmentName = copyNames.join("")
             }
-          tempObj.trayDetail = JSON.parse(tempObj.trayDetail) 
+          // tempObj.trayDetail = JSON.parse(tempObj.trayDetail) 
           for(let i in tempObj.arOrderPriceList){
            tempObj.arOrderPriceList[i].changeBillAddOne = false
           }
           this.orderNo = tempObj.orderNo
           this.initData = tempObj
-          // console.log(this.initData.packageType);
+        let DataCop =  JSON.parse(JSON.stringify(tempObj))
+        this.DataCope = DataCop
+        this.DataCope.trayDetail =JSON.parse(DataCop.trayDetail)
           this.isDataDone = true
           
       }
@@ -945,10 +983,6 @@ export default {
   margin: 20px 0;
   /* background: #000; */
   border: 1px dashed black;
-}
-.details{
-  margin-left: 25px;
-  margin-top: 20px;
 }
 .pTips{
   margin-left: 25px;
