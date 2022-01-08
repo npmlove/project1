@@ -107,14 +107,10 @@
             </span>
           </div>
       </div>
-      <div class="radioTap">
-        <el-radio-group v-model="radio1">
-          <el-radio-button label="1">订舱信息</el-radio-button>
-          <el-radio-button label="2">账单</el-radio-button>
-        </el-radio-group>
-      </div>
-      <div   style="height:60vh;">
-        <div v-show="radio1=='1'" class="details">
+      <!-- 标签切换 -->
+      <tab-bar :tab.sync="radio1" :order="initData" />
+      <div class="order-tab-details-wrap">
+        <div v-show="radio1=='1'">
             <h1 class="title">订舱信息</h1>
             <div class="flex ">
               <div class="flex_message">品名</div>
@@ -286,7 +282,7 @@
               <div class="paddingBottom"></div>
 
         </div>
-        <div v-show="radio1=='2'" class="details">
+        <div v-show="radio1=='2'">
           <!-- 应付账单可以最多有5个 做个循环 循环组件ref -->
           <div v-for="(item,index) in initData.arOrderPriceList"   :key="index">
             <!-- 组件部分 -->
@@ -355,6 +351,8 @@
           <div class="line"></div>
           <div class="paddingBottom"></div>
         </div>
+        <!-- 进仓指引 -->
+        <entry-guide v-show="radio1=='3'" :entryData="initData" @change="(data) => { initData = { ...initData, ...data } }" />
       </div>
   </div>
 </template>
@@ -362,6 +360,8 @@
 import binList from './components/binList.vue'
 import billOrder from './components/billOrder.vue'
 import opeartes from './components/opeartes.vue'
+import TabBar from './components/TabBar.vue'
+import EntryGuide from './components/EntryGuide.vue'
 import {judgeWaybillNo} from '@/util/util'
 export default {
   data() {
@@ -484,7 +484,9 @@ export default {
   components:{
     binList,
     billOrder,
-    opeartes
+    opeartes,
+    TabBar,
+    EntryGuide,
   },
   methods:{
       //下载pdf
@@ -937,6 +939,7 @@ saveOrder(){
         this.pdfDownLoad = tempObj.orderAttachmentList
             for(let i =0;i<this.pdfDownLoad.length;i++) {
                 var copyName = this.pdfDownLoad[i].attachmentName
+                this.pdfDownLoad[i].attachmentNameCopy = this.pdfDownLoad[i].attachmentName
                 var copyNames = copyName.split("")
                 copyNames.splice(7,9)
                 this.pdfDownLoad[i].attachmentName = copyNames.join("")
@@ -1120,10 +1123,6 @@ saveOrder(){
   margin: 20px 0;
   /* background: #000; */
   border: 1px dashed black;
-}
-.details{
-  margin-left: 25px;
-  margin-top: 20px;
 }
 .pTips{
   margin-left: 25px;
