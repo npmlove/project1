@@ -424,12 +424,12 @@ export default {
                 if(res.code==200) {
                     this.$message.success("新建工单成功")
                      this.$emit("flashRight")
+                    this.searchClick()
                      this.workOrderDial = false
                 } else {
                     this.$message.error(res.message)
                 }
             })
-            this.searchClick()
             clearInterval(this.tableTimer)
             this.tableTimer = setInterval(()=>{this.searchClick()},60000)
         },
