@@ -100,7 +100,7 @@ const cargoTrackingManage=[{
   redirect:'noredirect',
   alwaysShow:true,
   meta:{
-    title:'货物追踪',
+    title:'大盘主页',
     icon: 'icon iconfont icon-diannao',
     breadcrumb: true,
     roles:['航线负责人','售中客服','售前客服','财务人员']
