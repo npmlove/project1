@@ -240,17 +240,19 @@
                             </el-option>
                           </el-select>
                       </div>
-                      <div><el-input size="mini" class="ml_10"  v-model="initData.inboundCw" placeholder=""></el-input></div>
+                      <div><el-input size="mini" class="ml_10"  
+                      v-model="initData.inboundCw" placeholder=""></el-input></div>
                   </div>
                   <div class="flex_center mtop_10">
-                      <div>件数</div>
+                      <div>总件数</div>
                       <div>毛重</div>
                       <div>体积</div>
                       <div>比重</div>
                       <div>分泡比例</div>
                       <div>计费重</div>
                   </div>
-                  <binList class="mtop_10" ref="typeThree" :orderId= "orderId" :childData= "initData.orderCargoDetailList" />
+                  <binList class="mtop_10" ref="typeThree" 
+                  :orderId= "orderId" :childData= "initData.orderCargoDetailList" />
               </div>
               <h1 class="title">其他服务</h1>
               <div class="inData" style="background:rgb(240,240,240);padding-left:20px">
@@ -725,15 +727,27 @@ export default {
         this.$message.error('请输入计费重')
         return ;
       }
-
+        // let tempthree = arrayTypeThree.filter(item=>{
+        // return (item.piece == undefined || item.piece == '') || 
+        // (item.cbm == undefined || item.cbm == "") || 
+        // (item.weight == undefined || item.weight == '')  || 
+        // (item.cargoSize == undefined || item.cargoSize == '')
+        // })
       let arrayTypeThree = this.$refs.typeThree.tableData
-      let tempthree = arrayTypeThree.filter(item=>{
-        return (item.piece == undefined || item.piece == '') || (item.cbm == undefined || item.cbm == "") || (item.weight == undefined || item.weight == '')  || (item.cargoSize == undefined || item.cargoSize == '')
-      })
-      if(tempthree.length > 0){
-        this.$message.error('请填写进仓数据')
-        return ;
-      }
+        let tempthree = arrayTypeThree.filter(item=>{
+        return (item.piece == undefined || item.piece == '') 
+        })
+        if(tempthree.length > 0){
+          this.$message.error('请填写进仓数据')
+          return ;
+        }
+      let b=arrayTypeThree.reduce((pre,item)=>{
+            return pre+Number(item.piece)
+        },0)
+        if(b !== Number(this.initData.inboundPiece)){
+          this.$message.error('总件数与分件数不匹配')
+          return;
+        }
       // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
       if(this.initData.status == 17  && e ==1){
         if(!this.initData.waybillNo){
@@ -758,6 +772,10 @@ export default {
       }
       let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
       let orderCargoDetailList = this.$refs.typeThree.tableData
+      for(var i=1;i<orderCargoDetailList.length;i++){
+          orderCargoDetailList[i].id = '',
+          orderCargoDetailList[i].orderId = ''
+        }
       let params = {
         order:order,
         orderPriceList:orderPriceList,
@@ -878,6 +896,7 @@ export default {
     },
     // 保存账单
     saveOrder(){
+      // this.$nextTick(() => {})
       let {inboundWeight,inboundCbm, inboundCw , inboundPiece,inboundNo} = this.initData
       if(!inboundNo){
         this.$message.error('请输入进仓编号')
@@ -902,13 +921,21 @@ export default {
       let boolenNo =  judgeWaybillNo(inboundNo)
       if(boolenNo){
       let arrayTypeThree = this.$refs.typeThree.tableData
-      let tempthree = arrayTypeThree.filter(item=>{
-        return (item.piece == undefined || item.piece == '') || (item.cbm == undefined || item.cbm == "") || (item.weight == undefined || item.weight == '')  || (item.cargoSize == undefined || item.cargoSize == '')
-      })
-      if(tempthree.length > 0){
-        this.$message.error('进仓数据未填写')
-        return ;
-      }
+        let tempthree = arrayTypeThree.filter(item=>{
+        return (item.piece == undefined || item.piece == '')
+        })
+        if(tempthree.length > 0){
+          this.$message.error('请填写进仓数据')
+          return ;
+        }
+      
+      let b=arrayTypeThree.reduce((pre,item)=>{
+            return pre+Number(item.piece)
+        },0)
+        if(b !== Number(this.initData.inboundPiece)){
+          this.$message.error('总件数与分件数不匹配')
+          return;
+        }
         // 获取应收账单的长度 为 12345
         let tempLength = this.initData.arOrderPriceList.length ;
         let arrayTypeOne = [];
@@ -939,6 +966,10 @@ export default {
         }
         let orderPriceList =  arrayTypeOne.concat(arrayTypeTwo)
         let orderCargoDetailList = arrayTypeThree
+        for(var i=1;i<orderCargoDetailList.length;i++){
+          orderCargoDetailList[i].id = '',
+          orderCargoDetailList[i].orderId = ''
+        }
         let params = {
           order:order,
           orderPriceList:orderPriceList,
