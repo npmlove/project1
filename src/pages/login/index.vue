@@ -14,7 +14,7 @@
             <el-input v-model="form.name" type="text" placeholder="请输入账号" clearable></el-input>
           </el-form-item>
           <el-form-item label="密码">
-            <el-input v-model="form.pwd" type="password" placeholder="请输入密码" clearable></el-input>
+            <el-input v-model="form.pwd" type="password" @keyup.native.enter="onSubmit" placeholder="请输入密码" clearable></el-input>
           </el-form-item>
           <div class="error">{{errorTitle}}</div>
           <div class="list">

@@ -113,6 +113,10 @@ export default {
                    value:3,
                    label:'托盘' 
                 },
+                {
+                   value:4,
+                   label:'木箱' 
+                },
             ], // 包箱方式数组
             outerBoxArray:[
                 {

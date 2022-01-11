@@ -9,6 +9,8 @@ import '@/vendor/directives3'
 import {constantRoutes,asyncRoutes} from "@/router/config"
 import {filterAsyncRoutes,whiteList} from "@/util/permission"
 
+import utils from '@/utils'
+
 import '@/assets/icon/iconfont.css'
 import '@/assets/custom.css'
 import '@/assets/reset.css'
@@ -19,6 +21,7 @@ Vue.config.productionTip = false
 Vue.prototype.$service = serviceAPI
 Vue.prototype.inputMax = 50
 Vue.prototype.imgUrl = ''
+Vue.prototype.$utils = utils
 // Vue.prototype.$confirm = MessageBox.confirm
 //判断是否登录
 router.beforeEach(function (to, from, next) {
