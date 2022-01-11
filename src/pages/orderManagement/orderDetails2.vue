@@ -490,7 +490,7 @@ import billOrder from "./components/billOrder.vue";
 import { judgeWaybillNo } from "@/util/util";
 import TabBar from "./components/TabBar.vue";
 import EntryGuide from "./components/EntryGuide.vue";
-import DepartureDatePicker from './components/DepartureDatePicker'
+import DepartureDatePicker from "./components/DepartureDatePicker";
 export default {
   data() {
     return {
@@ -675,11 +675,15 @@ export default {
           }
         }
       }
-      // 校验运单号
-      const { waybillNo } = this.initData
-      const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
-      if (!waybillNoTest) {
-        return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
+      if (this.initData.waybillNo) {
+        // 校验运单号
+        const { waybillNo } = this.initData;
+        const waybillNoTest = /^\d{3}\-\d{8}|\d{11}$/.test(waybillNo);
+        if (!waybillNoTest) {
+          return this.$message.error(
+            "运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字"
+          );
+        }
       }
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
       // let order = this.initData
@@ -780,11 +784,17 @@ export default {
           }
         }
       }
-      // 校验运单号
-      const { waybillNo } = this.initData
-      const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
-      if (!waybillNoTest) {
-        return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
+      if (this.initData.waybillNo) {
+        // 校验运单号
+        const { waybillNo } = this.initData;
+        const waybillNoTest = /^\d{3}\-\d{8}|\d{11}$/.test(waybillNo);
+        if (!waybillNoTest) {
+          return this.$message.error(
+            "运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字"
+          );
+        }
+      } else {
+        this.initData.waybillNo = null
       }
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
       let order = this.initData;
@@ -810,9 +820,7 @@ export default {
       };
       this.$http.post(this.$service.orderSaveOrder, params).then((data) => {
         if (data.code == 200) {
-          debugger;
           this.$message("保存成功");
-          debugger;
           this.$router.push("/orderManagement/orderManage");
         } else {
           this.$message.error(data.message);
