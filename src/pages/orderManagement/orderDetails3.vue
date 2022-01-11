@@ -1051,13 +1051,19 @@ export default {
           this.$message.error("请输入运单号");
           return;
         }
-        // 校验运单号
-        const { waybillNo } = this.initData;
-        const waybillNoTest = /^\d{3}\-\d{8}|\d{11}$/.test(waybillNo);
-        if (!waybillNoTest) {
-          return this.$message.error(
-            "运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字"
-          );
+      }
+      if (e === 1) {
+        if (this.initData.waybillNo) {
+          // 校验运单号
+          const { waybillNo } = this.initData;
+          const waybillNoTest = /(^\d{3}-\d{8}$)|(^\d{11}$)/.test(waybillNo);
+          if (!waybillNoTest) {
+            return this.$message.error(
+              "运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字"
+            );
+          }
+        } else {
+          this.initData.waybillNo = null;
         }
       }
       let arrayTypeOne = this.$refs.typeBill0[0].tableData;
@@ -1215,7 +1221,7 @@ export default {
       if (this.initData.waybillNo) {
         // 校验运单号
         const { waybillNo } = this.initData;
-        const waybillNoTest = /^\d{3}\-\d{8}|\d{11}$/.test(waybillNo);
+        const waybillNoTest = /(^\d{3}-\d{8}$)|(^\d{11}$)/.test(waybillNo);
         if (!waybillNoTest) {
           return this.$message.error(
             "运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字"
