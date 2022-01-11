@@ -78,7 +78,7 @@
       </div>
       <div>
         <span>日期 </span>
-        <span>{{ initData.orderTime }}</span>
+        <departure-date-picker :date.sync="initData.departureDate" />
       </div>
       <div>
         <span>利润 </span>
@@ -561,18 +561,20 @@
                 v-show="
                   DataCope.trayDetail.length < 10 &&
                   DataCope.trayDetail.length > 0 &&
-                  DataCope.trayDetail.length-1 == index
+                  DataCope.trayDetail.length - 1 == index
                 "
-                class="tianjia "
-                @click="trayAddClick(index,key)"
+                class="tianjia"
+                @click="trayAddClick(index, key)"
                 style="margin-left: 15px"
                 >添加</el-button
               >
               <el-button
                 type="danger"
                 class="de_n"
-                v-show="DataCope.trayDetail.length-1 !== index||
-                              DataCope.trayDetail.length == 10"
+                v-show="
+                  DataCope.trayDetail.length - 1 !== index ||
+                  DataCope.trayDetail.length == 10
+                "
                 style="margin-left: 15px"
               ></el-button>
               <el-button
@@ -683,7 +685,8 @@
 </template>
 <script>
 import billOrder from "./components/billOrder.vue";
-import TabBar from './components/TabBar.vue'
+import TabBar from "./components/TabBar.vue";
+import DepartureDatePicker from './components/DepartureDatePicker'
 class orderSecondWays {
   constructor(
     pol,
@@ -814,9 +817,10 @@ export default {
       ],
     };
   },
-  components:{
+  components: {
     billOrder,
     TabBar,
+    DepartureDatePicker,
   },
   computed: {
     getInboundCw() {
@@ -841,7 +845,7 @@ export default {
     this.initPolPod();
   },
   methods: {
-    trayAddClick(index,key) {
+    trayAddClick(index, key) {
       var json = {
         trayNumber: "",
         traySize: "",
@@ -915,19 +919,24 @@ export default {
     },
     exdeOrder(e) {
       let irder = this.DataCope;
-      if(this.initData.packageType !== 1 ){
-      for (var i = 0; i < irder.trayDetail.length; i++) {
-        if (
-          irder.trayDetail[i].trayNumber == "" ||
-          irder.trayDetail[i].traySize == "" ||
-          irder.trayDetail[i].trayWidth == "" ||
-          irder.trayDetail[i].trayHeight == ""
-        ) {
-          return this.$message.error("请完整填写订舱托盘数据");
+      if (this.initData.packageType !== 1) {
+        for (var i = 0; i < irder.trayDetail.length; i++) {
+          if (
+            irder.trayDetail[i].trayNumber == "" ||
+            irder.trayDetail[i].traySize == "" ||
+            irder.trayDetail[i].trayWidth == "" ||
+            irder.trayDetail[i].trayHeight == ""
+          ) {
+            return this.$message.error("请完整填写订舱托盘数据");
+          }
         }
       }
+      // 校验运单号
+      const { waybillNo } = this.initData
+      const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
+      if (!waybillNoTest) {
+        return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
       }
-      
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
       // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
       let arrayTypeOne = this.$refs.typeOne.tableData;
@@ -1006,17 +1015,23 @@ export default {
     },
     saveOrder() {
       let irder = this.DataCope;
-      if(this.initData.packageType !== 1 ){
-      for (var i = 0; i < irder.trayDetail.length; i++) {
-        if (
-          irder.trayDetail[i].trayNumber == "" ||
-          irder.trayDetail[i].traySize == "" ||
-          irder.trayDetail[i].trayWidth == "" ||
-          irder.trayDetail[i].trayHeight == ""
-        ) {
-          return this.$message.error("请完整填写订舱托盘数据");
+      if (this.initData.packageType !== 1) {
+        for (var i = 0; i < irder.trayDetail.length; i++) {
+          if (
+            irder.trayDetail[i].trayNumber == "" ||
+            irder.trayDetail[i].traySize == "" ||
+            irder.trayDetail[i].trayWidth == "" ||
+            irder.trayDetail[i].trayHeight == ""
+          ) {
+            return this.$message.error("请完整填写订舱托盘数据");
+          }
         }
       }
+      // 校验运单号
+      const { waybillNo } = this.initData
+      const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
+      if (!waybillNoTest) {
+        return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
       }
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
 
@@ -1319,10 +1334,10 @@ export default {
         }
         this.orderNo = tempObj.orderNo;
         this.initData = tempObj;
-        let DataCop =  JSON.parse(JSON.stringify(tempObj))
+        let DataCop = JSON.parse(JSON.stringify(tempObj));
         // console.log(DataCop);
-        this.DataCope = DataCop
-        this.DataCope.trayDetail =JSON.parse(DataCop.trayDetail)
+        this.DataCope = DataCop;
+        this.DataCope.trayDetail = JSON.parse(DataCop.trayDetail);
         // console.log(this.DataCope.trayDetail);
         this.isDataDone = true;
       }
