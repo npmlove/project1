@@ -172,8 +172,7 @@ export default {
                     return Math.round(num * Math.pow(10, len)) / Math.pow(10, len);
                 }
                 V=GetRound(V,3)
-                // this.$refs.hwCBM.value=V
-                this.childData[index].cbm=""+V
+                this.tableData[index].cbm=""+V
             }
         },
         addOneTableObj(){
