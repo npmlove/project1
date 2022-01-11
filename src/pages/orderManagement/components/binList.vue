@@ -12,19 +12,19 @@
             <el-table-column
                 label="件数 PCS">
                 <template slot-scope="scope">
-                    <el-input size="small"  v-model="scope.row.piece" clearable></el-input>    
+                    <el-input size="small"  v-model="scope.row.piece" clearable type="number"></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
                 label="体积 CBM(m³)">
                 <template slot-scope="scope">
-                    <el-input size="small" ref="hwCBM" v-model="scope.row.cbm" clearable></el-input>    
+                    <el-input size="small" ref="hwCBM" v-model="scope.row.cbm" clearable type="number"></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
                 label="重量 KGS">
                 <template slot-scope="scope">
-                    <el-input size="small"  v-model="scope.row.weight" clearable></el-input>    
+                    <el-input size="small"  v-model="scope.row.weight" clearable type="number"></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
