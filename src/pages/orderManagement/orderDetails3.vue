@@ -638,7 +638,7 @@ import billOrder from "./components/billOrder.vue";
 import opeartes from "./components/opeartes.vue";
 import TabBar from "./components/TabBar.vue";
 import EntryGuide from "./components/EntryGuide.vue";
-import DepartureDatePicker from './components/DepartureDatePicker'
+import DepartureDatePicker from "./components/DepartureDatePicker";
 import { judgeWaybillNo } from "@/util/util";
 export default {
   data() {
@@ -761,7 +761,7 @@ export default {
     this.getOPerateList();
   },
   beforeDestroy() {
-    clearInterval(this.billTimer)
+    clearInterval(this.billTimer);
   },
   components: {
     binList,
@@ -1052,16 +1052,18 @@ export default {
           return;
         }
       }
-      if (this.initData.status === 21 && e == 1) {
+      if ([13, 21, 17].includes(this.initData.status) && e === 1) {
         if (!this.initData.waybillNo) {
           this.$message.error("请输入运单号");
           return;
         }
         // 校验运单号
-        const { waybillNo } = this.initData
-        const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
+        const { waybillNo } = this.initData;
+        const waybillNoTest = /^\d{3}\-\d{8}|\d{11}$/.test(waybillNo);
         if (!waybillNoTest) {
-          return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
+          return this.$message.error(
+            "运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字"
+          );
         }
       }
       let arrayTypeOne = this.$refs.typeBill0[0].tableData;
@@ -1216,16 +1218,18 @@ export default {
         this.$message.error("请输入计费重");
         return;
       }
-      if (this.initData.status === 21) {
+      if ([13, 21, 17].includes(this.initData.status)) {
         if (!this.initData.waybillNo) {
           this.$message.error("请输入运单号");
           return;
         }
         // 校验运单号
-        const { waybillNo } = this.initData
-        const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
+        const { waybillNo } = this.initData;
+        const waybillNoTest = /^\d{3}\-\d{8}|\d{11}$/.test(waybillNo);
         if (!waybillNoTest) {
-          return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
+          return this.$message.error(
+            "运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字"
+          );
         }
       }
       let boolenNo = judgeWaybillNo(inboundNo);
