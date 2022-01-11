@@ -1452,8 +1452,9 @@ export default {
   text-align: right;
   margin-right: 30px;
   position: relative;
-  top: -14px;
   font-size: 16px;
   cursor: pointer;
+  float: right;
+  margin-top: 20px;
 }
 </style>
