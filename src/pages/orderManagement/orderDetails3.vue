@@ -1039,8 +1039,6 @@ export default {
           item.piece == "" ||
           item.cbm == undefined ||
           item.cbm == "" ||
-          item.weight == undefined ||
-          item.weight == "" ||
           item.cargoSize == undefined ||
           item.cargoSize == ""
         );
@@ -1223,8 +1221,6 @@ export default {
             item.piece == "" ||
             item.cbm == undefined ||
             item.cbm == "" ||
-            item.weight == undefined ||
-            item.weight == "" ||
             item.cargoSize == undefined ||
             item.cargoSize == ""
           );
