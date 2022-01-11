@@ -1029,12 +1029,6 @@ export default {
         this.$message.error("请输入计费重");
         return;
       }
-      // 校验运单号
-      const { waybillNo } = this.initData
-      const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
-      if (!waybillNoTest) {
-        return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
-      }
 
       let arrayTypeThree = this.$refs.typeThree.tableData;
       let tempthree = arrayTypeThree.filter((item) => {
@@ -1056,6 +1050,18 @@ export default {
         if (!this.initData.waybillNo) {
           this.$message.error("请输入运单号");
           return;
+        }
+      }
+      if (this.initData.status === 21 && e == 1) {
+        if (!this.initData.waybillNo) {
+          this.$message.error("请输入运单号");
+          return;
+        }
+        // 校验运单号
+        const { waybillNo } = this.initData
+        const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
+        if (!waybillNoTest) {
+          return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
         }
       }
       let arrayTypeOne = this.$refs.typeBill0[0].tableData;
@@ -1210,11 +1216,17 @@ export default {
         this.$message.error("请输入计费重");
         return;
       }
-      // 校验运单号
-      const { waybillNo } = this.initData
-      const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
-      if (!waybillNoTest) {
-        return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
+      if (this.initData.status === 21) {
+        if (!this.initData.waybillNo) {
+          this.$message.error("请输入运单号");
+          return;
+        }
+        // 校验运单号
+        const { waybillNo } = this.initData
+        const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
+        if (!waybillNoTest) {
+          return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
+        }
       }
       let boolenNo = judgeWaybillNo(inboundNo);
       if (boolenNo) {

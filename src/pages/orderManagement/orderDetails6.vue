@@ -52,6 +52,7 @@
           <el-input
             v-model="initData.waybillNo"
             size="mini"
+            disabled
             placeholder="请输入内容"
           ></el-input>
         </span>
@@ -1135,12 +1136,6 @@ export default {
       if (!inboundCw) {
         this.$message.error("请输入计费重");
         return;
-      }
-      // 校验运单号
-      const { waybillNo } = this.initData
-      const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
-      if (!waybillNoTest) {
-        return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
       }
       let boolenNo = judgeWaybillNo(inboundNo);
       if (boolenNo) {
