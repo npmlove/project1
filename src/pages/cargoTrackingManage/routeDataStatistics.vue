@@ -50,18 +50,14 @@
                 <div><span  class="textStyle">更新航线占比</span><span class="textData">{{(overviewData.updateRoutesProportion*100).toFixed(2)+'%'}}</span></div>
                 <div><span  class="textStyle">较上一周期统计</span><span class="textData" :style="{color:overviewData.updateRoutesProportionCount>0?'red':overviewData.updateRoutesProportionCount < 0?'green':'black'}">{{overviewData.updateRoutesProportionCount == null? "-" :overviewData.updateRoutesProportionCount>0?'+'+(overviewData.updateRoutesProportionCount*100).toFixed(2)+'%':(overviewData.updateRoutesProportionCount*100).toFixed(2)+'%'}}</span></div>
            </div>
-           <div class="common" style="margin-top:20px">
-               <div><span  class="textStyle">未更新航线条数</span><span class="textData">{{overviewData.unUpdateRoutes}}</span></div>
-                <div><span  class="textStyle">未更新航线占比</span><span class="textData">{{(overviewData.unUpdateRoutesProportion*100).toFixed(2)+'%'}}</span></div>
-                <div><span  class="textStyle">较上一周期统计</span><span class="textData" :style="{color:overviewData.unUpdateRoutesProportionCount>0?'red':overviewData.unUpdateRoutesProportionCount < 0?'green':'black'}">{{overviewData.unUpdateRoutesProportionCount == null? "-":overviewData.unUpdateRoutesProportionCount>0?'+'+(overviewData.unUpdateRoutesProportionCount*100).toFixed(2)+'%':(overviewData.unUpdateRoutesProportionCount*100).toFixed(2)+'%'}}</span></div>
-           </div>
-           <div class="common" style="margin-top:20px;display:flex;align-items:center">
+       
+           <div class="common" style="margin-top:20px;display:flex;">
              <div>
                 <div><span  class="textStyle">已完善航线总数</span><span class="textData">{{overviewData.perfectRoutes}}</span></div>
                 <div style="margin-top:10px"><span  class="textStyle">已完善航线占比</span><span class="textData">{{(overviewData.perfectRoutesCount*100).toFixed(2)+"%"}}</span></div>
              </div>
            </div>
-           <div class="common" style="margin-top:20px;display:flex;align-items:center;">
+           <div class="common" style="margin-top:20px;display:flex;">
              <div>
                  <div><span  class="textStyle">未完善航线条数</span><span class="textData">{{overviewData.unPerfectRoutes}}</span></div>
                 <div style="margin-top:10px"><span  class="textStyle">未完善航线占比</span><span class="textData">{{(overviewData.unPerfectRoutesCount*100).toFixed(2)+"%"}}</span></div>
@@ -163,9 +159,9 @@ export default{
             updateRoutes:'',
             updateRoutesProportion:'',
             updateRoutesProportionCount:'',
-            unUpdateRoutes:'',
-            unUpdateRoutesProportion:"",
-            unUpdateRoutesProportionCount:'',
+            
+          
+           
             perfectRoutes:"",
             perfectRoutesCount:'',
             unPerfectRoutes:'',
@@ -320,7 +316,7 @@ export default{
 .common{
     border:1px solid black;
     height: 100px;
-    width: 200px;
+    width: 250px;
     margin-left:20px;
     display:flex;
      flex-direction: column;
