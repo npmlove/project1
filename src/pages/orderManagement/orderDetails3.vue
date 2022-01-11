@@ -1045,14 +1045,8 @@ export default {
         this.$message.error("请填写进仓数据");
         return;
       }
-      // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
-      if (this.initData.status == 17 && e == 1) {
-        if (!this.initData.waybillNo) {
-          this.$message.error("请输入运单号");
-          return;
-        }
-      }
-      if ([13, 21, 17].includes(this.initData.status) && e === 1) {
+      // 13待平台出进仓数据 17进仓数据确认 21操作中待完成
+      if ([21].includes(this.initData.status) && e === 1) {
         if (!this.initData.waybillNo) {
           this.$message.error("请输入运单号");
           return;
@@ -1218,11 +1212,7 @@ export default {
         this.$message.error("请输入计费重");
         return;
       }
-      if ([13, 21, 17].includes(this.initData.status)) {
-        if (!this.initData.waybillNo) {
-          this.$message.error("请输入运单号");
-          return;
-        }
+      if (this.initData.waybillNo) {
         // 校验运单号
         const { waybillNo } = this.initData;
         const waybillNoTest = /^\d{3}\-\d{8}|\d{11}$/.test(waybillNo);
@@ -1231,6 +1221,8 @@ export default {
             "运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字"
           );
         }
+      } else {
+        this.initData.waybillNo = null
       }
       let boolenNo = judgeWaybillNo(inboundNo);
       if (boolenNo) {
