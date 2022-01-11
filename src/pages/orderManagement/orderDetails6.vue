@@ -316,6 +316,7 @@
                 class="ml_10"
                 v-model="initData.inboundPiece"
                 placeholder=""
+                type="number"
               ></el-input>
             </div>
             <div>
@@ -325,6 +326,7 @@
                 v-model="initData.inboundWeight"
                 @change="calcVwr"
                 placeholder=""
+                type="number"
               ></el-input>
             </div>
             <div>
@@ -334,6 +336,7 @@
                 v-model="initData.inboundCbm"
                 @change="calcVwr"
                 placeholder=""
+                type="number"
               ></el-input>
             </div>
             <div>
@@ -371,6 +374,7 @@
                 class="ml_10"
                 v-model="initData.inboundCw"
                 placeholder=""
+                type="number"
               ></el-input>
             </div>
           </div>
