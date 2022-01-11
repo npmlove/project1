@@ -16,9 +16,9 @@
                 </template>
             </el-table-column>
             <el-table-column
-                label="体积 CBM">
+                label="体积 CBM(m³)">
                 <template slot-scope="scope">
-                    <el-input size="small"  v-model="scope.row.cbm" clearable></el-input>    
+                    <el-input size="small" ref="hwCBM" v-model="scope.row.cbm" clearable></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
@@ -28,9 +28,9 @@
                 </template>
             </el-table-column>
             <el-table-column
-                label="货物尺寸">
+                label="货物尺寸(cm)">
                 <template slot-scope="scope">
-                    <el-input size="small"  v-model="scope.row.cargoSize" clearable></el-input>    
+                    <el-input ref="hwleng" size="small" placeholder="长*宽*高"  @change="errclick(scope.row.cargoSize,scope.$index)"  v-model="scope.row.cargoSize" clearable></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
@@ -113,6 +113,10 @@ export default {
                    value:3,
                    label:'托盘' 
                 },
+                {
+                   value:4,
+                   label:'木箱' 
+                },
             ], // 包箱方式数组
             outerBoxArray:[
                 {
@@ -130,7 +134,7 @@ export default {
             },
         };
     },
-
+    
     mounted() {
         if(this.childData.length > 0){
             let {id , orderId} = this.childData[0]
@@ -145,11 +149,33 @@ export default {
         }else{
             this.addOneTableObj()
         }
-        
-        // this.addOneTableObj()
     },
 
     methods: {
+        errclick(e,index){
+            // 验证输入数字与*S
+            let zz = /\d+([.]?\d)*\*\d+([.]?\d)*\*\d+([.]?\d)*/
+            let V
+            if(!zz.test(String(e))){
+                this.$alert("输入形式为：长*宽*高")
+                this.$refs.hwleng.value=""
+                this.$refs.hwCBM.value=""
+            }else{
+                let a = String(e).indexOf("*")
+                let b = String(e).lastIndexOf("*")
+                let l = String(e).substr(0,a)
+                let c = String(e).substr(a+1,b-a-1)
+                let h = String(e).substr(b+1)
+                // console.log(a,b,l,c,h);
+                V=(Number(l)*Number(c)*Number(h))/100000
+                function GetRound(num, len) {
+                    return Math.round(num * Math.pow(10, len)) / Math.pow(10, len);
+                }
+                V=GetRound(V,3)
+                // this.$refs.hwCBM.value=V
+                this.childData[index].cbm=""+V
+            }
+        },
         addOneTableObj(){
             let tempObjs = new tempObj(this.id,this.orderId)
             this.tableData.push(tempObjs)
