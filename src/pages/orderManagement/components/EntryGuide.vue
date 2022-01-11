@@ -46,6 +46,16 @@
             >
             </el-date-picker>
           </el-form-item>
+          <!-- <el-form-item label="仓库名称">
+            <el-select v-model="warehouseName" placeholder="请选择仓库名称">
+              <el-option
+                v-for="item in warehouseList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item> -->
           <el-form-item label="仓库地址">
             <el-input
               v-model="form.warehouseAddress"
@@ -92,9 +102,9 @@
         </ul> -->
       </div>
     </div>
-    <!-- <el-dialog title="预览地图" :visible.sync="dialogVisible" width="40%" center>
-      <iframe :src="computedDocUrl"></iframe>
-    </el-dialog> -->
+    <el-dialog title="预览进仓地图" :visible.sync="dialogVisible" width="60%" top="3vh" center>
+      <iframe :src="computedDocUrl" style="width: 100%; height: 80vh"></iframe>
+    </el-dialog>
   </div>
 </template>
 
@@ -132,6 +142,8 @@ export default {
         inboundNo: "", // 进仓编号
         expectedInboundTime: "", // 预计进仓时间
         latestInboundDate: "", // 最晚进仓时间
+        warehouseList: [],
+        // warehouseName: '',
       },
       mapData: {},
       flowChart,
@@ -147,33 +159,37 @@ export default {
         };
       });
     },
-    // computedDocUrl() {
-    //   // 处理域名前缀问题
-    //   return `https://docs.google.com/viewer?embedded=true&url=${encodeURIComponent(mapData.xpath)}`
-    // },
+    computedDocUrl() {
+      // 处理域名前缀问题
+      const host = getHost()
+      function getHost() {
+        if (process.env.NODE_ENV === 'development') {
+          return `https://17dc.shenghuoq.com`
+        } else {
+          if (window.location.host.includes(`10.8.0.1`)) {
+            return `https://17dc.shenghuoq.com`
+          } else {
+            return window.location.origin
+          }
+        }
+      }
+      // const url = `https://homepages.inf.ed.ac.uk/neilb/TestWordDoc.doc` // 预览测试用第三方doc
+      const url = `${host}${this.mapData.xpath}`
+      // const docViewer = `https://docs.google.com/viewer?embedded=true&url=` // 谷歌预览
+      const docViewer = `https://view.officeapps.live.com/op/embed.aspx?src=` // 微软预览
+      return `${docViewer}${url}`
+    },
   },
   methods: {
     // 下载进仓地图
     downloadMap() {
       const { xpath: url, attachmentNameCopy } = this.mapData;
-      if (!url) {
-        this.$message.error("暂无地图");
-        return;
-      }
-      axios({
-        method: "get",
-        url,
-        responseType: "arraybuffer", //接受使用分片方式
-      }).then((res) => {
-        const aLink = document.createElement("a");
-        let blob = new Blob([res], {
-          type: "application/msword",
-        });
-        aLink.href = URL.createObjectURL(blob);
-        aLink.setAttribute("download", attachmentNameCopy); // 设置下载文件名称
-        aLink.click();
-        document.body.appendChild(aLink);
-      });
+      const tagA = document.createElement("a");
+      tagA.href = url;
+      tagA.setAttribute("download", attachmentNameCopy); // 设置下载文件名称
+      document.body.appendChild(tagA);
+      tagA.click();
+      document.body.removeChild(tagA)
     },
   },
   watch: {
