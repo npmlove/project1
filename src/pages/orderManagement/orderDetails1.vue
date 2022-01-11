@@ -931,12 +931,6 @@ export default {
           }
         }
       }
-      // 校验运单号
-      const { waybillNo } = this.initData
-      const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
-      if (!waybillNoTest) {
-        return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
-      }
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
       // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
       let arrayTypeOne = this.$refs.typeOne.tableData;
@@ -1026,12 +1020,6 @@ export default {
             return this.$message.error("请完整填写订舱托盘数据");
           }
         }
-      }
-      // 校验运单号
-      const { waybillNo } = this.initData
-      const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
-      if (!waybillNoTest) {
-        return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
       }
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
 
