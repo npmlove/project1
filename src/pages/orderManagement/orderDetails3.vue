@@ -251,8 +251,11 @@
                       <div>分泡比例</div>
                       <div>计费重</div>
                   </div>
+
                   <binList class="mtop_10" ref="typeThree" 
                   :orderId= "orderId" :childData= "initData.orderCargoDetailList" />
+                  
+
               </div>
               <h1 class="title">其他服务</h1>
               <div class="inData" style="background:rgb(240,240,240);padding-left:20px">
@@ -735,7 +738,9 @@ export default {
         // })
       let arrayTypeThree = this.$refs.typeThree.tableData
         let tempthree = arrayTypeThree.filter(item=>{
-        return (item.piece == undefined || item.piece == '') 
+        return (item.piece == undefined || item.piece == '') || 
+        (item.cbm == undefined || item.cbm == "") || 
+        (item.cargoSize == undefined || item.cargoSize == '')
         })
         if(tempthree.length > 0){
           this.$message.error('请填写进仓数据')
@@ -922,7 +927,9 @@ export default {
       if(boolenNo){
       let arrayTypeThree = this.$refs.typeThree.tableData
         let tempthree = arrayTypeThree.filter(item=>{
-        return (item.piece == undefined || item.piece == '')
+        return (item.piece == undefined || item.piece == '') || 
+        (item.cbm == undefined || item.cbm == "") || 
+        (item.cargoSize == undefined || item.cargoSize == '')
         })
         if(tempthree.length > 0){
           this.$message.error('请填写进仓数据')
