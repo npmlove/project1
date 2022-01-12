@@ -70,8 +70,9 @@
                     <span style="margin-rigth:6px;font-size:16px;">{{ item1.belong == 0 ? "工单历史" : "工单回复"
                     }}</span> <span style="margin-right:6px">{{ item1.occuTime }}</span>{{ item1.userName }}:  {{
                     item1.content
-                    }}</div
-                >
+                    }}
+                    <h3 v-if="item1.belong == 0" style="color:red;margin-top:5px">{{item.actualInfo}}</h3>
+                </div>
                 </div>
                 <div class="demo-input-suffix input1">
                 <div>反馈待定 {{item.unFeedbackUsers}}</div>

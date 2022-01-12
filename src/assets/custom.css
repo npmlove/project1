@@ -39,11 +39,12 @@ body{
   border-color: #2273CE !important;
   background-color: #FFF !important;
 } */
+
 .el-button--primary{
   width: 100px;
   background-color: #2273CE !important;
   border-color: #2273CE !important;
-  color: #FFF;
+  color: #FFF!important;
 } */
 .shouqi .iconfont{
 	font-size: 12px !important;
