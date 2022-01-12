@@ -12,19 +12,19 @@
             <el-table-column
                 label="件数 PCS">
                 <template slot-scope="scope">
-                    <el-input size="small" :disabled="list_B"  v-model="scope.row.piece" clearable type="number"></el-input>    
+                    <el-input size="small" :disabled="list_B"  v-model="scope.row.piece" clearable @input="val => { scope.row.piece = $utils.getNumber(val, true) }" :min="1"></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
                 label="体积 CBM(m³)">
                 <template slot-scope="scope">
-                    <el-input size="small"  :disabled="list_B" ref="hwCBM" v-model="scope.row.cbm" clearable type="number"></el-input>    
+                    <el-input size="small"  :disabled="list_B" ref="hwCBM" v-model="scope.row.cbm" clearable @input="val => { scope.row.cbm = $utils.getNumber(val) }"></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
                 label="重量 KGS">
                 <template slot-scope="scope">
-                    <el-input size="small"  :disabled="list_B"  v-model="scope.row.weight" clearable type="number"></el-input>    
+                    <el-input size="small"  :disabled="list_B"  v-model="scope.row.weight" clearable @input="val => { scope.row.weight = $utils.getNumber(val) }"></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
