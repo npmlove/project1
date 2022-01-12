@@ -62,7 +62,7 @@
 
       </el-form>
       <!-- 新建工单弹框 -->
-        <el-dialog :visible.sync="workOrderDial" title="工单提交" width="900px" style="padding-bottom:25px" :before-close="handleClose">
+        <el-dialog :visible.sync="workOrderDial" title="工单提交" width="960px" style="padding-bottom:25px" :before-close="handleClose">
             <div style="padding-top:10px">
                 <el-input
                     class="bigInput"
@@ -74,9 +74,9 @@
                     show-word-limit
                     v-model="form.content">
                 </el-input>
-                <el-form style="display:flex;margin-top:10px">
+                <el-form style="display:flex;margin-top:10px;flex-wrap:wrap" label-position="center">
                      <el-form-item label="目的港" label-width="60px" style="width:170px">
-                        <el-input style="width:100px" size="medium" v-model="newMessage.pod" disabled>
+                        <el-input style="width:100px" size="medium" v-model="newMessage.pod" @blur="getCountry()">
                      </el-input>
                     </el-form-item>
                     <el-form-item label="件数" label-width="60px" style="width:200px">
@@ -94,8 +94,24 @@
                             <template slot="append">CBM</template>
                      </el-input>
                     </el-form-item>
+                    <el-form-item label="国家"  label-width="60px"  style="width:170px">
+                        <el-input style="width:100px" size="medium" disabled v-model="newMessage.podCountry"></el-input>
+                    </el-form-item>
+                    <el-form-item label="尺寸"  label-width="60px"  style="width:200px">
+                        <el-input style="width:140px" size="medium" v-model="newMessage.size" maxlength="150"></el-input>
+                    </el-form-item>
+                    
                 </el-form>
                 <el-form>
+              
+                    <el-form-item label="货好时间">
+                         <el-date-picker
+                            value-format="yyyy-MM-dd"
+                            type="date"
+                            v-model="newMessage.cargoReadyTime"
+                            placeholder="选择货好时间">
+                         </el-date-picker>
+                    </el-form-item>
                      <el-form-item label="工单类型">
                         <el-select v-model="form.workOrderType" placeholder="请选择工单类型">
                             <el-option
@@ -246,7 +262,7 @@
                 </template>
               </el-table-column>
               <el-table-column label="目的港" prop="pod" min-width="40"></el-table-column>
-              <el-table-column label="件/毛/体" prop="cargoInfo"min-width="80"></el-table-column>
+              <el-table-column label="件/毛/体" prop="cargoInfo" min-width="80"></el-table-column>
             </el-table>
              <el-pagination
                 @size-change="handleSizeChange"
@@ -292,7 +308,8 @@ export default {
     },
     data(){
         return {
-            newMessage:{pod:"",piece:"",cbm:"",weight:""},
+            newMessage:{pod:"",piece:"",cbm:"",weight:"",cargoReadyTime:"",size:"",podCountry:""},
+            copyPod:"",
             //表格数据定时器
             tableTimer:null,
             pageRoleName:"",
@@ -340,13 +357,27 @@ export default {
             },
         }
     },
+    watch:{
+        copyPod(newValue) {
+            this.$http.get(this.$service.searchByAirportCode+'?airportCode='+newValue).then(res=>{
+                this.newMessage.podCountry = res.data && res.data.country ? res.data.country : ""
+    })
+        }
+    },
     methods:{
+        //获取国家
+        getCountry(){
+            this.$http.get(this.$service.searchByAirportCode+'?airportCode='+this.newMessage.pod).then(res=>{
+                this.newMessage.podCountry = res.data && res.data.country ? res.data.country : ""
+            })
+        },
         //获取关键字
         getKeyWords(e){
             this.$http.post(this.$service.stringIfContent,e).then(data=>{
                 if(data.code == 200) {
                      let copy = data.data
                     this.newMessage.pod = copy.pod
+                    this.copyPod = copy.pod
                     this.newMessage.piece = copy.piece
                     this.newMessage.cbm = copy.cbm
                     this.newMessage.weight = copy.weight
@@ -400,7 +431,7 @@ export default {
         //新建工单按钮
         openWorkOrder(){
             this.form = {workOrderType:0,urgency:"0",content:"",airLinePeople:[]},
-            this.newMessage = {pod:"",piece:"",cbm:"",weight:""},
+            this.newMessage = {pod:"",piece:"",cbm:"",weight:"",size:"",podCountry:"",cargoReadyTime:""},
             this.workOrderDial = true
         },
         //新建工单 弹框提交
@@ -413,6 +444,11 @@ export default {
                 this.$message.warning("请在输入框中输入内容获取目的港")
                 return
             }
+             else if(!this.newMessage.cargoReadyTime){
+                this.$message.warning("请选择货好时间")
+                return
+            }
+            console.log(this.newMessage.cargoReadyTime)
             let request = {}
             request.roleName = this.pageRoleName
             request.workOrderType = this.form.workOrderType
@@ -420,6 +456,8 @@ export default {
             request.principalIds = this.form.airLinePeople.map(item=>item.split(",")[1]).join()
             request.principalNames = this.form.airLinePeople.map(item=>item.split(",")[0]).join()
             request.content = this.form.content
+            request.size = this.newMessage.size
+            request.cargoReadyTime = this.newMessage.cargoReadyTime
             this.$http.post(this.$service.launchWorkOrder,request).then(res=>{
                 if(res.code==200) {
                     this.$message.success("新建工单成功")

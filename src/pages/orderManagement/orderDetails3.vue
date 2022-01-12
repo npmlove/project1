@@ -346,6 +346,7 @@
                 class="ml_10"
                 v-model="initData.inboundPiece"
                 placeholder=""
+                type="number"
               ></el-input>
             </div>
             <div>
@@ -355,6 +356,7 @@
                 v-model="initData.inboundWeight"
                 @change="calcVwr"
                 placeholder=""
+                type="number"
               ></el-input>
             </div>
             <div>
@@ -364,6 +366,7 @@
                 v-model="initData.inboundCbm"
                 @change="calcVwr"
                 placeholder=""
+                type="number"
               ></el-input>
             </div>
             <div>
@@ -401,6 +404,7 @@
                 class="ml_10"
                 v-model="initData.inboundCw"
                 placeholder=""
+                type="number"
               ></el-input>
             </div>
           </div>
@@ -634,7 +638,7 @@ import billOrder from "./components/billOrder.vue";
 import opeartes from "./components/opeartes.vue";
 import TabBar from "./components/TabBar.vue";
 import EntryGuide from "./components/EntryGuide.vue";
-import DepartureDatePicker from './components/DepartureDatePicker'
+import DepartureDatePicker from "./components/DepartureDatePicker";
 import { judgeWaybillNo } from "@/util/util";
 export default {
   data() {
@@ -757,7 +761,7 @@ export default {
     this.getOPerateList();
   },
   beforeDestroy() {
-    clearInterval(this.billTimer)
+    clearInterval(this.billTimer);
   },
   components: {
     binList,
@@ -1025,12 +1029,6 @@ export default {
         this.$message.error("请输入计费重");
         return;
       }
-      // 校验运单号
-      const { waybillNo } = this.initData
-      const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
-      if (!waybillNoTest) {
-        return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
-      }
 
       let arrayTypeThree = this.$refs.typeThree.tableData;
       let tempthree = arrayTypeThree.filter((item) => {
@@ -1039,8 +1037,6 @@ export default {
           item.piece == "" ||
           item.cbm == undefined ||
           item.cbm == "" ||
-          item.weight == undefined ||
-          item.weight == "" ||
           item.cargoSize == undefined ||
           item.cargoSize == ""
         );
@@ -1049,11 +1045,25 @@ export default {
         this.$message.error("请填写进仓数据");
         return;
       }
-      // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
-      if (this.initData.status == 17 && e == 1) {
+      // 13待平台出进仓数据 17进仓数据确认 21操作中待完成
+      if ([21].includes(this.initData.status) && e === 1) {
         if (!this.initData.waybillNo) {
           this.$message.error("请输入运单号");
           return;
+        }
+      }
+      if (e === 1) {
+        if (this.initData.waybillNo) {
+          // 校验运单号
+          const { waybillNo } = this.initData;
+          const waybillNoTest = /(^\d{3}-\d{8}$)|(^\d{11}$)/.test(waybillNo);
+          if (!waybillNoTest) {
+            return this.$message.error(
+              "运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字"
+            );
+          }
+        } else {
+          this.initData.waybillNo = null;
         }
       }
       let arrayTypeOne = this.$refs.typeBill0[0].tableData;
@@ -1208,11 +1218,17 @@ export default {
         this.$message.error("请输入计费重");
         return;
       }
-      // 校验运单号
-      const { waybillNo } = this.initData
-      const waybillNoTest = (/^\d{3}\-\d{8}|\d{11}$/).test(waybillNo)
-      if (!waybillNoTest) {
-        return this.$message.error("运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字");
+      if (this.initData.waybillNo) {
+        // 校验运单号
+        const { waybillNo } = this.initData;
+        const waybillNoTest = /(^\d{3}-\d{8}$)|(^\d{11}$)/.test(waybillNo);
+        if (!waybillNoTest) {
+          return this.$message.error(
+            "运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字"
+          );
+        }
+      } else {
+        this.initData.waybillNo = null
       }
       let boolenNo = judgeWaybillNo(inboundNo);
       if (boolenNo) {
@@ -1223,8 +1239,6 @@ export default {
             item.piece == "" ||
             item.cbm == undefined ||
             item.cbm == "" ||
-            item.weight == undefined ||
-            item.weight == "" ||
             item.cargoSize == undefined ||
             item.cargoSize == ""
           );
@@ -1535,8 +1549,9 @@ export default {
   text-align: right;
   margin-right: 30px;
   position: relative;
-  top: -14px;
   font-size: 16px;
   cursor: pointer;
+  float: right;
+  margin-top: 20px;
 }
 </style>
