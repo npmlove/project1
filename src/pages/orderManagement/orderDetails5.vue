@@ -326,6 +326,7 @@
           <div class="flex_center">
             <div>
               <el-input
+                disabled=true
                 size="mini"
                 class="ml_10"
                 v-model="initData.inboundPiece"
@@ -335,6 +336,7 @@
             </div>
             <div>
               <el-input
+                disabled=true
                 size="mini"
                 class="ml_10"
                 v-model="initData.inboundWeight"
@@ -345,6 +347,7 @@
             </div>
             <div>
               <el-input
+                disabled=true
                 size="mini"
                 class="ml_10"
                 v-model="initData.inboundCbm"
@@ -355,6 +358,7 @@
             </div>
             <div>
               <el-input
+                disabled=true
                 size="mini"
                 class="ml_10"
                 :value="
@@ -367,6 +371,7 @@
             </div>
             <div>
               <el-select
+                disabled=true
                 class="ml_10"
                 size="mini"
                 v-model="initData.bubblePoint"
@@ -374,6 +379,7 @@
                 placeholder="请选择"
               >
                 <el-option
+                disabled=true
                   v-for="item in bubblePointArray"
                   :key="item.value"
                   :label="item.lable"
@@ -384,6 +390,7 @@
             </div>
             <div>
               <el-input
+                disabled=true
                 size="mini"
                 class="ml_10"
                 v-model="initData.inboundCw"

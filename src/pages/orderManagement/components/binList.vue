@@ -143,7 +143,6 @@ export default {
         }else{
             this.list_B = true
         }
-        console.log(this.number,this.list_B);
         if(this.childData.length > 0){
             let {id , orderId} = this.childData[0]
             this.id = id

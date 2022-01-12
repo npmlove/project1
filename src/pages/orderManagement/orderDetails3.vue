@@ -1046,6 +1046,14 @@ export default {
         this.$message.error("请填写进仓数据");
         return;
       }
+      let b=arrayTypeThree.reduce((pre,item)=>{
+            return pre+Number(item.piece)
+        },0)
+        if(b !== Number(this.initData.inboundPiece)){
+          this.$message.error('总件数与分件数不匹配')
+          return;
+        }
+      console.log(arrayTypeThree);
       // 13待平台出进仓数据 17进仓数据确认 21操作中待完成
       if ([21].includes(this.initData.status) && e === 1) {
         if (!this.initData.waybillNo) {
@@ -1084,6 +1092,10 @@ export default {
       }
       let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
       let orderCargoDetailList = this.$refs.typeThree.tableData;
+      for(var i=1;i<orderCargoDetailList.length;i++){
+          orderCargoDetailList[i].id = '',
+          orderCargoDetailList[i].orderId = ''
+        }
       let params = {
         order: order,
         orderPriceList: orderPriceList,
@@ -1248,6 +1260,13 @@ export default {
           this.$message.error("进仓数据未填写");
           return;
         }
+        let b=arrayTypeThree.reduce((pre,item)=>{
+            return pre+Number(item.piece)
+        },0)
+        if(b !== Number(this.initData.inboundPiece)){
+          this.$message.error('总件数与分件数不匹配')
+          return;
+        }
         // 获取应收账单的长度 为 12345
         let tempLength = this.initData.arOrderPriceList.length;
         let arrayTypeOne = [];
@@ -1295,7 +1314,11 @@ export default {
           delete order.trayDetail;
         }
         let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
-        let orderCargoDetailList = arrayTypeThree;
+      let orderCargoDetailList = this.$refs.typeThree.tableData
+      for(var i=1;i<orderCargoDetailList.length;i++){
+          orderCargoDetailList[i].id = '',
+          orderCargoDetailList[i].orderId = ''
+        }
         let params = {
           order: order,
           orderPriceList: orderPriceList,
