@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       isShow: false,
-      leftWidth: false,
+      leftWidth: true,
       srcImg: require('../../assets/zankai.png')
     }
   },
