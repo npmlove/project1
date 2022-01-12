@@ -645,7 +645,7 @@ const workOrder = [{
   alwaysShow: true,
   meta: {
     title:"工单",
-    img: require("../assets/gongdan.svg"),
+    img: require("../assets/gongdan.png"),
     breadcrumb: false,
     roles:["售前客服","航线负责人"]
   },

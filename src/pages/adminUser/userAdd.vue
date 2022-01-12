@@ -5,6 +5,9 @@
         <el-form-item prop="loginName" label="账号">
           <el-input style="width: 280px;" size="medium" v-model="ruleForm.loginName" clearable placeholder="请输入账号"></el-input>
         </el-form-item>
+         <el-form-item prop="qq" label="QQ">
+          <el-input style="width: 280px;" size="medium" v-model="ruleForm.qq" clearable placeholder="请输入QQ" maxlength="16"  onkeyup="this.value=this.value.replace(/[^\d]/g,'')" @blur="ruleForm.qq = $event.target.value"></el-input>
+        </el-form-item>
         <el-form-item prop="name" label="姓名">
           <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.name" clearable placeholder="请输入姓名"></el-input>
         </el-form-item>
@@ -84,6 +87,7 @@
           roleId: '',
           roleName: '',
           status: 0,
+          qq:'',
           tel: ''
         },
         rules: {
@@ -91,6 +95,7 @@
             {required: true, message: '请输入账号', trigger: 'blur'},
             { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
           ],
+         qq:[{required:true,max:16,min:6,message:'QQ长度在6到16位',trigger: 'blur'}],
           name: [{required: true, message: '请输入姓名', trigger: 'blur'},
           { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}],
           tel: [{required: true, validator: telPhone, trigger: 'blur' }],
@@ -121,6 +126,7 @@
               roleName:  roleStr.split("#")[1],
               status: 0,
               tel: this.ruleForm.tel,
+              qq:this.ruleForm.qq
             }
 
             this.$http.post(this.$service.userAdd,data).then(data => {

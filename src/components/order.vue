@@ -20,7 +20,7 @@
         <div>
           <div style="margin-bottom: 10px; margin-top: 10px">
             <span style="color: red">*</span>
-            分单号 HAWB NO||{{ currentIndex }}
+            分单号 HAWB NOs
           </div>
           <div>
             <input
@@ -41,7 +41,7 @@
         <div>
           <div style="margin-bottom: 10px; margin-top: 10px">
             <span style="color: red">*</span>
-            件数 No. of Pieces||{{ currentIndex }}
+            件数 No. of Piecess
           </div>
           <div>
             <input
@@ -60,7 +60,7 @@
         <div>
           <div style="margin-bottom: 10px; margin-top: 10px">
             <span style="color: red">*</span>
-            毛重 Gross Weight||{{ currentIndex }}
+            毛重 Gross Weights
           </div>
           <div>
             <input
@@ -79,7 +79,7 @@
         <div>
           <div style="margin-bottom: 10px; margin-top: 10px">
             <span style="color: red">*</span>
-            体积 Measurement||{{ currentIndex }}
+            体积 Measurements
           </div>
           <div>
             <input
@@ -97,7 +97,7 @@
         <div>
           <div style="margin-bottom: 10px; margin-top: 10px">
             <span style="color: red">*</span>
-            计费重 Chargeable Weight||{{ currentIndex }}
+            计费重 Chargeable Weights
           </div>
           <div>
             <input
@@ -122,7 +122,7 @@
         <div class="text">{{ itm.title2 }}</div>
         <el-input
           type="textarea"
-          placeholder="请输入内容"
+          :placeholder="getHolder(indx)"
           ref="inputArea"
           v-model="texts[indx].content"
           onKeyUp="value=value.replace(/[\W]/g,'')"
@@ -196,7 +196,7 @@
                   >添加</a
                 >
 
-                <a
+                <a v-if="tableData.length>1"
                   style="border: 1px solid #6289dc; margin-top: 10px"
                   @click="tableData.pop()"
                   >删除</a
@@ -305,7 +305,8 @@ export default {
     datatype: String,
     mainData: Object,
     menudata:Array,
-    currentIndex:Number
+    currentIndex:Number,
+    noPrice:Number,
   },
   data() {
     return {
@@ -359,6 +360,7 @@ export default {
       dataPath: "",
       // 方便控制预览之后提示
       previewState: "",
+      newAddData:"",
       // 杂费数据
       tableData: [{}],
       // 表头
@@ -374,15 +376,46 @@ export default {
         input4: "",
         input5: "",
       },
+      keysArray:[]
     };
   },
   mounted() {
     this.initData();
+    console.log("mounted")
   },
   activated() {
-  
+   
+              
   },
   methods: {
+    newAdd(){
+       this.keysArray =["FLD"+this.mainData.orderNo.slice(-6)+"A","FLD"+this.mainData.orderNo.slice(-6)+"B","FLD"+this.mainData.orderNo.slice(-6)+"C","FLD"+this.mainData.orderNo.slice(-6)+"D","FLD"+this.mainData.orderNo.slice(-6)+"E"]
+       let arr = this.keysArray
+      for(let i = 0,j=arr.length;i<j;i++) {
+        if(this.menudata.every((item)=>item.name!=arr[i])){
+            this.newAddData =  arr[i]
+            break
+        }
+      }
+       this.inputData.input1 = this.newAddData
+       this.radioSelect = 0;
+       this.radioSelectChange();
+       this.menudata[this.menudata.length-1].name = this.newAddData
+      
+     
+    },
+    getHolder(idx) {
+      if(idx==0) {
+        return 'Y8航班需提供发货人税号'
+      }
+       if(idx==1) {
+        return 'Y8航班需提供收货人税号. 提示：目的港LOS需提供收货人BA.NO以及MF.NO'
+      }
+      if(idx==3) {
+        return "TK航班请提供 HS CODE"
+      }
+
+    },
     // 初始化页面数据
     initData() {
       // 主单数据展示
@@ -426,9 +459,10 @@ export default {
             this.radio = 1;
           }
           if (data && data.hawb) {
-            var keys = data.hawb.slice(0, 3);
+            var keys = data.hawb
           }
-          if (keys == "FLD") {
+          this.keysArray =["FLD"+this.mainData.orderNo.slice(-6)+"A","FLD"+this.mainData.orderNo.slice(-6)+"B","FLD"+this.mainData.orderNo.slice(-6)+"C","FLD"+this.mainData.orderNo.slice(-6)+"D","FLD"+this.mainData.orderNo.slice(-6)+"E"]
+          if (this.keysArray.includes(keys)) {
             this.radioSelect = 0;
             this.radioSelectChange();
           } else {
@@ -510,9 +544,21 @@ export default {
       if (this.mainData.id) {
         let idx = type.slice(-1);
         let data = this.mainData.hawbList[index - 1];
-        console.log(index,"saveOtherData")
-        let copy = JSON.parse(JSON.stringify(data));
+        let copy = JSON.parse(JSON.stringify(data)); 
+        let arr=[]
+        for(let i=0;i<this.menudata.length;i++) {
+           arr.push(this.menudata[i].name)
+         }
+         arr.splice(index-1,1)
+           for(let i=0;i<arr.length;i++) {
+             if(this.inputData.input1 == arr[i])
+             {
+               this.$message.error('分单号不可相同')
+               return
+             }
+         }
         delete copy.ifNewData;
+         
         if (Object.keys(copy).length > 0) {
           let json = {
             id: data.id,
@@ -573,10 +619,18 @@ export default {
     },
     // 保存
     save(type) {
+      if(this.noPrice ==1) {
+        this.$message.warning('价格无法找到,支持excel版本下载后本地修改')
+      }
       let index = this.currentIndex
-      console.log(index,"saveIndex")
       this.previewKey = this.previewKey + 1;
       if (type == "order0") {
+         for(let i=0;i<this.tableData.length;i++) {
+           if(!this.tableData[i].name||!this.tableData[i].value) {
+              this.$message.error('杂费和金额均为必填项')
+              return
+           }
+         }
         if (
           this.texts[0].content != "" &&
           this.texts[1].content != "" &&
@@ -591,6 +645,8 @@ export default {
         } else {
           this.$message.error("带*的为必填项，请输入完后再操作");
         }
+        
+
       } else {
         if (
           this.texts[0].content  &&

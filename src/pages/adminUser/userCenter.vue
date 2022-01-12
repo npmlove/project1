@@ -112,6 +112,12 @@
             width: '160'
           },
           {
+            label:'QQ',
+            prop: 'qq',
+            show: true,
+            width: '160'
+          },
+          {
             label: '姓名',
             prop: 'name',
             show: true,
@@ -268,7 +274,8 @@
               roleName: scope.row.roleName,
               status: scope.row.status,
               tel: scope.row.tel,
-              password: scope.row.password
+              password: scope.row.password,
+              qq:scope.row.qq
             }
           })
         } else if (scope.method == 'del') {
