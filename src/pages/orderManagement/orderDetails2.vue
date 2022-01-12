@@ -678,6 +678,10 @@ export default {
           this.initData.waybillNo = null;
         }
       }
+      if(this.initData.expectedInboundTime == "" || this.initData.expectedInboundTime == null){
+        this.$message.error("预计进仓时间不能为空")
+        return
+      }
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
       // let order = this.initData
       // ctrlFlag 1 前进状态 2 取消   （3 待平台审核 失败的时候传3）
@@ -776,6 +780,10 @@ export default {
             return this.$message.error("请完整填写订舱托盘数据");
           }
         }
+      }
+      if(this.initData.expectedInboundTime == "" || this.initData.expectedInboundTime == null){
+        this.$message.error("预计进仓时间不能为空")
+        return
       }
       if (this.initData.waybillNo) {
         // 校验运单号
