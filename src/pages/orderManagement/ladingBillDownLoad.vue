@@ -54,7 +54,7 @@
                 @click="add(true)"
                 style="
                   font-weight: bolder;
-                  fontsize: 22px;
+                  fontsize: 20px;
                   margin-top: 15px;
                   margin-right: 10px;
                 "
@@ -83,7 +83,7 @@
                 <div
                   @click.stop="closeFirst(index)"
                   style="
-                    fontsize: 22px;
+                    fontsize: 20px;
                     font-weight: bolder;
                     margin-right: 10px;
                     margin-top: 8px;
@@ -146,6 +146,7 @@
               :is="comId"
               ref="child"
               :key="comId"
+              :noPrice="noPrice"
               :menudata="menudata"
               :datatype="comId"
               :mainData="mainData"
@@ -179,6 +180,7 @@ export default {
       // 主单数据
       // 获取远程数据
       mainData: "",
+      noPrice:0,
       // 控制页面显示
       comId: "order0",
       //控制第二次搜索之后提示
@@ -197,8 +199,8 @@ export default {
         this.mainData.hawbList[index - 1] = data[1];
         if (data[1].hawb) {
           this.$set(this.menudata[index-1],"name",data[1].hawb)
-          // this.menudata[index - 1].name = data[1].hawb;
-          // this.$forceUpdate();
+         
+          this.$forceUpdate();
         }
       } else if (index == 0) {
         this.mainData.consigneeInfo = data[1].consigneeInfo;
@@ -213,6 +215,7 @@ export default {
         this.mainData.wtVal = data[1].wtVal;
       }
     },
+
     // 增加分单
     add(self) {
       // 限制分单最大长度
@@ -221,9 +224,24 @@ export default {
         return;
       }
       //从页面中点击+添加
-      if (self) {
+      if (self) { 
         this.mainData.hawbList[this.menudata.length] = {};
         this.mainData.hawbList[this.menudata.length].ifNewData = true;
+        this.$nextTick(function(){
+            this.menudata[this.menudata.length-1].show = true 
+        this.comId = this.menudata[this.menudata.length-1].title
+         let item = document.querySelector("#bread-item1");
+      if (this.comId != "order0") {
+        item.classList.remove("activeColor");
+      }
+     
+        })
+        setTimeout(() => {
+          this.handlepage(this.menudata.length-1)
+          
+        },100);
+      
+       
       }
       // 删除完之后默认从1开始添加分单
       if (this.none) {
@@ -251,7 +269,7 @@ export default {
       this.handlepage(idx)
       setTimeout(()=>{
         this.closeorder(idx)
-      },500)
+      },100)
     },
     //  左侧删除分单 以及控制删除完之后显示哪个页面
     closeorder(idx) {
@@ -317,6 +335,9 @@ export default {
               );
             }
           }
+          if(data.data.ext) {
+            this.noPrice = 1
+          }
         });
     },
     //分单删除
@@ -335,6 +356,9 @@ export default {
     },
     // 查询
     tabShow() {
+        if(this.orderNo.length<6){
+          this.$message.warning('请最少输入6位数')
+        } else{
       let bottom = document.querySelector(".left-bottom");
       bottom.style.display = "block";
       if (this.initState) {
@@ -361,13 +385,23 @@ export default {
             });
           });
       }
+        }
     },
     // 左侧点击分单显示
     handlepage(idx) {
+      let id = ""
       this.menudata[idx].show = true;
       this.comId = this.menudata[idx].title;
       this.currentIndex = idx+1
-      console.log(this.currentIndex,"currentIndex")
+      for(let i=0;i<this.menudata.length;i++) {
+        if(!this.menudata[i].name) {
+          id = i
+          if(id==idx){
+          this.$refs.child.newAdd()
+          }
+        }
+      } 
+      
       let item = document.querySelector("#bread-item1");
       if (this.comId != "order0") {
         item.classList.remove("activeColor");
@@ -431,12 +465,13 @@ export default {
 .content {
   background: #fff;
   margin: 20px 20px 0 20px;
+  font-size: 15px;
   font-family: Arial Regular, Microsoft Yahei, Helvetica, sans-serif;
   display: flex;
 }
 .left {
   //  height: 800px;
-  width: 20%;
+  width: 15%;
   border-bottom: 1px solid;
   border-left: 1px solid;
   border-right: 1px solid;

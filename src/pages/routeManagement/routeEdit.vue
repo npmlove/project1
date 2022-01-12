@@ -100,7 +100,7 @@
                 <el-switch v-model="ruleForm.status" active-text="上架" inactive-text="下架" style="min-width: 216px;"></el-switch>
               </el-form-item>
               <el-form-item prop="principalId" label="航线负责人">
-                <el-select placeholder="请选择航线负责人" size="medium" v-model="ruleForm.principalId" clearable  style="width: 216px; margin-right: -5px;">
+                <el-select placeholder="请选择航线负责人" size="medium" disabled v-model="ruleForm.principalId" clearable  style="width: 216px; margin-right: -5px;">
                   <el-option
                     v-for="item in roleOpt"
                     :key="item.Value"

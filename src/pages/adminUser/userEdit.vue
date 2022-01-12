@@ -5,6 +5,9 @@
         <el-form-item prop="loginName" label="账号">
           <el-input style="width: 280px;" size="medium" v-model="ruleForm.loginName" clearable placeholder="请输入账号"></el-input>
         </el-form-item>
+         <el-form-item prop="qq" label="QQ">
+          <el-input style="width: 280px;" size="medium" v-model="ruleForm.qq" clearable placeholder="请输入QQ" maxlength="16"  onkeyup="this.value=this.value.replace(/[^\d]/g,'')" @blur="ruleForm.qq = $event.target.value"></el-input>
+        </el-form-item>
         <el-form-item prop="name" label="姓名">
           <el-input style="width: 280px;" size="medium" :maxlength="inputMax" v-model="ruleForm.name" clearable placeholder="请输入姓名"></el-input>
         </el-form-item>
@@ -56,9 +59,11 @@
           status: 0,
           tel: '',
           id: '',
+          qq:'',
           password: ''
         },
         rules: {
+           qq:[{required:true,max:16,min:6,message:'QQ长度在6到16位',trigger: 'blur'}],
           loginName: [
             {required: true, message: '请输入账号', trigger: 'blur'},
             { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
@@ -82,7 +87,8 @@
         status: this.$route.query.status,
         tel: this.$route.query.tel,
         id: this.$route.query.id,
-        password: this.$route.query.password
+        password: this.$route.query.password,
+        qq:this.$route.query.qq
       }
     },
     methods: {
