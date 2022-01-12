@@ -342,6 +342,7 @@
           <div class="flex_center">
             <div>
               <el-input
+                :disabled="num21"
                 size="mini"
                 class="ml_10"
                 v-model="initData.inboundPiece"
@@ -351,6 +352,7 @@
             </div>
             <div>
               <el-input
+                :disabled="num21"
                 size="mini"
                 class="ml_10"
                 v-model="initData.inboundWeight"
@@ -361,6 +363,7 @@
             </div>
             <div>
               <el-input
+                :disabled="num21"
                 size="mini"
                 class="ml_10"
                 v-model="initData.inboundCbm"
@@ -371,6 +374,7 @@
             </div>
             <div>
               <el-input
+                :disabled="num21"
                 size="mini"
                 class="ml_10"
                 :value="
@@ -383,6 +387,7 @@
             </div>
             <div>
               <el-select
+                :disabled="num21"
                 class="ml_10"
                 size="mini"
                 v-model="initData.bubblePoint"
@@ -390,6 +395,7 @@
                 placeholder="请选择"
               >
                 <el-option
+                :disabled="num21"
                   v-for="item in bubblePointArray"
                   :key="item.value"
                   :label="item.lable"
@@ -400,6 +406,7 @@
             </div>
             <div>
               <el-input
+                :disabled="num21"
                 size="mini"
                 class="ml_10"
                 v-model="initData.inboundCw"
@@ -645,6 +652,7 @@ export default {
   data() {
     return {
       //pdf预览和下载
+      num21:"",
       pageNumber:'3',
       pdfDownLoad: "",
       pdfDialogVisible: false,
@@ -1049,9 +1057,15 @@ export default {
       let b=arrayTypeThree.reduce((pre,item)=>{
             return pre+Number(item.piece)
         },0)
+      let C_B_M = arrayTypeThree.reduce((pre,item)=>{
+            return pre+Number(item.cbm)
+        },0)
         if(b !== Number(this.initData.inboundPiece)){
           this.$message.error('总件数与分件数不匹配')
           return;
+        }
+        if(C_B_M !== Number(this.initData.inboundCbm)){
+          this.$message.error('总体积与分体积不匹配')
         }
       console.log(arrayTypeThree);
       // 13待平台出进仓数据 17进仓数据确认 21操作中待完成
@@ -1263,9 +1277,16 @@ export default {
         let b=arrayTypeThree.reduce((pre,item)=>{
             return pre+Number(item.piece)
         },0)
+      let C_B_M = arrayTypeThree.reduce((pre,item)=>{
+            return pre+Number(item.cbm)
+        },0)
         if(b !== Number(this.initData.inboundPiece)){
           this.$message.error('总件数与分件数不匹配')
           return;
+        }
+        if(C_B_M !== Number(this.initData.inboundCbm)){
+          console.log(C_B_M,this.initData.inboundCbm);
+          this.$message.error('总体积与分体积不匹配')
         }
         // 获取应收账单的长度 为 12345
         let tempLength = this.initData.arOrderPriceList.length;
@@ -1401,6 +1422,12 @@ export default {
             }
           );
         }, 500);
+        if((this.initData.status) == 21){
+          this.num21 = true
+          this.pageNumber = "4"
+        }else{
+          this.num21 = false
+        }
       }
     },
     // 客户发起对账
