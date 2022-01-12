@@ -12,19 +12,19 @@
             <el-table-column
                 label="件数 PCS">
                 <template slot-scope="scope">
-                    <el-input size="small"  v-model="scope.row.piece" clearable></el-input>    
+                    <el-input size="small"  v-model="scope.row.piece" clearable type="number"></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
                 label="体积 CBM(m³)">
                 <template slot-scope="scope">
-                    <el-input size="small" ref="hwCBM" v-model="scope.row.cbm" clearable></el-input>    
+                    <el-input size="small" ref="hwCBM" v-model="scope.row.cbm" clearable type="number"></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
                 label="重量 KGS">
                 <template slot-scope="scope">
-                    <el-input size="small"  v-model="scope.row.weight" clearable></el-input>    
+                    <el-input size="small"  v-model="scope.row.weight" clearable type="number"></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
@@ -172,8 +172,7 @@ export default {
                     return Math.round(num * Math.pow(10, len)) / Math.pow(10, len);
                 }
                 V=GetRound(V,3)
-                // this.$refs.hwCBM.value=V
-                this.childData[index].cbm=""+V
+                this.tableData[index].cbm=""+V
             }
         },
         addOneTableObj(){

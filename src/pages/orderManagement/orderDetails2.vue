@@ -490,7 +490,7 @@ import billOrder from "./components/billOrder.vue";
 import { judgeWaybillNo } from "@/util/util";
 import TabBar from "./components/TabBar.vue";
 import EntryGuide from "./components/EntryGuide.vue";
-import DepartureDatePicker from './components/DepartureDatePicker'
+import DepartureDatePicker from "./components/DepartureDatePicker";
 export default {
   data() {
     return {
@@ -651,17 +651,6 @@ export default {
       this.filePath = item.xpath;
     },
     exdeOrder(e) {
-      // var edg = this.trayDetail_number;
-      // console.log(edg[0]);
-      // if(order.trayDetail.length !==  edg.length ){
-      //   return this.$message.error('请保存后提交')
-      // }else{
-      //       for(var i=0;i<order.trayDetail.length;i++) {
-      //         if((order.trayDetail[i].trayNumber !== edg[i].trayNumber) || (order.trayDetail[i].traySize !==  edg[i].traySize) ||order.trayDetail[i].trayWidth !== edg[i].trayWidth || (order.trayDetail[i].trayHeight !== edg[i].trayHeight)){
-      //           return this.$message.error('请保存后提交')
-      //         }
-      //       }
-      // }
       let irder = this.DataCope;
       if (this.initData.packageType !== 1) {
         for (var i = 0; i < irder.trayDetail.length; i++) {
@@ -673,6 +662,20 @@ export default {
           ) {
             return this.$message.error("请完整填写订舱托盘数据");
           }
+        }
+      }
+      if (e === 1) {
+        if (this.initData.waybillNo) {
+          // 校验运单号
+          const { waybillNo } = this.initData;
+          const waybillNoTest = /(^\d{3}-\d{8}$)|(^\d{11}$)/.test(waybillNo);
+          if (!waybillNoTest) {
+            return this.$message.error(
+              "运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字"
+            );
+          }
+        } else {
+          this.initData.waybillNo = null;
         }
       }
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
@@ -774,6 +777,18 @@ export default {
           }
         }
       }
+      if (this.initData.waybillNo) {
+        // 校验运单号
+        const { waybillNo } = this.initData;
+        const waybillNoTest = /(^\d{3}-\d{8}$)|(^\d{11}$)/.test(waybillNo);
+        if (!waybillNoTest) {
+          return this.$message.error(
+            "运单号应为: xxx—xxxxxxxx或xxxxxxxxxxx共计11位数字"
+          );
+        }
+      } else {
+        this.initData.waybillNo = null;
+      }
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
       let order = this.initData;
       if (order.hasOwnProperty("apOrderPriceList")) {
@@ -798,9 +813,7 @@ export default {
       };
       this.$http.post(this.$service.orderSaveOrder, params).then((data) => {
         if (data.code == 200) {
-          debugger;
           this.$message("保存成功");
-          debugger;
           this.$router.push("/orderManagement/orderManage");
         } else {
           this.$message.error(data.message);
