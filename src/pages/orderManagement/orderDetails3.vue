@@ -419,6 +419,7 @@
           <binList
             class="mtop_10"
             ref="typeThree"
+            :number="pageNumber"
             :orderId="orderId"
             :childData="initData.orderCargoDetailList"
           />
@@ -644,6 +645,7 @@ export default {
   data() {
     return {
       //pdf预览和下载
+      pageNumber:'3',
       pdfDownLoad: "",
       pdfDialogVisible: false,
 
@@ -806,7 +808,6 @@ export default {
       );
       if (res.code == 200) {
         if (res.data.length > 0) {
-          console.log(res.data);
           this.operateList = res.data;
         }
       }

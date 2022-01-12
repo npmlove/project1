@@ -239,6 +239,7 @@
               </div>
               <div>
                 <el-form-item required label="班期">
+                  <el-col style="width: 470px;">
                   <el-select @change="dowsChange(index)" v-model="item.dows" multiple placeholder="请选择班期" clearable style="width: 468px;">
                     <el-option
                       v-for="item in dowsOpt"
@@ -247,6 +248,13 @@
                       :value="item.value">
                     </el-option>
                   </el-select>
+                  </el-col>
+                      <el-col style="text-align: center;width: 40px;">
+                          <button class="quanxuan" @click="allselect(index)">全选</button>
+                      </el-col>
+                      <el-col style="text-align: center;width: 40px;">
+                          <button class="quanxuan"  @click="negation(index)">反选</button>
+                      </el-col>
                 </el-form-item>
               </div>
               <div>
@@ -536,6 +544,27 @@
       this.initRoleSearch()
     },
     methods: {
+      negation(index){
+          let depdata =  this.airlineAgent[index].dows;
+          let arr2=[],arrd=[]
+          for(var i=1;i<=this.dowsOpt.length;i++){
+            arr2.push(''+i)
+          }
+          for(var i=0;i<arr2.length;i++){
+              if(depdata.indexOf(arr2[i]) !== -1){
+              }else{
+                arrd.push(arr2[i])
+              }
+          }
+          this.airlineAgent[index].dows=arrd
+        },
+        allselect(index){
+          let arr2=[]
+          for(var i=1;i<=this.dowsOpt.length;i++){
+            arr2.push(''+i)
+          }
+          this.airlineAgent[index].dows=arr2
+        },
       //班期排序
       dowsChange(index) {
         this.airlineAgent[index].dows.sort()
@@ -1209,4 +1238,13 @@
     top: 10px;
     cursor: pointer;
   }
+  .quanxuan{
+      cursor: pointer;
+      width: 100%;
+      height: 34px;
+      background-color: white;
+      font-size: 8px;
+      color: #909399;
+      border: 1px solid #e5e5e5;
+    }
 </style>

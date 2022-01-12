@@ -12,31 +12,31 @@
             <el-table-column
                 label="件数 PCS">
                 <template slot-scope="scope">
-                    <el-input size="small"  v-model="scope.row.piece" clearable type="number"></el-input>    
+                    <el-input size="small" :disabled="list_B"  v-model="scope.row.piece" clearable type="number"></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
                 label="体积 CBM(m³)">
                 <template slot-scope="scope">
-                    <el-input size="small" ref="hwCBM" v-model="scope.row.cbm" clearable type="number"></el-input>    
+                    <el-input size="small"  :disabled="list_B" ref="hwCBM" v-model="scope.row.cbm" clearable type="number"></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
                 label="重量 KGS">
                 <template slot-scope="scope">
-                    <el-input size="small"  v-model="scope.row.weight" clearable type="number"></el-input>    
+                    <el-input size="small"  :disabled="list_B"  v-model="scope.row.weight" clearable type="number"></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
                 label="货物尺寸(cm)">
                 <template slot-scope="scope">
-                    <el-input ref="hwleng" size="small" placeholder="长*宽*高"  @change="errclick(scope.row.cargoSize,scope.$index)"  v-model="scope.row.cargoSize" clearable></el-input>    
+                    <el-input ref="hwleng" :disabled="list_B"  size="small" placeholder="长*宽*高"  @change="errclick(scope.row.cargoSize,scope.$index)"  v-model="scope.row.cargoSize" clearable></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
                 label="包装方式">
                 <template slot-scope="scope">
-                    <el-select v-model="scope.row.packing"   placeholder="请选择">
+                    <el-select v-model="scope.row.packing"  :disabled="list_B"   placeholder="请选择">
                         <el-option
                             v-for="item in packingArray"
                             :key="item.value"
@@ -49,7 +49,7 @@
             <el-table-column
                 label="外箱情况">
                 <template slot-scope="scope">
-                    <el-select v-model="scope.row.outerBox"   placeholder="请选择">
+                    <el-select v-model="scope.row.outerBox"  :disabled="list_B"   placeholder="请选择">
                         <el-option
                             v-for="item in outerBoxArray"
                             :key="item.value"
@@ -63,8 +63,8 @@
                 label="操作">
                 <template slot-scope="scope">
                     <div >
-                        <span class="tips" v-if="tableData.length - 1 == scope.$index" @click="addOneTableObj(scope)">新增</span>
-                        <span v-if="scope.$index != 0" @click="deleOneTableObj(scope)" >删除</span>
+                        <span class="tips" v-if="tableData.length - 1 == scope.$index && !list_B" @click="addOneTableObj(scope)">新增</span>
+                        <span v-if="(scope.$index != 0)  && (!list_B)" @click="deleOneTableObj(scope)" >删除</span>
                     </div>
                 </template>
             </el-table-column>
@@ -94,9 +94,11 @@ class tempObj {
 }
 export default {
 
-    props:['childData','orderId'],
+    props:['childData','orderId','number'],
     data() {
         return {
+            number:this.unmber,
+            list_B:'',
             id:'',
             orderId:this.orderId,
             tableData:[], //进仓数据
@@ -136,6 +138,12 @@ export default {
     },
     
     mounted() {
+        if(this.number == 3){
+            this.list_B = false
+        }else{
+            this.list_B = true
+        }
+        console.log(this.number,this.list_B);
         if(this.childData.length > 0){
             let {id , orderId} = this.childData[0]
             this.id = id
