@@ -1254,7 +1254,7 @@ export default {
     },
     // 获取售前客服 id
     getSelectPscsId(e) {
-      let arrayTest = this.airLineList;
+      let arrayTest = this.preSaleList;
       arrayTest.filter((res) => {
         if (res.name == e) {
           this.initData.pscsId = res.id;
@@ -1264,7 +1264,7 @@ export default {
 
     // 获取售中客服 id
     getSelectMscsId(e) {
-      let arrayTest = this.airLineList;
+      let arrayTest = this.onSaleList;
       arrayTest.filter((res) => {
         if (res.name == e) {
           this.initData.mscsId = res.id;
