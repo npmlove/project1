@@ -1044,8 +1044,8 @@ export default {
         return (
           item.piece == undefined ||
           item.piece == "" ||
-          item.cbm == undefined ||
-          item.cbm == "" ||
+          item.cbm === undefined ||
+          item.cbm === "" ||
           item.cargoSize == undefined ||
           item.cargoSize == ""
         );

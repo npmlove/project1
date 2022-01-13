@@ -214,7 +214,12 @@
                             </div>
                             <div class="popoverContent">
                                 <div v-for="(item,index) in workOrderDetail.messages" :key="index">
-                                    <div>{{item.belong==0?"工单历史":"工单回复"}} <span style="margin-left:5px">{{item.occuTime}}</span> <span style="margin-left:5px">{{item.userName}}:{{item.content}}</span></div>
+                                    <div>{{item.belong==0?"工单历史":"工单回复"}} 
+                                        <span style="margin-left:5px">{{item.occuTime}}</span> 
+                                        <span style="margin-left:5px">{{item.userName}}:{{item.content}}</span>
+                                        <h3 v-if="item.belong == 0" style="color:red;margin-top:5px">{{workOrderDetail.actualInfo}}</h3>
+                                    </div>
+
                                 </div>
                             </div>
                             <el-form v-if="scope.row.status == 0 ||scope.row.status == 2">
@@ -335,7 +340,7 @@ export default {
             pageSize:10,
             total:0,
             //工单详情popover
-            workOrderDetail:{title:"",unFeedbackUsers:"",messages:[],content:"",principalUsers:[],principalResult:""},
+            workOrderDetail:{title:"",unFeedbackUsers:"",messages:[],content:"",principalUsers:[],principalResult:"",actualInfo:""},
             workOrderBox:[],
             //提交时间
             // 限制结束日期大于开始日期
@@ -416,13 +421,14 @@ export default {
             } else if(row.status ==1 || row.status ==3) {
                 withPrcps = false
             }
-            this.workOrderDetail={title:"",unFeedbackUsers:"",messages:[],content:"",principalUsers:[],principalResult:""},
+            this.workOrderDetail={title:"",unFeedbackUsers:"",messages:[],content:"",principalUsers:[],principalResult:"",actualInfo:""},
             this.$http.get(this.$service.searchWorkOrderDetailById+"?withPrcps="+withPrcps+"&workOrderId="+row.id).then(data=>{
                 let copyData = data.data
                 this.workOrderDetail.title = copyData.workOrderNo;
                 this.workOrderDetail.unFeedbackUsers = copyData.unFeedbackUsers;
                 this.workOrderDetail.messages = copyData.messages;
                 this.workOrderDetail.principalUsers = copyData.principalUsers;
+                this.workOrderDetail.actualInfo = copyData.actualInfo;
 
             })
             }
