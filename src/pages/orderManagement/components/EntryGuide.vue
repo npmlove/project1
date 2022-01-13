@@ -25,7 +25,6 @@
           <el-form-item label="预计进仓时间">
             <el-date-picker
               v-model="form.expectedInboundTime"
-              @change="mustData(form.expectedInboundTime)"
               type="datetime"
               value-format="yyyy-MM-dd HH:mm:ss"
               format="yyyy-MM-dd HH:mm"
@@ -182,11 +181,6 @@ export default {
     },
   },
   methods: {
-    mustData(e){
-      if(e==null || e==""){
-        this.$message.error("此处数据不能为空")
-      }
-    },
     // 下载进仓地图
     downloadMap() {
       const { xpath: url, attachmentNameCopy } = this.mapData;
