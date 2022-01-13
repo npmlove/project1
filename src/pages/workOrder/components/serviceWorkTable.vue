@@ -464,6 +464,12 @@ export default {
             request.content = this.form.content
             request.size = this.newMessage.size
             request.cargoReadyTime = this.newMessage.cargoReadyTime
+            request.pod = this.newMessage.pod
+            request.piece = this.newMessage.piece
+            request.cbm = this.newMessage.cbm
+            request.weight = this.newMessage.weight
+            request.podCountry = this.newMessage.podCountry
+            request.cargoReadyTime = this.newMessage.cargoReadyTime
             this.$http.post(this.$service.launchWorkOrder,request).then(res=>{
                 if(res.code==200) {
                     this.$message.success("新建工单成功")

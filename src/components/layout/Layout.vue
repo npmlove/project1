@@ -3,7 +3,14 @@
 <!--    <div class="arrowsImg" v-if="isShow" @click="switchover">-->
 <!--      <img :src="srcImg" alt="">-->
 <!--    </div>-->
-    <navbar @changeNav="changeNav" :leftWidth="leftWidth"/>
+<div v-if="$route.query.ledShow">
+  <router-view v-if="!$route.meta.keepAlive"/>
+        <keep-alive>
+          <router-view v-if="$route.meta.keepAlive"/>
+        </keep-alive>
+</div>
+<div v-else>
+   <navbar @changeNav="changeNav" :leftWidth="leftWidth"/>
     <div style="display: flex;width: 100%;height: calc(100vh - 50px)">
       <sidebar :class="['sidebar-container', leftWidth ? 'sidebar-width' : '']" :leftWidth="leftWidth"/>
       <div class="main-container" :style="{width:!leftWidth?'calc(100vw - 70px)':'calc(100vw - 150px)'}">
@@ -13,6 +20,7 @@
           <router-view v-if="$route.meta.keepAlive"/>
         </keep-alive>
       </div>
+</div>
     </div>
   </div>
 </template>
@@ -39,6 +47,9 @@ export default {
     changeNav(data){
       this.leftWidth = data;
     },
+  },
+  created(){
+    console.log(this.$route,"route")
   }
 }
 </script>
