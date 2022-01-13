@@ -148,6 +148,7 @@
               :key="comId"
               :noPrice="noPrice"
               :menudata="menudata"
+              :orderPoint="orderPoint"
               :datatype="comId"
               :mainData="mainData"
               :currentIndex = "currentIndex"
@@ -185,6 +186,8 @@ export default {
       comId: "order0",
       //控制第二次搜索之后提示
       initState: true,
+      // 分泡
+      orderPoint:"",
       
     };
   },
@@ -193,13 +196,13 @@ export default {
     // 子组件调用 返还页面数据
     sonSaveData(data) {
       var index = data[0];
-      console.log(data,111)
+      
       //  分单
       if (index > 0) {
         this.mainData.hawbList[index - 1] = data[1];
         if (data[1].hawb) {
           this.$set(this.menudata[index-1],"name",data[1].hawb)
-         
+          this.$set(this.menudata[index-1],"hab",data[1].hawb)
           this.$forceUpdate();
         }
       } else if (index == 0) {
@@ -229,7 +232,7 @@ export default {
         this.mainData.hawbList[this.menudata.length].ifNewData = true;
         this.$nextTick(function(){
             this.menudata[this.menudata.length-1].show = true 
-        this.comId = this.menudata[this.menudata.length-1].title
+            this.comId = this.menudata[this.menudata.length-1].title
          let item = document.querySelector("#bread-item1");
       if (this.comId != "order0") {
         item.classList.remove("activeColor");
@@ -237,7 +240,7 @@ export default {
      
         })
         setTimeout(() => {
-          this.handlepage(this.menudata.length-1)
+          this.handlepage(this.menudata.length-1,true)
           
         },100);
       
@@ -314,6 +317,16 @@ export default {
         }
       }
     },
+    initOrderBubblePoint(){
+      let param = this.orderNo
+      this.$http.get(this.$service.getOrderBubblePoint+'?orderNo='+param).then((res)=>{
+        if(res.code == 200) {
+          this.orderPoint = res.data
+        }
+      })
+
+
+    },
     //  初始化数据
     initData() {
       let param = this.orderNo;
@@ -326,7 +339,9 @@ export default {
             this.menudata = [];
             for (let i = 0; i < copy.length; i++) {
               this.add();
+              this.$set(this.menudata[i],"hab",copy[i].hawb)
             }
+           
             for (let j = 0; j < copy.length; j++) {
               this.$set(
                 this.menudata[j],
@@ -363,8 +378,9 @@ export default {
       bottom.style.display = "block";
       if (this.initState) {
         this.initData();
+        this.initOrderBubblePoint()
         this.initState = false;
-      } else if (this.mainData.hawbList.length > 0) {
+      } else{
         this.$confirm(
           "查询操作会清空未保存数据，请确认数据保存后进行操作，是否继续?",
           "提示",
@@ -376,6 +392,7 @@ export default {
         )
           .then(() => {
             this.initData();
+            this.initOrderBubblePoint()
             this.$message.success("查询成功");
           })
           .catch(() => {
@@ -388,11 +405,12 @@ export default {
         }
     },
     // 左侧点击分单显示
-    handlepage(idx) {
+    handlepage(idx,self) {
       let id = ""
       this.menudata[idx].show = true;
       this.comId = this.menudata[idx].title;
       this.currentIndex = idx+1
+      if(self) {
       for(let i=0;i<this.menudata.length;i++) {
         if(!this.menudata[i].name) {
           id = i
@@ -401,7 +419,7 @@ export default {
           }
         }
       } 
-      
+      }
       let item = document.querySelector("#bread-item1");
       if (this.comId != "order0") {
         item.classList.remove("activeColor");

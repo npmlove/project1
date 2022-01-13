@@ -295,7 +295,9 @@ agentBill: pulicWeb + '/t-bill/agentBill',
   // 航线操作人员数据导出
   exportOperator: pulicWeb + '/t-air-data/exportOperator',
   // 区域航线导出
-  exportArea: pulicWeb + '/t-air-data/exportArea'
+  exportArea: pulicWeb + '/t-air-data/exportArea',
+  // 获取分泡比例
+  getOrderBubblePoint: pulicWeb + '/t-order/getOrderBubblePoint'
 
   
 }
