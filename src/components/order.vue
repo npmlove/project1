@@ -784,6 +784,7 @@ export default {
     },
     // 判断已有数据是否改变,改变了提示用户先保存在预览和下载
     tipsComing(type) {
+      // 主单
       if (!type) {
         let obj = {};
         let data = this.tableData;
@@ -807,6 +808,8 @@ export default {
           this.previewState = true;
         }
       } else {
+        // 分单
+        if(this.orderPoint) {
         for (var i = 0, j = 5; i < j; i++) {
           if (type == (i + 1)) {
              i = type-1
@@ -841,6 +844,40 @@ export default {
             }
           }
         }
+      } else {
+           for (var i = 0, j = 5; i < j; i++) {
+          if (type == (i + 1)) {
+             i = type-1
+            var data = this.mainData.hawbList[i];
+            if (this.mainData.hawbList[i].hawb) {
+              var keys = this.mainData.hawbList[i].hawb.slice(0, 3);
+            }
+            if (keys == "FLD") {
+              var meta = 0;
+            } else {
+              var meta = 1;
+            }
+            if (
+              this.radioSelect != meta ||
+              this.inputData.input1 != data.hawb ||
+              this.inputData.input2 != data.pieces ||
+              this.texts[0].content != data.shipperInfo ||
+              this.texts[1].content != data.consigneeInfo ||
+              this.texts[2].content != data.notificationInfo ||
+              this.texts[3].content != data.goodsInfo ||
+              this.texts[4].content != data.shippingMark ||
+              this.texts[5].content != data.handlingInfo ||
+              this.radio != data.wtVal
+            ) {
+              this.$refs.downloadPop.disabled = true;
+              this.$message.error("请先保存数据后再预览和下载最新的数据");
+              this.previewState = true;
+              
+            }
+          }
+        }
+
+      }
       }
     },
     // 预览
