@@ -218,7 +218,7 @@
                                     <div>{{item.belong==0?"工单历史":"工单回复"}} 
                                         <span style="margin-left:5px">{{item.occuTime}}</span> 
                                         <span style="margin-left:5px">{{item.userName}}:{{item.content}}</span>
-                                        <h3 v-if="item.belong == 0" style="color:red;margin-top:5px">{{workOrderDetail.actualInfo}}</h3>
+                                        <h3 v-if="item.belong == 0 && index == 0" style="color:red;margin-top:5px">{{workOrderDetail.actualInfo}}</h3>
                                     </div>
 
                                 </div>

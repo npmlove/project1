@@ -196,7 +196,7 @@
                     }}</span>
                     <span style="margin-right: 5px">{{ item.occuTime }}</span>
                     {{ item.userName }}: {{ item.content }}
-                    <h3 v-if="item.belong == 0" style="color:red;margin-top:5px">{{details.actualInfo}}</h3>
+                    <h3 v-if="item.belong == 0 && index == 0" style="color:red;margin-top:5px">{{details.actualInfo}}</h3>
                   </div>
                 </div>
                 <div v-if="statuShow">
