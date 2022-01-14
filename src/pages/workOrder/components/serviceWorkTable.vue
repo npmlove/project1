@@ -75,7 +75,7 @@
                     v-model="form.content">
                 </el-input>
                 <el-form style="display:flex;margin-top:10px;flex-wrap:wrap" label-position="center">
-                     <el-form-item label="目的港" label-width="60px" style="width:170px">
+                     <el-form-item label="目的港" label-width="70px" style="width:200px" required>
                         <el-input style="width:100px" size="medium" v-model="newMessage.pod" @blur="getCountry()">
                      </el-input>
                     </el-form-item>
@@ -103,12 +103,12 @@
                     
                 </el-form>
                 <el-form>
-              
-                    <el-form-item label="货好时间">
+                    <el-form-item label="货好时间" required>
                          <el-date-picker
                             value-format="yyyy-MM-dd"
                             type="date"
-                            v-model="newMessage.cargoReadyTime"
+                            v-model="newMessage.cargoReadyDate"
+                            :picker-options = "pickAfterData"
                             placeholder="选择货好时间">
                          </el-date-picker>
                     </el-form-item>
@@ -313,7 +313,12 @@ export default {
     },
     data(){
         return {
-            newMessage:{pod:"",piece:"",cbm:"",weight:"",cargoReadyTime:"",size:"",podCountry:""},
+            pickAfterData:{
+                disabledDate(time) {
+                    return time.getTime() < Date.now() -8.64e7
+                }
+            },
+            newMessage:{pod:"",piece:"",cbm:"",weight:"",cargoReadyDate:"",size:"",podCountry:""},
             copyPod:"",
             //表格数据定时器
             tableTimer:null,
@@ -437,7 +442,7 @@ export default {
         //新建工单按钮
         openWorkOrder(){
             this.form = {workOrderType:0,urgency:"0",content:"",airLinePeople:[]},
-            this.newMessage = {pod:"",piece:"",cbm:"",weight:"",size:"",podCountry:"",cargoReadyTime:""},
+            this.newMessage = {pod:"",piece:"",cbm:"",weight:"",size:"",podCountry:"",cargoReadyDate:""},
             this.copyPod = ""
             this.workOrderDial = true
         },
@@ -451,7 +456,7 @@ export default {
                 this.$message.warning("请在输入框中输入内容获取目的港")
                 return
             }
-             else if(!this.newMessage.cargoReadyTime){
+             else if(!this.newMessage.cargoReadyDate){
                 this.$message.warning("请选择货好时间")
                 return
             }
@@ -463,13 +468,13 @@ export default {
             request.principalNames = this.form.airLinePeople.map(item=>item.split(",")[0]).join()
             request.content = this.form.content
             request.size = this.newMessage.size
-            request.cargoReadyTime = this.newMessage.cargoReadyTime
+            request.cargoReadyDate = this.newMessage.cargoReadyDate
             request.pod = this.newMessage.pod
             request.piece = this.newMessage.piece
             request.cbm = this.newMessage.cbm
             request.weight = this.newMessage.weight
             request.podCountry = this.newMessage.podCountry
-            request.cargoReadyTime = this.newMessage.cargoReadyTime
+            request.cargoReadyDate = this.newMessage.cargoReadyDate
             this.$http.post(this.$service.launchWorkOrder,request).then(res=>{
                 if(res.code==200) {
                     this.$message.success("新建工单成功")
