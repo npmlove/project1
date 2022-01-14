@@ -80,12 +80,12 @@
                      </el-input>
                     </el-form-item>
                     <el-form-item label="件数" label-width="70px" style="width:200px">
-                        <el-input style="width:140px" size="medium" v-model.number="newMessage.piece" maxlength="8">
+                        <el-input style="width:140px" size="medium" v-model="newMessage.piece" maxlength="8"  onkeyup="this.value = this.value.replace(/[^\d]/g,'');" @blur="newMessage.piece = $event.target.value">
                             <template slot="append">PCS</template>
                      </el-input>
                     </el-form-item>
                      <el-form-item label="毛重" label-width="70px" style="width:220px">
-                        <el-input style="width:150px" size="medium" v-model.number="newMessage.weight" maxlength="8">
+                        <el-input style="width:150px" size="medium" v-model.number="newMessage.weight" maxlength="8" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" @blur="newMessage.weight = $event.target.value">
                             <template slot="append">KG</template>
                      </el-input>
                     </el-form-item>
