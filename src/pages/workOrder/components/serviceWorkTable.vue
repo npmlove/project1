@@ -79,25 +79,25 @@
                         <el-input style="width:100px" size="medium" v-model="newMessage.pod" @blur="getCountry()">
                      </el-input>
                     </el-form-item>
-                    <el-form-item label="件数" label-width="60px" style="width:200px">
-                        <el-input style="width:140px" size="medium" v-model="newMessage.piece" maxlength="4" disabled>
+                    <el-form-item label="件数" label-width="70px" style="width:200px">
+                        <el-input style="width:140px" size="medium" v-model.number="newMessage.piece" maxlength="8">
                             <template slot="append">PCS</template>
                      </el-input>
                     </el-form-item>
-                     <el-form-item label="毛重" label-width="60px" style="width:220px">
-                        <el-input style="width:150px" size="medium" v-model="newMessage.weight" maxlength="6" disabled>
+                     <el-form-item label="毛重" label-width="70px" style="width:220px">
+                        <el-input style="width:150px" size="medium" v-model.number="newMessage.weight" maxlength="8">
                             <template slot="append">KG</template>
                      </el-input>
                     </el-form-item>
-                    <el-form-item label="体积" label-width="60px" style="width:240px">
-                        <el-input style="width:170px" size="medium" v-model="newMessage.cbm" disabled>
+                    <el-form-item label="体积" label-width="70px" style="width:240px">
+                        <el-input style="width:170px" size="medium" v-model="newMessage.cbm" onkeyup="this.value= this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)? this.value.match(/^-?\d{0,6}(\.\d{0,2})?/)[0] : ''" @blur="newMessage.cbm = $event.target.value" maxlength="9">
                             <template slot="append">CBM</template>
                      </el-input>
                     </el-form-item>
-                    <el-form-item label="国家"  label-width="60px"  style="width:170px">
+                    <el-form-item label="国家"  label-width="70px"  style="width:200px">
                         <el-input style="width:100px" size="medium" disabled v-model="newMessage.podCountry"></el-input>
                     </el-form-item>
-                    <el-form-item label="尺寸"  label-width="60px"  style="width:200px">
+                    <el-form-item label="尺寸"  label-width="70px"  style="width:200px">
                         <el-input style="width:140px" size="medium" v-model="newMessage.size" maxlength="150"></el-input>
                     </el-form-item>
                     
@@ -110,6 +110,7 @@
                             v-model="newMessage.cargoReadyDate"
                             :picker-options = "pickAfterData"
                             placeholder="选择货好时间">
+                            
                          </el-date-picker>
                     </el-form-item>
                      <el-form-item label="工单类型">
