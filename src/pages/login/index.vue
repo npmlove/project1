@@ -64,7 +64,11 @@
             sessionStorage.setItem('tokenId', data.data.tokenId)
             var url = vm.$route.query.redirect
             if (url) {
-              vm.$router.push(url)
+              if (decodeURIComponent(url).includes('redirect=')) {
+                vm.$router.push('/routeManagement/routeManage')  
+              } else {
+                vm.$router.push(url)
+              }
             } else {
               vm.$router.push('/routeManagement/routeManage')
             }

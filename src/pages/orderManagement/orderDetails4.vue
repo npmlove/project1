@@ -1,6 +1,6 @@
 <template>
-  <div class="contont" v-if="isDataDone">
-    <div v-if="initData.status == 25">
+  <div class="contont content-wrap" v-if="isDataDone">
+    <div v-if="initData.status == 25" class="content-fix-tools">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -10,7 +10,7 @@
       >
       <el-button type="danger" @click="exdeOrder(2)">海关查验</el-button>
     </div>
-    <div v-if="initData.status == 27">
+    <div v-if="initData.status == 27" class="content-fix-tools">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -22,7 +22,7 @@
         >查验异常，待处理</el-button
       >
     </div>
-    <div v-if="initData.status == 29">
+    <div v-if="initData.status == 29" class="content-fix-tools">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -35,7 +35,7 @@
       >
       <!-- 安检异常，待处理 -->
     </div>
-    <div v-if="initData.status == 31">
+    <div v-if="initData.status == 31" class="content-fix-tools">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -47,7 +47,7 @@
         >安检异常，待处理</el-button
       >
     </div>
-    <div v-if="initData.status == 33">
+    <div v-if="initData.status == 33" class="content-fix-tools">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -316,6 +316,14 @@
         <h1 class="title mtop_15">订舱数据</h1>
         <div class="bg_dark">
           <div class="flex_center">
+            <div>件数</div>
+            <div>毛重</div>
+            <div>体积</div>
+            <div>比重</div>
+            <div>分泡比例</div>
+            <div>计费重</div>
+          </div>
+          <div class="flex_center mtop_10">
             <div>{{ initData.bookingPiece }}</div>
             <div>{{ initData.bookingWeight }}</div>
             <div>{{ initData.bookingCbm }}</div>
@@ -333,14 +341,6 @@
               <span v-if="initData.bubblePoint == 10">不分泡</span>
             </div>
             <div>{{ initData.bookingCw }}</div>
-          </div>
-          <div class="flex_center mtop_10">
-            <div>件数</div>
-            <div>毛重</div>
-            <div>体积</div>
-            <div>比重</div>
-            <div>分泡比例</div>
-            <div>计费重</div>
           </div>
         </div>
         <div class="bg_table">
@@ -364,6 +364,14 @@
         <h1 class="title">进仓数据</h1>
         <div class="inData">
           <div class="flex_center">
+            <div>件数</div>
+            <div>毛重</div>
+            <div>体积</div>
+            <div>比重</div>
+            <div>分泡比例</div>
+            <div>计费重</div>
+          </div>
+          <div class="flex_center mtop_10">
             <div>
               <el-input
                 disabled=true
@@ -434,14 +442,6 @@
                 placeholder=""
               ></el-input>
             </div>
-          </div>
-          <div class="flex_center mtop_10">
-            <div>件数</div>
-            <div>毛重</div>
-            <div>体积</div>
-            <div>比重</div>
-            <div>分泡比例</div>
-            <div>计费重</div>
           </div>
           <binList
             class="mtop_10"
@@ -1268,7 +1268,7 @@ export default {
         this.$http.post(this.$service.orderSaveOrder, params).then((data) => {
           if (data.code == 200) {
             this.$message("保存成功");
-            this.$router.push("/orderManagement/orderManage");
+            // this.$router.push("/orderManagement/orderManage");
           } else {
             this.$message.error(data.message);
           }
