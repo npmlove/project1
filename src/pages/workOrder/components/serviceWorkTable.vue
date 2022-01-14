@@ -438,6 +438,7 @@ export default {
         openWorkOrder(){
             this.form = {workOrderType:0,urgency:"0",content:"",airLinePeople:[]},
             this.newMessage = {pod:"",piece:"",cbm:"",weight:"",size:"",podCountry:"",cargoReadyTime:""},
+            this.copyPod = ""
             this.workOrderDial = true
         },
         //新建工单 弹框提交
@@ -454,7 +455,6 @@ export default {
                 this.$message.warning("请选择货好时间")
                 return
             }
-            console.log(this.newMessage.cargoReadyTime)
             let request = {}
             request.roleName = this.pageRoleName
             request.workOrderType = this.form.workOrderType
