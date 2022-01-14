@@ -904,7 +904,7 @@
         if(type == '保存'){
           this.$http.post(this.$service.orderSaveOrder,data).then((data) => {
             if(data.code == 200){
-              this.$router.push('/orderManagement/orderManage')
+              // this.$router.push('/orderManagement/orderManage')
               this.$message.success("订单保存成功")
             } else {
               this.$message.error(data.message)
