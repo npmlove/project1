@@ -331,8 +331,11 @@ export default {
     initData() {
       let param = this.orderNo;
       axios
-        .get(`http://10.8.0.1/track/bill-of-lading/${param}`)
-        .then((data) => {
+        .get(`http://10.8.0.1/trackTest/bill-of-lading/${param}`)
+        .then((data) => {  
+           if(data.data.ext) {
+            this.noPrice = 1
+          }
           if (data.data.code == 200) {
             let copy = data.data.data.hawbList;
             this.mainData = data.data.data;
@@ -349,10 +352,11 @@ export default {
                 data.data.data.hawbList[j].hawb
               );
             }
+          } else {
+            this.$message.error('该订单号不存在')
+            return
           }
-          if(data.data.ext) {
-            this.noPrice = 1
-          }
+       
         });
     },
     //分单删除
@@ -361,7 +365,7 @@ export default {
       if (this.mainData.hawbList) {
         let id = this.mainData.hawbList[i - 1].id;
         axios
-          .get("http://10.8.0.1/track/bill-of-lading/delete/" + id)
+          .get("http://10.8.0.1/trackTest/bill-of-lading/delete/" + id)
           .then((data) => {
             if (data.data.code == 200) {
               this.$message.success("分单删除成功");
@@ -372,7 +376,7 @@ export default {
     // 查询
     tabShow() {
         if(this.orderNo.length<6){
-          this.$message.warning('请最少输入6位数')
+          this.$message.warning('请输入15位完整订单号或订单号后6位')
         } else{
       let bottom = document.querySelector(".left-bottom");
       bottom.style.display = "block";

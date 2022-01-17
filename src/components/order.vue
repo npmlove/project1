@@ -560,7 +560,7 @@ export default {
       this.dialogCangDan = true;
       var order = this.mainData.orderNo;
       this.previewKey = this.previewKey + 1;
-      this.cangDanPath = `http://10.8.0.1/track/bill-of-lading/preview/ware/pdf/${order}`;
+      this.cangDanPath = `http://10.8.0.1/trackTest/bill-of-lading/preview/ware/pdf/${order}`;
     },
     // 限制系统分单不可输入
     radioSelectChange() {
@@ -594,7 +594,7 @@ export default {
           wtVal: this.radio,
         };
         axios
-          .post("http://10.8.0.1/track/bill-of-lading/edit", json)
+          .post("http://10.8.0.1/trackTest/bill-of-lading/edit", json)
           .then((data) => {
             if (data.data.code == 200) {
               this.$message.success("保存成功");
@@ -646,7 +646,7 @@ export default {
             wtVal: this.radio,
           };
           axios
-            .post("http://10.8.0.1/track/bill-of-lading/edit", json)
+            .post("http://10.8.0.1/trackTest/bill-of-lading/edit", json)
             .then((data) => {
               if (data.data.code == 200) {
                 this.$message.success("保存成功");
@@ -672,7 +672,7 @@ export default {
             wtVal: this.radio,
           };
           axios
-            .post("http://10.8.0.1/track/bill-of-lading/save", params)
+            .post("http://10.8.0.1/trackTest/bill-of-lading/save", params)
             .then((data) => {
               if (data.data.code == 200) {
                 this.$message.success("保存成功");
@@ -892,11 +892,11 @@ export default {
             this.dialogVisible = false;
             this.previewState = false;
           } else {
-            axios.get(`http://10.8.0.1/track/bill-of-lading/preview/bill/pdf/${id}`).then((data)=>{
+            axios.get(`http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${id}`).then((data)=>{
               if(data.data.code) {
                 this.$message.error('请求错误')
               } else {
-                this.filePath = `http://10.8.0.1/track/bill-of-lading/preview/bill/pdf/${id}`;
+                this.filePath = `http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${id}`;
                  this.dialogVisible = true;
               }
             })
@@ -923,11 +923,11 @@ export default {
             this.dialogVisible = false;
             this.previewState = false;
           } else {
-             axios.get(`http://10.8.0.1/track/bill-of-lading/preview/bill/pdf/${data.id}`).then((res)=>{
+             axios.get(`http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${data.id}`).then((res)=>{
               if(res.data.code) {
                 this.$message.error('请求错误')
               } else {
-                this.filePath = `http://10.8.0.1/track/bill-of-lading/preview/bill/pdf/${data.id}`;
+                this.filePath = `http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${data.id}`;
                  this.dialogVisible = true;
               }
             })
@@ -948,13 +948,13 @@ export default {
       let typ = this.value;
       if (type == "order0") {
         let id = this.mainData.id;
-        this.dataPath = `http://10.8.0.1/track/bill-of-lading/download/bill/${typ}/${id}`;
+        this.dataPath = `http://10.8.0.1/trackTest/bill-of-lading/download/bill/${typ}/${id}`;
         return;
       }
       let idx = type.slice(-1);
       let data = this.mainData.hawbList[idx - 1];
       if (data) {
-        this.dataPath = `http://10.8.0.1/track/bill-of-lading/download/bill/${typ}/${data.id}`;
+        this.dataPath = `http://10.8.0.1/trackTest/bill-of-lading/download/bill/${typ}/${data.id}`;
         return;
       }
     },
