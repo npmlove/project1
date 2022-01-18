@@ -397,7 +397,6 @@ export default {
           .then(() => {
             this.initData();
             this.initOrderBubblePoint()
-            this.$message.success("查询成功");
           })
           .catch(() => {
             this.$message({
