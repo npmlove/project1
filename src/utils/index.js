@@ -1,4 +1,6 @@
+import moment from 'moment'
 export default {
+  moment,
   // 账单倒计时24小时
   billCountDown(createTime, timer) {
     const endTime = new Date(createTime).getTime() + 24 * 60 * 60 * 1000

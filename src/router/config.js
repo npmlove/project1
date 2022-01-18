@@ -701,7 +701,7 @@ const workOrder = [{
 const led = [{
   path:"/ledPage",
   component: Layout,
-  name: 'ledPage',
+  name: 'ledPageLayout',
   redirect: 'noredirect',
   alwaysShow: true,
   hidden:true,

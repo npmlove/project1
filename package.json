@@ -18,6 +18,7 @@
     "file-saver": "^2.0.2",
     "js-file-download": "^0.4.12",
     "js-pinyin": "^0.1.9",
+    "moment": "^2.29.1",
     "nprogress": "^0.2.0",
     "path-to-regexp": "^3.0.0",
     "qs": "^6.7.0",

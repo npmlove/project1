@@ -297,8 +297,10 @@ agentBill: pulicWeb + '/t-bill/agentBill',
   // 区域航线导出
   exportArea: pulicWeb + '/t-air-data/exportArea',
   // 获取分泡比例
-  getOrderBubblePoint: pulicWeb + '/t-order/getOrderBubblePoint'
+  getOrderBubblePoint: pulicWeb + '/t-order/getOrderBubblePoint',
 
+  // 根据机场查询仓库，并且添加了一个第三方仓库
+  searchByAirport: pulicWeb + `/t-warehouse/searchByAirport`,
   
 }
 export default serviceApi
