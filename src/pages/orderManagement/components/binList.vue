@@ -178,11 +178,9 @@ export default {
                 let c = String(e).substr(a+1,b-a-1)
                 let h = String(e).substr(b+1)
                 // console.log(a,b,l,c,h);
+                // 加个限制 最小0.01立方米，后面四舍五入
                 V=(Number(l)*Number(c)*Number(h)*num)/1000000
-                function GetRound(num, len) {
-                    return Math.round(num * Math.pow(10, len)) / Math.pow(10, len);
-                }
-                V=GetRound(V,3)
+                V=Math.max(Math.round(V*100) / 100, 0.01)
                 this.tableData[index].cbm=""+V
             }
         },
