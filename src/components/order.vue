@@ -887,6 +887,10 @@ export default {
         let id = this.mainData.id;
         // 有主单数据
         if (id) {
+          if(!this.texts[0].content||!this.texts[1].content||!this.texts[2].content||!this.texts[3].content||!this.texts[4].content||!this.tableData[0].name||!this.tableData[0].value){
+             this.$message.warning('*为必填项，请填写后再预览或下载')
+             return
+          }
           this.tipsComing(type);
           if (this.previewState) {  
             this.dialogVisible = false;
@@ -968,6 +972,11 @@ export default {
       // 请求了数据
       else {
         if (!type) {
+          if(!this.texts[0].content||!this.texts[1].content||!this.texts[2].content||!this.texts[3].content||!this.texts[4].content||!this.tableData[0].name||!this.tableData[0].value){
+             this.$message.warning('*为必填项，请填写后再预览或下载')
+              this.$refs.downloadPop.disabled = true;
+             return
+          }
           this.tipsComing(type);
         }
         if (type) {
