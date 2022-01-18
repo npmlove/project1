@@ -21,7 +21,7 @@
             <div class="dingdan">
               <div> <img src="@/assets/huixingzhen.png" style="width:15px;height:15px" alt="" v-if="scope.row.fastOrderFlag == 1"> 订单号：{{scope.row.orderNo}}</div>
               <div>代理：{{scope.row.agentName}}</div>
-              <div>客户：{{scope.row.customerName}}<a v-if="scope.row.qq"   :href="`tencent://message/?uin=${scope.row.qq}&Menu=yes&Service=300&sigT=42a1e5347953b64c5ff3980f8a6e644d4b31456cb0b6ac6b27663a3c4dd0f4aa14a543b1716f9d45`"><img  style="width:25px;" src="../assets/qq.svg"/></a></div>
+              <div>客户：{{scope.row.customerName}}<a v-if="scope.row.qq&&roleName!='航线负责人'"   :href="`tencent://message/?uin=${scope.row.qq}&Menu=yes&Service=300&sigT=42a1e5347953b64c5ff3980f8a6e644d4b31456cb0b6ac6b27663a3c4dd0f4aa14a543b1716f9d45`"><img  style="width:25px;" src="../assets/qq.svg"/></a></div>
               <div>进仓编号：{{scope.row.inboundNo || '暂无'}}</div>
               <div>运单号：{{scope.row.waybillNo || '暂无'}}</div>
               <div @click="orderDetails(scope)" style="color: #2273ce;cursor: pointer;">订单详情</div>
@@ -162,12 +162,14 @@ export default {
       seletArr: [],
       userName: '',
       arr: [],
-      UserID: ''
+      UserID: '',
+      roleName:''
     }
   },
   mounted() {
     this.UserID = !sessionStorage.getItem('userInfo') ? '' : JSON.parse(sessionStorage.getItem('userInfo')).UserID
     this.userName = !sessionStorage.getItem('userInfo') ? '' : JSON.parse(sessionStorage.getItem('userInfo')).UserName
+    this.roleName =  JSON.parse(sessionStorage.getItem('userInfo')).roleName
   },
   watch: {
     tableData(idx) {
