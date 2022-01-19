@@ -1,7 +1,9 @@
 import Router from "@/router"
 import ServiceAPI from '@/service/index'
 import DcHttp from '@/util/http.js'
+import moment from 'moment'
 export default {
+  moment,
   // 账单倒计时24小时
   billCountDown(createTime, timer) {
     const endTime = new Date(createTime).getTime() + 24 * 60 * 60 * 1000
@@ -22,17 +24,16 @@ export default {
   },
   // 返回数字
   getNumber(val, isInt = false) {
-    if (val === '0') {
-      return ''
-    }
     val = val.replace(/[^\d.]+/g, '')
     if (isInt) {
       return val <= 0 ? 1 : Math.floor(val)
     }
+    // 判断是否为数字
     const test = (/^[+-]?(0|([1-9]\d*))(\.\d+)?$/).test(val)
     if (test) {
       return val
     } else {
+      // 去除多余小数点
       let pointFlag = false
       val = val.split('').reduce((str, item) => {
         if (item === '.') {
@@ -47,6 +48,20 @@ export default {
         }
         return str
       }, '')
+      // 排除小数点开头
+      const pointStart = val[0] === '.'
+      if (pointStart) {
+        return '0.'
+      }
+      // 排除000这种
+      const allZero = val.split('').every(item => Number(item) === 0)
+      if (allZero) {
+        return 0
+      }
+      // 排除00122这种
+      if (!allZero && !val.includes('.')) {
+        return Number(val)
+      }
       return val
     }
   },

@@ -12,7 +12,7 @@
             <el-table-column
                 label="件数 PCS">
                 <template slot-scope="scope">
-                    <el-input size="small" :disabled="list_B"  v-model="scope.row.piece" clearable @input="val => { scope.row.piece = $utils.getNumber(val, true) }" :min="1"></el-input>    
+                    <el-input size="small" :disabled="list_B"  v-model="scope.row.piece" clearable @input="val => { scope.row.piece = $utils.getNumber(val, true) }" @change="errclick(scope.row.cargoSize,scope.$index)" :min="1"></el-input>    
                 </template>
             </el-table-column>
             <el-table-column
@@ -162,9 +162,13 @@ export default {
         errclick(e,index){
             // 验证输入数字与*S
             let zz = /\d+([.]?\d)*\*\d+([.]?\d)*\*\d+([.]?\d)*/
-            let V
+            let V,num=this.tableData[index].piece
+            if(num == null || this.tableData[index].cargoSize == null){
+                // console.log('件数或尺寸为空');
+                return 
+            }
             if(!zz.test(String(e))){
-                this.$alert("输入形式为：长*宽*高")
+                this.$message("输入形式为：长*宽*高")
                 this.$refs.hwleng.value=""
                 this.$refs.hwCBM.value=""
             }else{
@@ -174,11 +178,9 @@ export default {
                 let c = String(e).substr(a+1,b-a-1)
                 let h = String(e).substr(b+1)
                 // console.log(a,b,l,c,h);
-                V=(Number(l)*Number(c)*Number(h))/100000
-                function GetRound(num, len) {
-                    return Math.round(num * Math.pow(10, len)) / Math.pow(10, len);
-                }
-                V=GetRound(V,3)
+                // 加个限制 最小0.01立方米，后面四舍五入
+                V=(Number(l)*Number(c)*Number(h)*num)/1000000
+                V=Math.max(Math.round(V*100) / 100, 0.01)
                 this.tableData[index].cbm=""+V
             }
         },

@@ -46,24 +46,25 @@
             >
             </el-date-picker>
           </el-form-item>
-          <!-- <el-form-item label="仓库名称">
-            <el-select v-model="warehouseName" placeholder="请选择仓库名称">
+          <el-form-item label="仓库名称">
+            <el-select v-model="form.warehouseName" placeholder="请选择仓库名称">
               <el-option
                 v-for="item in warehouseList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
               </el-option>
             </el-select>
-          </el-form-item> -->
+          </el-form-item>
           <el-form-item label="仓库地址">
             <el-input
               v-model="form.warehouseAddress"
               placeholder="填写仓库地址"
+              :disabled="warehouseInputDisabled"
             />
           </el-form-item>
           <el-form-item label="仓库电话">
-            <el-input v-model="form.warehouseTel" placeholder="填写仓库电话" />
+            <el-input v-model="form.warehouseTel" placeholder="填写仓库电话" :disabled="warehouseInputDisabled" />
           </el-form-item>
           <el-form-item label="仓库备注">
             <el-input
@@ -142,9 +143,9 @@ export default {
         inboundNo: "", // 进仓编号
         expectedInboundTime: "", // 预计进仓时间
         latestInboundDate: "", // 最晚进仓时间
-        warehouseList: [],
-        // warehouseName: '',
+        warehouseName: '',
       },
+      warehouseList: [],
       mapData: {},
       flowChart,
       dialogVisible: false,
@@ -179,6 +180,14 @@ export default {
       const docViewer = `https://view.officeapps.live.com/op/embed.aspx?src=` // 微软预览
       return `${docViewer}${url}`
     },
+    computedWarehouse() {
+      return this.warehouseList.find(item => {
+        return item.name === this.form.warehouseName
+      }) || {}
+    },
+    warehouseInputDisabled() {
+      return this.computedWarehouse.type === 0
+    },
   },
   methods: {
     // 下载进仓地图
@@ -190,6 +199,20 @@ export default {
       document.body.appendChild(tagA);
       tagA.click();
       document.body.removeChild(tagA)
+    },
+    // 根据机场查询仓库
+    async searchByAirport(pol) {
+      const { code, data, message } = await this.$http.get(this.$service.searchByAirport, {
+        params: {
+          airportCode: pol,
+        },
+      })
+      if (code === 200) {
+        this.warehouseList = data
+      } else {
+        this.$message.error(message);
+      }
+      
     },
   },
   watch: {
@@ -204,21 +227,33 @@ export default {
           expectedInboundTime,
           latestInboundDate,
           orderAttachmentList,
+          pol,
+          warehouseName,
+          warehouseType,
         } = this.entryData;
+        const moment = this.$utils.moment
+        const latestDate = latestInboundDate ? moment(latestInboundDate).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss')
         this.form = {
           warehouseAddress,
           warehouseRemark,
           warehouseTel,
           inboundNo,
-          expectedInboundTime,
-          latestInboundDate: `${latestInboundDate} 00:00:00`,
+          expectedInboundTime: expectedInboundTime || moment().format('YYYY-MM-DD HH:mm:ss'),
+          latestInboundDate: latestDate,
+          pol,
+          warehouseName,
+          warehouseType,
         };
         this.inboundNo = inboundNo;
         this.mapData =
           orderAttachmentList.find((item) => {
             return item.attachmentType === 5;
           }) || {};
+        this.searchByAirport(pol)  
       },
+    },
+    'entryData.inboundNo'() {
+      this.form.inboundNo = this.entryData.inboundNo
     },
     form: {
       deep: true,
@@ -230,6 +265,16 @@ export default {
         });
       },
     },
+    'form.warehouseName'() {
+      const { tel, address, type } = this.computedWarehouse
+      this.form = {
+        ...this.form,
+        warehouseAddress: address || '',
+        warehouseTel: tel || '',
+        warehouseType: type,
+      }
+    },
+    
   },
 };
 </script>

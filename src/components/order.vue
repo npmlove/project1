@@ -49,7 +49,7 @@
               type="text"
               maxlength="4"
               onKeyUp="value=value.replace(/[^1-9]/g,'')"
-              @blur="inputData.input2 = $event.target.value"
+              @blur="inputData.input2 = $event.target.value;"
               spellcheck="false"
               v-model="inputData.input2"
               clearable
@@ -68,7 +68,9 @@
               type="text"
               maxlength="6"
               onKeyUp="value=value.replace(/[^1-9]/g,'')"
-              @blur="inputData.input3 = $event.target.value"
+               ref="input1"
+             
+              @blur="inputData.input3 = $event.target.value;getWeight()"
               spellcheck="false"
               v-model="inputData.input3"
               clearable
@@ -86,7 +88,9 @@
               style="border: 1px solid black"
               type="text"
               onkeyup="this.value= this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)? this.value.match(/^-?\d{0,}(\.\d{0,4})?/)[0] : ''"
-              @blur="inputData.input4 = $event.target.value"
+             
+               ref="input2"
+              @blur="inputData.input4 = $event.target.value;getWeight()"
               spellcheck="false"
               v-model="inputData.input4"
               clearable
@@ -101,8 +105,9 @@
           </div>
           <div>
             <input
-              style="border: 1px solid black"
+              style="border: 1px solid black;"
               type="text"
+              ref="input3"
               onKeyUp="value=value.replace(/[\W]/g,'')"
               @blur="inputData.input5 = $event.target.value"
               spellcheck="false"
@@ -307,6 +312,7 @@ export default {
     menudata:Array,
     currentIndex:Number,
     noPrice:Number,
+    orderPoint:Number
   },
   data() {
     return {
@@ -381,28 +387,45 @@ export default {
   },
   mounted() {
     this.initData();
-    console.log("mounted")
+    // console.log("mounted")
   },
   activated() {
+    // console.log('activated');
    
               
   },
   methods: {
+    getWeight(){
+     if( this.inputData.input3 != "" && this.inputData.input4 != "") {
+       var max =""
+       if(this.inputData.input3>this.inputData.input4) {
+         max = this.inputData.input3*167
+       } else{
+         max = this.inputData.input4*167
+       }
+       if(this.orderPoint) {
+         this.inputData.input5 =Math.ceil( max*this.orderPoint/10+this.inputData.input3*(1-this.orderPoint/10)) 
+       }
+       
+        
+     }
+
+    },
     newAdd(){
+       console.log(this.menudata);
        this.keysArray =["FLD"+this.mainData.orderNo.slice(-6)+"A","FLD"+this.mainData.orderNo.slice(-6)+"B","FLD"+this.mainData.orderNo.slice(-6)+"C","FLD"+this.mainData.orderNo.slice(-6)+"D","FLD"+this.mainData.orderNo.slice(-6)+"E"]
        let arr = this.keysArray
-      for(let i = 0,j=arr.length;i<j;i++) {
-        if(this.menudata.every((item)=>item.name!=arr[i])){
-            this.newAddData =  arr[i]
+       for(let i = 0,j=arr.length;i<j;i++) {
+        if(this.menudata.every((item)=>item.hab!=arr[i])){
+            this.newAddData =arr[i]
             break
         }
       }
+       this.$set(this.menudata[this.menudata.length-1],"hab",this.newAddData)
        this.inputData.input1 = this.newAddData
        this.radioSelect = 0;
        this.radioSelectChange();
-       this.menudata[this.menudata.length-1].name = this.newAddData
       
-     
     },
     getHolder(idx) {
       if(idx==0) {
@@ -447,6 +470,8 @@ export default {
         }
       }
       // 分单数据展示
+    //  有分泡
+      if(this.orderPoint) {
       for (let i = 0, j = 5; i < j; i++) {
         if (this.datatype == (this.menudata[i] && this.menudata[i].title)) {
           if (!this.mainData.hawbList) {
@@ -484,18 +509,63 @@ export default {
           }
         }
       }
+      }
+       else  {
+            
+           for (let i = 0, j = 5; i < j; i++) {
+        if (this.datatype == (this.menudata[i] && this.menudata[i].title)) {
+          if (!this.mainData.hawbList) {
+            break;
+          }
+          let data = this.mainData.hawbList[i];
+          if (data && data.wtVal && data.wtVal == "0") {
+            this.radio = 0;
+          } else if (data && data.wtVal && data.wtVal == "1") {
+            this.radio = 1;
+          }
+          if (data && data.hawb) {
+            var keys = data.hawb
+          }
+          this.keysArray =["FLD"+this.mainData.orderNo.slice(-6)+"A","FLD"+this.mainData.orderNo.slice(-6)+"B","FLD"+this.mainData.orderNo.slice(-6)+"C","FLD"+this.mainData.orderNo.slice(-6)+"D","FLD"+this.mainData.orderNo.slice(-6)+"E"]
+          if (this.keysArray.includes(keys)) {
+            this.radioSelect = 0;
+            this.radioSelectChange();
+          } else {
+            this.radioSelect = 1;
+            this.radioSelectChange();
+          }
+          if (data) {
+            this.$refs.input1.disabled = true
+            this.$refs.input1.style.cursor = "not-allowed";
+           this.$refs.input2.disabled = true
+            this.$refs.input2.style.cursor = "not-allowed";
+           this.$refs.input3.disabled = true
+            this.$refs.input3.style.cursor = "not-allowed";
+            this.inputData.input1 = data.hawb;
+             this.inputData.input2 = data.pieces;
+            this.texts[0].content = data.shipperInfo;
+            this.texts[1].content = data.consigneeInfo;
+            this.texts[2].content = data.notificationInfo;
+            this.texts[3].content = data.goodsInfo;
+            this.texts[4].content = data.shippingMark;
+            this.texts[5].content = data.handlingInfo;
+          }
+        }
+      }
+
+       }
     },
     // 舱单预览和下载
     cangDanDialog() {
       this.dialogCangDan = true;
       var order = this.mainData.orderNo;
       this.previewKey = this.previewKey + 1;
-      this.cangDanPath = `http://10.8.0.1/track/bill-of-lading/preview/ware/pdf/${order}`;
+      this.cangDanPath = `http://10.8.0.1/trackTest/bill-of-lading/preview/ware/pdf/${order}`;
     },
     // 限制系统分单不可输入
     radioSelectChange() {
       if (this.radioSelect == 1) {
-        this.$refs.inputAgain.style.cursor = "none";
+        this.$refs.inputAgain.style.cursor = "";
         this.$refs.inputAgain.disabled = false;
       } else {
         this.$refs.inputAgain.style.cursor = "not-allowed";
@@ -524,7 +594,7 @@ export default {
           wtVal: this.radio,
         };
         axios
-          .post("http://10.8.0.1/track/bill-of-lading/edit", json)
+          .post("http://10.8.0.1/trackTest/bill-of-lading/edit", json)
           .then((data) => {
             if (data.data.code == 200) {
               this.$message.success("保存成功");
@@ -576,7 +646,7 @@ export default {
             wtVal: this.radio,
           };
           axios
-            .post("http://10.8.0.1/track/bill-of-lading/edit", json)
+            .post("http://10.8.0.1/trackTest/bill-of-lading/edit", json)
             .then((data) => {
               if (data.data.code == 200) {
                 this.$message.success("保存成功");
@@ -602,7 +672,7 @@ export default {
             wtVal: this.radio,
           };
           axios
-            .post("http://10.8.0.1/track/bill-of-lading/save", params)
+            .post("http://10.8.0.1/trackTest/bill-of-lading/save", params)
             .then((data) => {
               if (data.data.code == 200) {
                 this.$message.success("保存成功");
@@ -648,6 +718,8 @@ export default {
         
 
       } else {
+        // 有分泡
+         if(this.orderPoint) {
         if (
           this.texts[0].content  &&
           this.texts[1].content  &&
@@ -661,10 +733,28 @@ export default {
           this.inputData.input5 
         ) {
           this.saveOtherData(type,index);
-          console.log(this.texts);
+          
         } else {
           this.$message.error("带*的为必填项，请输入完后再操作");
         }
+        } else {
+          if (
+          this.texts[0].content  &&
+          this.texts[1].content  &&
+          this.texts[2].content  &&
+          this.texts[3].content  &&
+          this.texts[4].content  &&
+          this.inputData.input1  &&
+          this.inputData.input2  
+        ) {
+          this.saveOtherData(type,index);
+          
+        } else {
+          this.$message.error("带*的为必填项，请输入完后再操作");
+        }
+
+        }
+         
       }
     },
     // 重置清空输入信息
@@ -694,6 +784,7 @@ export default {
     },
     // 判断已有数据是否改变,改变了提示用户先保存在预览和下载
     tipsComing(type) {
+      // 主单
       if (!type) {
         let obj = {};
         let data = this.tableData;
@@ -717,6 +808,8 @@ export default {
           this.previewState = true;
         }
       } else {
+        // 分单
+        if(this.orderPoint) {
         for (var i = 0, j = 5; i < j; i++) {
           if (type == (i + 1)) {
              i = type-1
@@ -751,6 +844,40 @@ export default {
             }
           }
         }
+      } else {
+           for (var i = 0, j = 5; i < j; i++) {
+          if (type == (i + 1)) {
+             i = type-1
+            var data = this.mainData.hawbList[i];
+            if (this.mainData.hawbList[i].hawb) {
+              var keys = this.mainData.hawbList[i].hawb.slice(0, 3);
+            }
+            if (keys == "FLD") {
+              var meta = 0;
+            } else {
+              var meta = 1;
+            }
+            if (
+              this.radioSelect != meta ||
+              this.inputData.input1 != data.hawb ||
+              this.inputData.input2 != data.pieces ||
+              this.texts[0].content != data.shipperInfo ||
+              this.texts[1].content != data.consigneeInfo ||
+              this.texts[2].content != data.notificationInfo ||
+              this.texts[3].content != data.goodsInfo ||
+              this.texts[4].content != data.shippingMark ||
+              this.texts[5].content != data.handlingInfo ||
+              this.radio != data.wtVal
+            ) {
+              this.$refs.downloadPop.disabled = true;
+              this.$message.error("请先保存数据后再预览和下载最新的数据");
+              this.previewState = true;
+              
+            }
+          }
+        }
+
+      }
       }
     },
     // 预览
@@ -760,16 +887,20 @@ export default {
         let id = this.mainData.id;
         // 有主单数据
         if (id) {
+          if(!this.texts[0].content||!this.texts[1].content||!this.texts[2].content||!this.texts[3].content||!this.texts[4].content||!this.tableData[0].name||!this.tableData[0].value){
+             this.$message.warning('*为必填项，请填写后再预览或下载')
+             return
+          }
           this.tipsComing(type);
           if (this.previewState) {  
             this.dialogVisible = false;
             this.previewState = false;
           } else {
-            axios.get(`http://10.8.0.1/track/bill-of-lading/preview/bill/pdf/${id}`).then((data)=>{
+            axios.get(`http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${id}`).then((data)=>{
               if(data.data.code) {
                 this.$message.error('请求错误')
               } else {
-                this.filePath = `http://10.8.0.1/track/bill-of-lading/preview/bill/pdf/${id}`;
+                this.filePath = `http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${id}`;
                  this.dialogVisible = true;
               }
             })
@@ -796,11 +927,11 @@ export default {
             this.dialogVisible = false;
             this.previewState = false;
           } else {
-             axios.get(`http://10.8.0.1/track/bill-of-lading/preview/bill/pdf/${data.id}`).then((res)=>{
+             axios.get(`http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${data.id}`).then((res)=>{
               if(res.data.code) {
                 this.$message.error('请求错误')
               } else {
-                this.filePath = `http://10.8.0.1/track/bill-of-lading/preview/bill/pdf/${data.id}`;
+                this.filePath = `http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${data.id}`;
                  this.dialogVisible = true;
               }
             })
@@ -821,13 +952,13 @@ export default {
       let typ = this.value;
       if (type == "order0") {
         let id = this.mainData.id;
-        this.dataPath = `http://10.8.0.1/track/bill-of-lading/download/bill/${typ}/${id}`;
+        this.dataPath = `http://10.8.0.1/trackTest/bill-of-lading/download/bill/${typ}/${id}`;
         return;
       }
       let idx = type.slice(-1);
       let data = this.mainData.hawbList[idx - 1];
       if (data) {
-        this.dataPath = `http://10.8.0.1/track/bill-of-lading/download/bill/${typ}/${data.id}`;
+        this.dataPath = `http://10.8.0.1/trackTest/bill-of-lading/download/bill/${typ}/${data.id}`;
         return;
       }
     },
@@ -841,6 +972,11 @@ export default {
       // 请求了数据
       else {
         if (!type) {
+          if(!this.texts[0].content||!this.texts[1].content||!this.texts[2].content||!this.texts[3].content||!this.texts[4].content||!this.tableData[0].name||!this.tableData[0].value){
+             this.$message.warning('*为必填项，请填写后再预览或下载')
+              this.$refs.downloadPop.disabled = true;
+             return
+          }
           this.tipsComing(type);
         }
         if (type) {
@@ -866,7 +1002,7 @@ export default {
       this.initData();
     },
     currentIndex() {
-      console.log(this.currentIndex,"xxCurrent")
+     
     }
   },
 };

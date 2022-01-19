@@ -71,7 +71,7 @@
                     }}</span> <span style="margin-right:6px">{{ item1.occuTime }}</span>{{ item1.userName }}:  {{
                     item1.content
                     }}
-                    <h3 v-if="item1.belong == 0" style="color:red;margin-top:5px">{{item.actualInfo}}</h3>
+                    <h3 v-if="item1.belong == 0 && index1 == 0" style="color:red;margin-top:5px">{{item.actualInfo}}</h3>
                 </div>
                 </div>
                 <div class="demo-input-suffix input1">

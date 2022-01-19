@@ -107,6 +107,7 @@
               roleId: roleStr.split("#")[0],
               roleName: roleStr.split("#")[1],
               status: this.ruleForm.status,
+              qq:this.ruleForm.qq,
               tel: this.ruleForm.tel
             }
             this.$http.post(this.$service.userUpdate,data).then(data => {

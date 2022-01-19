@@ -75,41 +75,42 @@
                     v-model="form.content">
                 </el-input>
                 <el-form style="display:flex;margin-top:10px;flex-wrap:wrap" label-position="center">
-                     <el-form-item label="目的港" label-width="60px" style="width:170px">
+                     <el-form-item label="目的港" label-width="70px" style="width:200px" required>
                         <el-input style="width:100px" size="medium" v-model="newMessage.pod" @blur="getCountry()">
                      </el-input>
                     </el-form-item>
-                    <el-form-item label="件数" label-width="60px" style="width:200px">
-                        <el-input style="width:140px" size="medium" v-model="newMessage.piece" maxlength="4" disabled>
+                    <el-form-item label="件数" label-width="70px" style="width:200px">
+                        <el-input style="width:140px" size="medium" v-model="newMessage.piece" maxlength="8"  onkeyup="this.value = this.value.replace(/[^\d]/g,'');" @blur="newMessage.piece = $event.target.value">
                             <template slot="append">PCS</template>
                      </el-input>
                     </el-form-item>
-                     <el-form-item label="毛重" label-width="60px" style="width:220px">
-                        <el-input style="width:150px" size="medium" v-model="newMessage.weight" maxlength="6" disabled>
+                     <el-form-item label="毛重" label-width="70px" style="width:220px">
+                        <el-input style="width:150px" size="medium" v-model.number="newMessage.weight" maxlength="8" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" @blur="newMessage.weight = $event.target.value">
                             <template slot="append">KG</template>
                      </el-input>
                     </el-form-item>
-                    <el-form-item label="体积" label-width="60px" style="width:240px">
-                        <el-input style="width:170px" size="medium" v-model="newMessage.cbm" disabled>
+                    <el-form-item label="体积" label-width="70px" style="width:240px">
+                        <el-input style="width:170px" size="medium" v-model="newMessage.cbm" onkeyup="this.value= this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)? this.value.match(/^-?\d{0,6}(\.\d{0,2})?/)[0] : ''" @blur="newMessage.cbm = $event.target.value" maxlength="9">
                             <template slot="append">CBM</template>
                      </el-input>
                     </el-form-item>
-                    <el-form-item label="国家"  label-width="60px"  style="width:170px">
+                    <el-form-item label="国家"  label-width="70px"  style="width:200px">
                         <el-input style="width:100px" size="medium" disabled v-model="newMessage.podCountry"></el-input>
                     </el-form-item>
-                    <el-form-item label="尺寸"  label-width="60px"  style="width:200px">
+                    <el-form-item label="尺寸"  label-width="70px"  style="width:200px">
                         <el-input style="width:140px" size="medium" v-model="newMessage.size" maxlength="150"></el-input>
                     </el-form-item>
                     
                 </el-form>
                 <el-form>
-              
-                    <el-form-item label="货好时间">
+                    <el-form-item label="货好时间" required>
                          <el-date-picker
                             value-format="yyyy-MM-dd"
                             type="date"
-                            v-model="newMessage.cargoReadyTime"
+                            v-model="newMessage.cargoReadyDate"
+                            :picker-options = "pickAfterData"
                             placeholder="选择货好时间">
+                            
                          </el-date-picker>
                     </el-form-item>
                      <el-form-item label="工单类型">
@@ -214,7 +215,12 @@
                             </div>
                             <div class="popoverContent">
                                 <div v-for="(item,index) in workOrderDetail.messages" :key="index">
-                                    <div>{{item.belong==0?"工单历史":"工单回复"}} <span style="margin-left:5px">{{item.occuTime}}</span> <span style="margin-left:5px">{{item.userName}}:{{item.content}}</span></div>
+                                    <div>{{item.belong==0?"工单历史":"工单回复"}} 
+                                        <span style="margin-left:5px">{{item.occuTime}}</span> 
+                                        <span style="margin-left:5px">{{item.userName}}:{{item.content}}</span>
+                                        <h3 v-if="item.belong == 0 && index == 0" style="color:red;margin-top:5px">{{workOrderDetail.actualInfo}}</h3>
+                                    </div>
+
                                 </div>
                             </div>
                             <el-form v-if="scope.row.status == 0 ||scope.row.status == 2">
@@ -308,7 +314,12 @@ export default {
     },
     data(){
         return {
-            newMessage:{pod:"",piece:"",cbm:"",weight:"",cargoReadyTime:"",size:"",podCountry:""},
+            pickAfterData:{
+                disabledDate(time) {
+                    return time.getTime() < Date.now() -8.64e7
+                }
+            },
+            newMessage:{pod:"",piece:"",cbm:"",weight:"",cargoReadyDate:"",size:"",podCountry:""},
             copyPod:"",
             //表格数据定时器
             tableTimer:null,
@@ -335,7 +346,7 @@ export default {
             pageSize:10,
             total:0,
             //工单详情popover
-            workOrderDetail:{title:"",unFeedbackUsers:"",messages:[],content:"",principalUsers:[],principalResult:""},
+            workOrderDetail:{title:"",unFeedbackUsers:"",messages:[],content:"",principalUsers:[],principalResult:"",actualInfo:""},
             workOrderBox:[],
             //提交时间
             // 限制结束日期大于开始日期
@@ -416,13 +427,14 @@ export default {
             } else if(row.status ==1 || row.status ==3) {
                 withPrcps = false
             }
-            this.workOrderDetail={title:"",unFeedbackUsers:"",messages:[],content:"",principalUsers:[],principalResult:""},
+            this.workOrderDetail={title:"",unFeedbackUsers:"",messages:[],content:"",principalUsers:[],principalResult:"",actualInfo:""},
             this.$http.get(this.$service.searchWorkOrderDetailById+"?withPrcps="+withPrcps+"&workOrderId="+row.id).then(data=>{
                 let copyData = data.data
                 this.workOrderDetail.title = copyData.workOrderNo;
                 this.workOrderDetail.unFeedbackUsers = copyData.unFeedbackUsers;
                 this.workOrderDetail.messages = copyData.messages;
                 this.workOrderDetail.principalUsers = copyData.principalUsers;
+                this.workOrderDetail.actualInfo = copyData.actualInfo;
 
             })
             }
@@ -431,7 +443,8 @@ export default {
         //新建工单按钮
         openWorkOrder(){
             this.form = {workOrderType:0,urgency:"0",content:"",airLinePeople:[]},
-            this.newMessage = {pod:"",piece:"",cbm:"",weight:"",size:"",podCountry:"",cargoReadyTime:""},
+            this.newMessage = {pod:"",piece:"",cbm:"",weight:"",size:"",podCountry:"",cargoReadyDate:""},
+            this.copyPod = ""
             this.workOrderDial = true
         },
         //新建工单 弹框提交
@@ -444,11 +457,10 @@ export default {
                 this.$message.warning("请在输入框中输入内容获取目的港")
                 return
             }
-             else if(!this.newMessage.cargoReadyTime){
+             else if(!this.newMessage.cargoReadyDate){
                 this.$message.warning("请选择货好时间")
                 return
             }
-            console.log(this.newMessage.cargoReadyTime)
             let request = {}
             request.roleName = this.pageRoleName
             request.workOrderType = this.form.workOrderType
@@ -457,7 +469,13 @@ export default {
             request.principalNames = this.form.airLinePeople.map(item=>item.split(",")[0]).join()
             request.content = this.form.content
             request.size = this.newMessage.size
-            request.cargoReadyTime = this.newMessage.cargoReadyTime
+            request.cargoReadyDate = this.newMessage.cargoReadyDate
+            request.pod = this.newMessage.pod
+            request.piece = this.newMessage.piece
+            request.cbm = this.newMessage.cbm
+            request.weight = this.newMessage.weight
+            request.podCountry = this.newMessage.podCountry
+            request.cargoReadyDate = this.newMessage.cargoReadyDate
             this.$http.post(this.$service.launchWorkOrder,request).then(res=>{
                 if(res.code==200) {
                     this.$message.success("新建工单成功")

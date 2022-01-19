@@ -94,6 +94,8 @@ export default {
     resolvePath(routePath) {
       return path.resolve(this.basePath, routePath)
     }
+  },
+  mounted(){
   }
 }
 </script>

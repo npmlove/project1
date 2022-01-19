@@ -794,7 +794,13 @@
                       let uint8_msg = new Uint8Array(res1);
                       let str=enc.decode(uint8_msg);
                       if(str.indexOf("code")>-1) {
-                        vm.$message.success('导入成功')
+                        let copyStr = JSON.parse(str)
+                        if(copyStr.code == 200) {
+                          vm.$message.success('导入成功')
+                        }
+                        else {
+                          vm.$message.error(copyStr.message)
+                        }
                       }
                       else{
                         const aLink = document.createElement("a");

@@ -9,10 +9,10 @@
         >审核通过</el-button
       >
       <el-button v-if="isShow5 == true" @click="exdeOrder(3)" type="danger"
-        >审核失败</el-button
+        >备选方案提交</el-button
       >
       <el-button type="danger" @click="exdeOrder(2)">取消订单</el-button>
-      <el-button type="primary setWidth" @click="showOtherWays"
+      <el-button type="primary setWidth" @click="showOtherWays" v-if="isShow5 == false"
         >失败,制作备选方案</el-button
       >
     </div>
@@ -48,6 +48,15 @@
             >
             </el-option>
           </el-select>
+        </span>
+      </div>
+      <div class="flex">
+        <span>航班号 </span>
+        <span>
+          <el-input
+            v-model="initData.flightNo"
+            size="mini"
+            placeholder="请输入航班号" />
         </span>
       </div>
       <div class="flex">
@@ -184,6 +193,7 @@
         <div class="addNewWays" v-if="isShow5">
           <!-- v-if="initData.orderOptionsList.length > 0 " -->
           <!-- 审核失败 推荐制作方案 -->
+          <div style="position:absolute;top:5px;right:5px;" @click="showOtherWays(true)"><i class='el-icon-circle-close' style="fontSize:25px"></i></div>
           <div
             class="newFlag"
             v-for="(item, index) in initData.orderOptionsList"
@@ -350,17 +360,19 @@
               </span>
             </div>
 
-            <el-button
+             <el-button
               type="primary"
               @click="addOrderOne"
               v-if="initData.orderOptionsList.length - 1 == index && index != 2"
+              style="position:absolute;bottom:5px;left:20px"
               size="mini"
-              >添加方案</el-button
-            >
-            <el-button type="danger" @click="deleteOrderOne(index)" size="mini"
+              >添加方案
+              </el-button >
+            <el-button type="danger" @click="deleteOrderOne(index)" size="mini" v-if="initData.orderOptionsList.length>1"
               >删除方案</el-button
             >
           </div>
+         
         </div>
 
         <h1 class="title">订舱信息</h1>
@@ -835,7 +847,7 @@ export default {
       this.dealChildPrice(newValue);
     },
     getBookingPrice(nv) {
-      this.dealBookingPrice(nv);
+        this.dealBookingPrice(nv);
     },
   },
   async created() {
@@ -874,8 +886,12 @@ export default {
         : `${e.pol},中转,${e.pod}`;
     },
     // 转换失败显示状态
-    showOtherWays() {
+    showOtherWays(ifClear) {
+
       this.isShow5 = !this.isShow5;
+      if(ifClear) {
+        this.initData.orderOptionsList = []
+      }
       if (this.isShow5) {
         this.addOrderOne();
       } else {
@@ -884,16 +900,13 @@ export default {
     },
     // 新增一个备选方案
     addOrderOne() {
-      let { pol, pod } = this.initData;
-      let tempObj = new orderSecondWays(pol, pod, "", "", "", "", "", "1");
+      let { pol, pod,airCompanyCode } = this.initData;
+      let tempObj = new orderSecondWays(pol, pod, airCompanyCode, "", "", "", "", "1");
       this.initData.orderOptionsList.push(tempObj);
     },
     // 删除一个备选方案 A21122716444035
     deleteOrderOne(e) {
-      if (e == 0) {
-      } else {
         this.initData.orderOptionsList.splice(e, 1);
-      }
     },
     //下载pdf
     downLoadPDFs(item) {
@@ -1482,12 +1495,12 @@ export default {
 }
 .newFlag {
   display: flex;
-
   justify-content: space-between;
   flex-wrap: wrap;
   background: #fff;
   padding: 20px;
   margin-bottom: 15px;
+  padding-right:40px;
 }
 .newFlag > div {
   width: 310px;
@@ -1509,6 +1522,9 @@ export default {
   padding: 20px;
   padding-bottom: 5px;
   margin-bottom: 20px;
+  padding-right: 40px;
+  padding-bottom: 30px;
+  position: relative;
 }
 .red {
   color: red;
