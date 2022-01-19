@@ -1086,6 +1086,17 @@ export default {
     },
     // 交单
     commitionBill() {
+      // 交单前需选择付款单位
+      const isAllApPriceFinish = this.initData.apOrderPriceList.every(price => {
+        // 判断付款单位名（原代码问题，id未）是否为空 
+        if (!price.expenseUnitName) {
+          this.$message.error(`请选择${price.expenseName}付款单位`);
+        }
+        return price.expenseUnitName
+      });
+      if (!isAllApPriceFinish) {
+        return
+      }
       // 账单暂时已经定 确认
       this.saveOrder();
       let data = {

@@ -45,6 +45,11 @@ export default {
         }
         return str
       }, '')
+      // 排除小数点开头
+      const pointStart = val[0] === '.'
+      if (pointStart) {
+        return '0.'
+      }
       // 排除000这种
       const allZero = val.split('').every(item => Number(item) === 0)
       if (allZero) {
