@@ -48,6 +48,16 @@
         </span>
       </div>
       <div class="flex">
+        <span>航班号 </span>
+        <span>
+          <el-input
+            v-model="initData.flightNo"
+            size="mini"
+            placeholder="请输入航班号"
+            :disabled="initData.status != 37" />
+        </span>
+      </div>
+      <div class="flex">
         <span>订舱单价 </span>
         <span>
           <el-input
@@ -998,6 +1008,13 @@ export default {
       if (this.initData.status == 17 && e == 1) {
         if (!this.initData.waybillNo) {
           this.$message.error("请输入运单号");
+          return;
+        }
+      }
+      // 起运前需要填写航班号
+      if (this.initData.status == 37 && e == 1) {
+        if (!this.initData.flightNo) {
+          this.$message.error("请输入航班号");
           return;
         }
       }

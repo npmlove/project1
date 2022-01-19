@@ -35,6 +35,16 @@
         </span>
       </div>
       <div class="flex">
+        <span>航班号 </span>
+        <span>
+          <el-input
+            v-model="initData.flightNo"
+            size="mini"
+            placeholder="请输入航班号"
+            disabled />
+        </span>
+      </div>
+      <div class="flex">
         <span>订舱单价 </span>
         <span>
           <el-input
