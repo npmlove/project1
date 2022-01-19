@@ -762,6 +762,9 @@ export default {
     getBookingPrice(nv) {
       this.dealBookingPrice(nv);
     },
+    '$route.query.timestamp'() {
+      this.getOriganData()
+    },
   },
 
   created() {
@@ -998,7 +1001,8 @@ export default {
                   this.$alert("申请成功", {
                     confirmButtonText: "确定",
                     callback: () => {
-                      this.$router.push("/orderManagement/orderManage");
+                      // this.$router.push("/orderManagement/orderManage");
+                      this.getOriganData()
                     },
                   });
                 } else {
@@ -1121,7 +1125,8 @@ export default {
       this.$http.post(this.$service.orderExecuteOrder, params).then((data) => {
         if (data.code == 200) {
           this.$message("成功");
-          this.$router.push("/orderManagement/orderManage");
+          // this.$router.push("/orderManagement/orderManage");
+          this.$utils.orderDetailRefresh(this.initData)
         } else {
           this.$message.error(data.message);
         }
@@ -1143,14 +1148,16 @@ export default {
             this.$alert("交单成功", {
               confirmButtonText: "确定",
               callback: () => {
-                this.$router.push("/orderManagement/orderManage");
+                // this.$router.push("/orderManagement/orderManage");
+                this.getOriganData()
               },
             });
           } else if (this.initData.financeStatus == 4) {
             this.$alert("交单已提交，待审核", {
               confirmButtonText: "确定",
               callback: () => {
-                this.$router.push("/orderManagement/orderManage");
+                // this.$router.push("/orderManagement/orderManage");
+                this.getOriganData()
               },
             });
           }
@@ -1380,6 +1387,7 @@ export default {
     },
     // 获取订单详情
     async getOriganData() {
+      this.$route.meta.title = '订单详情-操作中'
       let res = await this.$http.get(
         this.$service.orderSearchDetail + `?orderId=${this.orderId}`
       );
@@ -1466,7 +1474,8 @@ export default {
         .then((res) => {
           console.log(res);
           if (res.code == 200) {
-            this.$router.push("/orderManagement/orderManage");
+            // this.$router.push("/orderManagement/orderManage");
+            this.getOriganData()
           } else {
             console.log(res.message);
             this.$message.error(res.message);

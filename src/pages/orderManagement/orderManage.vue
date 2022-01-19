@@ -33,7 +33,7 @@
           <el-form-item>
             <el-select v-model="pol" placeholder="起运港三字码" :remote-method="polMethod" :loading="loading" clearable filterable remote reserve-keyword>
               <el-option
-                v-for="(item,index) in polOpt"
+                v-for="item in polOpt"
                 :disabled="pod == item.threeLetterCode"
                 :key="item.threeLetterCode"
                 :value="item.threeLetterCode">
@@ -229,7 +229,8 @@
         pod: '',
         podOpt: [],
         typeCode: '全部订单',
-        orderCount: 0
+        orderCount: 0,
+        loading: false,
       }
     },
     mounted() {
@@ -247,65 +248,65 @@
       },
       //详情
       orderDetails(scope) {
-    
-        if(scope.row.status == '3' && scope.row.fastOrderFlag == '1') {
-          this.$router.push({
-            path: '/orderManagement/orderDetails8',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }
-        else if(scope.row.status == '3' || scope.row.status == '5'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails1',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '9'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails2',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '13' || scope.row.status == '17' || scope.row.status == '21'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails3',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '25' || scope.row.status == '27' || scope.row.status == '29' || scope.row.status == '31' || scope.row.status == '33'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails4',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '37' || scope.row.status == '41'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails5',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '43'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails6',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }else if(scope.row.status == '39'){
-          this.$router.push({
-            path: '/orderManagement/orderDetails7',
-            query: {
-              id: scope.row.id
-            }
-          })
-        }
+        this.$router.push({ name: 'OrderDetail', query: { id: scope.row.id } })
+        // if(scope.row.status == '3' && scope.row.fastOrderFlag == '1') {
+        //   this.$router.push({
+        //     path: '/orderManagement/orderDetails8',
+        //     query: {
+        //       id: scope.row.id
+        //     }
+        //   })
+        // }
+        // else if(scope.row.status == '3' || scope.row.status == '5'){
+        //   this.$router.push({
+        //     path: '/orderManagement/orderDetails1',
+        //     query: {
+        //       id: scope.row.id
+        //     }
+        //   })
+        // }else if(scope.row.status == '9'){
+        //   this.$router.push({
+        //     path: '/orderManagement/orderDetails2',
+        //     query: {
+        //       id: scope.row.id
+        //     }
+        //   })
+        // }else if(scope.row.status == '13' || scope.row.status == '17' || scope.row.status == '21'){
+        //   this.$router.push({
+        //     path: '/orderManagement/orderDetails3',
+        //     query: {
+        //       id: scope.row.id
+        //     }
+        //   })
+        // }else if(scope.row.status == '25' || scope.row.status == '27' || scope.row.status == '29' || scope.row.status == '31' || scope.row.status == '33'){
+        //   this.$router.push({
+        //     path: '/orderManagement/orderDetails4',
+        //     query: {
+        //       id: scope.row.id
+        //     }
+        //   })
+        // }else if(scope.row.status == '37' || scope.row.status == '41'){
+        //   this.$router.push({
+        //     path: '/orderManagement/orderDetails5',
+        //     query: {
+        //       id: scope.row.id
+        //     }
+        //   })
+        // }else if(scope.row.status == '43'){
+        //   this.$router.push({
+        //     path: '/orderManagement/orderDetails6',
+        //     query: {
+        //       id: scope.row.id
+        //     }
+        //   })
+        // }else if(scope.row.status == '39'){
+        //   this.$router.push({
+        //     path: '/orderManagement/orderDetails7',
+        //     query: {
+        //       id: scope.row.id
+        //     }
+        //   })
+        // }
       },
       //起始港三字码
       initAirportSearchByPage(keyWord, type) {

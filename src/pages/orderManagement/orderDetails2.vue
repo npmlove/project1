@@ -718,7 +718,8 @@ export default {
             .then((data) => {
               if (data.code == 200) {
                 this.$message("成功");
-                this.$router.push("/orderManagement/orderManage");
+                // this.$router.push("/orderManagement/orderManage");
+                this.$utils.orderDetailRefresh(this.initData)
               } else {
                 this.$message.error(data.message);
               }
@@ -756,7 +757,8 @@ export default {
           .then((data) => {
             if (data.code == 200) {
               this.$message("成功");
-              this.$router.push("/orderManagement/orderManage");
+              // this.$router.push("/orderManagement/orderManage");
+              this.$utils.orderDetailRefresh(this.initData)
             } else {
               this.$message.error(data.message);
             }
@@ -1004,6 +1006,7 @@ export default {
     },
     // 获取订单详情
     async getOriganData() {
+      this.$route.meta.title = '订单详情-待进仓'
       let res = await this.$http.get(
         this.$service.orderSearchDetail + `?orderId=${this.orderId}`
       );

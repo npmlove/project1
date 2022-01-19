@@ -786,7 +786,8 @@
         data.order = order
         this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
           if(data.code == 200){
-            this.$router.push('/orderManagement/orderManage')
+            // this.$router.push('/orderManagement/orderManage')
+            this.initDetails()
           } else {
             this.$message.error(data.message)
           }
@@ -916,7 +917,8 @@
           }
           this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
             if(data.code == 200){
-              this.$router.push('/orderManagement/orderManage')
+              // this.$router.push('/orderManagement/orderManage')
+              this.initDetails()
               this.$message.success("订单审核通过")
             } else {
               this.$message.error(data.message)
@@ -928,7 +930,8 @@
           }
           this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
             if(data.code == 200){
-              this.$router.push('/orderManagement/orderManage')
+              // this.$router.push('/orderManagement/orderManage')
+              this.initDetails()
               this.$message.success("订单已取消")
             } else {
               this.$message.error(data.message)
@@ -1308,6 +1311,7 @@
       },
       //获取详情
       initDetails() {
+        this.$route.meta.title = '订单详情-平台审核'
         this.$http.get(this.$service.orderSearchDetail+'?orderId='+this.orderId).then((data) => {
           if(data.code == 200){
 
