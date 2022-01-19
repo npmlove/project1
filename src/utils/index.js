@@ -1,3 +1,6 @@
+import Router from "@/router"
+import ServiceAPI from '@/service/index'
+import DcHttp from '@/util/http.js'
 import moment from 'moment'
 export default {
   moment,
@@ -23,7 +26,7 @@ export default {
   getNumber(val, isInt = false) {
     val = val.replace(/[^\d.]+/g, '')
     if (isInt) {
-      return val <= 0 ? 1: Math.floor(val)
+      return val <= 0 ? 1 : Math.floor(val)
     }
     // 判断是否为数字
     const test = (/^[+-]?(0|([1-9]\d*))(\.\d+)?$/).test(val)
@@ -61,5 +64,20 @@ export default {
       }
       return val
     }
+  },
+  // 详情页操作本页刷新
+  async orderDetailRefresh(order) {
+    // 获取最新订单状态
+    const { code, data: { id } } = await DcHttp.get(
+      ServiceAPI.orderSearchDetail, {
+      params: {
+        orderId: order.id,
+      }
+    }
+    );
+    if (code !== 200) {
+      return
+    }
+    Router.replace({ name: 'OrderDetail', query: { id, timestamp: new Date().getTime() } })
   },
 }

@@ -81,7 +81,6 @@ export default {
         //过滤出 子菜单，只有子菜单展示在面包屑中
         item => item.path.split('/').length == 3
       )
-
       this.isUrl = this.levelList[0].path  //当前点击的子菜单
       if(this.urlArrName.indexOf(this.levelList[0].name) == -1){
         var pathUrl = this.$route.path
@@ -121,7 +120,7 @@ export default {
       if(path == this.$route.path){
         return
       }
-      this.$router.push(this.pathCompile(path+'?'+canshu))
+      this.$router.push(item)
     },
     handleLinkBack() {
       this.$router.go(-1)
