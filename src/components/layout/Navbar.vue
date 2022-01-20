@@ -11,7 +11,8 @@
         <img src="../../assets/closeSide.png" v-else @click="changeNav" />
         <span>管理员</span>
       </div>
-      <div class="user"><span style="margin-right:5px;fontSize:14px;color:black;fontWeight:400;color:skyblue;cursor:pointer" @click="jumpToLED">LED大屏</span> {{roleName}}　{{userName}}</div>
+      <!-- <div class="user"><span style="margin-right:5px;fontSize:14px;color:black;fontWeight:400;color:skyblue;cursor:pointer" @click="jumpToLED">LED大屏</span> {{roleName}}　{{userName}}</div> -->
+      <div class="user">{{roleName}}　{{userName}}</div>
       <!-- <div @click="restPas" class="out-user1">修改密码</div> -->
       <div @click="outClick" class="out-user">退出</div>
     </div>
