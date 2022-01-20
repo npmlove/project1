@@ -88,7 +88,7 @@
         <span>日期 </span>
         <departure-date-picker :date.sync="initData.departureDate" />
       </div>
-      <div>
+      <div v-if="notAirPeople">
         <span>利润 </span>
         <span>￥{{ initData.orderProfit }}</span>
       </div>
@@ -466,14 +466,14 @@
         <!-- 应付账单可以最多有5个 做个循环 循环组件ref -->
         <div v-for="(item, index) in initData.arOrderPriceList" :key="index">
           <!-- 组件部分 -->
-          <bill-order :getList="item.list" :ref="`typeBill${index}`" />
+          <bill-order :getList="item.list" :ref="`typeBill${index}`" v-if="notAirPeople" :notSaleBefore="true"/>
           <!-- 操作部分 -->
           <el-button
             class="setWidth ml_20"
             @click="fatherAddOneItem(index)"
             v-if="
               (initData.financeStatus == 0 || initData.financeStatus == 4) &&
-              item.status == 0
+              item.status == 0 && notAirPeople
             "
             >添加费用</el-button
           >
@@ -482,7 +482,7 @@
           <br />
           <div
             class="ml_20"
-            v-if="initData.canCheckFlag == 1 && item.status == 0"
+            v-if="initData.canCheckFlag == 1 && item.status == 0 && notAirPeople"
           >
             <el-button
               class="setWidth"
@@ -491,7 +491,7 @@
               >发起客户对账</el-button
             >
           </div>
-          <div>
+          <div v-if="notAirPeople">
             <p class="pTips" v-if="item.status == 0">
               <span>未发起客户对账</span>
               <!-- <span >修改账单</span> -->
@@ -542,7 +542,7 @@
             </p>
           </div>
           <!-- 新增账单 -->
-          <div>
+          <div v-if="notAirPeople">
             <el-button
               v-if="
                 index == initData.arOrderPriceList.length - 1 &&
@@ -557,7 +557,7 @@
             >
           </div>
         </div>
-        <div v-if="creatNewBillBoolen">
+        <div v-if="creatNewBillBoolen && notAirPeople">
           <billOrder
             ref="typeNewBill"
             :getList="[]"
@@ -576,17 +576,19 @@
         </div>
         <div class="line"></div>
         <div></div>
-        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" />
+        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo"  :notSaleBefore="notSaleBefore"/>
         <!-- 应收添加 -->
         <el-button
           class="setWidth ml_20"
-          v-if="initData.financeStatus == 0 || initData.financeStatus == 4"
+          v-if="(initData.financeStatus == 0 || initData.financeStatus == 4) && notSaleBefore"
           @click="fatherAddOneItem(200)"
           >添加费用</el-button
         >
         <br />
         <br />
         <br />
+        <div v-if="notSaleBefore">
+       
         <span class="ml_20" v-if="initData.financeStatus == 0">未交单</span>
         <span class="ml_20" v-if="initData.financeStatus == 1">已交单</span>
         <span class="ml_20" v-if="initData.financeStatus == 2">请解锁</span>
@@ -612,6 +614,7 @@
         <p class="opearte" @click="showoplist" v-if="operateList.length > 0">
           账单操作记录
         </p>
+        </div>
         <opeartes ref="addOpearte" :oplist="operateList" />
         <div class="line"></div>
         <div class="paddingBottom"></div>
@@ -640,6 +643,8 @@ import { judgeWaybillNo } from "@/util/util";
 export default {
   data() {
     return {
+      notAirPeople:true,
+      notSaleBefore:true,
       //pdf预览和下载
       pdfDownLoad: "",
       pdfDialogVisible: false,
@@ -755,6 +760,15 @@ export default {
   },
 
   created() {
+    let dataShow = JSON.parse(sessionStorage.getItem("userInfo"))
+    if(dataShow.name != "admin"){
+      if(dataShow.roleName == "航线负责人") {
+        this.notAirPeople = false
+      }
+      else if(dataShow.roleName == "售前客服") {
+        this.notSaleBefore = false
+      }
+    }
     this.orderId = this.$route.query.id;
     this.getOriganData();
     this.initSysSetTing();

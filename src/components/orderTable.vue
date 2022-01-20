@@ -62,7 +62,7 @@
             <div v-if="scope.row.payWay == '0'">付款买单<!-- —<span style="color: #F00;">未核销</span> --></div>
             <div v-if="scope.row.payWay == '1'">月结买单<!-- —<span style="color: #F00;">未核销</span> --></div>
             <div>单价：￥{{scope.row.bookingPrice || 0}}/kg</div>
-            <div>应收账单：{{priceType(scope.row.totalArOrgn) || 0}}</div>
+            <div v-if="notAirPeople">应收账单：{{priceType(scope.row.totalArOrgn) || 0}}</div>
             <div>应付账单：{{priceType(scope.row.totalApOrgn) || 0}}</div>
             <div>利润：￥{{scope.row.orderProfit || 0}}</div>
           </div>
@@ -159,11 +159,20 @@ export default {
   },
   data() {
     return {
+      notAirPeople:true,
       seletArr: [],
       userName: '',
       arr: [],
       UserID: '',
       roleName:''
+    }
+  },
+  created(){
+    let dataShow = JSON.parse(sessionStorage.getItem("userInfo"))
+    if(dataShow.name != "admin"){
+      if(dataShow.roleName == "航线负责人") {
+        this.notAirPeople = false
+      }
     }
   },
   mounted() {

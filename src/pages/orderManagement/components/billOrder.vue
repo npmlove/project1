@@ -6,6 +6,7 @@
           <span class="calcSome"><span>原币合计{{totalOrgnStr}}</span><span>人民币合计:{{totalCnyStr}}</span></span> 
           </h1>
         <el-table
+           v-if="notSaleBefore"
           :data="tableData"
           border
           stripe
@@ -143,7 +144,7 @@ class tableObj{
   }
 }
 export default {
-  props:['orderIdTemp','orderNoTemp','getList'],
+  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore"],
   data() {
     return {
       tableData: [], // 

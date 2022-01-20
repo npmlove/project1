@@ -257,8 +257,8 @@
         </div>
 
         <!-- 账单信息-应收账单 -->
-        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">账单信息-应收账单</div>
-        <div class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
+        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;" v-if="notAirPeople">账单信息-应收账单</div>
+        <div class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;" v-if="notAirPeople">
           <div class="flight-template" style="width: auto;margin-left: 0;">
             <div class="flight-template-ul-header">
               <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">序号</div>
@@ -350,7 +350,7 @@
         <!-- 账单信息-应付账单 -->
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">账单信息-应付账单</div>
         <div class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
-          <div class="flight-template" style="width: auto;margin-left: 0;">
+          <div class="flight-template" style="width: auto;margin-left: 0;" v-if="notSaleBefore">
             <div class="flight-template-ul-header">
               <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">序号</div>
               <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">费用名称</div>
@@ -459,6 +459,8 @@
   export default {
     data() {
       return {
+        notAirPeople:true,
+        notSaleBefore:true,
         //判断是否售前售中、
         ifShopML:false,
         //保存 判断是否代理公司必须
@@ -692,6 +694,15 @@
       }
     },
     created() {
+       let dataShow = JSON.parse(sessionStorage.getItem("userInfo"))
+      if(dataShow.name != "admin"){
+        if(dataShow.roleName == "航线负责人") {
+          this.notAirPeople = false
+        }
+        else if(dataShow.roleName == "售前客服") {
+          this.notSaleBefore = false
+        }
+      }
       let mession = sessionStorage.getItem("userInfo")
       console.log(JSON.parse(mession).roleName,123)
       if(JSON.parse(mession).roleName == "售前客服" || JSON.parse(mession).roleName == "售中客服") {
