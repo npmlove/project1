@@ -2,7 +2,7 @@
   <div class="content-wrapper">
     <div class="content">
       <div style="font-size: 16px;font-weight: 100;margin-bottom: 10px;">数据导入</div>
-      <div style="font-size: 14px;color: #999;">温馨提示：请按<a :href="href">下载模板</a>说明填写信息后上传，可支持多个文件同时导入，支持格式：xls</div>
+      <div style="font-size: 14px;color: #999;">温馨提示：请上传最新的价格信息，支持的文件格式：xlsx、png</div>
       <div style="margin: 20px 0;display: flex;align-items: flex-start;">
         <el-upload
           style="display: inline-block;margin-left: 10px;"
