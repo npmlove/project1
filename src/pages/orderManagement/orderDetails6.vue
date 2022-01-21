@@ -73,7 +73,7 @@
       </div>
       <div>
         <span>日期 </span>
-        <departure-date-picker :date.sync="initData.departureDate" />
+        <departure-date-picker :date.sync="initData.departureDate" :disabled="initData.statusDesc == '飞机已到达'"/>
       </div>
       <div v-if="notAirPeople">
         <span>利润 </span>

@@ -64,7 +64,7 @@
             <div>单价：￥{{scope.row.bookingPrice || 0}}/kg</div>
             <div v-if="notAirPeople">应收账单：{{priceType(scope.row.totalArOrgn) || 0}}</div>
             <div>应付账单：{{priceType(scope.row.totalApOrgn) || 0}}</div>
-            <div>利润：￥{{scope.row.orderProfit || 0}}</div>
+            <div v-if="notAirPeople">利润：￥{{scope.row.orderProfit || 0}}</div>
           </div>
           <div v-else-if="column.label == '操作人员'" style="padding-top: 30px;">
             <div>航线：{{scope.row.principalName || '暂无'}}</div>

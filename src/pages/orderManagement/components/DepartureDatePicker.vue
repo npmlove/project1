@@ -8,6 +8,8 @@
     placeholder="选择出发日期"
     style="width: 160px"
     :clearable="false"
+    :picker-options="pickerOptions0"
+    :disabled="disabled"
     size="mini"
   >
   </el-date-picker>
@@ -20,6 +22,11 @@ export default {
   data() {
     return {
       latestInboundDate: "",
+      pickerOptions0: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7;//如果没有后面的-8.64e7就是不可以选择今天的 
+         }
+        }, 
     };
   },
   props: {
@@ -27,6 +34,10 @@ export default {
       type: String,
       default: "",
     },
+    disabled:{
+      type:Boolean,
+      default:false
+    }
   },
   watch: {
     date: {
