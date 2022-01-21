@@ -85,7 +85,7 @@
         </aside>
       </div>
     </div>
-    <div class="guide-item">
+    <div class="guide-item" v-if="false">
       <h1 class="title">入库记录</h1>
       <div class="record">
         <p>入库人员:</p>
