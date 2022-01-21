@@ -1042,8 +1042,8 @@ export default {
           return;
         }
       }
-      let arrayTypeOne = this.$refs.typeBill0[0].tableData;
-      let arrayTypeTwo = this.$refs.typeTwo.tableData;
+       let arrayTypeOne = this.initData.arOrderPriceList[0].list;
+      let arrayTypeTwo = this.initData.apOrderPriceList;
       let order = this.initData;
       if (order.hasOwnProperty("apOrderPriceList")) {
         delete order.apOrderPriceList;

@@ -1128,8 +1128,8 @@ export default {
       if(C_B_M !== Number(this.initData.inboundCbm)){
           this.$message.error('总体积与分体积不匹配')
         }
-      let arrayTypeOne = this.$refs.typeBill0[0].tableData;
-      let arrayTypeTwo = this.$refs.typeTwo.tableData;
+      let arrayTypeOne = this.initData.arOrderPriceList[0].list;
+      let arrayTypeTwo = this.initData.apOrderPriceList;
       let order = this.initData;
       if (order.hasOwnProperty("apOrderPriceList")) {
         delete order.apOrderPriceList;
