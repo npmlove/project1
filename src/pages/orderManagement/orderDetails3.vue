@@ -435,7 +435,7 @@
               ></el-input>
             </div>
             <div style="width: 310px; flex: initial">
-              <image-uploader style="margin-left: 30px" :images="initData.orderAttachmentList" :orderId="orderId" :disabled="initData.status === 21" />
+              <image-uploader style="margin-left: 30px" :images="initData.totalImages" :orderId="orderId" :disabled="initData.status === 21" />
             </div>
           </div>
           <binList
@@ -1398,11 +1398,18 @@ export default {
           orderCargoDetailList[i].id = '',
           orderCargoDetailList[i].orderId = ''
         }
+        const totalImages = order.totalImages
         let params = {
           order: order,
           orderPriceList: orderPriceList,
           orderCargoDetailList: orderCargoDetailList,
-          orderAttachmentList: order.orderAttachmentList || []
+          orderAttachmentList: [
+            ...(order.orderAttachmentList || []).map(item => {
+              const image = totalImages.find(img => img.id === item.id) || item
+              return image
+            }),
+            ...totalImages.filter(img => !img.id)
+          ]
         };
         this.$http.post(this.$service.orderSaveOrder, params).then((data) => {
           if (data.code == 200) {
@@ -1467,7 +1474,10 @@ export default {
         this.isChangeJiaoDan =
           tempObj.financeStatus == 0 || tempObj.financeStatus == 4;
         this.orderNo = tempObj.orderNo;
-        this.initData = tempObj;
+        this.initData = {
+          ...tempObj,
+          totalImages: tempObj.orderAttachmentList.filter(item => item.attachmentType === 1),
+        };
         this.isDataDone = true;
         this.billTimer = setInterval(() => {
           this.initData.arOrderPriceList = this.initData.arOrderPriceList.map(
