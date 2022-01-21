@@ -604,7 +604,7 @@
         </div>
         <div class="line"></div>
         <div></div>
-        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"/>
+        <billOrder :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"/>
         <!-- 应收添加 -->
         <el-button
           class="setWidth ml_20"

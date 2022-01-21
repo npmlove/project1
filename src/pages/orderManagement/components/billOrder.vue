@@ -256,6 +256,7 @@ export default {
         let {temArray,tempStr} =  this.calcTotalOrgn(newValue)
         this.totalOrgnArr = temArray
         this.totalOrgnStr = tempStr
+        this.$emit('update:getList', newValue)
     },
     async getRates(){ // 获取当前订单的汇率
       let res = await this.$http.get(this.$service.getExchangeRatesForOrder+'?orderId='+this.orderId)
