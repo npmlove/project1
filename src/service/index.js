@@ -1,5 +1,5 @@
 //ng开发环境
-// var pulicWeb = '/back/dcErp/faw'
+var pulicWeb = '/back/dcErp/faw'
 // var pulicWeb = '/faw'
 // var pulicWeb = '/faw'
 // var pulicWeb = '/back/dcErp/faw'
@@ -9,7 +9,7 @@
 // var pulicWeb = '/back/dcErpTest/faw'
 
 // hotfix环境
-var pulicWeb = '/back/dcErpHotfix/faw'
+// var pulicWeb = '/back/dcErpHotfix/faw'
 
 
 const serviceApi = {
