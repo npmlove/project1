@@ -281,12 +281,15 @@ export default {
       },
     },
     'form.warehouseId'() {
-      const { tel, address, type } = this.computedWarehouse
+      const { tel, address, type, name, mapModulePath, remark } = this.computedWarehouse
       this.form = {
         ...this.form,
         warehouseAddress: address || '',
         warehouseTel: tel || '',
         warehouseType: type,
+        warehouseName: name || '',
+        mapModulePath: mapModulePath || '',
+        warehouseRemark: remark || '',
       }
     },
     

@@ -1253,8 +1253,6 @@ export default {
             item.piece == "" ||
             item.cbm == undefined ||
             item.cbm == "" ||
-            item.weight == undefined ||
-            item.weight == "" ||
             item.width == undefined ||
             item.width == "" ||
             item.height == undefined ||
