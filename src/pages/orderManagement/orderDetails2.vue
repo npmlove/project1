@@ -77,7 +77,7 @@
         <span>日期 </span>
         <departure-date-picker :date.sync="initData.departureDate" />
       </div>
-      <div>
+      <div v-if="notAirPeople">
         <span>利润 </span>
         <span>￥{{ initData.orderProfit }}</span>
       </div>
@@ -468,14 +468,16 @@
       </div>
       <div v-show="radio1 == '2'">
         <bill-order
+          v-if="notAirPeople"
           :getList="initData.arOrderPriceList[0].list"
+          :notSaleBefore="true"
           ref="typeOne"
         />
-        <el-button class="setWidth ml_20" @click="fatherAddOneItem(1)"
+        <el-button class="setWidth ml_20" @click="fatherAddOneItem(1)" v-if="notAirPeople"
           >添加费用</el-button
         >
         <div class="line"></div>
-        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" />
+        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"/>
         <el-button class="setWidth ml_20" @click="fatherAddOneItem(2)"
           >添加费用</el-button
         >
@@ -503,6 +505,8 @@ import DepartureDatePicker from "./components/DepartureDatePicker";
 export default {
   data() {
     return {
+      notAirPeople:true,
+      notSaleBefore:true,
       //pdf预览和下载
       pdfDownLoad: "",
       pdfDialogVisible: false,
@@ -614,6 +618,15 @@ export default {
     },
   },
   async created() {
+    let dataShow = JSON.parse(sessionStorage.getItem("userInfo"))
+    if(dataShow.name != "admin"){
+      if(dataShow.roleName == "航线负责人") {
+        this.notAirPeople = false
+      }
+      else if(dataShow.roleName == "售前客服") {
+        this.notSaleBefore = false
+      }
+    }
     this.orderId = this.$route.query.id;
     await this.getOriganData();
     await this.initSysSetTing();

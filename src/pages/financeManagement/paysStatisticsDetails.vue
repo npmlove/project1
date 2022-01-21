@@ -992,7 +992,7 @@ export default {
       var json = {
         orderNo: this.orderNo,
         waybillNo: this.waybillNo,
-        reconciliationUnit: this.reconciliationUnit,
+        expenseUnitName: this.reconciliationUnit,
         accountBank: this.accountBank,
         accountName: this.accountName,
         startPayTime: this.startPayTime,
