@@ -371,7 +371,7 @@
           </div>
         </div>
         <h1 class="title">进仓数据</h1>
-        <div class="inData">
+        <div class="inData" style="width: 1200px">
           <div class="flex_center">
             <div>件数</div>
             <div>毛重</div>
@@ -379,6 +379,7 @@
             <div>比重</div>
             <div>分泡比例</div>
             <div>计费重</div>
+            <div style="width: 300px; flex: initial">进仓图片</div>
           </div>
           <div class="flex_center mtop_10">
             <div>
@@ -450,6 +451,9 @@
                 v-model="initData.inboundCw"
                 placeholder=""
               ></el-input>
+            </div>
+            <div style="width: 310px; flex: initial">
+              <image-uploader style="margin-left: 30px" :images="initData.orderAttachmentList" :orderId="orderId" disabled />
             </div>
           </div>
           <binList
@@ -681,6 +685,7 @@ import TabBar from "./components/TabBar.vue";
 import EntryGuide from "./components/EntryGuide.vue";
 import DepartureDatePicker from './components/DepartureDatePicker'
 import { judgeWaybillNo } from "@/util/util";
+import ImageUploader  from './components/ImageUploader'
 export default {
   data() {
     return {
@@ -825,6 +830,7 @@ export default {
     TabBar,
     EntryGuide,
     DepartureDatePicker,
+    ImageUploader,
   },
   methods: {
     //下载pdf
@@ -1247,8 +1253,12 @@ export default {
             item.cbm == "" ||
             item.weight == undefined ||
             item.weight == "" ||
-            item.cargoSize == undefined ||
-            item.cargoSize == ""
+            item.width == undefined ||
+            item.width == "" ||
+            item.height == undefined ||
+            item.height == "" ||
+            item.length == undefined ||
+            item.length == ""
           );
         });
         if (tempthree.length > 0) {
@@ -1390,6 +1400,16 @@ export default {
     },
     // 客户发起对账
     async reconciliationClient(e) {
+      // 客户发起对账前需选择付款单位
+      const isAllApPriceFinish = this.initData.apOrderPriceList.every(price => {
+        if (!price.expenseUnitName) {
+          this.$message.error(`请选择${price.expenseName}付款单位`);
+        }
+        return price.expenseUnitName
+      });
+      if (!isAllApPriceFinish) {
+        return
+      }
       let { departureDate, fullLeg, orderNo, waybillNo } = this.initData;
       let userId = sessionStorage.getItem("userId");
       let tempArray = [];

@@ -1,5 +1,5 @@
 //ng开发环境
-var pulicWeb = '/back/dcErp/faw'
+// var pulicWeb = '/back/dcErp/faw'
 // var pulicWeb = '/faw'
 // var pulicWeb = '/faw'
 // var pulicWeb = '/back/dcErp/faw'
@@ -7,6 +7,9 @@ var pulicWeb = '/back/dcErp/faw'
 
 //ng测试环境
 // var pulicWeb = '/back/dcErpTest/faw'
+
+// hotfix环境
+var pulicWeb = '/back/dcErpHotfix/faw'
 
 
 const serviceApi = {
@@ -301,7 +304,6 @@ agentBill: pulicWeb + '/t-bill/agentBill',
 
   // 根据机场查询仓库，并且添加了一个第三方仓库
   searchByAirport: pulicWeb + `/t-warehouse/searchByAirport`,
-  
 }
 export default serviceApi
 
