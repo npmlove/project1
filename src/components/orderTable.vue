@@ -72,8 +72,28 @@
             <div>售中客服：{{scope.row.mscsName || '暂无'}}</div>
           </div>
           <div v-else-if="column.label == '状态'" style="padding-top: 30px;">
-            <div v-if="scope.row.status == '5' || scope.row.status == '27' || scope.row.status == '29' || scope.row.status == '33'" style="color: #F00;">{{scope.row.statusDesc}}</div>
-            <div v-else>{{scope.row.statusDesc}}</div>
+            <div v-if="scope.row.status == '5' || scope.row.status == '27' || scope.row.status == '29' || scope.row.status == '33'" style="color: #F00;">
+              <div>
+              {{scope.row.statusDesc}}
+              </div>
+                <div :style="{color:scope.row.reconciled=='已对账'?'green':''}">{{scope.row.reconciled}}</div>
+            <div :style="{color:scope.row.writeOff=='已核销'?'green':''}">{{scope.row.writeOff}}</div>
+            <div :style="{color:scope.row.financeStatus=='1'?'green':''}">{{scope.row.financeStatus=="0"?"未交单":scope.row.financeStatus=="1"?"已交单":scope.row.financeStatus=="2"?"申请解锁":scope.row.financeStatus=="3"?"解锁待审核":"修改中"}}</div>
+            
+            </div>
+            <!--  -->
+            <div v-else>
+              <div>
+              {{scope.row.statusDesc}}
+              </div>
+            <div :style="{color:scope.row.reconciled=='已对账'?'green':''}">{{scope.row.reconciled}}</div>
+            <div :style="{color:scope.row.writeOff=='已核销'?'green':''}">{{scope.row.writeOff}}</div>
+            <div :style="{color:scope.row.financeStatus=='1'?'green':''}">{{scope.row.financeStatus=="0"?"未交单":scope.row.financeStatus=="1"?"已交单":scope.row.financeStatus=="2"?"申请解锁":scope.row.financeStatus=="3"?"解锁待审核":"修改中"}}</div>
+            
+
+             
+              
+            </div>
           </div>
           <div v-else-if="column.label == '下单时间'" style="padding-top: 30px;">
             <div>{{scope.row.orderTime}}</div>
@@ -173,6 +193,11 @@ export default {
   },
   watch: {
     tableData(idx) {
+      var arr =["未对账未核销","部分对账未核销","已对账未核销","未对账部分核销","部分对账部分核销","已对账部分核销","未对账已核销","部分对账已核销","已对账已核销"]
+      for(let i=0;i<idx.length;i++){
+    this.$set(this.tableData[i],"reconciled",this.getResult(arr[idx[i].rcvWriteOffStatus])[0])
+    this.$set(this.tableData[i],"writeOff",this.getResult(arr[idx[i].rcvWriteOffStatus])[1])  
+      }
       var that = this
       this.arr = []
       that.$nextTick(() => {
@@ -196,6 +221,18 @@ export default {
     }
   },
   methods: {
+    getResult(result){
+      let arrA = ["未对账","部分对账","已对账"]
+      let arrB =["未核销","部分核销","已核销"]
+      for(let i=0;i<arrA.length;i++) {
+        for(let j=0;j<arrB.length;j++){
+          if((arrA[i]+arrB[j])==result){
+            return [arrA[i],arrB[j]]
+          } 
+        }
+      }
+
+    },
     priceType(json) {
       if(json){
         var arr = JSON.parse(json)
