@@ -1081,7 +1081,7 @@ export default {
       });
     },
     // 交单
-    commitionBill() {
+    async commitionBill() {
       // 交单前需选择付款单位
       const isAllApPriceFinish = this.initData.apOrderPriceList.every(price => {
         if (!price.expenseUnitName) {
@@ -1093,7 +1093,7 @@ export default {
         return
       }
       // 账单暂时已经定 确认
-      this.saveOrder();
+      await this.saveOrder();
       let data = {
         financeStatus: this.initData.financeStatus,
         operationType: 0,
@@ -1284,7 +1284,7 @@ export default {
           orderPriceList: orderPriceList,
           orderCargoDetailList: orderCargoDetailList,
         };
-        this.$http.post(this.$service.orderSaveOrder, params).then((data) => {
+        return this.$http.post(this.$service.orderSaveOrder, params).then((data) => {
           if (data.code == 200) {
             this.$message("保存成功");
             // this.$router.push("/orderManagement/orderManage");
