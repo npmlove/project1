@@ -1,6 +1,7 @@
 <template>
   <div class="contont content-wrap" v-if="isDataDone">
-    <div v-if="initData.status == 37" class="content-fix-tools">
+    <header class="content-fix-tools">
+      <div v-if="initData.status == 37">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -10,7 +11,7 @@
       >
       <el-button type="danger" @click="exdeOrder(2)">起运异常</el-button>
     </div>
-    <div v-if="initData.status == 41" class="content-fix-tools">
+    <div v-if="initData.status == 41">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -171,6 +172,8 @@
         </span>
       </div>
     </div>
+    </header>
+    
     <!-- 标签切换 -->
     <tab-bar :tab.sync="radio1" :order="initData" />
     <div class="order-tab-details-wrap">

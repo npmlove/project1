@@ -1,6 +1,7 @@
 <template>
   <div class="contont content-wrap" v-if="isDataDone">
-    <div v-if="initData.status == 3" class="content-fix-tools">
+    <header class="content-fix-tools">
+      <div v-if="initData.status == 3">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -16,7 +17,7 @@
         >失败,制作备选方案</el-button
       >
     </div>
-    <div v-if="initData.status == 5" class="content-fix-tools">
+    <div v-if="initData.status == 5">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -187,6 +188,8 @@
         </span>
       </div>
     </div>
+    </header>
+    
     <tab-bar :tab.sync="radio1" :order="initData" :showEntryGuide="false" />
     <div class="order-tab-details-wrap">
       <div v-show="radio1 == '1'" class="details">

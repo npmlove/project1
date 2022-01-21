@@ -1,6 +1,7 @@
 <template>
   <div class="contont content-wrap" v-if="isDataDone">
-    <div class="content-fix-tools">
+    <header class="content-fix-tools">
+      <div>
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -158,6 +159,7 @@
         </span>
       </div>
     </div>
+    </header>
     <!-- 标签切换 -->
     <tab-bar :tab.sync="radio1" :order="initData" />
     <div class="order-tab-details-wrap">

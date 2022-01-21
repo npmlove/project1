@@ -1,6 +1,7 @@
 <template>
   <div class="contont content-wrap" v-if="isDataDone">
-    <div v-if="initData.status == 13" class="content-fix-tools">
+    <header class="content-fix-tools">
+      <div v-if="initData.status == 13">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -12,7 +13,7 @@
         >进仓异常,取消订单</el-button
       >
     </div>
-    <div v-if="initData.status == 17" class="content-fix-tools">
+    <div v-if="initData.status == 17">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -24,7 +25,7 @@
         >进仓数据有异议,取消订单</el-button
       >
     </div>
-    <div v-if="initData.status == 21" class="content-fix-tools">
+    <div v-if="initData.status == 21">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -186,6 +187,7 @@
         </span>
       </div>
     </div>
+    </header>
     <!-- 标签切换 -->
     <tab-bar :tab.sync="radio1" :order="initData" />
     <div class="order-tab-details-wrap">
