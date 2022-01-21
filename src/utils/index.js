@@ -2,7 +2,7 @@ import Router from "@/router"
 import ServiceAPI from '@/service/index'
 import DcHttp from '@/util/http.js'
 import moment from 'moment'
-export default {
+const Utils = {
   moment,
   // 账单倒计时24小时
   billCountDown(createTime, timer) {
@@ -80,4 +80,29 @@ export default {
     }
     Router.replace({ name: 'OrderDetail', query: { id, timestamp: new Date().getTime() } })
   },
+  /**
+   * 载入本地文件
+   * @param attrObj 需要对input(file)设置的属性
+   */
+   loadFile(attrObj = {}) {
+    return new Promise(resolve => {
+      const input = document.createElement('input')
+      input.type = 'file'
+      Object.keys(attrObj).forEach(item => {
+        input[item] = attrObj[item]
+      })
+      input.style.display = 'none'
+      input.onchange = (ev) => {
+        resolve(ev.target.files)
+        document.documentElement.removeChild(input)
+      }
+      document.documentElement.appendChild(input)
+      input.click()
+    })
+  },
+  // 载入本地图片
+  loadImage() {
+    return Utils.loadFile({ accept: 'image/*' })
+  },
 }
+export default Utils

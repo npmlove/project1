@@ -1,5 +1,5 @@
 <template>
-  <div class="entry-guide">
+  <div class="entry-guide" v-if="false">
     <div class="guide-item">
       <h1 class="title">进仓指引</h1>
       <div class="guide-content">
