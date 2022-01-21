@@ -1125,7 +1125,7 @@ export default {
           this.initData.waybillNo = null;
         }
       }
-      if(C_B_M !== Number(this.initData.inboundCbm)){
+      if(C_B_M !== Number(this.initData.inboundCbm) && this.initData.status === 13){
           this.$message.error('总体积与分体积不匹配')
         }
       let arrayTypeOne = this.$refs.typeBill0[0].tableData;
@@ -1340,7 +1340,7 @@ export default {
           this.$message.error('总件数与分件数不匹配')
           return;
         }
-        if(C_B_M !== Number(this.initData.inboundCbm)){
+        if(C_B_M !== Number(this.initData.inboundCbm) && this.initData.status === 13){
           console.log(C_B_M,this.initData.inboundCbm);
           this.$message.error('总体积与分体积不匹配')
         }
