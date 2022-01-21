@@ -1,6 +1,7 @@
 <template>
   <div class="contont content-wrap" v-if="isDataDone">
-    <div v-if="initData.status == 25" class="content-fix-tools">
+    <header class="content-fix-tools">
+      <div v-if="initData.status == 25">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -10,7 +11,7 @@
       >
       <el-button type="danger" @click="exdeOrder(2)">海关查验</el-button>
     </div>
-    <div v-if="initData.status == 27" class="content-fix-tools">
+    <div v-if="initData.status == 27">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -22,7 +23,7 @@
         >查验异常，待处理</el-button
       >
     </div>
-    <div v-if="initData.status == 29" class="content-fix-tools">
+    <div v-if="initData.status == 29">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -35,7 +36,7 @@
       >
       <!-- 安检异常，待处理 -->
     </div>
-    <div v-if="initData.status == 31" class="content-fix-tools">
+    <div v-if="initData.status == 31">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -47,7 +48,7 @@
         >安检异常，待处理</el-button
       >
     </div>
-    <div v-if="initData.status == 33" class="content-fix-tools">
+    <div v-if="initData.status == 33">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -210,6 +211,7 @@
         </span>
       </div>
     </div>
+    </header>
     <!-- 标签切换 -->
     <tab-bar :tab.sync="radio1" :order="initData" />
     <div class="order-tab-details-wrap">
@@ -453,7 +455,7 @@
               ></el-input>
             </div>
             <div style="width: 310px; flex: initial">
-              <image-uploader style="margin-left: 30px" :images="initData.orderAttachmentList" :orderId="orderId" disabled />
+              <image-uploader style="margin-left: 30px" :images="initData.totalImages" :orderId="orderId" disabled />
             </div>
           </div>
           <binList
@@ -1251,8 +1253,6 @@ export default {
             item.piece == "" ||
             item.cbm == undefined ||
             item.cbm == "" ||
-            item.weight == undefined ||
-            item.weight == "" ||
             item.width == undefined ||
             item.width == "" ||
             item.height == undefined ||
@@ -1381,7 +1381,10 @@ export default {
         this.isChangeJiaoDan =
           tempObj.financeStatus == 0 || tempObj.financeStatus == 4;
         this.orderNo = tempObj.orderNo;
-        this.initData = tempObj;
+        this.initData = {
+          ...tempObj,
+          totalImages: tempObj.orderAttachmentList.filter(item => item.attachmentType === 1),
+        };
         this.isDataDone = true;
         this.billTimer = setInterval(() => {
           this.initData.arOrderPriceList = this.initData.arOrderPriceList.map(

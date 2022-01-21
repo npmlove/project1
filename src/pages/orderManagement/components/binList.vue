@@ -27,23 +27,6 @@
           ></el-input>
         </template>
       </el-table-column>
-      <el-table-column label="体积 CBM(m³)">
-        <template slot-scope="scope">
-          <el-input
-            size="small"
-            :disabled="list_B"
-            v-model="scope.row.cbm"
-            clearable
-            @input="
-              (val) => {
-                scope.row.cbm = $utils.getNumber(val);
-              }
-            "
-            :ref="'b_' + scope.$index"
-            @keyup.enter.native="nextInput($event, 'c', scope.$index)"
-          ></el-input>
-        </template>
-      </el-table-column>
       <el-table-column label="重量 KGS">
         <template slot-scope="scope">
           <el-input
@@ -56,8 +39,25 @@
                 scope.row.weight = $utils.getNumber(val);
               }
             "
-            :ref="'c_' + scope.$index"
+            :ref="'b_' + scope.$index"
             @keyup.enter.native="nextInput($event, 'd', scope.$index)"
+          ></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column label="体积 CBM(m³)">
+        <template slot-scope="scope">
+          <el-input
+            size="small"
+            :disabled="list_B"
+            v-model="scope.row.cbm"
+            clearable
+            @input="
+              (val) => {
+                scope.row.cbm = $utils.getNumber(val);
+              }
+            "
+            :ref="'c_' + scope.$index"
+            @keyup.enter.native="nextInput($event, 'c', scope.$index)"
           ></el-input>
         </template>
       </el-table-column>

@@ -26,7 +26,7 @@ const Utils = {
   getNumber(val, isInt = false) {
     val = val.replace(/[^\d.]+/g, '')
     if (isInt) {
-      return val <= 0 ? 1 : Math.floor(val)
+      return val < 0 ? 1 : Math.floor(val)
     }
     // 判断是否为数字
     const test = (/^[+-]?(0|([1-9]\d*))(\.\d+)?$/).test(val)

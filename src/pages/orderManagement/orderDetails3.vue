@@ -1,6 +1,7 @@
 <template>
   <div class="contont content-wrap" v-if="isDataDone">
-    <div v-if="initData.status == 13" class="content-fix-tools">
+    <header class="content-fix-tools">
+      <div v-if="initData.status == 13">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -12,7 +13,7 @@
         >进仓异常,取消订单</el-button
       >
     </div>
-    <div v-if="initData.status == 17" class="content-fix-tools">
+    <div v-if="initData.status == 17">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -24,7 +25,7 @@
         >进仓数据有异议,取消订单</el-button
       >
     </div>
-    <div v-if="initData.status == 21" class="content-fix-tools">
+    <div v-if="initData.status == 21">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -186,6 +187,7 @@
         </span>
       </div>
     </div>
+    </header>
     <!-- 标签切换 -->
     <tab-bar :tab.sync="radio1" :order="initData" />
     <div class="order-tab-details-wrap">
@@ -433,7 +435,7 @@
               ></el-input>
             </div>
             <div style="width: 310px; flex: initial">
-              <image-uploader style="margin-left: 30px" :images="initData.orderAttachmentList" :orderId="orderId" :disabled="initData.status === 21" />
+              <image-uploader style="margin-left: 30px" :images="initData.totalImages" :orderId="orderId" :disabled="initData.status === 21" />
             </div>
           </div>
           <binList
@@ -1125,7 +1127,7 @@ export default {
           this.initData.waybillNo = null;
         }
       }
-      if(C_B_M !== Number(this.initData.inboundCbm)){
+      if(C_B_M !== Number(this.initData.inboundCbm) && this.initData.status === 13){
           this.$message.error('总体积与分体积不匹配')
         }
       let arrayTypeOne = this.initData.arOrderPriceList[0].list;
@@ -1340,7 +1342,7 @@ export default {
           this.$message.error('总件数与分件数不匹配')
           return;
         }
-        if(C_B_M !== Number(this.initData.inboundCbm)){
+        if(C_B_M !== Number(this.initData.inboundCbm) && this.initData.status === 13){
           console.log(C_B_M,this.initData.inboundCbm);
           this.$message.error('总体积与分体积不匹配')
         }
@@ -1396,11 +1398,18 @@ export default {
           orderCargoDetailList[i].id = '',
           orderCargoDetailList[i].orderId = ''
         }
+        const totalImages = order.totalImages
         let params = {
           order: order,
           orderPriceList: orderPriceList,
           orderCargoDetailList: orderCargoDetailList,
-          orderAttachmentList: order.orderAttachmentList || []
+          orderAttachmentList: [
+            ...(order.orderAttachmentList || []).map(item => {
+              const image = totalImages.find(img => img.id === item.id) || item
+              return image
+            }),
+            ...totalImages.filter(img => !img.id)
+          ]
         };
         this.$http.post(this.$service.orderSaveOrder, params).then((data) => {
           if (data.code == 200) {
@@ -1465,7 +1474,10 @@ export default {
         this.isChangeJiaoDan =
           tempObj.financeStatus == 0 || tempObj.financeStatus == 4;
         this.orderNo = tempObj.orderNo;
-        this.initData = tempObj;
+        this.initData = {
+          ...tempObj,
+          totalImages: tempObj.orderAttachmentList.filter(item => item.attachmentType === 1),
+        };
         this.isDataDone = true;
         this.billTimer = setInterval(() => {
           this.initData.arOrderPriceList = this.initData.arOrderPriceList.map(
