@@ -1934,7 +1934,8 @@ export default {
           };
           this.$http.post(this.$service.priceSendBill, data).then((res) => {
             if (res.code == 200) {
-              this.$router.push("/orderManagement/orderManage");
+              // this.$router.push("/orderManagement/orderManage");
+              this.initDetails()
             } else {
               this.$message.error(res.message);
             }
@@ -2216,7 +2217,8 @@ export default {
       if (type == "保存") {
         this.$http.post(this.$service.orderSaveOrder, data).then((data) => {
           if (data.code == 200) {
-            this.$router.push("/orderManagement/orderManage");
+            // this.$router.push("/orderManagement/orderManage");
+            this.initDetails()
           } else {
             this.$message.error(data.message);
           }
@@ -2227,7 +2229,8 @@ export default {
         };
         this.$http.post(this.$service.orderExecuteOrder, data).then((data) => {
           if (data.code == 200) {
-            this.$router.push("/orderManagement/orderManage");
+            // this.$router.push("/orderManagement/orderManage");
+            this.initDetails()
           } else {
             this.$message.error(data.message);
           }
@@ -2245,7 +2248,8 @@ export default {
             .post(this.$service.orderExecuteOrder, data)
             .then((data) => {
               if (data.code == 200) {
-                this.$router.push("/orderManagement/orderManage");
+                // this.$router.push("/orderManagement/orderManage");
+                this.initDetails()
               } else {
                 this.$message.error(data.message);
               }
@@ -2797,6 +2801,7 @@ export default {
     },
     //获取详情
     initDetails() {
+      this.$route.meta.title = '订单详情-已取消'
       this.$http
         .get(this.$service.orderSearchDetail + "?orderId=" + this.orderId)
         .then((data) => {

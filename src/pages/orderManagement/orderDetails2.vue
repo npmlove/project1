@@ -1,6 +1,7 @@
 <template>
   <div class="contont content-wrap" v-if="isDataDone">
-    <div v-if="initData.status == 9" class="content-fix-tools">
+    <header class="content-fix-tools">
+      <div v-if="initData.status == 9">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -39,6 +40,15 @@
         </span>
       </div>
       <div class="flex">
+        <span>航班号 </span>
+        <span>
+          <el-input
+            v-model="initData.flightNo"
+            size="mini"
+            placeholder="请输入航班号" />
+        </span>
+      </div>
+      <div class="flex">
         <span>订舱单价 </span>
         <span>
           <el-input
@@ -68,7 +78,7 @@
         <span>日期 </span>
         <departure-date-picker :date.sync="initData.departureDate" />
       </div>
-      <div>
+      <div v-if="notAirPeople">
         <span>利润 </span>
         <span>￥{{ initData.orderProfit }}</span>
       </div>
@@ -151,6 +161,8 @@
         </span>
       </div>
     </div>
+    </header>
+    
     <!-- 标签切换 -->
     <tab-bar :tab.sync="radio1" :order="initData" />
     <div class="order-tab-details-wrap">
@@ -459,14 +471,16 @@
       </div>
       <div v-show="radio1 == '2'">
         <bill-order
+          v-if="notAirPeople"
           :getList="initData.arOrderPriceList[0].list"
+          :notSaleBefore="true"
           ref="typeOne"
         />
-        <el-button class="setWidth ml_20" @click="fatherAddOneItem(1)"
+        <el-button class="setWidth ml_20" @click="fatherAddOneItem(1)" v-if="notAirPeople"
           >添加费用</el-button
         >
         <div class="line"></div>
-        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" />
+        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"/>
         <el-button class="setWidth ml_20" @click="fatherAddOneItem(2)"
           >添加费用</el-button
         >
@@ -494,6 +508,8 @@ import DepartureDatePicker from "./components/DepartureDatePicker";
 export default {
   data() {
     return {
+      notAirPeople:true,
+      notSaleBefore:true,
       //pdf预览和下载
       pdfDownLoad: "",
       pdfDialogVisible: false,
@@ -605,6 +621,15 @@ export default {
     },
   },
   async created() {
+    let dataShow = JSON.parse(sessionStorage.getItem("userInfo"))
+    if(dataShow.name != "admin"){
+      if(dataShow.roleName == "航线负责人") {
+        this.notAirPeople = false
+      }
+      else if(dataShow.roleName == "售前客服") {
+        this.notSaleBefore = false
+      }
+    }
     this.orderId = this.$route.query.id;
     await this.getOriganData();
     await this.initSysSetTing();
@@ -718,7 +743,8 @@ export default {
             .then((data) => {
               if (data.code == 200) {
                 this.$message("成功");
-                this.$router.push("/orderManagement/orderManage");
+                // this.$router.push("/orderManagement/orderManage");
+                this.$utils.orderDetailRefresh(this.initData)
               } else {
                 this.$message.error(data.message);
               }
@@ -756,7 +782,8 @@ export default {
           .then((data) => {
             if (data.code == 200) {
               this.$message("成功");
-              this.$router.push("/orderManagement/orderManage");
+              // this.$router.push("/orderManagement/orderManage");
+              this.$utils.orderDetailRefresh(this.initData)
             } else {
               this.$message.error(data.message);
             }
@@ -1004,6 +1031,7 @@ export default {
     },
     // 获取订单详情
     async getOriganData() {
+      this.$route.meta.title = '订单详情-待进仓'
       let res = await this.$http.get(
         this.$service.orderSearchDetail + `?orderId=${this.orderId}`
       );

@@ -47,12 +47,12 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="仓库名称">
-            <el-select v-model="form.warehouseName" placeholder="请选择仓库名称">
+            <el-select v-model="form.warehouseId" placeholder="请选择仓库名称">
               <el-option
                 v-for="item in warehouseList"
                 :key="item.id"
                 :label="item.name"
-                :value="item.name">
+                :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -85,7 +85,7 @@
         </aside>
       </div>
     </div>
-    <div class="guide-item">
+    <div class="guide-item" v-if="false">
       <h1 class="title">入库记录</h1>
       <div class="record">
         <p>入库人员:</p>
@@ -182,7 +182,7 @@ export default {
     },
     computedWarehouse() {
       return this.warehouseList.find(item => {
-        return item.name === this.form.warehouseName
+        return item.id === this.form.warehouseId
       }) || {}
     },
     warehouseInputDisabled() {
@@ -192,9 +192,22 @@ export default {
   methods: {
     // 下载进仓地图
     downloadMap() {
-      const { xpath: url, attachmentNameCopy } = this.mapData;
+      // 处理域名前缀问题
+      const host = getHost()
+      function getHost() {
+        if (process.env.NODE_ENV === 'development') {
+          return `https://17dc.shenghuoq.com`
+        } else {
+          if (window.location.host.includes(`10.8.0.1`)) {
+            return `https://17dc.shenghuoq.com`
+          } else {
+            return window.location.origin
+          }
+        }
+      }
+      const { xpath, attachmentNameCopy } = this.mapData;
       const tagA = document.createElement("a");
-      tagA.href = url;
+      tagA.href = `${host}${xpath}`;
       tagA.setAttribute("download", attachmentNameCopy); // 设置下载文件名称
       document.body.appendChild(tagA);
       tagA.click();
@@ -230,6 +243,7 @@ export default {
           pol,
           warehouseName,
           warehouseType,
+          warehouseId,
         } = this.entryData;
         const moment = this.$utils.moment
         const latestDate = latestInboundDate ? moment(latestInboundDate).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss')
@@ -243,6 +257,7 @@ export default {
           pol,
           warehouseName,
           warehouseType,
+          warehouseId,
         };
         this.inboundNo = inboundNo;
         this.mapData =
@@ -265,13 +280,16 @@ export default {
         });
       },
     },
-    'form.warehouseName'() {
-      const { tel, address, type } = this.computedWarehouse
+    'form.warehouseId'() {
+      const { tel, address, type, name, mapModulePath, remark } = this.computedWarehouse
       this.form = {
         ...this.form,
         warehouseAddress: address || '',
         warehouseTel: tel || '',
         warehouseType: type,
+        warehouseName: name || '',
+        mapModulePath: mapModulePath || '',
+        warehouseRemark: remark || '',
       }
     },
     

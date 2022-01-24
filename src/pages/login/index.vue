@@ -63,14 +63,17 @@
             sessionStorage.setItem('userId', data.data.tsysUser.id)
             sessionStorage.setItem('tokenId', data.data.tokenId)
             var url = vm.$route.query.redirect
+            const tsysUser = data.data.tsysUser
+            // 临时处理 除财务人员跳财务列表 其他人跳订单列表
+            const routerPath = tsysUser.roleName === '财务人员' ? '/financeManagement/financeManage' : '/orderManagement/orderManage'
             if (url) {
               if (decodeURIComponent(url).includes('redirect=')) {
-                vm.$router.push('/routeManagement/routeManage')  
+                vm.$router.push(routerPath)  
               } else {
                 vm.$router.push(url)
               }
             } else {
-              vm.$router.push('/routeManagement/routeManage')
+              vm.$router.push(routerPath)
             }
           } else {
             this.$message.error(data.message)

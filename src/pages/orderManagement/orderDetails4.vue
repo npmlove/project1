@@ -1,6 +1,7 @@
 <template>
   <div class="contont content-wrap" v-if="isDataDone">
-    <div v-if="initData.status == 25" class="content-fix-tools">
+    <header class="content-fix-tools">
+      <div v-if="initData.status == 25">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -10,7 +11,7 @@
       >
       <el-button type="danger" @click="exdeOrder(2)">海关查验</el-button>
     </div>
-    <div v-if="initData.status == 27" class="content-fix-tools">
+    <div v-if="initData.status == 27">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -22,7 +23,7 @@
         >查验异常，待处理</el-button
       >
     </div>
-    <div v-if="initData.status == 29" class="content-fix-tools">
+    <div v-if="initData.status == 29">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -35,7 +36,7 @@
       >
       <!-- 安检异常，待处理 -->
     </div>
-    <div v-if="initData.status == 31" class="content-fix-tools">
+    <div v-if="initData.status == 31">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -47,7 +48,7 @@
         >安检异常，待处理</el-button
       >
     </div>
-    <div v-if="initData.status == 33" class="content-fix-tools">
+    <div v-if="initData.status == 33">
       <el-button type="" disabled class="setWidth">{{
         initData.statusDesc
       }}</el-button>
@@ -88,6 +89,15 @@
         </span>
       </div>
       <div class="flex">
+        <span>航班号 </span>
+        <span>
+          <el-input
+            v-model="initData.flightNo"
+            size="mini"
+            placeholder="请输入航班号" />
+        </span>
+      </div>
+      <div class="flex">
         <span>订舱单价 </span>
         <span>
           <el-input
@@ -118,7 +128,7 @@
         <span>日期 </span>
         <departure-date-picker :date.sync="initData.departureDate" />
       </div>
-      <div>
+      <div v-if="notAirPeople">
         <span>利润 </span>
         <span>￥{{ initData.orderProfit }}</span>
       </div>
@@ -201,6 +211,7 @@
         </span>
       </div>
     </div>
+    </header>
     <!-- 标签切换 -->
     <tab-bar :tab.sync="radio1" :order="initData" />
     <div class="order-tab-details-wrap">
@@ -362,7 +373,7 @@
           </div>
         </div>
         <h1 class="title">进仓数据</h1>
-        <div class="inData">
+        <div class="inData" style="width: 1200px">
           <div class="flex_center">
             <div>件数</div>
             <div>毛重</div>
@@ -370,6 +381,7 @@
             <div>比重</div>
             <div>分泡比例</div>
             <div>计费重</div>
+            <div style="width: 300px; flex: initial">进仓图片</div>
           </div>
           <div class="flex_center mtop_10">
             <div>
@@ -442,6 +454,9 @@
                 placeholder=""
               ></el-input>
             </div>
+            <div style="width: 310px; flex: initial">
+              <image-uploader style="margin-left: 30px" :images="initData.totalImages" :orderId="orderId" disabled />
+            </div>
           </div>
           <binList
             class="mtop_10"
@@ -496,14 +511,14 @@
         <!-- 应付账单可以最多有5个 做个循环 循环组件ref -->
         <div v-for="(item, index) in initData.arOrderPriceList" :key="index">
           <!-- 组件部分 -->
-          <bill-order :getList="item.list" :ref="`typeBill${index}`" />
+          <bill-order :getList="item.list" :ref="`typeBill${index}`"  v-if="notAirPeople" :notSaleBefore="true" />
           <!-- 操作部分 -->
           <el-button
             class="setWidth ml_20"
             @click="fatherAddOneItem(index)"
             v-if="
               (initData.financeStatus == 0 || initData.financeStatus == 4) &&
-              item.status == 0
+              item.status == 0 && notAirPeople
             "
             >添加费用</el-button
           >
@@ -512,7 +527,7 @@
           <br />
           <div
             class="ml_20"
-            v-if="initData.canCheckFlag == 1 && item.status == 0"
+            v-if="initData.canCheckFlag == 1 && item.status == 0 && notAirPeople "
           >
             <el-button
               class="setWidth"
@@ -521,7 +536,7 @@
               >发起客户对账</el-button
             >
           </div>
-          <div>
+          <div v-if="notAirPeople">
             <p class="pTips" v-if="item.status == 0">
               <span>未发起客户对账</span>
               <!-- <span >修改账单</span> -->
@@ -572,7 +587,7 @@
             </p>
           </div>
           <!-- 新增账单 -->
-          <div>
+          <div v-if="notAirPeople">
             <el-button
               v-if="
                 index == initData.arOrderPriceList.length - 1 &&
@@ -593,30 +608,34 @@
             :getList="[]"
             :orderIdTemp="orderId"
             :orderNoTemp="orderNo"
+            :notSaleBefore="notSaleBefore"
           />
-          <el-button class="setWidth ml_20" @click="fatherAddOneItem(100)"
+          <el-button class="setWidth ml_20" @click="fatherAddOneItem(100)" 
             >添加费用</el-button
           >
           <el-button
             class="setWidth ml_20"
             type="primary"
             @click="reconciliationClient(100)"
+            v-if="notSaleBefore"
             >发起客户对账</el-button
           >
         </div>
         <div class="line"></div>
         <div></div>
-        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" />
+        <billOrder :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"/>
         <!-- 应收添加 -->
         <el-button
           class="setWidth ml_20"
-          v-if="initData.financeStatus == 0 || initData.financeStatus == 4"
+          v-if="(initData.financeStatus == 0 || initData.financeStatus == 4) && notSaleBefore"
           @click="fatherAddOneItem(200)"
           >添加费用</el-button
         >
         <br />
         <br />
         <br />
+        <div v-if="notSaleBefore">
+     
         <span class="ml_20" v-if="initData.financeStatus == 0">未交单</span>
         <span class="ml_20" v-if="initData.financeStatus == 1">已交单</span>
         <span class="ml_20" v-if="initData.financeStatus == 2">请解锁</span>
@@ -642,6 +661,7 @@
         <p class="opearte" @click="showoplist" v-if="operateList.length > 0">
           账单操作记录
         </p>
+        </div>
         <opeartes ref="addOpearte" :oplist="operateList" />
         <div class="line"></div>
         <div class="paddingBottom"></div>
@@ -667,9 +687,12 @@ import TabBar from "./components/TabBar.vue";
 import EntryGuide from "./components/EntryGuide.vue";
 import DepartureDatePicker from './components/DepartureDatePicker'
 import { judgeWaybillNo } from "@/util/util";
+import ImageUploader  from './components/ImageUploader'
 export default {
   data() {
     return {
+      notAirPeople:true,
+      notSaleBefore:true,
       //pdf预览和下载
       pdfDownLoad: "",
       pdfDialogVisible: false,
@@ -779,9 +802,21 @@ export default {
     getBookingPrice(nv) {
       this.dealBookingPrice(nv);
     },
+    '$route.query.timestamp'() {
+      this.getOriganData()
+    },
   },
 
   created() {
+     let dataShow = JSON.parse(sessionStorage.getItem("userInfo"))
+    if(dataShow.name != "admin"){
+      if(dataShow.roleName == "航线负责人") {
+        this.notAirPeople = false
+      }
+      else if(dataShow.roleName == "售前客服") {
+        this.notSaleBefore = false
+      }
+    }
     this.orderId = this.$route.query.id;
     this.getOriganData();
     this.initSysSetTing();
@@ -797,6 +832,7 @@ export default {
     TabBar,
     EntryGuide,
     DepartureDatePicker,
+    ImageUploader,
   },
   methods: {
     //下载pdf
@@ -1016,7 +1052,8 @@ export default {
                   this.$alert("申请成功", {
                     confirmButtonText: "确定",
                     callback: () => {
-                      this.$router.push("/orderManagement/orderManage");
+                      // this.$router.push("/orderManagement/orderManage");
+                      this.getOriganData()
                     },
                   });
                 } else {
@@ -1041,8 +1078,8 @@ export default {
           return;
         }
       }
-      let arrayTypeOne = this.$refs.typeBill0[0].tableData;
-      let arrayTypeTwo = this.$refs.typeTwo.tableData;
+      let arrayTypeOne = this.initData.arOrderPriceList[0].list;
+      let arrayTypeTwo = this.initData.apOrderPriceList;
       let order = this.initData;
       if (order.hasOwnProperty("apOrderPriceList")) {
         delete order.apOrderPriceList;
@@ -1069,16 +1106,28 @@ export default {
       this.$http.post(this.$service.orderExecuteOrder, params).then((data) => {
         if (data.code == 200) {
           this.$message("成功");
-          this.$router.push("/orderManagement/orderManage");
+          // this.$router.push("/orderManagement/orderManage");
+          this.$utils.orderDetailRefresh(this.initData)
         } else {
           this.$message.error(data.message);
         }
       });
     },
     // 交单
-    commitionBill() {
+    async commitionBill() {
+      // 交单前需选择付款单位
+      const isAllApPriceFinish = this.initData.apOrderPriceList.every(price => {
+        // 判断付款单位名（原代码问题，id未）是否为空 
+        if (!price.expenseUnitName) {
+          this.$message.error(`请选择${price.expenseName}付款单位`);
+        }
+        return price.expenseUnitName
+      });
+      if (!isAllApPriceFinish) {
+        return
+      }
       // 账单暂时已经定 确认
-      this.saveOrder();
+      await this.saveOrder();
       let data = {
         financeStatus: this.initData.financeStatus,
         operationType: 0,
@@ -1091,14 +1140,16 @@ export default {
             this.$alert("交单成功", {
               confirmButtonText: "确定",
               callback: () => {
-                this.$router.push("/orderManagement/orderManage");
+                // this.$router.push("/orderManagement/orderManage");
+                this.getOriganData()
               },
             });
           } else if (this.initData.financeStatus == 4) {
             this.$alert("交单已提交，待审核", {
               confirmButtonText: "确定",
               callback: () => {
-                this.$router.push("/orderManagement/orderManage");
+                // this.$router.push("/orderManagement/orderManage");
+                this.getOriganData()
               },
             });
           }
@@ -1202,10 +1253,12 @@ export default {
             item.piece == "" ||
             item.cbm == undefined ||
             item.cbm == "" ||
-            item.weight == undefined ||
-            item.weight == "" ||
-            item.cargoSize == undefined ||
-            item.cargoSize == ""
+            item.width == undefined ||
+            item.width == "" ||
+            item.height == undefined ||
+            item.height == "" ||
+            item.length == undefined ||
+            item.length == ""
           );
         });
         if (tempthree.length > 0) {
@@ -1265,7 +1318,7 @@ export default {
           orderPriceList: orderPriceList,
           orderCargoDetailList: orderCargoDetailList,
         };
-        this.$http.post(this.$service.orderSaveOrder, params).then((data) => {
+        return this.$http.post(this.$service.orderSaveOrder, params).then((data) => {
           if (data.code == 200) {
             this.$message("保存成功");
             // this.$router.push("/orderManagement/orderManage");
@@ -1300,6 +1353,7 @@ export default {
     },
     // 获取订单详情
     async getOriganData() {
+      this.$route.meta.title = '订单详情-海关安检'
       let res = await this.$http.get(
         this.$service.orderSearchDetail + `?orderId=${this.orderId}`
       );
@@ -1327,7 +1381,10 @@ export default {
         this.isChangeJiaoDan =
           tempObj.financeStatus == 0 || tempObj.financeStatus == 4;
         this.orderNo = tempObj.orderNo;
-        this.initData = tempObj;
+        this.initData = {
+          ...tempObj,
+          totalImages: tempObj.orderAttachmentList.filter(item => item.attachmentType === 1),
+        };
         this.isDataDone = true;
         this.billTimer = setInterval(() => {
           this.initData.arOrderPriceList = this.initData.arOrderPriceList.map(
@@ -1346,6 +1403,16 @@ export default {
     },
     // 客户发起对账
     async reconciliationClient(e) {
+      // 客户发起对账前需选择付款单位
+      const isAllApPriceFinish = this.initData.apOrderPriceList.every(price => {
+        if (!price.expenseUnitName) {
+          this.$message.error(`请选择${price.expenseName}付款单位`);
+        }
+        return price.expenseUnitName
+      });
+      if (!isAllApPriceFinish) {
+        return
+      }
       let { departureDate, fullLeg, orderNo, waybillNo } = this.initData;
       let userId = sessionStorage.getItem("userId");
       let tempArray = [];
@@ -1380,7 +1447,8 @@ export default {
         .then((res) => {
           console.log(res);
           if (res.code == 200) {
-            this.$router.push("/orderManagement/orderManage");
+            // this.$router.push("/orderManagement/orderManage");
+            this.getOriganData()
           } else {
             console.log(res.message);
             this.$message.error(res.message);

@@ -199,7 +199,6 @@ export default {
     this.UserID = !sessionStorage.getItem('userInfo') ? '' : JSON.parse(sessionStorage.getItem('userInfo')).UserID
     this.userName = !sessionStorage.getItem('userInfo') ? '' : JSON.parse(sessionStorage.getItem('userInfo')).UserName
     this.roleName =  JSON.parse(sessionStorage.getItem('userInfo')).roleName
-     
   },
   watch: {
     tableData(idx) {

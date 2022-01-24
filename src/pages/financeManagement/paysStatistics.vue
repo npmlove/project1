@@ -1487,15 +1487,16 @@ export default {
     },
     // 点击对账
     async fatherReconciliation() {
-      let tempArray = this.multipleSelection;
-      if (tempArray.length >= 1) {
+      let tempArray = this.slectAllDataStatic == true ? this.tableData : this.multipleSelection;
+      if (tempArray.length >= 1 || this.slectAllDataStatic == true) {
         let tempString = tempArray[0].expenseUnitName;
         let a = tempArray.filter((i) => {
           if (i.expenseUnitName == tempString) {
             return i;
           }
         });
-        if (tempArray.length !== a.length) {
+
+        if (tempArray.length !== a.length ) {
           this.$message({
             showClose: true,
             message: "应付对象不一致，请重新勾选",
@@ -1550,8 +1551,8 @@ export default {
     },
     // 核销
     async fatherVerification() {
-      let tempArray = this.multipleSelection;
-      if (tempArray.length >= 1) {
+      let tempArray = this.slectAllDataStatic == true ? this.tableData : this.multipleSelection;
+      if (tempArray.length >= 1 || this.slectAllDataStatic == true) {
         let tempString = tempArray[0].expenseUnitName;
         let a = tempArray.filter((i) => {
           if (i.expenseUnitName == tempString) {
