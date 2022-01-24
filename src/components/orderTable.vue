@@ -17,7 +17,7 @@
         align="left"
         >
         <template slot-scope="scope">
-          <div v-if="column.label == '航线'" style="border-right:1px solid silver;height:100%">
+          <div v-if="column.label == '航线'" style="height:100%">
             <div class="dingdan">
               <div> <img src="@/assets/huixingzhen.png" style="width:15px;height:15px" alt="" v-if="scope.row.fastOrderFlag == 1"> 订单号：{{scope.row.orderNo}}</div>
               <div>代理：{{scope.row.agentName}}</div>
@@ -42,7 +42,7 @@
               </div>
             </div>
           </div>
-          <div v-else-if="column.label == '货物信息'" style="border-right:1px solid silver;height:100%">
+          <div v-else-if="column.label == '货物信息'" style="height:100%">
             <div v-if="scope.row.status >= 13 && scope.row.inboundPiece" style="text-align:center;padding:10px 0">
               <div>品名：{{scope.row.cargoName}}</div>
               <div>{{scope.row.inboundPiece}}PCS</div>
@@ -58,7 +58,7 @@
               <div>1:{{scope.row.bookingVwr}}</div>
             </div>
           </div>
-          <div v-else-if="column.label == '账单信息'" style="text-align:center;border-right:1px solid silver;height:100%;padding:10px 0">
+          <div v-else-if="column.label == '账单信息'" style="text-align:center;height:100%;padding:10px 0">
             <div v-if="scope.row.payWay == '0'">付款买单<!-- —<span style="color: #F00;">未核销</span> --></div>
             <div v-if="scope.row.payWay == '1'">月结买单<!-- —<span style="color: #F00;">未核销</span> --></div>
             <div>单价：￥{{scope.row.bookingPrice || 0}}/kg</div>
@@ -66,12 +66,12 @@
             <div>应付账单：{{priceType(scope.row.totalApOrgn) || 0}}</div>
             <div v-if="notAirPeople">利润：￥{{scope.row.orderProfit || 0}}</div>
           </div>
-          <div v-else-if="column.label == '操作人员'" style="text-align:center;border-right:1px solid silver;height:100%;padding:10px 0">
+          <div v-else-if="column.label == '操作人员'" style="text-align:center;height:100%;padding:10px 0">
             <div>航线：{{scope.row.principalName || '暂无'}}</div>
             <div>售前客服：{{scope.row.pscsName || '暂无'}}</div>
             <div>售中客服：{{scope.row.mscsName || '暂无'}}</div>
           </div>
-          <div v-else-if="column.label == '状态'" style="text-align:center;border-right:1px solid silver;height:100%;padding:10px 0">
+          <div v-else-if="column.label == '状态'" style="text-align:center;height:100%;padding:10px 0">
             <div v-if="scope.row.status == '5' || scope.row.status == '27' || scope.row.status == '29' || scope.row.status == '33'" style="color: #F00;">
               <div>
               {{scope.row.statusDesc}}
@@ -95,10 +95,10 @@
               
             </div>
           </div>
-          <div v-else-if="column.label == '下单时间'" style="text-align:center;border-right:1px solid silver;height:100%;padding:10px 0">
+          <div v-else-if="column.label == '下单时间'" style="text-align:center;height:100%;padding:10px 0">
             <div>{{scope.row.orderTime}}</div>
           </div>
-          <div v-else-if="column.label == '备注'" style="text-align:center;border-right:1px solid silver;height:100%;padding:10px 0">
+          <div v-else-if="column.label == '备注'" style="text-align:center;height:100%;padding:10px 0">
             <div>{{scope.row.remark}}</div>
           </div>
         </template>
