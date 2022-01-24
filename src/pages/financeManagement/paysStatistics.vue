@@ -417,6 +417,8 @@
         ref="multipleTable"
         @select="clckOne"
         style="width: 100%"
+       @selection-change="handleSelectionChange"
+
       >
         <el-table-column
           type="selection"
@@ -873,6 +875,7 @@ export default {
       arData: [],
       orderLogs: [],
       orderProfit: 0,
+      selectTableData:[],
       pageSkipChecked: false,
       orderData: [
         {
@@ -1113,6 +1116,9 @@ export default {
     Table
   },
   methods: {
+    handleSelectionChange(e) {
+        this.selectTableData = e
+      },
      handleCurrentChangeS(e) {
       this.pageNum = e
       this.getTabelData()
@@ -1487,8 +1493,8 @@ export default {
     },
     // 点击对账
     async fatherReconciliation() {
-      let tempArray = this.slectAllDataStatic == true ? this.tableData : this.multipleSelection;
-      if (tempArray.length >= 1 || this.slectAllDataStatic == true) {
+      let tempArray = this.selectTableData
+      if (tempArray.length >= 1) {
         let tempString = tempArray[0].expenseUnitName;
         let a = tempArray.filter((i) => {
           if (i.expenseUnitName == tempString) {
@@ -1551,7 +1557,7 @@ export default {
     },
     // 核销
     async fatherVerification() {
-      let tempArray = this.slectAllDataStatic == true ? this.tableData : this.multipleSelection;
+      let tempArray = this.selectTableData
       if (tempArray.length >= 1 || this.slectAllDataStatic == true) {
         let tempString = tempArray[0].expenseUnitName;
         let a = tempArray.filter((i) => {
