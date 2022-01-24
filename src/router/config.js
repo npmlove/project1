@@ -707,33 +707,33 @@ const workOrder = [{
   ]
 }]
 
-//led
-// const led = [{
-//   path:"/ledPage",
-//   component: Layout,
-//   name: 'ledPageLayout',
-//   redirect: 'noredirect',
-//   alwaysShow: true,
-//   hidden:true,
-//   meta: {
-//     title: 'led大屏',
-//     icon: 'icon iconfont icon-ECN',
-//     breadcrumb: false,
-//   },
-//   children:[
-//     {
-//       path: 'ledPage',
-//       component: () => import('@/pages/ledPage/led.vue'),
-//       name: 'ledPage',
-//       hidden:true,
-//       meta: {
-//         title: 'led大屏展示',
-//         keepAlive: false,
-//         needLogin: true
-//       }
-//     }
-//   ]
-// }]
+// led
+const led = [{
+  path:"/ledPage",
+  component: Layout,
+  name: 'ledPageLayout',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  hidden:true,
+  meta: {
+    title: 'led大屏',
+    icon: 'icon iconfont icon-ECN',
+    breadcrumb: false,
+  },
+  children:[
+    {
+      path: 'ledPage',
+      component: () => import('@/pages/ledPage/led.vue'),
+      name: 'ledPage',
+      hidden:true,
+      meta: {
+        title: 'led大屏展示',
+        keepAlive: false,
+        needLogin: true
+      }
+    }
+  ]
+}]
 
 
 // 权限控制路由
@@ -751,7 +751,7 @@ export const asyncRoutes = [
   ...courseManagement,
   ...cargoTrackingManage,
   ...workOrder,
-  // ...led
+  ...led
 ]
 
 // 默认显示路由
