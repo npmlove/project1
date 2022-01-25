@@ -627,7 +627,7 @@
         this.$http.get(this.$service.orderSearchByPage+'?'+json).then(data => {
           if (data.code == 200) {
             this.total = data.data.total
-            this.tableData = data.data.records
+            this.tableData = data.data.records?data.data.records:[]
             this.sumInfo = data.data.sumInfo
             this.countInfo = data.data.countInfo
           }else {
