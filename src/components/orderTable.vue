@@ -1,5 +1,13 @@
 <template>
   <div class="order_table">
+    <div style="display:flex;justify-content:space-around;margin-bottom:10px;fontSize:13px;fontWeight:600">
+      <div>订单量:<span style="margin-left:5px">{{sumInfo.orderVols}}</span> </div>
+      <div>正常单/取消单:<span style="margin-left:5px">{{sumInfo.normalVols}}/{{sumInfo.cancelledVols}}</span> </div>
+      <div>正常单计费重:<span style="margin-left:5px">{{sumInfo.normalCws}}</span> </div>
+      <div>应收总计:<span style="margin-left:5px">{{sumInfo.arCnys}}</span> </div>
+      <div>应付总计:<span style="margin-left:5px">{{sumInfo.apCnys}}</span> </div>
+      <div>利润:<span style="margin-left:5px">{{sumInfo.profits}}</span> </div>
+    </div>
     <el-table stripe ref="multipleTable" @sort-change="handleSort" @selection-change="handleSelect" :data="tableData" style="width: 100%;">
       <template slot="empty">
         <img class="data-pic" src="../assets/kong-icon.png" />
@@ -15,70 +23,85 @@
         :label="column.label"
         :min-width="column.width"
         align="left"
+        stripe
         >
         <template slot-scope="scope">
-          <div v-if="column.label == '航线'" style="height:100%">
+          <div v-if="column.label == '航线'" style="height:100%;padding:10px 0" @click="orderDetails(scope)">
             <div class="dingdan">
-              <div> <img src="@/assets/huixingzhen.png" style="width:15px;height:15px" alt="" v-if="scope.row.fastOrderFlag == 1"> 订单号：{{scope.row.orderNo}}</div>
-              <div>代理：{{scope.row.agentName}}</div>
-              <div>客户：{{scope.row.customerName}}<a v-if="scope.row.qq&&roleName!='航线负责人'"   :href="`tencent://message/?uin=${scope.row.qq}&Menu=yes&Service=300&sigT=42a1e5347953b64c5ff3980f8a6e644d4b31456cb0b6ac6b27663a3c4dd0f4aa14a543b1716f9d45`"><img  style="width:25px;" src="../assets/qq.svg"/></a></div>
+              <div style="margin-left:25px"> <img src="@/assets/huixingzhen.png" style="width:15px;height:15px" alt="" v-if="scope.row.fastOrderFlag == 1"> 订单号：{{scope.row.orderNo}}</div>
               <div>进仓编号：{{scope.row.inboundNo || '暂无'}}</div>
               <div>运单号：{{scope.row.waybillNo || '暂无'}}</div>
+              <div>下单时间：{{scope.row.orderTime || '暂无'}}</div>
               <div @click="orderDetails(scope)" style="color: #2273ce;cursor: pointer;">订单详情</div>
             </div>
-            <div class="hangxian-date">
-              <div>{{scope.row.departureDate}}</div>
-              <div>{{scope.row.airCompanyName}} {{scope.row.flightNo}}</div>
-            </div>
+        
             <div class="hangxian-route">
               <div class="hangxian-route-sanzima">
                 <div>{{scope.row.pol}}</div>
-                <div>{{scope.row.polName}}</div>
+                <!-- <div>{{scope.row.polName}}</div> -->
               </div>
-              <div class="hangxian-route-zhida">{{scope.row.legCount == '1' ? '直达' : '中转'}}</div>
+              <div class="hangxian-route-zhida">
+                 {{scope.row.legCount == '1' ? '直达' :scope.row.firstHub?scope.row.firstHub : '中转'}}
+              </div>
               <div class="hangxian-route-sanzima">
                 <div>{{scope.row.pod}}</div>
-                <div>{{scope.row.podName}}</div>
+                <!-- <div>{{scope.row.podName}}</div> -->
               </div>
             </div>
-          </div>
-          <div v-else-if="column.label == '货物信息'" style="height:100%">
-            <div v-if="scope.row.status >= 13 && scope.row.inboundPiece" style="text-align:center;padding:10px 0">
-              <div>品名：{{scope.row.cargoName}}</div>
-              <div>{{scope.row.inboundPiece}}PCS</div>
-              <div>{{scope.row.inboundCbm}}CBM</div>
-              <div>{{scope.row.inboundWeight}}KGS</div>
-              <div>1:{{scope.row.inboundVwr}}</div>
+            <div class="hangxian-date">
+              <div>航班日期:{{scope.row.departureDate}}</div>
             </div>
-            <div v-else  style="text-align:center;padding:10px 0">
-              <div>品名：{{scope.row.cargoName}}</div>
-              <div>{{scope.row.bookingPiece}}PCS</div>
-              <div>{{scope.row.bookingCbm}}CBM</div>
-              <div>{{scope.row.bookingWeight}}KGS</div>
-              <div>1:{{scope.row.bookingVwr}}</div>
+            <div style="display:flex;justify-content:space-around">
+              <div style="flex:0 0 50px">{{scope.row.airCompanyCode}}</div>
+              <div  style="flex:0 0 50px">{{scope.row.flightNo}}</div>
             </div>
           </div>
-          <div v-else-if="column.label == '账单信息'" style="text-align:center;height:100%;padding:10px 0">
-            <div v-if="scope.row.payWay == '0'">付款买单<!-- —<span style="color: #F00;">未核销</span> --></div>
-            <div v-if="scope.row.payWay == '1'">月结买单<!-- —<span style="color: #F00;">未核销</span> --></div>
-            <div>单价：￥{{scope.row.bookingPrice || 0}}/kg</div>
-            <div v-if="notAirPeople">应收账单：{{priceType(scope.row.totalArOrgn) || 0}}</div>
-            <div>应付账单：{{priceType(scope.row.totalApOrgn) || 0}}</div>
-            <div v-if="notAirPeople">利润：￥{{scope.row.orderProfit || 0}}</div>
+          <div v-else-if="column.label == '客户代理'" style="height:100%;display:flex;align-items:center;justify-content:center" @click="orderDetails(scope)">
+           <div>
+              <div @click.stop="">客户：{{scope.row.customerName}}<a v-if="scope.row.qq&&roleName!='航线负责人'" :href="`tencent://message/?uin=${scope.row.qq}&Menu=yes&Service=300&sigT=42a1e5347953b64c5ff3980f8a6e644d4b31456cb0b6ac6b27663a3c4dd0f4aa14a543b1716f9d45`"><img  style="width:25px;" src="../assets/qq.svg"/></a></div>
+              <div style="margin-top:10px">代理：{{scope.row.agentName}}</div>
+           </div>
           </div>
-          <div v-else-if="column.label == '操作人员'" style="text-align:center;height:100%;padding:10px 0">
-            <div>航线：{{scope.row.principalName || '暂无'}}</div>
-            <div>售前客服：{{scope.row.pscsName || '暂无'}}</div>
-            <div>售中客服：{{scope.row.mscsName || '暂无'}}</div>
+          <div v-else-if="column.label == '货物信息'" style="height:100%;display:flex;justify-content:center" @click="orderDetails(scope)">
+            <div v-if="scope.row.status >= 13 && scope.row.inboundPiece" style="padding:10px 0">
+              <div>品名:{{scope.row.cargoName}}</div>
+              <div style="margin-top:5px;fontWeight:bolder">{{scope.row.inboundPiece}}/{{scope.row.inboundWeight}}/{{scope.row.inboundCbm}}</div>
+              <div style="margin-top:5px">计费重:{{scope.row.inboundCw}}</div>
+              <div style="margin-top:5px" :style="{'color':scope.row.inboundStatus == 2?'rgb(50, 205, 50)':''}">{{scope.row.inboundStatus == 0 ? "进仓数据未出": scope.row.inboundStatus == 1 ? "进仓数据待出": scope.row.inboundStatus == 2 ? "进仓数据已出":""}}</div>
+            </div>
+            <div v-else  style="padding:10px 0">
+              <div>品名:{{scope.row.cargoName}}</div>
+              <div style="margin-top:5px;fontWeight:bolder">{{scope.row.bookingPiece}}/{{scope.row.bookingWeight}}/{{scope.row.bookingCbm}}</div>
+              <div style="margin-top:5px">计费重:{{scope.row.bookingCw}}</div>
+              <div style="margin-top:5px" :style="{'color':scope.row.inboundStatus == 2?'rgb(50, 205, 50)':''}">{{scope.row.inboundStatus == 0 ? "进仓数据未出": scope.row.inboundStatus == 1 ? "进仓数据待出": scope.row.inboundStatus == 2 ? "进仓数据已出":""}}</div>
+
+            </div>
           </div>
-          <div v-else-if="column.label == '状态'" style="text-align:center;height:100%;padding:10px 0">
+          <div v-else-if="column.label == '账单信息'" style="display:flex;align-items:center;justify-content:center;height:100%;" @click="orderDetails(scope)">
+            <div>
+                  <div v-if="scope.row.payWay == '0'">付款买单<!-- —<span style="color: #F00;">未核销</span> --></div>
+                  <div v-if="scope.row.payWay == '1'">月结买单<!-- —<span style="color: #F00;">未核销</span> --></div>
+                  <div>单价：￥{{scope.row.bookingPrice || 0}}/kg</div>
+                  <div v-if="notAirPeople">应收账单：{{priceType(scope.row.totalArOrgn) || 0}}</div>
+                  <div>应付账单：{{priceType(scope.row.totalApOrgn) || 0}}</div>
+                  <div v-if="notAirPeople">利润：￥{{scope.row.orderProfit || 0}}</div>
+            </div>
+          </div>
+          <div v-else-if="column.label == '操作人员'" style="display:flex;align-items:center;justify-content:center;height:100%;" @click="orderDetails(scope)">
+            <div>
+              <div>航线：<span style="text-decoration:underline;color:skyblue"> {{scope.row.principalName || '暂无'}}</span></div>
+              <div>售前客服：<span style="text-decoration:underline;color:skyblue">{{scope.row.pscsName || '暂无'}}</span> </div>
+              <div>售中客服：<span  style="text-decoration:underline;color:red">{{scope.row.mscsName || '暂无'}}</span> </div>
+            </div>
+          </div>
+          <div v-else-if="column.label == '状态'" style="text-align:center;height:100%;padding:10px 0" @click="orderDetails(scope)">
             <div v-if="scope.row.status == '5' || scope.row.status == '27' || scope.row.status == '29' || scope.row.status == '33'" style="color: #F00;">
               <div>
               {{scope.row.statusDesc}}
               </div>
-                <div :style="{color:scope.row.reconciled=='已对账'?'green':''}">{{scope.row.reconciled}}</div>
-            <div :style="{color:scope.row.writeOff=='已核销'?'green':''}">{{scope.row.writeOff}}</div>
-            <div :style="{color:scope.row.financeStatus=='1'?'green':''}">{{scope.row.financeStatus=="0"?"未交单":scope.row.financeStatus=="1"?"已交单":scope.row.financeStatus=="2"?"申请解锁":scope.row.financeStatus=="3"?"解锁待审核":"修改中"}}</div>
+                <div :style="{color:scope.row.reconciled=='已对账'?'#32CD32':'',fontWeight:scope.row.reconciled=='已对账'?'900':'500'}">{{scope.row.reconciled}}</div>
+            <div :style="{color:scope.row.writeOff=='已核销'?'#32CD32':'',fontWeight:scope.row.writeOff=='已核销'?'900':'500'}">{{scope.row.writeOff}}</div>
+            <div :style="{color:scope.row.financeStatus=='1'?'#32CD32':'',fontWeight:scope.row.financeStatus=='1'?'900':'500'}">{{scope.row.financeStatus=="0"?"未交单":scope.row.financeStatus=="1"?"已交单":scope.row.financeStatus=="2"?"申请解锁":scope.row.financeStatus=="3"?"解锁待审核":"修改中"}}</div>
             
             </div>
             <!--  -->
@@ -86,19 +109,19 @@
               <div>
               {{scope.row.statusDesc}}
               </div>
-            <div :style="{color:scope.row.reconciled=='已对账'?'green':''}">{{scope.row.reconciled}}</div>
-            <div :style="{color:scope.row.writeOff=='已核销'?'green':''}">{{scope.row.writeOff}}</div>
-            <div :style="{color:scope.row.financeStatus=='1'?'green':''}">{{scope.row.financeStatus=="0"?"未交单":scope.row.financeStatus=="1"?"已交单":scope.row.financeStatus=="2"?"申请解锁":scope.row.financeStatus=="3"?"解锁待审核":"修改中"}}</div>
+            <div :style="{color:scope.row.reconciled=='已对账'?'#32CD32':'',fontWeight:scope.row.reconciled=='已对账'?'900':'500'}">{{scope.row.reconciled}}</div>
+            <div :style="{color:scope.row.writeOff=='已核销'?'#32CD32':'',fontWeight:scope.row.writeOff=='已核销'?'900':'500'}">{{scope.row.writeOff}}</div>
+            <div :style="{color:scope.row.financeStatus=='1'?'#32CD32':'',fontWeight:scope.row.financeStatus=='1'?'900':'500'}">{{scope.row.financeStatus=="0"?"未交单":scope.row.financeStatus=="1"?"已交单":scope.row.financeStatus=="2"?"申请解锁":scope.row.financeStatus=="3"?"解锁待审核":"修改中"}}</div>
             
 
              
               
             </div>
           </div>
-          <div v-else-if="column.label == '下单时间'" style="text-align:center;height:100%;padding:10px 0">
+          <div v-else-if="column.label == '下单时间'" style="text-align:center;height:100%;padding:10px 0" @click="orderDetails(scope)">
             <div>{{scope.row.orderTime}}</div>
           </div>
-          <div v-else-if="column.label == '备注'" style="text-align:center;height:100%;padding:10px 0">
+          <div v-else-if="column.label == '备注'" style="text-align:center;height:100%;padding:10px 0" @click="orderDetails(scope)">
             <div>{{scope.row.remark}}</div>
           </div>
         </template>
@@ -141,6 +164,11 @@ export default {
     tableData: {
       type: Array,
       default: () => []
+    },
+    //表格表头数据
+    sumInfo: {
+      type:Object,
+      default: () => {}
     },
     //选择
     xuanzhong: {
@@ -308,6 +336,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+
 /deep/ .el-table__cell:first-child .cell {
   padding-left: 0;
 }
@@ -327,21 +356,23 @@ export default {
 }
   .hangxian-date{
     display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
+    justify-content: center;
+    // padding: 10px 0;
+    margin-top: 15px 
   }
   .hangxian-route{
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     text-align: center;
   }
   .hangxian-route .hangxian-route-sanzima div:last-child{
+    transform: translateY(20px);
     line-height: 14px;
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 700;
     color: #333333;
-    flex: 0 0 96px;
-    width: 96px;
+    flex: 0 0 70px;
+    width: 70px;
     height: 28px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -351,16 +382,29 @@ export default {
     -webkit-box-orient: vertical;
   }
   .hangxian-route .hangxian-route-zhida{
-    background-image: url(../assets/route_icon.png);
-    flex: 0 0 34px;
-    background-repeat: no-repeat;
-    background-size: 34px;
-    background-position: bottom center;
+    font-weight: 600;
+    // background-image: url(../assets/route_icon.png);
+    flex: 0 0 70px;
+    // background-repeat: no-repeat;
+    // background-size: 70px;
+    // background-position: bottom center;
     height: 30px;
+    line-height: 20px;
+    position:relative;
+    &::after{
+      position: absolute;
+      content: "";
+       width: 100%;
+       height: 1px;
+       background: black;
+       left: 0;
+       opacity: .5;
+       bottom: 0;
+    }
   }
   .dingdan{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     position: absolute;
     top: 0px;

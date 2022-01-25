@@ -1,6 +1,6 @@
 <template>
-  <div style="padding-bottom:15px">
-    <div v-if="datatype != 'order0'" class="policy" >
+  <div style="padding-bottom: 15px">
+    <div v-if="datatype != 'order0'" class="policy">
       <div>
         <p style="margin-left: 50px">分单类型</p>
         <div class="radioSelect">
@@ -49,7 +49,7 @@
               type="text"
               maxlength="4"
               onKeyUp="value=value.replace(/[^1-9]/g,'')"
-              @blur="inputData.input2 = $event.target.value;"
+              @blur="inputData.input2 = $event.target.value"
               spellcheck="false"
               v-model="inputData.input2"
               clearable
@@ -68,9 +68,11 @@
               type="text"
               maxlength="6"
               onKeyUp="value=value.replace(/[^1-9]/g,'')"
-               ref="input1"
-             
-              @blur="inputData.input3 = $event.target.value;getWeight()"
+              ref="input1"
+              @blur="
+                inputData.input3 = $event.target.value;
+                getWeight();
+              "
               spellcheck="false"
               v-model="inputData.input3"
               clearable
@@ -87,10 +89,12 @@
             <input
               style="border: 1px solid black"
               type="text"
-              onkeyup="this.value= this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)? this.value.match(/^-?\d{0,}(\.\d{0,4})?/)[0] : ''"
-             
-               ref="input2"
-              @blur="inputData.input4 = $event.target.value;getWeight()"
+              onkeyup="this.value= this.value.match(/^-?\d{0,4}(\.\d{0,4})?/)? this.value.match(/^-?\d{0,4}(\.\d{0,4})?/)[0] : ''"
+              ref="input2"
+              @blur="
+                inputData.input4 = $event.target.value;
+                getWeight();
+              "
               spellcheck="false"
               v-model="inputData.input4"
               clearable
@@ -105,7 +109,7 @@
           </div>
           <div>
             <input
-              style="border: 1px solid black;"
+              style="border: 1px solid black"
               type="text"
               ref="input3"
               onKeyUp="value=value.replace(/[\W]/g,'')"
@@ -130,10 +134,10 @@
           :placeholder="getHolder(indx)"
           ref="inputArea"
           v-model="texts[indx].content"
-          onKeyUp="value=value.replace(/[\W]/g,'')"
+          onKeyUp="value=value.replace(/[\u4e00-\u9fa5]/g,'')"
           @blur="texts[indx].content = $event.target.value"
           spellcheck="false"
-          maxlength="500"
+          :maxlength="itm.maxLength"
           show-word-limit
         >
         </el-input>
@@ -185,8 +189,8 @@
                 <el-input
                   clearable
                   maxlength="50"
-                  onKeyUp="value=value.replace(/[^\d]/g,'') "
-                   @blur="tableData[index].value = $event.target.value"
+                  onkeyup="this.value= this.value.match(/^-?\d{0,6}(\.\d{0,2})?/)? this.value.match(/^-?\d{0,6}(\.\d{0,2})?/)[0] : ''"
+                  @blur = "((val)=>{toFixTwo(val,index)})"
                   v-model="tableData[index].value"
                 ></el-input>
               </div>
@@ -197,13 +201,14 @@
                 <a
                   style="border: 1px solid #6289dc; margin-top: 10px"
                   v-if="tableData.length == index + 1"
-                  @click="tableData.push({})"
+                  @click="tableDataChange(1)"
                   >添加</a
                 >
 
-                <a v-if="tableData.length>1"
+                <a
+                  v-if="tableData.length > 1"
                   style="border: 1px solid #6289dc; margin-top: 10px"
-                  @click="tableData.pop()"
+                  @click="tableDataChange(-1)"
                   >删除</a
                 >
               </div>
@@ -217,6 +222,9 @@
             <el-radio :label="0">运费预付</el-radio>
             <el-radio :label="1">运费到付</el-radio>
           </el-radio-group>
+           <div class="text" style="margin-top:15px"><span style="color:red">*</span> 代理名字和城市</div>
+          <div class="text">Issuing Carrier's Agent Name and City</div>
+          <el-input v-model="carrierInfo"></el-input>
         </div>
       </div>
       <div class="lis1">
@@ -224,7 +232,7 @@
           class="cun"
           type="warning"
           size="mini"
-          @click="save(datatype,currentIndex)"
+          @click="save(datatype, currentIndex)"
           >保存数据</el-button
         >
         <el-button class="res" size="mini" @click="relick(datatype)"
@@ -309,13 +317,15 @@ export default {
   props: {
     datatype: String,
     mainData: Object,
-    menudata:Array,
-    currentIndex:Number,
-    noPrice:Number,
-    orderPoint:Number
+    menudata: Array,
+    currentIndex: Number,
+    noPrice: Number,
+    orderPoint: Number,
   },
   data() {
     return {
+      //调接口新字段 
+      carrierInfo:'',
       // 绑定key值重新渲染
       previewKey: 1,
       // 弹出框状态
@@ -339,16 +349,38 @@ export default {
           title1: "发货信息",
           title2: "Shipper's Name and Address",
           content: "",
+          maxLength: "245",
         },
         {
           title1: "收货信息",
           title2: "Consignee's Name and Address",
           content: "",
+          maxLength: "245",
         },
-        { title1: "通知人", title2: "notify party", content: "" },
-        { title1: "品名", title2: "Nature and Quantity of Goods", content: "" },
-        { title1: "唛头", title2: "Shipping mark", content: "" },
-        { title1: "操作信息", title2: "Handling information", content: "" },
+        {
+          title1: "通知人",
+          title2: "notify party",
+          content: "",
+          maxLength: "130",
+        },
+        {
+          title1: "品名",
+          title2: "Nature and Quantity of Goods",
+          content: "",
+          maxLength: "245",
+        }, 
+        {
+          title1: "唛头",
+          title2: "Shipping mark",
+          content: "",
+          maxLength: "100",
+        },
+        {
+          title1: "操作信息",
+          title2: "Handling information",
+          content: "",
+          maxLength: "245",
+        },
       ],
       // 支付信息单选按钮
       radio: 0,
@@ -366,7 +398,7 @@ export default {
       dataPath: "",
       // 方便控制预览之后提示
       previewState: "",
-      newAddData:"",
+      newAddData: "",
       // 杂费数据
       tableData: [{}],
       // 表头
@@ -382,7 +414,7 @@ export default {
         input4: "",
         input5: "",
       },
-      keysArray:[]
+      keysArray: [],
     };
   },
   mounted() {
@@ -391,53 +423,77 @@ export default {
   },
   activated() {
     // console.log('activated');
-   
-              
   },
   methods: {
-    getWeight(){
-     if( this.inputData.input3 != "" && this.inputData.input4 != "") {
-       var max =""
-       if(this.inputData.input3>this.inputData.input4) {
-         max = this.inputData.input3*167
-       } else{
-         max = this.inputData.input4*167
-       }
-       if(this.orderPoint) {
-         this.inputData.input5 =Math.ceil( max*this.orderPoint/10+this.inputData.input3*(1-this.orderPoint/10)) 
-       }
-       
-        
-     }
-
+    toFixTwo(e,index){
+      if(e.target.value) {
+        this.tableData[index].value = Number(e.target.value).toFixed(2)
+      }
     },
-    newAdd(){
-       console.log(this.menudata);
-       this.keysArray =["FLD"+this.mainData.orderNo.slice(-6)+"A","FLD"+this.mainData.orderNo.slice(-6)+"B","FLD"+this.mainData.orderNo.slice(-6)+"C","FLD"+this.mainData.orderNo.slice(-6)+"D","FLD"+this.mainData.orderNo.slice(-6)+"E"]
-       let arr = this.keysArray
-       for(let i = 0,j=arr.length;i<j;i++) {
-        if(this.menudata.every((item)=>item.hab!=arr[i])){
-            this.newAddData =arr[i]
-            break
+    //杂费表格添加删除
+    tableDataChange(pushPOP) {
+      if(pushPOP == -1) {
+        this.tableData.pop();
+      }
+      if (this.tableData.length == 5) {
+        return this.$message.warning("杂费表格最多添加五条数据");
+      }
+      if (pushPOP == 1) {
+        this.tableData.push({});
+      }
+    },
+
+    getWeight() {
+      if (this.inputData.input3 != "" && this.inputData.input4 != "") {
+        var max = "";
+        if (this.inputData.input3 > this.inputData.input4) {
+          max = this.inputData.input3 * 167;
+        } else {
+          max = this.inputData.input4 * 167;
+        }
+        if (this.orderPoint) {
+          this.inputData.input5 = Math.ceil(
+            (max * this.orderPoint) / 10 +
+              this.inputData.input3 * (1 - this.orderPoint / 10)
+          );
         }
       }
-       this.$set(this.menudata[this.menudata.length-1],"hab",this.newAddData)
-       this.inputData.input1 = this.newAddData
-       this.radioSelect = 0;
-       this.radioSelectChange();
-      
+    },
+    newAdd() {
+      console.log(this.menudata);
+      this.keysArray = [
+        "FLD" + this.mainData.orderNo.slice(-6) + "A",
+        "FLD" + this.mainData.orderNo.slice(-6) + "B",
+        "FLD" + this.mainData.orderNo.slice(-6) + "C",
+        "FLD" + this.mainData.orderNo.slice(-6) + "D",
+        "FLD" + this.mainData.orderNo.slice(-6) + "E",
+      ];
+      let arr = this.keysArray;
+      for (let i = 0, j = arr.length; i < j; i++) {
+        if (this.menudata.every((item) => item.hab != arr[i])) {
+          this.newAddData = arr[i];
+          break;
+        }
+      }
+      this.$set(
+        this.menudata[this.menudata.length - 1],
+        "hab",
+        this.newAddData
+      );
+      this.inputData.input1 = this.newAddData;
+      this.radioSelect = 0;
+      this.radioSelectChange();
     },
     getHolder(idx) {
-      if(idx==0) {
-        return 'Y8航班需提供发货人税号'
+      if (idx == 0) {
+        return "Y8航班需提供发货人税号";
       }
-       if(idx==1) {
-        return 'Y8航班需提供收货人税号. 提示：目的港LOS需提供收货人BA.NO以及MF.NO'
+      if (idx == 1) {
+        return "Y8航班需提供收货人税号. 提示：目的港LOS需提供收货人BA.NO以及MF.NO";
       }
-      if(idx==3) {
-        return "TK航班请提供 HS CODE"
+      if (idx == 3) {
+        return "TK航班请提供 HS CODE";
       }
-
     },
     // 初始化页面数据
     initData() {
@@ -449,6 +505,8 @@ export default {
         this.texts[3].content = this.mainData.goodsInfo;
         this.texts[4].content = this.mainData.shippingMark;
         this.texts[5].content = this.mainData.handlingInfo;
+        this.carrierInfo = this.mainData.carrierInfo
+
         if (this.mainData.wtVal == "0") {
           this.radio = 0;
         } else if (this.mainData.wtVal == "1") {
@@ -470,97 +528,107 @@ export default {
         }
       }
       // 分单数据展示
-    //  有分泡
-      if(this.orderPoint) {
-      for (let i = 0, j = 5; i < j; i++) {
-        if (this.datatype == (this.menudata[i] && this.menudata[i].title)) {
-          if (!this.mainData.hawbList) {
-            break;
+      //  有分泡
+      if (this.orderPoint) {
+        for (let i = 0, j = 5; i < j; i++) {
+          if (this.datatype == (this.menudata[i] && this.menudata[i].title)) {
+            if (!this.mainData.hawbList) {
+              break;
+            }
+            let data = this.mainData.hawbList[i];
+            if (data && data.wtVal && data.wtVal == "0") {
+              this.radio = 0;
+            } else if (data && data.wtVal && data.wtVal == "1") {
+              this.radio = 1;
+            }
+            if (data && data.hawb) {
+              var keys = data.hawb;
+            }
+            this.keysArray = [
+              "FLD" + this.mainData.orderNo.slice(-6) + "A",
+              "FLD" + this.mainData.orderNo.slice(-6) + "B",
+              "FLD" + this.mainData.orderNo.slice(-6) + "C",
+              "FLD" + this.mainData.orderNo.slice(-6) + "D",
+              "FLD" + this.mainData.orderNo.slice(-6) + "E",
+            ];
+            if (this.keysArray.includes(keys)) {
+              this.radioSelect = 0;
+              this.radioSelectChange();
+            } else {
+              this.radioSelect = 1;
+              this.radioSelectChange();
+            }
+            if (data) {
+              this.carrierInfo = data.carrierInfo
+              this.inputData.input1 = data.hawb;
+              this.inputData.input2 = data.pieces;
+              this.inputData.input3 = data.grossWeight;
+              this.inputData.input4 = data.measurement;
+              this.inputData.input5 = data.chargeableWeight;
+              this.texts[0].content = data.shipperInfo;
+              this.texts[1].content = data.consigneeInfo;
+              this.texts[2].content = data.notificationInfo;
+              this.texts[3].content = data.goodsInfo;
+              this.texts[4].content = data.shippingMark;
+              this.texts[5].content = data.handlingInfo;
+            }
           }
-          let data = this.mainData.hawbList[i];
-          if (data && data.wtVal && data.wtVal == "0") {
-            this.radio = 0;
-          } else if (data && data.wtVal && data.wtVal == "1") {
-            this.radio = 1;
-          }
-          if (data && data.hawb) {
-            var keys = data.hawb
-          }
-          this.keysArray =["FLD"+this.mainData.orderNo.slice(-6)+"A","FLD"+this.mainData.orderNo.slice(-6)+"B","FLD"+this.mainData.orderNo.slice(-6)+"C","FLD"+this.mainData.orderNo.slice(-6)+"D","FLD"+this.mainData.orderNo.slice(-6)+"E"]
-          if (this.keysArray.includes(keys)) {
-            this.radioSelect = 0;
-            this.radioSelectChange();
-          } else {
-            this.radioSelect = 1;
-            this.radioSelectChange();
-          }
-          if (data) {
-            this.inputData.input1 = data.hawb;
-            this.inputData.input2 = data.pieces;
-            this.inputData.input3 = data.grossWeight;
-            this.inputData.input4 = data.measurement;
-            this.inputData.input5 = data.chargeableWeight;
-            this.texts[0].content = data.shipperInfo;
-            this.texts[1].content = data.consigneeInfo;
-            this.texts[2].content = data.notificationInfo;
-            this.texts[3].content = data.goodsInfo;
-            this.texts[4].content = data.shippingMark;
-            this.texts[5].content = data.handlingInfo;
+        }
+      } else {
+        for (let i = 0, j = 5; i < j; i++) {
+          if (this.datatype == (this.menudata[i] && this.menudata[i].title)) {
+            if (!this.mainData.hawbList) {
+              break;
+            }
+            let data = this.mainData.hawbList[i];
+            if (data && data.wtVal && data.wtVal == "0") {
+              this.radio = 0;
+            } else if (data && data.wtVal && data.wtVal == "1") {
+              this.radio = 1;
+            }
+            if (data && data.hawb) {
+              var keys = data.hawb;
+            }
+            this.keysArray = [
+              "FLD" + this.mainData.orderNo.slice(-6) + "A",
+              "FLD" + this.mainData.orderNo.slice(-6) + "B",
+              "FLD" + this.mainData.orderNo.slice(-6) + "C",
+              "FLD" + this.mainData.orderNo.slice(-6) + "D",
+              "FLD" + this.mainData.orderNo.slice(-6) + "E",
+            ];
+            if (this.keysArray.includes(keys)) {
+              this.radioSelect = 0;
+              this.radioSelectChange();
+            } else {
+              this.radioSelect = 1;
+              this.radioSelectChange();
+            }
+            if (data) {
+              this.$refs.input1.disabled = true;
+              this.$refs.input1.style.cursor = "not-allowed";
+              this.$refs.input2.disabled = true;
+              this.$refs.input2.style.cursor = "not-allowed";
+              this.$refs.input3.disabled = true;
+              this.$refs.input3.style.cursor = "not-allowed";
+              this.inputData.input1 = data.hawb;
+              this.inputData.input2 = data.pieces;
+              this.texts[0].content = data.shipperInfo;
+              this.texts[1].content = data.consigneeInfo;
+              this.texts[2].content = data.notificationInfo;
+              this.texts[3].content = data.goodsInfo;
+              this.texts[4].content = data.shippingMark;
+              this.texts[5].content = data.handlingInfo;
+            }
           }
         }
       }
-      }
-       else  {
-            
-           for (let i = 0, j = 5; i < j; i++) {
-        if (this.datatype == (this.menudata[i] && this.menudata[i].title)) {
-          if (!this.mainData.hawbList) {
-            break;
-          }
-          let data = this.mainData.hawbList[i];
-          if (data && data.wtVal && data.wtVal == "0") {
-            this.radio = 0;
-          } else if (data && data.wtVal && data.wtVal == "1") {
-            this.radio = 1;
-          }
-          if (data && data.hawb) {
-            var keys = data.hawb
-          }
-          this.keysArray =["FLD"+this.mainData.orderNo.slice(-6)+"A","FLD"+this.mainData.orderNo.slice(-6)+"B","FLD"+this.mainData.orderNo.slice(-6)+"C","FLD"+this.mainData.orderNo.slice(-6)+"D","FLD"+this.mainData.orderNo.slice(-6)+"E"]
-          if (this.keysArray.includes(keys)) {
-            this.radioSelect = 0;
-            this.radioSelectChange();
-          } else {
-            this.radioSelect = 1;
-            this.radioSelectChange();
-          }
-          if (data) {
-            this.$refs.input1.disabled = true
-            this.$refs.input1.style.cursor = "not-allowed";
-           this.$refs.input2.disabled = true
-            this.$refs.input2.style.cursor = "not-allowed";
-           this.$refs.input3.disabled = true
-            this.$refs.input3.style.cursor = "not-allowed";
-            this.inputData.input1 = data.hawb;
-             this.inputData.input2 = data.pieces;
-            this.texts[0].content = data.shipperInfo;
-            this.texts[1].content = data.consigneeInfo;
-            this.texts[2].content = data.notificationInfo;
-            this.texts[3].content = data.goodsInfo;
-            this.texts[4].content = data.shippingMark;
-            this.texts[5].content = data.handlingInfo;
-          }
-        }
-      }
-
-       }
     },
     // 舱单预览和下载
     cangDanDialog() {
       this.dialogCangDan = true;
       var order = this.mainData.orderNo;
       this.previewKey = this.previewKey + 1;
-      this.cangDanPath = `http://10.8.0.1/trackTest/bill-of-lading/preview/ware/pdf/${order}`;
+      this.cangDanPath = `http://10.8.0.1/track/bill-of-lading/preview/ware/pdf/${order}`;
     },
     // 限制系统分单不可输入
     radioSelectChange() {
@@ -592,9 +660,10 @@ export default {
           handlingInfo: this.texts[5].content,
           otherCharges: JSON.stringify(obj),
           wtVal: this.radio,
+          carrierInfo:this.carrierInfo
         };
         axios
-          .post("http://10.8.0.1/trackTest/bill-of-lading/edit", json)
+          .post("http://10.8.0.1/track/bill-of-lading/edit", json)
           .then((data) => {
             if (data.data.code == 200) {
               this.$message.success("保存成功");
@@ -610,25 +679,24 @@ export default {
       }
     },
     // 分单修改保存
-    saveOtherData(type,index) {
+    saveOtherData(type, index) {
       if (this.mainData.id) {
         let idx = type.slice(-1);
         let data = this.mainData.hawbList[index - 1];
-        let copy = JSON.parse(JSON.stringify(data)); 
-        let arr=[]
-        for(let i=0;i<this.menudata.length;i++) {
-           arr.push(this.menudata[i].name)
-         }
-         arr.splice(index-1,1)
-           for(let i=0;i<arr.length;i++) {
-             if(this.inputData.input1 == arr[i])
-             {
-               this.$message.error('分单号不可相同')
-               return
-             }
-         }
+        let copy = JSON.parse(JSON.stringify(data));
+        let arr = [];
+        for (let i = 0; i < this.menudata.length; i++) {
+          arr.push(this.menudata[i].name);
+        }
+        arr.splice(index - 1, 1);
+        for (let i = 0; i < arr.length; i++) {
+          if (this.inputData.input1 == arr[i]) {
+            this.$message.error("分单号不可相同");
+            return;
+          }
+        }
         delete copy.ifNewData;
-         
+
         if (Object.keys(copy).length > 0) {
           let json = {
             id: data.id,
@@ -644,9 +712,10 @@ export default {
             measurement: this.inputData.input4,
             chargeableWeight: this.inputData.input5,
             wtVal: this.radio,
+            carrierInfo:this.carrierInfo
           };
           axios
-            .post("http://10.8.0.1/trackTest/bill-of-lading/edit", json)
+            .post("http://10.8.0.1/track/bill-of-lading/edit", json)
             .then((data) => {
               if (data.data.code == 200) {
                 this.$message.success("保存成功");
@@ -670,9 +739,10 @@ export default {
             shipperInfo: this.texts[0].content,
             shippingMark: this.texts[4].content,
             wtVal: this.radio,
+            carrierInfo:this.carrierInfo
           };
           axios
-            .post("http://10.8.0.1/trackTest/bill-of-lading/save", params)
+            .post("http://10.8.0.1/track/bill-of-lading/save", params)
             .then((data) => {
               if (data.data.code == 200) {
                 this.$message.success("保存成功");
@@ -689,72 +759,75 @@ export default {
     },
     // 保存
     save(type) {
-      if(this.noPrice ==1) {
-        this.$message.warning('价格无法找到,支持excel版本下载后本地修改')
-      }
-      let index = this.currentIndex
+      
+      let index = this.currentIndex;
       this.previewKey = this.previewKey + 1;
       if (type == "order0") {
-         for(let i=0;i<this.tableData.length;i++) {
-           if(!this.tableData[i].name||!this.tableData[i].value) {
-              this.$message.error('杂费和金额均为必填项')
-              return
-           }
-         }
+        for (let i = 0; i < this.tableData.length; i++) {
+          if (!this.tableData[i].name || !this.tableData[i].value) {
+            this.$message.error("杂费和金额均为必填项");
+            return;
+          }
+        }
         if (
           this.texts[0].content != "" &&
           this.texts[1].content != "" &&
           this.texts[2].content != "" &&
           this.texts[3].content != "" &&
           this.texts[4].content != "" &&
-          this.tableData[0].name != ""&&
-          this.tableData[0].value != ""
-      
+          this.tableData[0].name != "" &&
+          this.tableData[0].value != "" &&
+          this.carrierInfo != ""
         ) {
+          if (this.noPrice == 1) {
+             this.$message.warning("价格无法找到,支持excel版本下载后本地修改");
+          }
           this.saveMainData();
         } else {
           this.$message.error("带*的为必填项，请输入完后再操作");
         }
-        
-
       } else {
         // 有分泡
-         if(this.orderPoint) {
-        if (
-          this.texts[0].content  &&
-          this.texts[1].content  &&
-          this.texts[2].content  &&
-          this.texts[3].content  &&
-          this.texts[4].content  &&
-          this.inputData.input1  &&
-          this.inputData.input2  &&
-          this.inputData.input3  &&
-          this.inputData.input4  &&
-          this.inputData.input5 
-        ) {
-          this.saveOtherData(type,index);
-          
-        } else {
-          this.$message.error("带*的为必填项，请输入完后再操作");
-        }
+        if (this.orderPoint) {
+          if (
+            this.texts[0].content &&
+            this.texts[1].content &&
+            this.texts[2].content &&
+            this.texts[3].content &&
+            this.texts[4].content &&
+            this.inputData.input1 &&
+            this.inputData.input2 &&
+            this.inputData.input3 &&
+            this.inputData.input4 &&
+            this.inputData.input5 &&
+            this.carrierInfo
+          ) {
+            if (this.noPrice == 1) {
+             this.$message.warning("价格无法找到,支持excel版本下载后本地修改");
+            }
+            this.saveOtherData(type, index);
+          } else {
+            this.$message.error("带*的为必填项，请输入完后再操作");
+          }
         } else {
           if (
-          this.texts[0].content  &&
-          this.texts[1].content  &&
-          this.texts[2].content  &&
-          this.texts[3].content  &&
-          this.texts[4].content  &&
-          this.inputData.input1  &&
-          this.inputData.input2  
-        ) {
-          this.saveOtherData(type,index);
-          
-        } else {
-          this.$message.error("带*的为必填项，请输入完后再操作");
+            this.texts[0].content &&
+            this.texts[1].content &&
+            this.texts[2].content &&
+            this.texts[3].content &&
+            this.texts[4].content &&
+            this.inputData.input1 &&
+            this.inputData.input2 &&
+            this.carrierInfo
+          ) {
+            if (this.noPrice == 1) {
+             this.$message.warning("价格无法找到,支持excel版本下载后本地修改");
+            }
+            this.saveOtherData(type, index);
+          } else {
+            this.$message.error("带*的为必填项，请输入完后再操作");
+          }
         }
-
-        }
-         
       }
     },
     // 重置清空输入信息
@@ -767,9 +840,12 @@ export default {
         this.texts[3].content = "";
         this.texts[4].content = "";
         this.texts[5].content = "";
+        this.carrierInfo = '';
         this.tableData = [{}];
       } else {
-        this.inputData.input1 = "";
+        if(this.radioSelect == 1){
+          this.inputData.input1 = "";
+        }
         this.inputData.input2 = "";
         this.inputData.input3 = "";
         this.inputData.input4 = "";
@@ -780,6 +856,8 @@ export default {
         this.texts[3].content = "";
         this.texts[4].content = "";
         this.texts[5].content = "";
+        this.carrierInfo = '';
+
       }
     },
     // 判断已有数据是否改变,改变了提示用户先保存在预览和下载
@@ -801,7 +879,8 @@ export default {
           this.texts[4].content != this.mainData.shippingMark ||
           this.texts[5].content != this.mainData.handlingInfo ||
           this.radio != this.mainData.wtVal ||
-          json != getjson
+          json != getjson ||
+          this.carrierInfo != this.mainData.carrierInfo
         ) {
           this.$refs.downloadPop.disabled = true;
           this.$message.error("请先保存数据后再预览和下载最新的数据");
@@ -809,75 +888,74 @@ export default {
         }
       } else {
         // 分单
-        if(this.orderPoint) {
-        for (var i = 0, j = 5; i < j; i++) {
-          if (type == (i + 1)) {
-             i = type-1
-            var data = this.mainData.hawbList[i];
-            if (this.mainData.hawbList[i].hawb) {
-              var keys = this.mainData.hawbList[i].hawb.slice(0, 3);
+        if (this.orderPoint) {
+          for (var i = 0, j = 5; i < j; i++) {
+            if (type == i + 1) {
+              i = type - 1;
+              var data = this.mainData.hawbList[i];
+              if (this.mainData.hawbList[i].hawb) {
+                var keys = this.mainData.hawbList[i].hawb.slice(0, 3);
+              }
+              if (keys == "FLD") {
+                var meta = 0;
+              } else {
+                var meta = 1;
+              }
+              if (
+                this.radioSelect != meta ||
+                this.inputData.input1 != data.hawb ||
+                this.inputData.input2 != data.pieces ||
+                this.inputData.input3 != data.grossWeight ||
+                this.inputData.input4 != data.measurement ||
+                this.inputData.input5 != data.chargeableWeight ||
+                this.texts[0].content != data.shipperInfo ||
+                this.texts[1].content != data.consigneeInfo ||
+                this.texts[2].content != data.notificationInfo ||
+                this.texts[3].content != data.goodsInfo ||
+                this.texts[4].content != data.shippingMark ||
+                this.texts[5].content != data.handlingInfo ||
+                this.carrierInfo != data.carrierInfo ||
+                this.radio != data.wtVal
+              ) {
+                this.$refs.downloadPop.disabled = true;
+                this.$message.error("请先保存数据后再预览和下载最新的数据");
+                this.previewState = true;
+              }
             }
-            if (keys == "FLD") {
-              var meta = 0;
-            } else {
-              var meta = 1;
-            }
-            if (
-              this.radioSelect != meta ||
-              this.inputData.input1 != data.hawb ||
-              this.inputData.input2 != data.pieces ||
-              this.inputData.input3 != data.grossWeight ||
-              this.inputData.input4 != data.measurement ||
-              this.inputData.input5 != data.chargeableWeight ||
-              this.texts[0].content != data.shipperInfo ||
-              this.texts[1].content != data.consigneeInfo ||
-              this.texts[2].content != data.notificationInfo ||
-              this.texts[3].content != data.goodsInfo ||
-              this.texts[4].content != data.shippingMark ||
-              this.texts[5].content != data.handlingInfo ||
-              this.radio != data.wtVal
-            ) {
-              this.$refs.downloadPop.disabled = true;
-              this.$message.error("请先保存数据后再预览和下载最新的数据");
-              this.previewState = true;
-              
+          }
+        } else {
+          for (var i = 0, j = 5; i < j; i++) {
+            if (type == i + 1) {
+              i = type - 1;
+              var data = this.mainData.hawbList[i];
+              if (this.mainData.hawbList[i].hawb) {
+                var keys = this.mainData.hawbList[i].hawb.slice(0, 3);
+              }
+              if (keys == "FLD") {
+                var meta = 0;
+              } else {
+                var meta = 1;
+              }
+              if (
+                this.radioSelect != meta ||
+                this.inputData.input1 != data.hawb ||
+                this.inputData.input2 != data.pieces ||
+                this.texts[0].content != data.shipperInfo ||
+                this.texts[1].content != data.consigneeInfo ||
+                this.texts[2].content != data.notificationInfo ||
+                this.texts[3].content != data.goodsInfo ||
+                this.texts[4].content != data.shippingMark ||
+                this.texts[5].content != data.handlingInfo ||
+                this.radio != data.wtVal || 
+                this.carrierInfo != data.carrierInfo
+              ) {
+                this.$refs.downloadPop.disabled = true;
+                this.$message.error("请先保存数据后再预览和下载最新的数据");
+                this.previewState = true;
+              }
             }
           }
         }
-      } else {
-           for (var i = 0, j = 5; i < j; i++) {
-          if (type == (i + 1)) {
-             i = type-1
-            var data = this.mainData.hawbList[i];
-            if (this.mainData.hawbList[i].hawb) {
-              var keys = this.mainData.hawbList[i].hawb.slice(0, 3);
-            }
-            if (keys == "FLD") {
-              var meta = 0;
-            } else {
-              var meta = 1;
-            }
-            if (
-              this.radioSelect != meta ||
-              this.inputData.input1 != data.hawb ||
-              this.inputData.input2 != data.pieces ||
-              this.texts[0].content != data.shipperInfo ||
-              this.texts[1].content != data.consigneeInfo ||
-              this.texts[2].content != data.notificationInfo ||
-              this.texts[3].content != data.goodsInfo ||
-              this.texts[4].content != data.shippingMark ||
-              this.texts[5].content != data.handlingInfo ||
-              this.radio != data.wtVal
-            ) {
-              this.$refs.downloadPop.disabled = true;
-              this.$message.error("请先保存数据后再预览和下载最新的数据");
-              this.previewState = true;
-              
-            }
-          }
-        }
-
-      }
       }
     },
     // 预览
@@ -887,24 +965,36 @@ export default {
         let id = this.mainData.id;
         // 有主单数据
         if (id) {
-          if(!this.texts[0].content||!this.texts[1].content||!this.texts[2].content||!this.texts[3].content||!this.texts[4].content||!this.tableData[0].name||!this.tableData[0].value){
-             this.$message.warning('*为必填项，请填写后再预览或下载')
-             return
+          if (
+            !this.texts[0].content ||
+            !this.texts[1].content ||
+            !this.texts[2].content ||
+            !this.texts[3].content ||
+            !this.texts[4].content ||
+            !this.tableData[0].name ||
+            !this.tableData[0].value || 
+            !this.carrierInfo
+          ) {
+            this.$message.warning("*为必填项，请填写后再预览或下载");
+            return;
           }
           this.tipsComing(type);
-          if (this.previewState) {  
+          if (this.previewState) {
             this.dialogVisible = false;
             this.previewState = false;
           } else {
-            axios.get(`http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${id}`).then((data)=>{
-              if(data.data.code) {
-                this.$message.error('请求错误')
-              } else {
-                this.filePath = `http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${id}`;
-                 this.dialogVisible = true;
-              }
-            })
-            
+            axios
+              .get(
+                `http://10.8.0.1/track/bill-of-lading/preview/bill/pdf/${id}`
+              )
+              .then((data) => {
+                if (data.data.code) {
+                  this.$message.error("请求错误");
+                } else {
+                  this.filePath = `http://10.8.0.1/track/bill-of-lading/preview/bill/pdf/${id}`;
+                  this.dialogVisible = true;
+                }
+              });
           }
           return;
         } else {
@@ -916,9 +1006,9 @@ export default {
       if (this.mainData.id) {
         let idx = type;
         let data = this.mainData.hawbList[idx - 1];
-        if(data) {
-        var copy = JSON.parse(JSON.stringify(data));
-        delete copy.ifNewData;
+        if (data) {
+          var copy = JSON.parse(JSON.stringify(data));
+          delete copy.ifNewData;
         }
         // 有分单数据
         if (JSON.stringify(copy) != "{}" && copy) {
@@ -927,19 +1017,23 @@ export default {
             this.dialogVisible = false;
             this.previewState = false;
           } else {
-             axios.get(`http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${data.id}`).then((res)=>{
-              if(res.data.code) {
-                this.$message.error('请求错误')
-              } else {
-                this.filePath = `http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${data.id}`;
-                 this.dialogVisible = true;
-              }
-            })
+            axios
+              .get(
+                `http://10.8.0.1/track/bill-of-lading/preview/bill/pdf/${data.id}`
+              )
+              .then((res) => {
+                if (res.data.code) {
+                  this.$message.error("请求错误");
+                } else {
+                  this.filePath = `http://10.8.0.1/track/bill-of-lading/preview/bill/pdf/${data.id}`;
+                  this.dialogVisible = true;
+                }
+              });
           }
           return;
         } else {
           this.$message.error("请先保存数据");
-          
+
           return;
         }
       } else {
@@ -952,13 +1046,13 @@ export default {
       let typ = this.value;
       if (type == "order0") {
         let id = this.mainData.id;
-        this.dataPath = `http://10.8.0.1/trackTest/bill-of-lading/download/bill/${typ}/${id}`;
+        this.dataPath = `http://10.8.0.1/track/bill-of-lading/download/bill/${typ}/${id}`;
         return;
       }
       let idx = type.slice(-1);
       let data = this.mainData.hawbList[idx - 1];
       if (data) {
-        this.dataPath = `http://10.8.0.1/trackTest/bill-of-lading/download/bill/${typ}/${data.id}`;
+        this.dataPath = `http://10.8.0.1/track/bill-of-lading/download/bill/${typ}/${data.id}`;
         return;
       }
     },
@@ -972,10 +1066,18 @@ export default {
       // 请求了数据
       else {
         if (!type) {
-          if(!this.texts[0].content||!this.texts[1].content||!this.texts[2].content||!this.texts[3].content||!this.texts[4].content||!this.tableData[0].name||!this.tableData[0].value){
-             this.$message.warning('*为必填项，请填写后再预览或下载')
-              this.$refs.downloadPop.disabled = true;
-             return
+          if (
+            !this.texts[0].content ||
+            !this.texts[1].content ||
+            !this.texts[2].content ||
+            !this.texts[3].content ||
+            !this.texts[4].content ||
+            !this.tableData[0].name ||
+            !this.tableData[0].value
+          ) {
+            this.$message.warning("*为必填项，请填写后再预览或下载");
+            this.$refs.downloadPop.disabled = true;
+            return;
           }
           this.tipsComing(type);
         }
@@ -1001,9 +1103,7 @@ export default {
     mainData() {
       this.initData();
     },
-    currentIndex() {
-     
-    }
+    currentIndex() {},
   },
 };
 </script>
@@ -1045,7 +1145,7 @@ export default {
 .footer-one {
   display: flex;
 
-  height: 100px;
+  // height: 100px;
   margin-top: 20px;
   margin-left: 20px;
 }

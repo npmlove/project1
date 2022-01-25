@@ -57,6 +57,146 @@
           </el-form-item>
 
           <el-form-item>
+             <el-select
+              id="pscsId"
+              v-model="pscsId"
+              placeholder="请输入售前客服"
+              :loading="loading"
+              clearable
+              filterable
+              remote
+              reserve-keyword
+              maxlength="10"
+              style="width: 200px"
+            >
+              <el-option
+                v-for="item in payBefore"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item>
+            <el-select
+              id="mscsId"
+              v-model="mscsId"
+              placeholder="请输入售中客服"
+              :loading="loading"
+              clearable
+              filterable
+              remote
+              reserve-keyword
+              maxlength="10"
+              style="width: 200px"
+            >
+              <el-option
+                v-for="item in paying"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select
+            id="principalId"
+              v-model="principalId"
+              placeholder="请输入航线"
+              :loading="loading"
+              clearable
+              filterable
+              remote
+              reserve-keyword
+              style="width: 200px"
+            >
+              <el-option
+                v-for="item in airManger"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="航班日期:" style="margin-left:45px">
+            <el-date-picker
+              value-format="yyyy-MM-dd"
+              v-model="startDepartureDate"
+              style="width:150px"
+              type="date"
+              placeholder="航班起始日期"
+              :picker-options="pickerOptionsStartOne"
+            >
+            </el-date-picker
+            >-
+            <el-date-picker
+              value-format="yyyy-MM-dd"
+              v-model="endDepartureDate"
+              style="width:150px"
+              type="date"
+              :picker-options="pickerOptionsEndOne"
+              placeholder="航班截至日期"
+            >
+            </el-date-picker>
+          </el-form-item>
+
+          <el-form-item label="下单日期:"  style="margin-left:45px">
+            <el-date-picker
+              value-format="yyyy-MM-dd"
+              v-model="startOrderTime"
+              style="width:150px"
+              type="date"
+              :picker-options="pickerOptionsStartTwo"
+              placeholder="下单起始日期"
+            >
+            </el-date-picker
+            >-
+            <el-date-picker
+              value-format="yyyy-MM-dd"
+              v-model="endOrderTime"
+              style="width:150px"
+              type="date"
+              :picker-options="pickerOptionsEndTwo"
+              placeholder="下班截至日期"
+            >
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="financeStatus" placeholder="请选择对账状态" style="width: 200px" >
+              <el-option
+                v-for="item in optionOne"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+          </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="rcvWriteOffStatus" placeholder="请选择核销状态" style="width: 200px">
+              <el-option
+                v-for="item in optionTwo"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+          </el-select>
+          </el-form-item>
+          <el-form-item>
+              <el-select v-model="rcvCheckStatus" placeholder="请选择交单状态" style="width: 200px">
+              <el-option
+                v-for="item in optionThree"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+          </el-select>
+          </el-form-item>
+          <el-form-item>
             <el-row>
               <el-button @click="searchClick" size="medium" type="primary" icon="el-icon-search">查询</el-button>
               <el-button @click="restClick" size="medium" type="primary">清空</el-button>
@@ -65,9 +205,10 @@
         </div>
       </el-form>
       <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData">
-        <el-tab-pane label="全部订单" name="全部订单">
+        <el-tab-pane :label="'全部订单('+countInfo.countAll+')'" name="全部订单">
           <Table
             :tableData='tableData'
+            :sumInfo='sumInfo'
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -78,9 +219,10 @@
             @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="待平台审核" name="1">
+        <el-tab-pane :label="'待平台审核('+countInfo.countCheck+')'" name="1">
           <Table
             :tableData='tableData'
+            :sumInfo='sumInfo'
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -91,9 +233,10 @@
             @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="待进仓" name="2">
+        <el-tab-pane :label="'待进仓('+countInfo.countPreWarehouse+')'" name="2">
           <Table
             :tableData='tableData'
+            :sumInfo='sumInfo'
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -104,9 +247,10 @@
             @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="操作中" name="3">
+        <el-tab-pane :label="'操作中('+countInfo.countOperating+')'" name="3">
           <Table
             :tableData='tableData'
+            :sumInfo='sumInfo'
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -117,9 +261,10 @@
             @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="海关安检" name="4">
+        <el-tab-pane :label="'海关安检('+countInfo.countSecurity+')'" name="4">
           <Table
             :tableData='tableData'
+            :sumInfo='sumInfo'
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -130,9 +275,10 @@
             @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="运输中" name="5">
+        <el-tab-pane :label="'运输中('+countInfo.countTransit+')'" name="5">
           <Table
             :tableData='tableData'
+            :sumInfo='sumInfo'
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -143,9 +289,10 @@
             @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="完成" name="6">
+        <el-tab-pane :label="'完成('+countInfo.countCompleted+')'" name="6">
           <Table
             :tableData='tableData'
+            :sumInfo='sumInfo'
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -156,9 +303,10 @@
             @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane label="已取消" name="7">
+        <el-tab-pane :label="'已取消('+countInfo.countCancelled+')'" name="7">
           <Table
             :tableData='tableData'
+            :sumInfo='sumInfo'
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -169,9 +317,10 @@
             @currentChange='handleCurrentChange'>
           </Table>
         </el-tab-pane>
-        <el-tab-pane :label="'异常('+orderCount+')'" name="8">
+        <el-tab-pane :label="'异常('+countInfo.countErr+')'" name="8">
           <Table
             :tableData='tableData'
+            :sumInfo='sumInfo'
             :columns='columns'
             :operation='operation'
             :total='total'
@@ -201,13 +350,14 @@
         total: 0,
         // 列
         columns: [
-          {label: '航线', prop: 'orderNo', show: true, width: '150'},
+          {label: '航线', prop: 'orderNo', show: true, width: '120'},
+          {label: '客户代理', prop: 'customerProxy', show: true, width: '140'},
           {label: '货物信息', prop: 'airCompanyCode', show: true, width: '100'},
-          {label: '账单信息', prop: 'pol', show: true, width: '150'},
+          {label: '账单信息', prop: 'pol', show: true, width: '120'},
           {label: '操作人员', prop: 'pod', show: true, width: '100'},
           {label: '状态', prop: 'continent', show: true, width: '100'},
-          {label: '下单时间', prop: 'nonStop', show: true, width: '100'},
-          {label: '备注', prop: 'legCount', show: true, width: '50'}
+          // {label: '下单时间', prop: 'nonStop', show: true, width: '100'},
+          {label: '备注', prop: 'legCount', show: true, width: '80'}
         ],
         // 操作
         operation: {
@@ -218,6 +368,56 @@
             {label: '编辑', method: 'routeEdit'}
           ]
         },
+
+        //新添字段
+        optionOne:[{value:1,label:"未对账"},{value:2,label:"部分对账"},{value:3,label:"已对账"}],
+        optionTwo:[{value:1,label:"未核销"},{value:2,label:"部分核销"},{value:3,label:"已核销"}],
+        optionThree:[{value:0,label:"未交单"},{value:1,label:"已交单"},{value:2,label:"解锁待审核"},{value:3,label:"交单待审核"}],
+        pscsId:"",
+        mscsId:"",
+        principalId:"",
+        startDepartureDate:"",
+        endDepartureDate:"",
+        startOrderTime:"",
+        endOrderTime:"",
+        financeStatus:"",
+        rcvWriteOffStatus:"",
+        rcvCheckStatus:"",
+           //航班日期选择器
+      // 限制结束日期大于开始日期
+      pickerOptionsStartOne: {
+        disabledDate: (time) => {
+          let endDateVal = this.endDepartureDate;
+          if (endDateVal) {
+            return time.getTime() > new Date(endDateVal).getTime() ;
+          }
+        },
+      },
+      pickerOptionsEndOne: {
+        disabledDate: (time) => {
+          let beginDateVal = this.startDepartureDate;
+          if (beginDateVal) {
+            return time.getTime() < new Date(beginDateVal).getTime() -8.64e7;
+          }
+        },
+      },
+      // 下单时间
+      pickerOptionsStartTwo: {
+        disabledDate: (time) => {
+          let endDateVal = this.endOrderTime;
+          if (endDateVal) {
+            return time.getTime() > new Date(endDateVal).getTime();
+          }
+        },
+      },
+      pickerOptionsEndTwo: {
+        disabledDate: (time) => {
+          let beginDateVal = this.startOrderTime;
+          if (beginDateVal) {
+            return time.getTime() < new Date(beginDateVal).getTime()-8.64e7;
+          }
+        },
+      },
         orderNo: '',
         waybillNo: '',
         inboundNo: '',
@@ -231,6 +431,13 @@
         typeCode: '全部订单',
         orderCount: 0,
         loading: false,
+        //表格表头上方统计数据
+        sumInfo:{},
+        //表格tab栏数字
+        countInfo:{},
+        payBefore:[],
+        paying:[],
+        airManger:[]
       }
     },
     mounted() {
@@ -238,8 +445,21 @@
       this.initOrderCountList()
       this.initAgentList()
       this.initAirportSearchByPage()
+      this.operateData()
     },
     methods: {
+       //售前售中客服、航线负责人数据
+      operateData (){
+        this.$http.get(this.$service.userSearchNoAuth+'?roleName=售前客服&pageSize=50000').then(data=>{
+          this.payBefore = data.data.records
+        })
+        this.$http.get(this.$service.userSearchNoAuth+'?roleName=售中客服&pageSize=50000').then(data=>{
+          this.paying = data.data.records
+        })
+        this.$http.get(this.$service.userSearchNoAuth+'?roleName=航线负责人&pageSize=50000').then(data=>{
+          this.airManger = data.data.records
+        })
+      },
       //tab切换
       tabClickData() {
         this.pageNum = 1
@@ -358,26 +578,26 @@
         this.initAgentList(agentName)
       },
       initOrderCountList() {
-        var json = {
-        	orderNo: this.orderNo,
-        	waybillNo: this.waybillNo,
-        	inboundNo: this.inboundNo,
-        	pol: this.pol,
-        	pod: this.pod,
-        	agentId: this.agentId,
-          customerName: this.customerName,
-        	typeCode: 8
-        }
-        json = toData(json)
-        this.$http.get(this.$service.orderCountList+'?'+json).then(data => {
-          if (data.code == 200) {
-            this.orderCount = data.data
-          }else {
-            this.$message.error(data.message)
-          }
-        }).catch((e) => {
-          console.log(e)
-        })
+        // var json = {
+        // 	orderNo: this.orderNo,
+        // 	waybillNo: this.waybillNo,
+        // 	inboundNo: this.inboundNo,
+        // 	pol: this.pol,
+        // 	pod: this.pod,
+        // 	agentId: this.agentId,
+        //   customerName: this.customerName,
+        // 	typeCode: 8
+        // }
+        // json = toData(json)
+        // this.$http.get(this.$service.orderCountList+'?'+json).then(data => {
+        //   if (data.code == 200) {
+        //     this.orderCount = data.data
+        //   }else {
+        //     this.$message.error(data.message)
+        //   }
+        // }).catch((e) => {
+        //   console.log(e)
+        // })
       },
       //航线列表
       initData() {
@@ -391,13 +611,25 @@
           customerName: this.customerName,
         	typeCode: this.typeCode == '全部订单' ? '' : this.typeCode,
         	pageNum: this.pageNum,
-        	pageSize: this.pageSize
+        	pageSize: this.pageSize,
+          pscsId:this.pscsId,
+          mscsId:this.mscsId,
+          principalId:this.principalId,
+          startDepartureDate:this.startDepartureDate,
+          endDepartureDate:this.endDepartureDate,
+          startOrderTime:this.startOrderTime,
+          endOrderTime:this.endOrderTime,
+          financeStatus:this.financeStatus,
+          rcvWriteOffStatus:this.rcvWriteOffStatus,
+          rcvCheckStatus:this.rcvCheckStatus,
         }
         json = toData(json)
         this.$http.get(this.$service.orderSearchByPage+'?'+json).then(data => {
           if (data.code == 200) {
             this.total = data.data.total
             this.tableData = data.data.records
+            this.sumInfo = data.data.sumInfo
+            this.countInfo = data.data.countInfo
           }else {
             this.$message.error(data.message)
           }
@@ -421,6 +653,16 @@
         this.pod = ''
         this.agentId = ''
         this.customerName = ''
+        this.pscsId = "",
+        this.mscsId = "",
+        this.principalId = "",
+        this.startDepartureDate = "",
+        this.endDepartureDate = "",
+        this.startOrderTime = "",
+        this.endOrderTime = "",
+        this.financeStatus = "",
+        this.rcvWriteOffStatus = "",
+        this.rcvCheckStatus = "",
         this.pageNum = 1
         this.pageSize = 10
         this.initData()

@@ -216,6 +216,7 @@ export default {
         this.mainData.shipperInfo = data[1].shipperInfo;
         this.mainData.shippingMark = data[1].shippingMark;
         this.mainData.wtVal = data[1].wtVal;
+        this.mainData.carrierInfo = data[1].carrierInfo
       }
     },
 
@@ -331,7 +332,7 @@ export default {
     initData() {
       let param = this.orderNo;
       axios
-        .get(`http://10.8.0.1/trackTest/bill-of-lading/${param}`)
+        .get(`http://10.8.0.1/track/bill-of-lading/${param}`)
         .then((data) => {  
            if(data.data.ext) {
             this.noPrice = 1

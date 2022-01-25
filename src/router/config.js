@@ -438,7 +438,7 @@ const orderManagementCenter = [{
       component: () => import('@/pages/orderManagement/ladingBillDownLoad.vue'),
       name: 'ladingBillDownLoad',
       meta: {
-        title: '提单下载',
+        title: '提单制作',
         keepAlive: false,
         needLogin: true
       }
