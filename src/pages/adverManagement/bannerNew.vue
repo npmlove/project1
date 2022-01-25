@@ -29,7 +29,7 @@
       </el-form>
       <div class="baocun">
         <div style="text-align: center;padding-top:20px;">
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+          <el-button size="medium" type="primary"
             @click="dialogComfirm">保存</el-button>
         </div>
       </div>

@@ -216,7 +216,7 @@
         </div>
         <div class="rest-style">
           <el-form-item label=" " label-width="150px">
-            <el-button style="height: 36px;line-height: 36px;padding: 0;" type="primary" @click="submitForm('ruleForm')">下一步</el-button>
+            <el-button type="primary" @click="submitForm('ruleForm')">下一步</el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -346,16 +346,16 @@
             </div>
             <div v-if="(item.ratesList.length != 2) && (listItem.cargoType.length != 2)" class="rest-style" style="margin-top: 20px;">
               <el-form-item label=" " label-width="150px">
-                <el-button @click="addCargoType(index,listIndex)" style="height: 36px;line-height: 36px;padding: 0;" type="primary">设置{{listItem.cargoType.toString() == '2' ? '散货价' : '托盘价'}}</el-button>
+                <el-button @click="addCargoType(index,listIndex)" type="primary">设置{{listItem.cargoType.toString() == '2' ? '散货价' : '托盘价'}}</el-button>
               </el-form-item>
             </div>
           </div>
         </div>
         <div class="rest-style" style="padding-left: 20px;">
           <el-form-item label=" " label-width="150px">
-            <el-button @click="addAirlineAgent" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >添加代理</el-button>
-            <el-button @click="activeClick" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >上一步</el-button>
-            <el-button @click="submitData" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
+            <el-button @click="addAirlineAgent" type="primary" >添加代理</el-button>
+            <el-button @click="activeClick" type="primary" >上一步</el-button>
+            <el-button @click="submitData" type="primary" >保存</el-button>
           </el-form-item>
         </div>
       </el-form>

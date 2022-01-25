@@ -302,8 +302,21 @@ agentBill: pulicWeb + '/t-bill/agentBill',
   // 获取分泡比例
   getOrderBubblePoint: pulicWeb + '/t-order/getOrderBubblePoint',
 
+  // 仓库相关
   // 根据机场查询仓库，并且添加了一个第三方仓库
   searchByAirport: pulicWeb + `/t-warehouse/searchByAirport`,
+  // 新增仓库
+  addWarehouse: pulicWeb + `/t-warehouse/add`,
+  // 编辑仓库
+  editWarehouse: pulicWeb + `/t-warehouse/update`,
+  // 删除仓库
+  delWarehouse: pulicWeb + `/t-warehouse/delete`,
+  // 仓库信息查询
+  getWarehouses: pulicWeb + `/t-warehouse/searchByPage`,
+  // 查询仓库所属
+  getWarehouseBelongs: pulicWeb + `/t-warehouse/searchBelongs`,
+  // 上传进仓地图模板
+  uploadWarehouseMap: pulicWeb + `/t-warehouse/uploadInboundMap`,
 }
 export default serviceApi
 

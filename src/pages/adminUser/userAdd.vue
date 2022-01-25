@@ -32,7 +32,7 @@
         </el-form-item>
         <div class="rest-style">
           <el-form-item label=" " style="padding-top: 50px;padding-bottom: 30px;">
-            <el-button style="height: 36px;line-height: 36px;padding: 0;" type="primary" @click="submitForm('ruleForm')">提交</el-button>
+            <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
           </el-form-item>
         </div>
       </el-form>

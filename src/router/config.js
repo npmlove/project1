@@ -707,6 +707,34 @@ const workOrder = [{
   ]
 }]
 
+// 仓库
+const warehouse = [{
+  path: '/warehouseManagement',
+  component: Layout,
+  name: 'WarehouseManagement',
+  redirect: 'noredirect',
+  alwaysShow: true,
+  meta: {
+    title:"仓库管理",
+    icon: 'icon iconfont icon-diannao',
+    breadcrumb: false,
+    roles:["售中客服","一代操作"]
+  },
+  children: [
+    {
+      path: 'warehouseList',
+      component: () => import('@/pages/warehouseManagement/WarehouseList.vue'),
+      name: 'WarehouseList',
+      meta: {
+        title: '仓库列表',
+        keepAlive: false,
+        needLogin: true,
+        roles:["售中客服","一代操作"]
+      }
+    },
+  ]
+}]
+
 // led
 const led = [{
   path:"/ledPage",
@@ -740,6 +768,7 @@ const led = [{
 export const asyncRoutes = [
   ...orderManagementCenter,
   ...routeManagementCenter,  // dashboard home
+  ...warehouse,
   ...financeManagementCenter,
   ...billOverview,
   ...adverManagementCenter,
@@ -751,7 +780,7 @@ export const asyncRoutes = [
   ...courseManagement,
   ...cargoTrackingManage,
   ...workOrder,
-  ...led
+  ...led,
 ]
 
 // 默认显示路由

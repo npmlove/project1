@@ -16,8 +16,10 @@
                 v-model="form.inboundNo"
                 placeholder="进仓编号"
                 style="width: 160px"
+                maxlength="20"
+                show-word-limit
               />
-              <el-button type="text" @click="form.inboundNo = inboundNo"
+              <el-button type="text" @click="form.inboundNo = computedInboundNo"
                 >获取进仓编号</el-button
               >
             </div>
@@ -59,17 +61,20 @@
           <el-form-item label="仓库地址">
             <el-input
               v-model="form.warehouseAddress"
+              type="textarea"
               placeholder="填写仓库地址"
-              :disabled="warehouseInputDisabled"
             />
           </el-form-item>
           <el-form-item label="仓库电话">
-            <el-input v-model="form.warehouseTel" placeholder="填写仓库电话" :disabled="warehouseInputDisabled" />
+            <el-input v-model="form.warehouseTel" placeholder="填写仓库电话" />
           </el-form-item>
           <el-form-item label="仓库备注">
             <el-input
+              type="textarea"
               v-model="form.warehouseRemark"
               placeholder="填写仓库留言"
+              maxlength="100"
+              show-word-limit
             />
           </el-form-item>
         </el-form>
@@ -78,9 +83,9 @@
             <img
               src="@/assets/entry-guide_map-download.png"
               style="width: 40px"
-              @click="downloadMap"
+              @click="$utils.downloadFile({ url: mapData.xpath, name: mapData.attachmentNameCopy, type: mapData.fileType })"
             />
-            <el-button type="text" class="text" @click="dialogVisible = true">{{ mapData.attachmentNameCopy }}</el-button>
+            <el-button type="text" class="text" @click="$utils.previewDocx({ xpath: mapData.xpath })">{{ mapData.attachmentNameCopy }}</el-button>
           </div>
         </aside>
       </div>
@@ -103,9 +108,6 @@
         </ul> -->
       </div>
     </div>
-    <el-dialog title="预览进仓地图" :visible.sync="dialogVisible" width="60%" top="3vh" center>
-      <iframe :src="computedDocUrl" style="width: 100%; height: 80vh"></iframe>
-    </el-dialog>
   </div>
 </template>
 
@@ -135,7 +137,6 @@ export default {
   },
   data() {
     return {
-      inboundNo: "", // 本地进仓编号
       form: {
         warehouseAddress: "", // 仓库地址
         warehouseRemark: "", // 仓库备注
@@ -145,10 +146,10 @@ export default {
         latestInboundDate: "", // 最晚进仓时间
         warehouseName: '',
       },
+      orderNo: '', // 订单编号
       warehouseList: [],
       mapData: {},
       flowChart,
-      dialogVisible: false,
     };
   },
   computed: {
@@ -160,59 +161,17 @@ export default {
         };
       });
     },
-    computedDocUrl() {
-      // 处理域名前缀问题
-      const host = getHost()
-      function getHost() {
-        if (process.env.NODE_ENV === 'development') {
-          return `https://17dc.shenghuoq.com`
-        } else {
-          if (window.location.host.includes(`10.8.0.1`)) {
-            return `https://17dc.shenghuoq.com`
-          } else {
-            return window.location.origin
-          }
-        }
-      }
-      // const url = `https://homepages.inf.ed.ac.uk/neilb/TestWordDoc.doc` // 预览测试用第三方doc
-      const url = `${host}${this.mapData.xpath}`
-      // const docViewer = `https://docs.google.com/viewer?embedded=true&url=` // 谷歌预览
-      const docViewer = `https://view.officeapps.live.com/op/embed.aspx?src=` // 微软预览
-      return `${docViewer}${url}`
-    },
     computedWarehouse() {
       return this.warehouseList.find(item => {
         return item.id === this.form.warehouseId
       }) || {}
     },
-    warehouseInputDisabled() {
-      return this.computedWarehouse.type === 0
+    // 获取进仓编号
+    computedInboundNo() {
+      return `FLD${this.orderNo.slice(-6)}`
     },
   },
   methods: {
-    // 下载进仓地图
-    downloadMap() {
-      // 处理域名前缀问题
-      const host = getHost()
-      function getHost() {
-        if (process.env.NODE_ENV === 'development') {
-          return `https://17dc.shenghuoq.com`
-        } else {
-          if (window.location.host.includes(`10.8.0.1`)) {
-            return `https://17dc.shenghuoq.com`
-          } else {
-            return window.location.origin
-          }
-        }
-      }
-      const { xpath, attachmentNameCopy } = this.mapData;
-      const tagA = document.createElement("a");
-      tagA.href = `${host}${xpath}`;
-      tagA.setAttribute("download", attachmentNameCopy); // 设置下载文件名称
-      document.body.appendChild(tagA);
-      tagA.click();
-      document.body.removeChild(tagA)
-    },
     // 根据机场查询仓库
     async searchByAirport(pol) {
       const { code, data, message } = await this.$http.get(this.$service.searchByAirport, {
@@ -244,22 +203,23 @@ export default {
           warehouseName,
           warehouseType,
           warehouseId,
+          orderNo,
         } = this.entryData;
-        const moment = this.$utils.moment
-        const latestDate = latestInboundDate ? moment(latestInboundDate).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss')
+        const dayjs = this.$utils.dayjs
+        const latestDate = latestInboundDate ? dayjs(latestInboundDate).format('YYYY-MM-DD HH:mm:ss') : dayjs().format('YYYY-MM-DD HH:mm:ss')
         this.form = {
           warehouseAddress,
           warehouseRemark,
           warehouseTel,
           inboundNo,
-          expectedInboundTime: expectedInboundTime || moment().format('YYYY-MM-DD HH:mm:ss'),
+          expectedInboundTime: expectedInboundTime || dayjs().format('YYYY-MM-DD HH:mm:ss'),
           latestInboundDate: latestDate,
           pol,
           warehouseName,
           warehouseType,
           warehouseId,
         };
-        this.inboundNo = inboundNo;
+        this.orderNo = orderNo
         this.mapData =
           orderAttachmentList.find((item) => {
             return item.attachmentType === 5;

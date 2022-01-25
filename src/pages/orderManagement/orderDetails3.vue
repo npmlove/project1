@@ -1151,10 +1151,18 @@ export default {
           orderCargoDetailList[i].id = '',
           orderCargoDetailList[i].orderId = ''
         }
+      const totalImages = order.totalImages
       let params = {
         order: order,
         orderPriceList: orderPriceList,
         orderCargoDetailList: orderCargoDetailList,
+        orderAttachmentList: [
+          ...(order.orderAttachmentList || []).map(item => {
+            const image = totalImages.find(img => img.id === item.id) || item
+            return image
+          }),
+          ...totalImages.filter(img => !img.id)
+        ],
         ctrlMap: {
           ctrlFlag: e,
         },
