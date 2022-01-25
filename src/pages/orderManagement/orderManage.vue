@@ -167,7 +167,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="financeStatus" placeholder="请选择对账状态" style="width: 200px"  clearable>
+            <el-select v-model="rcvCheckStatus" placeholder="请选择对账状态" style="width: 200px"  clearable>
               <el-option
                 v-for="item in optionOne"
                 :key="item.value"
@@ -187,7 +187,7 @@
           </el-select>
           </el-form-item>
           <el-form-item>
-              <el-select v-model="rcvCheckStatus" placeholder="请选择交单状态" style="width: 200px" clearable>
+              <el-select v-model="financeStatus" placeholder="请选择交单状态" style="width: 200px" clearable>
               <el-option
                 v-for="item in optionThree"
                 :key="item.value"
@@ -372,7 +372,7 @@
         //新添字段
         optionOne:[{value:1,label:"未对账"},{value:2,label:"部分对账"},{value:3,label:"已对账"}],
         optionTwo:[{value:1,label:"未核销"},{value:2,label:"部分核销"},{value:3,label:"已核销"}],
-        optionThree:[{value:0,label:"未交单"},{value:1,label:"已交单"},{value:2,label:"解锁待审核"},{value:3,label:"交单待审核"}],
+        optionThree:[{value:0,label:"未交单"},{value:1,label:"已交单"},{value:2,label:"解锁待审核"},{value:3,label:"交单待审核"},{value:4,label:"修改中"}],
         pscsId:"",
         mscsId:"",
         principalId:"",
