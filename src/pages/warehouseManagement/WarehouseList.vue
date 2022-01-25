@@ -4,12 +4,12 @@
     <header class="tools-bar">
       <el-form :inline="true">
         <el-form-item label="仓库名称:">
-          <el-input
+          <el-autocomplete
             v-model="warehouseName"
-            clearable
-            :maxlength="30"
+            :fetch-suggestions="(query, cb) => querySearch(query, cb, 'warehouseNames')"
             placeholder="请输入仓库名称"
-          ></el-input>
+            clearable
+          ></el-autocomplete>
         </el-form-item>
         <el-form-item label="是否自有:">
           <el-select
@@ -35,29 +35,20 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="仓库所属:">
-          <el-select
+          <el-autocomplete
             v-model="belong"
-            placeholder="请选择仓库所属"
+            :fetch-suggestions="(query, cb) => querySearch(query, cb, 'belongs')"
+            placeholder="请输入仓库所属"
             clearable
-            filterable
-          >
-            <el-option
-              v-for="item in belongs"
-              :key="item.value"
-              :value="item.value"
-              :label="item.label"
-            >
-            </el-option>
-          </el-select>
+          ></el-autocomplete>
         </el-form-item>
         <el-form-item label="提交者:">
-          <el-input
+          <el-autocomplete
             v-model="userName"
-            clearable
-            type="text"
-            :maxlength="30"
+            :fetch-suggestions="(query, cb) => querySearch(query, cb, 'userNames')"
             placeholder="请输入提交者"
-          ></el-input>
+            clearable
+          ></el-autocomplete>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="currentPageChange(1)"
@@ -110,8 +101,14 @@
     <warehouse-dialog
       ref="WarehouseDialog"
       :form.sync="form"
-      @afterEdit="currentPageChange(); getWarehouseBelongs()"
-      @afterAdd="currentPageChange(1); getWarehouseBelongs()"
+      @afterEdit="
+        currentPageChange();
+        searchCondList();
+      "
+      @afterAdd="
+        currentPageChange(1);
+        searchCondList();
+      "
     />
   </div>
 </template>
@@ -193,6 +190,8 @@ export default {
       ],
       warehouses: [], // 仓库列表
       belongs: [], // 所属列表
+      warehouseNames: [], // 仓库名称列表
+      userNames: [], // 提交者列表
       pageSize: 10,
       pageNum: 1,
       total: 0,
@@ -204,11 +203,18 @@ export default {
   methods: {
     init() {
       this.getWarehouses();
-      this.getWarehouseBelongs();
+      this.searchCondList();
     },
     async getWarehouses() {
-      const { belong, city, pageNum, pageSize, warehouseName, warehouseType, userName } =
-        this;
+      const {
+        belong,
+        city,
+        pageNum,
+        pageSize,
+        warehouseName,
+        warehouseType,
+        userName,
+      } = this;
       const {
         code,
         data: { records, total },
@@ -250,12 +256,14 @@ export default {
       })
         .then(async () => {
           const { code, message } = await this.$http.post(
-            this.$service.delWarehouse, {
-              id: warehouse.id
+            this.$service.delWarehouse,
+            {
+              id: warehouse.id,
             }
           );
           if (code === 200) {
-            this.currentPageChange()
+            this.currentPageChange();
+            this.searchCondList()
           } else {
             this.$message.error(message);
           }
@@ -284,21 +292,28 @@ export default {
       }
       dialog && (dialog.show = true);
     },
-    // 查询仓库所属
-    async getWarehouseBelongs() {
+    // 查询筛选栏列表
+    async searchCondList() {
       const { code, data, message } = await this.$http.get(
-        this.$service.getWarehouseBelongs
+        this.$service.searchCondList, {
+          params: {
+            typeCode: '0,1,2', // 0=仓库名称，1=仓库所属，2=提交者
+          }
+        }
       );
       if (code === 200) {
-        this.belongs = data.map((item) => {
-          return {
-            label: item,
-            value: item,
-          };
-        });
+        this.warehouseNames = data[0].map(item => ({ value: item }))
+        this.belongs = data[1].map(item => ({ value: item }))
+        this.userNames = data[2].map(item => ({ value: item }))
       } else {
         this.$message.error(message);
       }
+    },
+    querySearch(query, cb, attr) {
+      const results = this[attr].filter(item => {
+        return item.value.includes(query)
+      })
+      cb(results);
     },
   },
 };

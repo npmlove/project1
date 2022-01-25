@@ -313,8 +313,8 @@ agentBill: pulicWeb + '/t-bill/agentBill',
   delWarehouse: pulicWeb + `/t-warehouse/delete`,
   // 仓库信息查询
   getWarehouses: pulicWeb + `/t-warehouse/searchByPage`,
-  // 查询仓库所属
-  getWarehouseBelongs: pulicWeb + `/t-warehouse/searchBelongs`,
+  // 查询筛选栏列表
+  searchCondList: pulicWeb + `/t-warehouse/searchCondList`,
   // 上传进仓地图模板
   uploadWarehouseMap: pulicWeb + `/t-warehouse/uploadInboundMap`,
 }
