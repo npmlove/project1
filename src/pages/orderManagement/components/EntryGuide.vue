@@ -19,7 +19,7 @@
                 maxlength="20"
                 show-word-limit
               />
-              <el-button type="text" @click="form.inboundNo = inboundNo"
+              <el-button type="text" @click="form.inboundNo = computedInboundNo"
                 >获取进仓编号</el-button
               >
             </div>
@@ -63,17 +63,16 @@
               v-model="form.warehouseAddress"
               type="textarea"
               placeholder="填写仓库地址"
-              :disabled="warehouseInputDisabled"
             />
           </el-form-item>
           <el-form-item label="仓库电话">
-            <el-input v-model="form.warehouseTel" placeholder="填写仓库电话" :disabled="warehouseInputDisabled" />
+            <el-input v-model="form.warehouseTel" placeholder="填写仓库电话" />
           </el-form-item>
           <el-form-item label="仓库备注">
             <el-input
+              type="textarea"
               v-model="form.warehouseRemark"
               placeholder="填写仓库留言"
-              type="textarea"
               maxlength="100"
               show-word-limit
             />
@@ -138,7 +137,6 @@ export default {
   },
   data() {
     return {
-      inboundNo: "", // 本地进仓编号
       form: {
         warehouseAddress: "", // 仓库地址
         warehouseRemark: "", // 仓库备注
@@ -148,6 +146,7 @@ export default {
         latestInboundDate: "", // 最晚进仓时间
         warehouseName: '',
       },
+      orderNo: '', // 订单编号
       warehouseList: [],
       mapData: {},
       flowChart,
@@ -167,8 +166,9 @@ export default {
         return item.id === this.form.warehouseId
       }) || {}
     },
-    warehouseInputDisabled() {
-      return this.computedWarehouse.type === 0
+    // 获取进仓编号
+    computedInboundNo() {
+      return `FLD${this.orderNo.slice(-6)}`
     },
   },
   methods: {
@@ -203,6 +203,7 @@ export default {
           warehouseName,
           warehouseType,
           warehouseId,
+          orderNo,
         } = this.entryData;
         const dayjs = this.$utils.dayjs
         const latestDate = latestInboundDate ? dayjs(latestInboundDate).format('YYYY-MM-DD HH:mm:ss') : dayjs().format('YYYY-MM-DD HH:mm:ss')
@@ -218,7 +219,7 @@ export default {
           warehouseType,
           warehouseId,
         };
-        this.inboundNo = inboundNo;
+        this.orderNo = orderNo
         this.mapData =
           orderAttachmentList.find((item) => {
             return item.attachmentType === 5;
