@@ -12,7 +12,6 @@
       :model="form"
       :rules="rules"
       label-width="80px"
-      v-if="show"
     >
       <el-form-item label="是否自有" prop="type">
         <el-radio-group v-model="form.type">
@@ -180,7 +179,6 @@ export default {
             try {
               await this.editWarehouse();
               this.show = false;
-              this.$emit("update:form", this.form);
               this.$emit(this.computedSubmit.emitEv);
             } catch (error) {}
           } else {
