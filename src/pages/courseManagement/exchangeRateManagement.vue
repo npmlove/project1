@@ -51,7 +51,7 @@
       <div style="text-align: center;">提示: 汇率设置后24小时内支持修改</div>
       <div slot="footer" class="dialog-footer">
         <div style="text-align: center;padding-top:20px;">
-          <el-button style="height: 36px;line-height: 36px;padding: 0;" size="medium" type="primary"
+          <el-button size="medium" type="primary"
                      @click="dialogComfirm('ruleForm')">确定
           </el-button>
         </div>

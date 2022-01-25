@@ -10,7 +10,7 @@
           :class="{ disabled: disabled }"
           @click="delImage(index)"
         ></i>
-        <img :src="item.xpath" @click="previewImage(item)" />
+        <img :src="item.xpath" @click="$utils.previewImage({ url: item.xpath })" />
       </li>
     </ul>
   </div>
@@ -44,7 +44,7 @@ export default {
         this.$message.error("最多上传6张图片");
         return;
       }
-      const files = await this.$utils.loadImage();
+      const files = await this.$utils.loadFile({ accept: 'image/*' });
       const file = files[0];
       if (file.size > 500 * 1024) {
         this.$message.error("上传图片大小不能超过500kb");

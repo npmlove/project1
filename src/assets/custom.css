@@ -41,7 +41,6 @@ body{
 } */
 
 .el-button--primary{
-  width: 100px;
   background-color: #2273CE !important;
   border-color: #2273CE !important;
   color: #FFF!important;
@@ -111,8 +110,6 @@ body{
   right: 10px;
 }
 .el-dialog {
-  width: 50%;
-  min-width: 880px;
   border-radius: 6px;
 }
 .el-dialog__header {

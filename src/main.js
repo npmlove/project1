@@ -11,7 +11,8 @@ import {filterAsyncRoutes,whiteList} from "@/util/permission"
 import dataV from '@jiaminghi/data-view'
 import '../node_modules/echarts/map/js/world.js'
 Vue.use(dataV)
-import utils from '@/utils'
+// 引入公共插件
+import '@/plugins'
 
 import '@/assets/icon/iconfont.css'
 import '@/assets/custom.css'
@@ -23,7 +24,6 @@ Vue.config.productionTip = false
 Vue.prototype.$service = serviceAPI
 Vue.prototype.inputMax = 50
 Vue.prototype.imgUrl = ''
-Vue.prototype.$utils = utils
 // Vue.prototype.$confirm = MessageBox.confirm
 //判断是否登录
 router.beforeEach(function (to, from, next) {

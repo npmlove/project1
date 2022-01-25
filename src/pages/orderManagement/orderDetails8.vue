@@ -442,9 +442,9 @@
       <el-form :label-position="labelPosition" :inline="true" label-width="150px" size="medium" class="demo-form-inline">
         <div class="rest-style" style="padding-left: 20px;">
           <el-form-item label=" " label-width="150px">
-            <el-button  @click="submitClick('保存')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >保存</el-button>
-            <el-button v-if="!canNotOperate" @click="submitClick('取消')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >取消订单</el-button>
-            <el-button v-if="!canNotOperate" @click="submitClick('通过')" style="height: 36px;line-height: 36px;padding: 0;" type="primary" >审核通过</el-button>
+            <el-button  @click="submitClick('保存')" type="primary" >保存</el-button>
+            <el-button v-if="!canNotOperate" @click="submitClick('取消')" type="primary" >取消订单</el-button>
+            <el-button v-if="!canNotOperate" @click="submitClick('通过')" type="primary" >审核通过</el-button>
           </el-form-item>
         </div>
       </el-form>
