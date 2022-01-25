@@ -110,8 +110,8 @@
     <warehouse-dialog
       ref="WarehouseDialog"
       :form.sync="form"
-      @afterEdit="currentPageChange()"
-      @afterAdd="currentPageChange(1)"
+      @afterEdit="currentPageChange(); getWarehouseBelongs()"
+      @afterAdd="currentPageChange(1); getWarehouseBelongs()"
     />
   </div>
 </template>

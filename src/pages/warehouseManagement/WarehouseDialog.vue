@@ -177,10 +177,12 @@ export default {
       this.computedFormRef &&
         this.computedFormRef.validate(async (valid) => {
           if (valid) {
-            await this.editWarehouse();
-            this.show = false;
-            this.$emit("update:form", this.form);
-            this.$emit(this.computedSubmit.emitEv);
+            try {
+              await this.editWarehouse();
+              this.show = false;
+              this.$emit("update:form", this.form);
+              this.$emit(this.computedSubmit.emitEv);
+            } catch (error) {}
           } else {
             return false;
           }
@@ -250,6 +252,7 @@ export default {
         this.$message.success(`${this.computedSubmit.text}成功`);
       } else {
         this.$message.error(message);
+        return Promise.reject();
       }
     },
     // 设置地图
@@ -265,7 +268,8 @@ export default {
       if (newVal === 0) {
         this.form.belong = "自有仓库";
       } else {
-        this.form.belong = "";
+        this.form.belong =
+          this.form.belong === "自有仓库" ? "" : this.form.belong;
       }
     },
   },
