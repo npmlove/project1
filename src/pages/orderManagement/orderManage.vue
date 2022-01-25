@@ -167,7 +167,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="financeStatus" placeholder="请选择对账状态" style="width: 200px" >
+            <el-select v-model="financeStatus" placeholder="请选择对账状态" style="width: 200px"  clearable>
               <el-option
                 v-for="item in optionOne"
                 :key="item.value"
@@ -177,7 +177,7 @@
           </el-select>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="rcvWriteOffStatus" placeholder="请选择核销状态" style="width: 200px">
+            <el-select v-model="rcvWriteOffStatus" placeholder="请选择核销状态" style="width: 200px" clearable>
               <el-option
                 v-for="item in optionTwo"
                 :key="item.value"
@@ -187,7 +187,7 @@
           </el-select>
           </el-form-item>
           <el-form-item>
-              <el-select v-model="rcvCheckStatus" placeholder="请选择交单状态" style="width: 200px">
+              <el-select v-model="rcvCheckStatus" placeholder="请选择交单状态" style="width: 200px" clearable>
               <el-option
                 v-for="item in optionThree"
                 :key="item.value"
@@ -615,10 +615,10 @@
           pscsId:this.pscsId,
           mscsId:this.mscsId,
           principalId:this.principalId,
-          startDepartureDate:this.startDepartureDate,
-          endDepartureDate:this.endDepartureDate,
-          startOrderTime:this.startOrderTime,
-          endOrderTime:this.endOrderTime,
+          startDepartureDate:this.startDepartureDate?this.startDepartureDate:"",
+          endDepartureDate:this.endDepartureDate?this.endDepartureDate:"",
+          startOrderTime:this.startOrderTime?this.startOrderTime:"",
+          endOrderTime:this.endOrderTime?this.endOrderTime:"",
           financeStatus:this.financeStatus,
           rcvWriteOffStatus:this.rcvWriteOffStatus,
           rcvCheckStatus:this.rcvCheckStatus,
