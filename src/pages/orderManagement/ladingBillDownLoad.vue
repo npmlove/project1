@@ -332,7 +332,7 @@ export default {
     initData() {
       let param = this.orderNo;
       axios
-        .get(`http://10.8.0.1/track/bill-of-lading/${param}`)
+        .get(`http://10.8.0.1/trackTest/bill-of-lading/${param}`)
         .then((data) => {  
            if(data.data.ext) {
             this.noPrice = 1
