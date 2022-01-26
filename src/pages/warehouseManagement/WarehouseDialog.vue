@@ -147,7 +147,7 @@ export default {
       helpIcon,
       rules,
       show: false,
-      showTips: false,
+      showTips: true,
     };
   },
   computed: {
