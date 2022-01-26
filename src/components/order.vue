@@ -181,6 +181,7 @@
                   maxlength="50"
                   onKeyUp="value=value.replace(/[\W]/g,'')"
                   @blur="tableData[index].name = $event.target.value"
+                  @change="ifSame(index)"
                   v-model="tableData[index].name"
                 >
                 </el-input>
@@ -430,6 +431,28 @@ export default {
     // console.log('activated');
   },
   methods: {
+     isRepeat(arr){ 
+        var hash = {}; 
+        for(var i in arr) { 
+        if(hash[arr[i]]) 
+        return true; 
+        hash[arr[i]] = true; 
+        } 
+        return false; 
+    },
+    ifSame(index){
+      let copy = JSON.parse(JSON.stringify(this.tableData))
+      let resultS = copy.map(item=>{
+        if (!item.name || item.name != ""){
+            return item.name
+        }
+      })
+      let result = resultS.filter(item=>item!="")
+     if(this.isRepeat(result)){
+       this.$message.warning("杂费不允许重复")
+       this.tableData[index].name = ""
+     }
+    },
     toFixTwo(e,index){
       if(e.target.value) {
         this.tableData[index].value = Number(e.target.value).toFixed(2)
