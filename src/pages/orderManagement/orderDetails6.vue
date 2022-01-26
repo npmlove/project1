@@ -459,7 +459,7 @@
         <!-- 应付账单可以最多有5个 做个循环 循环组件ref -->
         <div v-for="(item, index) in initData.arOrderPriceList" :key="index">
           <!-- 组件部分 -->
-          <bill-order :getList="item.list" :ref="`typeBill${index}`" v-if="notAirPeople" :notSaleBefore="true"/>
+          <bill-order :getList="item.list" :ref="`typeBill${index}`" v-show="notAirPeople" :notSaleBefore="true"/>
           <!-- 操作部分 -->
           <el-button
             class="setWidth ml_20"
