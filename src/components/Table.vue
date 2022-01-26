@@ -207,6 +207,10 @@
         if (e.target.className === 'gary') {
           return
         }
+        let role = JSON.parse(sessionStorage.getItem('userInfo'))
+        if(role && role.roleName != "超级管理员") {
+          return this.$message.warning("只有超级管理员权限才能进行编辑")
+        }
         this.$emit('handleClick', {
           method: method,
           row: row
