@@ -56,7 +56,7 @@
               <div  style="flex:0 0 50px">{{scope.row.flightNo}}</div>
             </div>
           </div>
-          <div v-else-if="column.label == '客户代理'" style="height:100%;display:flex;align-items:center;justify-content:center" @dblclick="orderDetails(scope)">
+          <div v-else-if="column.label == '客户代理'" style="height:100%;display:flex;align-items:center;justify-content:flex-start;margin-left:15px" @dblclick="orderDetails(scope)">
            <div>
               <div @click.stop="">客户：{{scope.row.customerName}}<a v-if="scope.row.qq&&roleName!='航线负责人'" :href="`tencent://message/?uin=${scope.row.qq}&Menu=yes&Service=300&sigT=42a1e5347953b64c5ff3980f8a6e644d4b31456cb0b6ac6b27663a3c4dd0f4aa14a543b1716f9d45`"><img  style="width:25px;" src="../assets/qq.svg"/></a></div>
               <div style="margin-top:10px">代理：{{scope.row.agentName}}</div>

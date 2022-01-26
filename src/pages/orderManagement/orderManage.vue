@@ -207,6 +207,7 @@
       <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData">
         <el-tab-pane :label="'全部订单('+countInfo.countAll+')'" name="全部订单">
           <Table
+            v-loading="ifLoading"
             :tableData='tableData'
             :sumInfo='sumInfo'
             :columns='columns'
@@ -221,6 +222,7 @@
         </el-tab-pane>
         <el-tab-pane :label="'待平台审核('+countInfo.countCheck+')'" name="1">
           <Table
+            v-loading="ifLoading"
             :tableData='tableData'
             :sumInfo='sumInfo'
             :columns='columns'
@@ -235,6 +237,7 @@
         </el-tab-pane>
         <el-tab-pane :label="'待进仓('+countInfo.countPreWarehouse+')'" name="2">
           <Table
+            v-loading="ifLoading"
             :tableData='tableData'
             :sumInfo='sumInfo'
             :columns='columns'
@@ -249,6 +252,7 @@
         </el-tab-pane>
         <el-tab-pane :label="'操作中('+countInfo.countOperating+')'" name="3">
           <Table
+            v-loading="ifLoading"
             :tableData='tableData'
             :sumInfo='sumInfo'
             :columns='columns'
@@ -263,6 +267,7 @@
         </el-tab-pane>
         <el-tab-pane :label="'海关安检('+countInfo.countSecurity+')'" name="4">
           <Table
+            v-loading="ifLoading"
             :tableData='tableData'
             :sumInfo='sumInfo'
             :columns='columns'
@@ -277,6 +282,7 @@
         </el-tab-pane>
         <el-tab-pane :label="'运输中('+countInfo.countTransit+')'" name="5">
           <Table
+            v-loading="ifLoading"
             :tableData='tableData'
             :sumInfo='sumInfo'
             :columns='columns'
@@ -291,6 +297,7 @@
         </el-tab-pane>
         <el-tab-pane :label="'完成('+countInfo.countCompleted+')'" name="6">
           <Table
+            v-loading="ifLoading"
             :tableData='tableData'
             :sumInfo='sumInfo'
             :columns='columns'
@@ -305,6 +312,7 @@
         </el-tab-pane>
         <el-tab-pane :label="'已取消('+countInfo.countCancelled+')'" name="7">
           <Table
+            v-loading="ifLoading"
             :tableData='tableData'
             :sumInfo='sumInfo'
             :columns='columns'
@@ -319,6 +327,7 @@
         </el-tab-pane>
         <el-tab-pane :label="'异常('+countInfo.countErr+')'" name="8">
           <Table
+            v-loading="ifLoading"
             :tableData='tableData'
             :sumInfo='sumInfo'
             :columns='columns'
@@ -343,6 +352,7 @@
   export default {
     data() {
       return {
+        ifLoading:false,
         //table
         tableData: [],
         pageSize: 10,
@@ -601,6 +611,7 @@
       },
       //航线列表
       initData() {
+        this.ifLoading = true
         var json = {
         	orderNo: this.orderNo,
         	waybillNo: this.waybillNo,
@@ -630,8 +641,11 @@
             this.tableData = data.data.records?data.data.records:[]
             this.sumInfo = data.data.sumInfo
             this.countInfo = data.data.countInfo
+            this.ifLoading = false
+
           }else {
             this.$message.error(data.message)
+            this.ifLoading = false
           }
         }).catch((e) => {
           console.log(e)
@@ -692,6 +706,10 @@
 <style scoped lang="less">
   @import url("../../assets/icon/iconfont.css");
 
+  /deep/ .el-loading-spinner {
+    position: absolute;
+    top:100px;
+  }
   .content-wrapper {
     width: 100%;
     box-sizing: border-box;
