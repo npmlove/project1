@@ -6,7 +6,7 @@
         <div class="radioSelect">
           <el-radio-group
             v-model="radioSelect"
-            @change="radioSelectChange(radioSelect)"
+            @change="radioSelectChange(true)"
           >
             <el-radio :label="0">系统分单</el-radio>
             <el-radio :label="1">客户分单</el-radio>
@@ -28,7 +28,7 @@
               style="border: 1px solid black; cursor: not-allowed"
               type="text"
               disabled
-              onKeyUp="value=value.replace(/[\W]/g,'')"
+              onKeyUp="this.value= this.value.match(/[\w]{0,20}/)? this.value.match(/[\w]{0,20}/)[0] : ''"
               @blur="inputData.input1 = $event.target.value"
               maxlength="20"
               spellcheck="false"
@@ -431,6 +431,9 @@ export default {
     // console.log('activated');
   },
   methods: {
+    limitNum(e){
+      console.log(e)
+    },
      isRepeat(arr){ 
         var hash = {}; 
         for(var i in arr) { 
@@ -472,7 +475,7 @@ export default {
     },
 
     getWeight() {
-      if (this.inputData.input3 != "" && this.inputData.input4 != "") {
+      if (this.inputData.input3 && this.inputData.input4) {
         var max = "";
         if (this.inputData.input3 > this.inputData.input4) {
           max = this.inputData.input3 * 167;
@@ -485,10 +488,12 @@ export default {
               this.inputData.input3 * (1 - this.orderPoint / 10)
           );
         }
+      } else {
+        this.inputData.input5 = ""
       }
     },
-    newAdd() {
-      console.log(this.menudata);
+    newAdd(self) {
+      // console.log(this.menudata);
       this.keysArray = [
         "FLD" + this.mainData.orderNo.slice(-6) + "A",
         "FLD" + this.mainData.orderNo.slice(-6) + "B",
@@ -499,6 +504,7 @@ export default {
       let arr = this.keysArray;
       for (let i = 0, j = arr.length; i < j; i++) {
         if (this.menudata.every((item) => item.hab != arr[i])) {
+          // console.log(this.menudata)
           this.newAddData = arr[i];
           break;
         }
@@ -509,8 +515,11 @@ export default {
         this.newAddData
       );
       this.inputData.input1 = this.newAddData;
+      this.carrierInfo = this.mainData.carrierInfo
       this.radioSelect = 0;
-      this.radioSelectChange();
+      if(!self){
+        this.radioSelectChange();
+      }
     },
     getHolder(idx) {
       if (idx == 0) {
@@ -659,13 +668,19 @@ export default {
       this.cangDanPath = `http://10.8.0.1/track/bill-of-lading/preview/ware/pdf/${order}`;
     },
     // 限制系统分单不可输入
-    radioSelectChange() {
+    radioSelectChange(self) {
       if (this.radioSelect == 1) {
         this.$refs.inputAgain.style.cursor = "";
         this.$refs.inputAgain.disabled = false;
+        // if(self) {
+        //   sessionStorage.setItem("orderNo",this.inputData.input1)
+        // }
       } else {
         this.$refs.inputAgain.style.cursor = "not-allowed";
         this.$refs.inputAgain.disabled = true;
+        // if(self) {
+        //  this.inputData.input1 = sessionStorage.getItem("orderNo")
+        // }
       }
     },
     // 主单修改保存
