@@ -224,7 +224,12 @@
           </el-radio-group>
            <div class="text" style="margin-top:15px"><span style="color:red">*</span> 代理名字和城市</div>
           <div class="text">Issuing Carrier's Agent Name and City</div>
-          <el-input v-model="carrierInfo"></el-input>
+          <el-input v-model="carrierInfo" 
+              onKeyUp="value=value.replace(/[\u4e00-\u9fa5]/g,'')"
+              @blur="carrierInfo = $event.target.value"
+              maxlength="30"
+              >
+          </el-input>
         </div>
       </div>
       <div class="lis1">
