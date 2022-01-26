@@ -9,6 +9,7 @@
           class="form"
           label-width="120px"
           size="mini"
+          :disabled="entryData.status >= 13"
         >
           <el-form-item label="进仓编号">
             <div class="inline-item">
