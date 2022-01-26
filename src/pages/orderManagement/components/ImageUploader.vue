@@ -1,5 +1,9 @@
 <template>
-  <div class="image-uploader">
+  <div class="image-uploader"
+  v-loading="loading"
+  element-loading-text="图片上传中"
+  element-loading-spinner="el-icon-loading"
+  element-loading-background="rgba(0, 0, 0, 0)">
     <div class="upload-btn" :class="{ disabled: disabled }">
       <i class="el-icon-upload" @click="loadImage"></i>
     </div>
@@ -34,6 +38,11 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      loading: false,
+    }
+  },
   methods: {
     // 载入本地图片
     async loadImage() {
@@ -46,26 +55,33 @@ export default {
       }
       const files = await this.$utils.loadFile({ accept: 'image/*' });
       const file = files[0];
-      if (file.size > 500 * 1024) {
-        this.$message.error("上传图片大小不能超过500kb");
+      const maxSize = 20
+      if (file.size > 1024 * 1024 * maxSize) {
+        this.$message.error(`上传图片大小不能超过${maxSize}M`);
         return;
       }
       const fileFormData = new FormData();
       fileFormData.append("file", file);
-      const { data, code, message } = await this.$http.post(
-        this.$service.attachmentUpload,
-        fileFormData,
-        {
-          params: {
-            attachType: 1,
-            orderId: this.orderId,
-          },
+      this.loading = true
+      try {
+        const { data, code, message } = await this.$http.post(
+          this.$service.attachmentUpload,
+          fileFormData,
+          {
+            params: {
+              attachType: 1,
+              orderId: this.orderId,
+            },
+          }
+        );
+        if (code === 200) {
+          this.images.push(data);
+        } else {
+          this.$message.error(message);
         }
-      );
-      if (code === 200) {
-        this.images.push(data);
-      } else {
-        this.$message.error(message);
+        this.loading = false
+      } catch (error) {
+        this.loading = false
       }
     },
     // 预览图片
@@ -95,7 +111,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-
   ul {
     display: flex;
     flex-wrap: wrap;
