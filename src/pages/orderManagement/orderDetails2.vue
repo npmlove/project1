@@ -471,7 +471,7 @@
       </div>
       <div v-show="radio1 == '2'">
         <bill-order
-          v-if="notAirPeople"
+          v-show="notAirPeople"
           :getList="initData.arOrderPriceList[0].list"
           :notSaleBefore="true"
           ref="typeOne"
