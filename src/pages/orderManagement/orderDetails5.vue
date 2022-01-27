@@ -594,7 +594,7 @@
         <br />
         <br />
         <br />
-        <div v-if="notSaleBefore">
+        <div v-if="notSaleBefore" style="padding-bottom: 20px">
        
         <span class="ml_20" v-if="initData.financeStatus == 0">未交单</span>
         <span class="ml_20" v-if="initData.financeStatus == 1">已交单</span>
@@ -1014,6 +1014,7 @@ export default {
                     callback: () => {
                       // this.$router.push("/orderManagement/orderManage");
                       this.getOriganData()
+                      this.getOPerateList()
                     },
                   });
                 } else {
@@ -1119,6 +1120,7 @@ export default {
               },
             });
           }
+          this.getOPerateList()
         } else {
           this.$message.error(res.message);
         }
@@ -1265,15 +1267,15 @@ export default {
         }
         let arrayTypeTwo = this.$refs.typeTwo.tableData;
         let order = this.initData;
-        if (order.hasOwnProperty("apOrderPriceList")) {
-          delete order.apOrderPriceList;
-        }
+        // if (order.hasOwnProperty("apOrderPriceList")) {
+        //   delete order.apOrderPriceList;
+        // }
         if (order.hasOwnProperty("orderCargoDetailList")) {
           delete order.orderCargoDetailList;
         }
-        if (order.hasOwnProperty("orderPriceList")) {
-          delete order.orderPriceList;
-        }
+        // if (order.hasOwnProperty("orderPriceList")) {
+        //   delete order.orderPriceList;
+        // }
         if (order.hasOwnProperty("trayDetail")) {
           delete order.trayDetail;
         }
