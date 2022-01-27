@@ -330,6 +330,7 @@ export default {
   },
   data() {
     return {
+      initWtal:"",
       //调接口新字段 
       carrierInfo:'',
       // 绑定key值重新渲染
@@ -492,8 +493,8 @@ export default {
         this.inputData.input5 = ""
       }
     },
-    newAdd(self) {
-      // console.log(this.menudata);
+    newAdd(self,nowIndex) {
+      console.log(this.menudata)
       this.keysArray = [
         "FLD" + this.mainData.orderNo.slice(-6) + "A",
         "FLD" + this.mainData.orderNo.slice(-6) + "B",
@@ -510,7 +511,7 @@ export default {
         }
       }
       this.$set(
-        this.menudata[this.menudata.length - 1],
+        this.menudata[nowIndex?nowIndex-1:this.menudata.length - 1],
         "hab",
         this.newAddData
       );
@@ -574,8 +575,10 @@ export default {
             }
             let data = this.mainData.hawbList[i];
             if (data && data.wtVal && data.wtVal == "0") {
+              this.initWtal = 0
               this.radio = 0;
             } else if (data && data.wtVal && data.wtVal == "1") {
+              this.initWtal = 1
               this.radio = 1;
             }
             if (data && data.hawb) {
@@ -590,6 +593,7 @@ export default {
             ];
             if (this.keysArray.includes(keys)) {
               this.radioSelect = 0;
+
               this.radioSelectChange();
             } else {
               this.radioSelect = 1;
@@ -620,7 +624,9 @@ export default {
             let data = this.mainData.hawbList[i];
             if (data && data.wtVal && data.wtVal == "0") {
               this.radio = 0;
+              this.initWtal = 0
             } else if (data && data.wtVal && data.wtVal == "1") {
+              this.initWtal = 1
               this.radio = 1;
             }
             if (data && data.hawb) {
@@ -672,15 +678,20 @@ export default {
       if (this.radioSelect == 1) {
         this.$refs.inputAgain.style.cursor = "";
         this.$refs.inputAgain.disabled = false;
-        // if(self) {
-        //   sessionStorage.setItem("orderNo",this.inputData.input1)
-        // }
+        if(self && this.initWtal == 0) {
+          sessionStorage.setItem("orderNo",this.inputData.input1)
+        }
       } else {
         this.$refs.inputAgain.style.cursor = "not-allowed";
         this.$refs.inputAgain.disabled = true;
-        // if(self) {
-        //  this.inputData.input1 = sessionStorage.getItem("orderNo")
-        // }
+        
+        if(self && this.initWtal == 0) {
+         this.inputData.input1 = sessionStorage.getItem("orderNo")
+        }
+        if(this.initWtal == 1) {
+          this.initWtal = 0
+          this.newAdd(true,this.datatype.slice(-1))
+        }
       }
     },
     // 主单修改保存

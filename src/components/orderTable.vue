@@ -1,6 +1,6 @@
 <template>
   <div class="order_table">
-    <div style="display:flex;justify-content:space-around;margin-bottom:15px;fontSize:13px;fontWeight:600">
+    <div style="display:flex;justify-content:space-around;margin-bottom:15px;fontSize:13px;fontWeight:600" id="widthS">
       <div>订单量:<span style="margin-left:5px">{{sumInfo.orderVols}}</span> </div>
       <div>正常单/取消单:<span style="margin-left:5px">{{sumInfo.normalVols}}/{{sumInfo.cancelledVols}}</span> </div>
       <div>正常单计费重:<span style="margin-left:5px">{{sumInfo.normalCws}}</span> </div>
@@ -27,12 +27,12 @@
         >
         <template slot-scope="scope">
           <div v-if="column.label == '航线'" style="height:100%;padding:10px 0" @dblclick="orderDetails(scope)">
-            <div class="dingdan">
+            <div class="dingdan" :style="'width:'+tableWidthS+'px'">
               <div style="margin-left:25px;fontWeight:700"> <img src="@/assets/huixingzhen.png" style="width:15px;height:15px" alt="" v-if="scope.row.fastOrderFlag == 1"> 订单号：{{scope.row.orderNo}}</div>
               <div style="fontWeight:700">进仓编号：{{scope.row.inboundNo || '暂无'}}</div>
               <div style="fontWeight:700"> 运单号：{{scope.row.waybillNo || '暂无'}}</div>
               <div style="fontWeight:700">下单时间：{{scope.row.orderTime || '暂无'}}</div>
-              <div @click="orderDetails(scope)" style="color: #2273ce;cursor: pointer;">订单详情</div>
+              <div @click="orderDetails(scope)" style="color: #2273ce;cursor: pointer;margin-right:25px">订单详情</div>
             </div>
         
             <div class="hangxian-route">
@@ -63,14 +63,14 @@
            </div>
           </div>
           <div v-else-if="column.label == '货物信息'" style="height:100%;display:flex;justify-content:center" @dblclick="orderDetails(scope)">
-            <div v-if="scope.row.status >= 13 && scope.row.inboundPiece" style="padding:10px 0">
-              <div>品名:{{scope.row.cargoName}}</div>
+            <div v-if="scope.row.status >= 13 && scope.row.inboundPiece" style="padding:10px 0;width:55%">
+              <div :title="scope.row.cargoName" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">品名:{{scope.row.cargoName}}</div>
               <div style="margin-top:5px;fontWeight:bolder">{{scope.row.inboundPiece}}/{{scope.row.inboundWeight}}/{{scope.row.inboundCbm}}</div>
               <div style="margin-top:5px">计费重:{{scope.row.inboundCw}}</div>
               <div style="margin-top:5px" :style="{'color':scope.row.inboundStatus == 2?'rgb(50, 205, 50)':''}">{{scope.row.inboundStatus == 0 ? "进仓数据未出": scope.row.inboundStatus == 1 ? "进仓数据待确认": scope.row.inboundStatus == 2 ? "进仓数据已确认":""}}</div>
             </div>
-            <div v-else  style="padding:10px 0">
-              <div>品名:{{scope.row.cargoName}}</div>
+            <div v-else  style="padding:10px 0;width:55%">
+              <div :title="scope.row.cargoName" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">品名:{{scope.row.cargoName}}</div>
               <div style="margin-top:5px;fontWeight:bolder">{{scope.row.bookingPiece}}/{{scope.row.bookingWeight}}/{{scope.row.bookingCbm}}</div>
               <div style="margin-top:5px">计费重:{{scope.row.bookingCw}}</div>
               <div style="margin-top:5px" :style="{'color':scope.row.inboundStatus == 2?'rgb(50, 205, 50)':''}">{{scope.row.inboundStatus == 0 ? "进仓数据未出": scope.row.inboundStatus == 1 ? "进仓数据待确认": scope.row.inboundStatus == 2 ? "进仓数据已确认":""}}</div>
@@ -212,7 +212,8 @@ export default {
       userName: '',
       arr: [],
       UserID: '',
-      roleName:''
+      roleName:'',
+      tableWidthS:0
     }
   },
   created(){
@@ -227,6 +228,7 @@ export default {
     this.UserID = !sessionStorage.getItem('userInfo') ? '' : JSON.parse(sessionStorage.getItem('userInfo')).UserID
     this.userName = !sessionStorage.getItem('userInfo') ? '' : JSON.parse(sessionStorage.getItem('userInfo')).UserName
     this.roleName =  JSON.parse(sessionStorage.getItem('userInfo')).roleName
+    this.tableWidthS = document.getElementById("widthS").offsetWidth
   },
   watch: {
     tableData(idx) {
@@ -413,6 +415,7 @@ export default {
     min-width: 1600px;
     // padding: 10px 0 ;
     // border:1px solid silver
+    background:#f0f8ff
   }
   .dingdan > div{
     margin-right: 50px;
