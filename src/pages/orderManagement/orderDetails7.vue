@@ -2810,12 +2810,12 @@ export default {
             var data = data.data;
             this.pdfDownLoad = data.orderAttachmentList;
             for (let i = 0; i < this.pdfDownLoad.length; i++) {
-              var copyName = this.pdfDownLoad[i].attachmentName;
-              this.pdfDownLoad[i].attachmentNameCopy =
-                this.pdfDownLoad[i].attachmentName;
-              var copyNames = copyName.split("");
-              copyNames.splice(7, 9);
-              this.pdfDownLoad[i].attachmentName = copyNames.join("");
+              if(this.pdfDownLoad[0].attachmentType !== 5) {
+                var copyName = this.pdfDownLoad[i].attachmentName;
+                var copyNames = copyName.split("");
+                copyNames.splice(7, 9);
+                this.pdfDownLoad[i].attachmentName = copyNames.join("");
+              }
             }
             this.statusDesc = data.statusDesc;
             this.status = data.status;

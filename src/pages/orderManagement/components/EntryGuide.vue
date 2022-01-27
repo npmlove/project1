@@ -84,9 +84,9 @@
             <img
               src="@/assets/entry-guide_map-download.png"
               style="width: 40px"
-              @click="$utils.downloadFile({ url: mapData.xpath, name: mapData.attachmentNameCopy, type: mapData.fileType })"
+              @click="$utils.downloadFile({ url: mapData.xpath, name: mapData.attachmentName, type: mapData.fileType })"
             />
-            <el-button type="text" class="text" @click="$utils.previewDocx({ xpath: mapData.xpath })">{{ mapData.attachmentNameCopy }}</el-button>
+            <el-button type="text" class="text" @click="$utils.previewDocx({ xpath: mapData.xpath })">{{ mapData.attachmentName }}</el-button>
           </div>
         </aside>
       </div>

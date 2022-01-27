@@ -1267,6 +1267,7 @@ export default {
           if (data.code == 200) {
             this.$message("保存成功");
             // this.$router.push("/orderManagement/orderManage");
+            this.getOriganData()
           } else {
             this.$message.error(data.message);
           }
@@ -1306,12 +1307,12 @@ export default {
         let tempObj = res.data;
         this.pdfDownLoad = tempObj.orderAttachmentList;
         for (let i = 0; i < this.pdfDownLoad.length; i++) {
-          var copyName = this.pdfDownLoad[i].attachmentName;
-          this.pdfDownLoad[i].attachmentNameCopy =
-            this.pdfDownLoad[i].attachmentName;
-          var copyNames = copyName.split("");
-          copyNames.splice(7, 9);
-          this.pdfDownLoad[i].attachmentName = copyNames.join("");
+          if(this.pdfDownLoad[0].attachmentType !== 5) {
+            var copyName = this.pdfDownLoad[i].attachmentName;
+            var copyNames = copyName.split("");
+            copyNames.splice(7, 9);
+            this.pdfDownLoad[i].attachmentName = copyNames.join("");
+          }
         }
         tempObj.trayDetail = JSON.parse(tempObj.trayDetail);
         for (let i in tempObj.arOrderPriceList) {

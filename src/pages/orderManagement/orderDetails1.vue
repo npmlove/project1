@@ -1138,6 +1138,7 @@ export default {
         if (data.code == 200) {
           this.$message("保存成功");
           // this.$router.push("/orderManagement/orderManage");
+          this.getOriganData()
         } else {
           this.$message.error(data.message);
         }

@@ -742,7 +742,7 @@
                 type: "application/pdf"
                 })
                 aLink.href = URL.createObjectURL(blob)
-                aLink.setAttribute('download', item.attachmentNameCopy) // 设置下载文件名称
+                aLink.setAttribute('download', item.attachmentName) // 设置下载文件名称
                 aLink.click()
                 document.body.appendChild(aLink)})
             },
@@ -1337,11 +1337,12 @@
             
             this.pdfDownLoad = data.orderAttachmentList
             for(let i =0;i<this.pdfDownLoad.length;i++) {
+              if(this.pdfDownLoad[0].attachmentType !== 5) {
                 var copyName = this.pdfDownLoad[i].attachmentName
-                this.pdfDownLoad[i].attachmentNameCopy = this.pdfDownLoad[i].attachmentName
                 var copyNames = copyName.split("")
                 copyNames.splice(7,9)
                 this.pdfDownLoad[i].attachmentName = copyNames.join("")
+              }
             }
               this.orderOptionsList= {
                   pol: data.pol,
