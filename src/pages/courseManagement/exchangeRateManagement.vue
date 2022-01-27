@@ -170,8 +170,7 @@
     },
     methods: {
       init() {
-        var myDate = new Date;
-        myDate.setFullYear(2021);
+        var myDate = new Date();
         var year = myDate.getFullYear();//获取当前年
         this.initSelectYear(year)
         this.form.recentYear = year;
