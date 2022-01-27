@@ -1337,7 +1337,7 @@
             
             this.pdfDownLoad = data.orderAttachmentList
             for(let i =0;i<this.pdfDownLoad.length;i++) {
-              if(this.pdfDownLoad[0].attachmentType !== 5) {
+              if(this.pdfDownLoad[i].attachmentType !== 5) {
                 var copyName = this.pdfDownLoad[i].attachmentName
                 var copyNames = copyName.split("")
                 copyNames.splice(7,9)
