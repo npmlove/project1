@@ -103,7 +103,8 @@ const cargoTrackingManage=[{
     title:'大盘主页',
     icon: 'icon iconfont icon-diannao',
     breadcrumb: true,
-    roles:['航线负责人','售中客服','售前客服','财务人员']
+    // roles:['航线负责人','售中客服','售前客服','财务人员']
+    roles:['超级管理员']
   },
   children:[{
     path: 'cargoTracking',
