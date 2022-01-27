@@ -48,7 +48,7 @@
               style="border: 1px solid black"
               type="text"
               maxlength="4"
-              onKeyUp="value=value.replace(/[^1-9]/g,'')"
+              onKeyUp="value=value.replace(/[^0-9]/g,'')"
               @blur="inputData.input2 = $event.target.value"
               spellcheck="false"
               v-model="inputData.input2"
@@ -67,7 +67,7 @@
               style="border: 1px solid black"
               type="text"
               maxlength="6"
-              onKeyUp="value=value.replace(/[^1-9]/g,'')"
+              onKeyUp="value=value.replace(/[^0-9]/g,'')"
               ref="input1"
               @blur="
                 inputData.input3 = $event.target.value;
@@ -112,7 +112,7 @@
               style="border: 1px solid black"
               type="text"
               ref="input3"
-              onKeyUp="value=value.replace(/[\W]/g,'')"
+              onKeyUp="this.value= this.value.match(/^\d+(\.\d{0,2})?/)? this.value.match(/^\d+(\.\d{0,2})?/)[0] : ''"
               @blur="inputData.input5 = $event.target.value"
               spellcheck="false"
               v-model="inputData.input5"
@@ -478,11 +478,11 @@ export default {
     getWeight() {
       if (this.inputData.input3 && this.inputData.input4) {
         var max = "";
-        if (this.inputData.input3 > this.inputData.input4) {
-          max = this.inputData.input3 * 167;
-        } else {
+       
           max = this.inputData.input4 * 167;
-        }
+          if(max < this.inputData.input3) {
+            max = this.inputData.input3
+          }
         if (this.orderPoint) {
           this.inputData.input5 = Math.ceil(
             (max * this.orderPoint) / 10 +
@@ -678,16 +678,18 @@ export default {
       if (this.radioSelect == 1) {
         this.$refs.inputAgain.style.cursor = "";
         this.$refs.inputAgain.disabled = false;
+        //初始状态是系统分单,切换后存储当前分单号
         if(self && this.initWtal == 0) {
-          sessionStorage.setItem("orderNo",this.inputData.input1)
+          sessionStorage.setItem(`orderNo${this.datatype.slice(-1)}`,this.inputData.input1)
         }
       } else {
         this.$refs.inputAgain.style.cursor = "not-allowed";
         this.$refs.inputAgain.disabled = true;
-        
+        //切换回系统分担后，获取之前分单号
         if(self && this.initWtal == 0) {
-         this.inputData.input1 = sessionStorage.getItem("orderNo")
+         this.inputData.input1 = sessionStorage.getItem(`orderNo${this.datatype.slice(-1)}`)
         }
+         //初始状态为客户分单,切换系统分单获取新的分单号
         if(this.initWtal == 1) {
           this.initWtal = 0
           this.newAdd(true,this.datatype.slice(-1))
