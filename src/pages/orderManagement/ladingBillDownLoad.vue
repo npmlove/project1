@@ -270,6 +270,7 @@ export default {
       });
     },
     closeFirst(idx){
+      sessionStorage.removeItem(`orderNo${idx+1}`)
       this.handlepage(idx)
       setTimeout(()=>{
         this.closeorder(idx)
@@ -376,6 +377,9 @@ export default {
     },
     // 查询
     tabShow() {
+      for(let i=0;i<6;i++){
+        sessionStorage.removeItem(`orderNo${i}`)
+      }
         if(this.orderNo.length<6){
           this.$message.warning('请输入15位完整订单号或订单号后6位')
         } else{

@@ -63,7 +63,7 @@
            </div>
           </div>
           <div v-else-if="column.label == '货物信息'" style="height:100%;display:flex;justify-content:center" @dblclick="orderDetails(scope)">
-            <div v-if="scope.row.status >= 13 && scope.row.inboundPiece" style="padding:10px 0;width:55%">
+            <div v-if="scope.row.status >= 13 && scope.row.inboundPiece" style="padding:10px 0;width:45%">
               <div :title="scope.row.cargoName" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">品名:{{scope.row.cargoName}}</div>
               <div style="margin-top:5px;fontWeight:bolder">{{scope.row.inboundPiece}}/{{scope.row.inboundWeight}}/{{scope.row.inboundCbm}}</div>
               <div style="margin-top:5px">计费重:{{scope.row.inboundCw}}</div>
