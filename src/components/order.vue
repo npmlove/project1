@@ -493,8 +493,8 @@ export default {
         this.inputData.input5 = ""
       }
     },
-    newAdd(self) {
-      // console.log(this.menudata);
+    newAdd(self,nowIndex) {
+      console.log(this.menudata)
       this.keysArray = [
         "FLD" + this.mainData.orderNo.slice(-6) + "A",
         "FLD" + this.mainData.orderNo.slice(-6) + "B",
@@ -511,7 +511,7 @@ export default {
         }
       }
       this.$set(
-        this.menudata[this.menudata.length - 1],
+        this.menudata[nowIndex?nowIndex-1:this.menudata.length - 1],
         "hab",
         this.newAddData
       );
@@ -690,7 +690,7 @@ export default {
         }
         if(this.initWtal == 1) {
           this.initWtal = 0
-          this.newAdd(true)
+          this.newAdd(true,this.datatype.slice(-1))
         }
       }
     },
