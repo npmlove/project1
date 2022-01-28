@@ -1283,6 +1283,8 @@ export default {
               type: "success",
             });
             this.getOriganData();
+          } else {
+            this.$message.error(res.message);
           }
         });
     },
