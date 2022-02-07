@@ -99,7 +99,21 @@
       </div>
       <div>
         <span>代 理</span>
-        <span>{{ initData.agentName }}</span>
+          <el-select
+            v-model="initData.agentName"
+            filterable
+            size="mini"
+            :disabled="canSelectAgent"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in agentIdList"
+              :key="item.id"
+              :label="item.agentName"
+              :value="item.agentName"
+            >
+            </el-option>
+          </el-select>
       </div>
       <div class="flex">
         <span>进仓编号</span>
@@ -107,6 +121,7 @@
           <el-input
             v-model="initData.inboundNo"
             size="mini"
+            :disabled="initData.status >= 13"
             placeholder="请输入内容"
           ></el-input
         ></span>
@@ -473,7 +488,7 @@
         <!-- 应付账单可以最多有5个 做个循环 循环组件ref -->
         <div v-for="(item, index) in initData.arOrderPriceList" :key="index">
           <!-- 组件部分 -->
-          <bill-order :getList="item.list" :ref="`typeBill${index}`" v-show="notAirPeople" :notSaleBefore="true"/>
+          <bill-order :getList="item.list" :ref="`typeBill${index}`" v-show="notAirPeople" :notSaleBefore="true" :titleType="1" :vertifyAmount="initData.totalRcWoCny"/>
           <!-- 操作部分 -->
           <el-button
             class="setWidth ml_20"
@@ -498,7 +513,7 @@
               >发起客户对账</el-button
             >
           </div>
-          <div v-if="notAirPeople">
+          <div v-if="notAirPeople" class="largerText">
             <p class="pTips" v-if="item.status == 0">
               <span>未发起客户对账</span>
               <!-- <span >修改账单</span> -->
@@ -583,7 +598,7 @@
         </div>
         <div class="line"></div>
         <div></div>
-        <billOrder :getList.sync="initData.apOrderPriceList" ref="typeTwo"  :notSaleBefore="notSaleBefore"/>
+        <billOrder :getList.sync="initData.apOrderPriceList" ref="typeTwo"  :notSaleBefore="notSaleBefore"  :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
         <!-- 应收添加 -->
         <el-button
           class="setWidth ml_20"
@@ -596,11 +611,11 @@
         <br />
         <div v-if="notSaleBefore" style="padding-bottom: 20px">
        
-        <span class="ml_20" v-if="initData.financeStatus == 0">未交单</span>
-        <span class="ml_20" v-if="initData.financeStatus == 1">已交单</span>
-        <span class="ml_20" v-if="initData.financeStatus == 2">请解锁</span>
-        <span class="ml_20" v-if="initData.financeStatus == 3">交单待审核</span>
-        <span class="ml_20" v-if="initData.financeStatus == 4">修改中</span>
+        <span class="ml_20 largerText" v-if="initData.financeStatus == 0">未交单</span>
+        <span class="ml_20 largerText" v-if="initData.financeStatus == 1">已交单</span>
+        <span class="ml_20 largerText" v-if="initData.financeStatus == 2">请解锁</span>
+        <span class="ml_20 largerText" v-if="initData.financeStatus == 3">交单待审核</span>
+        <span class="ml_20 largerText" v-if="initData.financeStatus == 4">修改中</span>
         <el-button
           class="setWidth ml_20"
           :type="isChangeJiaoDan ? 'primary' : ''"
@@ -626,6 +641,9 @@
         <div class="line"></div>
         <div class="paddingBottom"></div>
       </div>
+      <div v-if="radio1 == '111'" style="margin:-20px 0 0 -20px">
+        <ladingBill :orderEmbed="initData.orderNo"></ladingBill>
+      </div>
       <!-- 进仓指引 -->
       <entry-guide
         v-show="radio1 == '3'"
@@ -644,6 +662,7 @@ import binList from "./components/binList.vue";
 import billOrder from "./components/billOrder.vue";
 import opeartes from "./components/opeartes.vue";
 import TabBar from "./components/TabBar.vue";
+import ladingBill from './ladingBillDownLoad.vue';
 import EntryGuide from "./components/EntryGuide.vue";
 import DepartureDatePicker from './components/DepartureDatePicker'
 import { judgeWaybillNo } from "@/util/util";
@@ -745,9 +764,26 @@ export default {
         },
       ],
       billTimer: null, // 账单倒计时定时器
+      agentIdList:[]
     };
   },
   computed: {
+    //页面代理是否可选
+    canSelectAgent() {
+      if(this.initData.status == 39){ //取消
+        if(this.initData.prestatus >=25){
+                return true
+        }else{
+                return false
+        }
+      }else{
+        if(this.initData.status >=25){
+             return true
+        }else{
+          return false
+        }
+}
+    },
     getInboundCw() {
       return this.initData.inboundCw;
     },
@@ -788,6 +824,7 @@ export default {
   components: {
     binList,
     billOrder,
+    ladingBill,
     opeartes,
     TabBar,
     EntryGuide,
@@ -1313,10 +1350,14 @@ export default {
       let res4 = await this.$http.get(
         this.$service.companySearchByPage + "?pageSize=50000"
       );
-      Promise.all([res1, res2, res3, res4]).then((res) => {
+       let res5 = await this.$http.post(this.$service.agentList, {
+        pageSize: 50000,
+      });
+      Promise.all([res1, res2, res3, res4, res5]).then((res) => {
         this.preSaleList = res[0].data.records;
         this.onSaleList = res[1].data.records;
         this.airLineList = res[2].data.records;
+        this.agentIdList = res[4].data.records;
         this.airCompanyCodeList = res[3].data.records;
       });
     },
@@ -1431,6 +1472,10 @@ export default {
 };
 </script>
 <style scoped>
+.largerText {
+  font-size: 20px;
+  font-weight: 600;
+}
 .contont {
   height: 100%;
   margin: 0 20px;

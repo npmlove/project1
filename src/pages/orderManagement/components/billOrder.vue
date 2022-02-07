@@ -3,8 +3,14 @@
     <div>
       <h1 class="title flex">
           <span>{{title}}</span> 
-          <span class="calcSome"><span>原币合计{{totalOrgnStr}}</span><span>人民币合计:{{totalCnyStr}}</span></span> 
-          </h1>
+      </h1>
+      <h1 class="title flex" style="margin-top:20px;margin-bottom:10px">
+        <span class="calcSome">
+          <span v-if="titleType">{{(titleType==1?"应收核销金额:":"应付核销金额:")+(vertifyAmount?vertifyAmount:0)}}</span>
+          <span style="margin-right:100px">原币合计{{totalOrgnStr}}</span>
+          <span>人民币合计:{{totalCnyStr}}</span>
+        </span> 
+      </h1>
         <el-table
            v-show="notSaleBefore"
           :data="tableData"
@@ -144,7 +150,7 @@ class tableObj{
   }
 }
 export default {
-  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore"],
+  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount"],
   data() {
     return {
       tableData: [], // 
@@ -379,7 +385,10 @@ export default {
 }
 </script>
 <style scoped>
-
+.calcSome:first-child{
+  margin-left:20px;
+  
+}
 .contont{
 
   margin: 0 20px;

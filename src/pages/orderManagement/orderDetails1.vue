@@ -106,6 +106,7 @@
             filterable
             size="mini"
             placeholder="请选择"
+            :disabled="canSelectAgent"
           >
             <el-option
               v-for="item in agentIdList"
@@ -124,6 +125,7 @@
             v-model="initData.inboundNo"
             size="mini"
             placeholder="请输入内容"
+            :disabled="initData.status >= 13"
           ></el-input
         ></span>
       </div>
@@ -685,17 +687,22 @@
           v-show="notAirPeople"
           :getList="initData.arOrderPriceList[0].list"
           :notSaleBefore="true"
+          :titleType="1"
+          :vertifyAmount="initData.totalRcWoCny"
           ref="typeOne"
         />
         <el-button class="setWidth ml_20" @click="fatherAddOneItem(1)"  v-if="notAirPeople"
           >添加费用</el-button
         >
         <div class="line"></div>
-        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"/>
+        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore" :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
         <el-button class="setWidth ml_20" @click="fatherAddOneItem(2)" v-if="notSaleBefore"
           >添加费用</el-button
         >
         <div class="line"></div>
+      </div>
+      <div v-if="radio1 == '111'" style="margin:-20px 0 0 -20px">
+        <ladingBill :orderEmbed="initData.orderNo"></ladingBill>
       </div>
     </div>
   </div>
@@ -704,6 +711,7 @@
 import billOrder from "./components/billOrder.vue";
 import TabBar from "./components/TabBar.vue";
 import DepartureDatePicker from "./components/DepartureDatePicker";
+import ladingBill from './ladingBillDownLoad.vue'
 class orderSecondWays {
   constructor(
     pol,
@@ -840,8 +848,25 @@ export default {
     billOrder,
     TabBar,
     DepartureDatePicker,
+    ladingBill
   },
   computed: {
+    //页面代理是否可选
+    canSelectAgent() {
+      if(this.initData.status == 39){ //取消
+        if(this.initData.prestatus >=25){
+                return true
+        }else{
+                return false
+        }
+      }else{
+        if(this.initData.status >=25){
+             return true
+        }else{
+          return false
+        }
+}
+    },
     getInboundCw() {
       return this.initData.inboundCw;
     },
@@ -1223,7 +1248,7 @@ export default {
     },
     // 如果子组件中有空运费 输入bookingPrice的时候同时修改子组件单价
     dealBookingPrice(e) {
-      console.log(e);
+      // console.log(e);
       if (e) {
         // 应收
         let a = this.$refs.typeOne.tableData;

@@ -88,7 +88,21 @@
       </div>
       <div>
         <span>代 理</span>
-        <span>{{ initData.agentName }}</span>
+          <el-select
+            v-model="initData.agentName"
+            filterable
+            size="mini"
+            :disabled="canSelectAgent"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in agentIdList"
+              :key="item.id"
+              :label="item.agentName"
+              :value="item.agentName"
+            >
+            </el-option>
+          </el-select>
       </div>
       <div class="flex">
         <span>进仓编号</span>
@@ -96,6 +110,7 @@
           <el-input
             v-model="initData.inboundNo"
             size="mini"
+            :disabled="initData.status >= 13"
             placeholder="请输入内容"
           ></el-input
         ></span>
@@ -475,12 +490,14 @@
           :getList="initData.arOrderPriceList[0].list"
           :notSaleBefore="true"
           ref="typeOne"
+          :titleType="1"
+          :vertifyAmount="initData.totalRcWoCny"
         />
         <el-button class="setWidth ml_20" @click="fatherAddOneItem(1)" v-if="notAirPeople"
           >添加费用</el-button
         >
         <div class="line"></div>
-        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"/>
+        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore" :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
         <el-button class="setWidth ml_20" @click="fatherAddOneItem(2)"
           >添加费用</el-button
         >
@@ -496,6 +513,9 @@
           }
         "
       />
+      <div v-if="radio1 == '111'" style="margin:-20px 0 0 -20px">
+        <ladingBill :orderEmbed="initData.orderNo"></ladingBill>
+      </div>
     </div>
   </div>
 </template>
@@ -503,6 +523,7 @@
 import billOrder from "./components/billOrder.vue";
 import { judgeWaybillNo } from "@/util/util";
 import TabBar from "./components/TabBar.vue";
+import ladingBill from './ladingBillDownLoad.vue'
 import EntryGuide from "./components/EntryGuide.vue";
 import DepartureDatePicker from "./components/DepartureDatePicker";
 export default {
@@ -596,6 +617,7 @@ export default {
           lable: "托盘",
         },
       ],
+      agentIdList:[]
     };
   },
   components: {
@@ -603,8 +625,25 @@ export default {
     TabBar,
     EntryGuide,
     DepartureDatePicker,
+    ladingBill
   },
   computed: {
+    //页面代理是否可选
+    canSelectAgent() {
+      if(this.initData.status==39){ //取消
+        if(this.initData.prestatus >=25){
+                return true
+        }else{
+                return false
+        }
+      }else{
+        if(this.initData.status >=25){
+             return true
+        }else{
+          return false
+        }
+}
+    },
     getInboundCw() {
       return this.initData.inboundCw;
     },
@@ -1023,11 +1062,15 @@ export default {
       let res4 = await this.$http.get(
         this.$service.companySearchByPage + "?pageSize=50000"
       );
-      Promise.all([res1, res2, res3, res4]).then((res) => {
+       let res5 = await this.$http.post(this.$service.agentList, {
+        pageSize: 50000,
+      });
+      Promise.all([res1, res2, res3, res4,res5]).then((res) => {
         this.preSaleList = res[0].data.records;
         this.onSaleList = res[1].data.records;
         this.airLineList = res[2].data.records;
         this.airCompanyCodeList = res[3].data.records;
+        this.agentIdList = res[4].data.records;
       });
     },
     // 获取订单详情

@@ -411,7 +411,7 @@
         <div>
           <el-form-item label="代理公司">
             <el-select
-              :disabled="orderStatus.indexOf(status) > -1 ? false : true"
+              :disabled="orderStatus.indexOf(status) > -1 ? false : canSelectAgent"
               v-model="agentId"
               filterable
               clearable
@@ -2819,6 +2819,7 @@ export default {
             }
             this.statusDesc = data.statusDesc;
             this.status = data.status;
+            this.preStatus = data.preStatus
             this.pscsName = data.pscsName;
             this.principalName = data.principalName;
             this.mscsName = data.mscsName;
@@ -2939,6 +2940,24 @@ export default {
         });
     },
   },
+  computed:{
+        //页面代理是否可选
+    canSelectAgent() {
+      if(this.status == 39){ //取消
+        if(this.prestatus >=25){
+                return true
+        }else{
+                return false
+        }
+      }else{
+        if(this.status >=25){
+             return true
+        }else{
+          return false
+        }
+}
+    },
+  }
 };
 </script>
 
