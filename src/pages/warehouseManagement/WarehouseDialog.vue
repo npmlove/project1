@@ -2,10 +2,12 @@
   <el-dialog
     :title="computedTitle"
     class="warehouse-dialog"
-    :visible.sync="show"
+    :visible.sync="visible"
     append-to-body
     :close-on-click-modal="false"
     width="500px"
+    v-if="show"
+    @closed="show = false"
   >
     <el-form
       ref="form"
@@ -142,6 +144,7 @@ export default {
   },
   data() {
     return {
+      visible: false,
       upIcon,
       gongdanIcon,
       helpIcon,
@@ -269,6 +272,9 @@ export default {
         this.form.belong =
           this.form.belong === "自有仓库" ? "" : this.form.belong;
       }
+    },
+    "show"(newVal) {
+      newVal && (this.visible = true)
     },
   },
 };
