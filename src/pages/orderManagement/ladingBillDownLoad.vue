@@ -333,7 +333,7 @@ export default {
     initData() {
       let param = this.orderNo;
       axios
-        .get(`http://10.8.0.1/trackTest/bill-of-lading/${param}`)
+        .get(`/track/bill-of-lading/${param}`)
         .then((data) => {  
            if(data.data.ext) {
             this.noPrice = 1
@@ -367,7 +367,7 @@ export default {
       if (this.mainData.hawbList) {
         let id = this.mainData.hawbList[i - 1].id;
         axios
-          .get("http://10.8.0.1/trackTest/bill-of-lading/delete/" + id)
+          .get("/track/bill-of-lading/delete/" + id)
           .then((data) => {
             if (data.data.code == 200) {
               this.$message.success("分单删除成功");
