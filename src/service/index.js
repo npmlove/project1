@@ -1,5 +1,5 @@
 //ng开发环境
-var pulicWeb = '/back/dcErp/faw'
+const { BASE_URL: pulicWeb } = process.env
 // var pulicWeb = '/faw'
 // var pulicWeb = '/faw'
 // var pulicWeb = '/back/dcErp/faw'

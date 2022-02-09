@@ -5,7 +5,9 @@
   "author": "9529 <15618972452@163.com>",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "cross-env ENV_FLAG=dev webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev-test": "cross-env ENV_FLAG=test webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev-hotfix": "cross-env ENV_FLAG=hotfix webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "build": "node build/build.js"
   },
@@ -13,6 +15,7 @@
     "@jiaminghi/data-view": "^2.10.0",
     "axios": "^0.18.0",
     "better-scroll": "^1.15.1",
+    "cross-env": "^7.0.3",
     "dayjs": "^1.10.7",
     "echarts": "^4.2.1",
     "element-ui": "2.15.5",

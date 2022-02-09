@@ -12,6 +12,7 @@ const portfinder = require('portfinder')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
+const ENV_FLAG = process.env.ENV_FLAG
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -50,7 +51,16 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': require('../config/dev.env')
+      'process.env': (() => {
+        switch (ENV_FLAG) {
+          case 'dev':
+            return require('../config/dev.env')
+          case 'test':
+            return require('../config/dev-test.env')
+          case 'hotfix':
+            return require('../config/dev-hotfix.env')
+        }
+      })() 
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
