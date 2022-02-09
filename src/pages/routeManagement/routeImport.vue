@@ -87,30 +87,14 @@
         const formdate = new FormData();
         formdate.append("excel", this.excelInfo);
         if(self) {
-          axios.post(this.$service.airPriceImport,formdate,{responseType: 'arraybuffer'}).then(res=>{
-             let enc = new TextDecoder("utf-8");
-          let uint8_msg = new Uint8Array(res);
-          let str=enc.decode(uint8_msg);
-          if (str.indexOf("code") !== -1) {
-            let data = JSON.parse(enc.decode(uint8_msg));
-            this.$message.error(data.message)
-            return;
-          }
-          if (res.byteLength == 0) {
-            this.$message.success('导入成功')
-            return;
-          } else {
-            this.$message.error('导入失败,请查看失败文件')
-          }
-          const aLink = document.createElement("a");
-          let blob = new Blob([res], {
-            type: "application/vnd.ms-excel"
+          axios.post(this.$service.airPriceImport,formdate).then(res=>{
+             if(res.code==200) {
+               this.$message.success("导入成功")
+             } else {
+               this.$message.error(res.message)
+             }
           })
-          aLink.href = URL.createObjectURL(blob)
-          aLink.setAttribute('download', '导入失败文件' + '.xlsx')
-          aLink.click()
-          document.body.appendChild(aLink)
-          })
+           
          
         }
         else{
