@@ -12,7 +12,6 @@ const portfinder = require('portfinder')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
-const ENV_FLAG = process.env.ENV_FLAG
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -52,6 +51,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': (() => {
+        const { ENV_FLAG } = process.env
         switch (ENV_FLAG) {
           case 'dev':
             return require('../config/dev.env')
