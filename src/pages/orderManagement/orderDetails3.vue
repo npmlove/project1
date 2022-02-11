@@ -539,7 +539,7 @@
               <!-- <span >修改账单</span> -->
             </p>
             <p class="pTips" v-if="item.status == 1">
-              <span
+              <span class="bill-count-down-time"
                 >账单已发送，等待客户确认....（倒计时：{{
                   item.billCountDownTime
                 }}）</span
