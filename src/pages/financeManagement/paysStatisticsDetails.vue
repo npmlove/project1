@@ -18,16 +18,7 @@
             <el-input v-model="waybillNo" style="width: 200px;" size="medium"  clearable
                       placeholder="请输入运单号"></el-input>
           </el-form-item>
-           <el-form-item label="财务系列号:">
-            <el-input
-              v-model="financialSeriesNo"
-              style="width: 180px"
-              size="medium"
-              maxlength="12"
-              clearable
-              placeholder="请输入财务系列号"
-            ></el-input>
-          </el-form-item>
+         
           <el-form-item label="应付对象:" class="formItem">
             <el-input v-model="reconciliationUnit" style="width: 230px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入应付对象"></el-input>
@@ -402,7 +393,6 @@ export default {
       columns: [
         {label: 'id', prop: "id", show: false, width: '50'},
         {label: '序号', show: true, width: '50'},
-        {label: '财务系列号', prop: 'financialSeriesNo', show: true, width: '150'},
         {label: '订单号', prop: 'orderNo', show: true, width: '150'},
         {label: '运单号', prop: 'waybillNo', show: true, width: '150'},
         {label: '应付对象', prop: 'expenseUnitName', show: true, width: '160'},
@@ -613,7 +603,6 @@ export default {
       }],
       checkedTable: [
         "序号",
-        "财务系列号",
         "订单号",
         "运单号",
         "应付对象",
@@ -634,7 +623,6 @@ export default {
       ],
       tableOptions: [
         "序号",
-        "财务系列号",
         "订单号",
         "运单号",
         "应付对象",

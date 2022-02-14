@@ -51,16 +51,7 @@
             </el-input>
           </el-popover>
           </el-form-item>
-           <el-form-item label="财务系列号:" class="formItem">
-            <el-input
-              v-model="selectResult.financialSeriesNo"
-              style="width: 180px"
-              size="medium"
-              maxlength="12"
-              clearable
-              placeholder="请输入财务系列号"
-            ></el-input>
-          </el-form-item>
+           
           <el-form-item label="开票抬头:" class="formItem">
             <el-input
               v-model="selectResult.invoiceTitle"
@@ -380,13 +371,7 @@
               :selectable="ifDisabled"
               v-if="checkedTable.indexOf('序号') !== -1"
             ></el-table-column>
-            <el-table-column prop="financialSeriesNo" label="财务系列号" width="160" v-if="checkedTable.indexOf('财务系列号') !== -1">
-               <template slot-scope="scope">
-              <div @click="showData(scope.row.orderId,scope.row.orderNo)" style="color:skyBlue;cursor:pointer">
-                {{scope.row.financialSeriesNo}}
-              </div>
-            </template>
-            </el-table-column>
+           
 
             <el-table-column
               prop="orderNo"
@@ -437,25 +422,13 @@
               v-if="checkedTable.indexOf('开票抬头') !== -1"
             ></el-table-column>
             <el-table-column label="申请开票金额" prop="applyAmount"  v-if="checkedTable.indexOf('申请开票金额') !== -1">
-              <template slot-scope="scope">
-                <div v-for="(item,index) in scope.row.applyAmount.split(',')" :key="index">
-                  {{item}}
-                </div>
-              </template>
+              
             </el-table-column>
             <el-table-column label="已开票金额" prop="invoicedAmount"  v-if="checkedTable.indexOf('已开票金额') !== -1">
-              <template slot-scope="scope">
-                <div v-for="(item,index) in scope.row.invoicedAmount.split(',')" :key="index">
-                  {{item}}
-                </div>
-              </template>
+             
             </el-table-column>
             <el-table-column label="开票备注" prop="invoiceRemark"  v-if="checkedTable.indexOf('开票备注') !== -1">
-               <template slot-scope="scope">
-                <div v-for="(item,index) in scope.row.invoiceRemark.split('|')" :key="index">
-                  {{item}}
-                </div>
-              </template>
+               
             </el-table-column>
        <el-table-column
               label="已核销金额"
@@ -1034,7 +1007,6 @@
       direction: "rtl",
       checkedTable: [ 
      "序号",
-        "财务系列号",
         "订单号",
         "运单号",
         "订舱客户",
@@ -1056,7 +1028,6 @@
         ],
       tableOptions: [
         "序号",
-        "财务系列号",
         "订单号",
         "运单号",
         "订舱客户",

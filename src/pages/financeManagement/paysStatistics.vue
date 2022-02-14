@@ -41,16 +41,7 @@
             >
             </el-autocomplete>
           </el-form-item>
-            <el-form-item label="财务系列号:">
-            <el-input
-              v-model="formInline.financialSeriesNo"
-              style="width: 180px"
-              size="medium"
-              maxlength="12"
-              clearable
-              placeholder="请输入财务系列号"
-            ></el-input>
-          </el-form-item>
+         
           <el-form-item label="应付对象:">
             <el-input
               v-model="formInline.expenseUnitName"
@@ -324,9 +315,7 @@
       <el-checkbox v-model="checkedIndex0" style="margin: 0 0 20px 20px"
         >全选</el-checkbox
       >
-       <el-checkbox class="mycheckbox" v-model="checkedIndex99"
-        >财务系列号</el-checkbox
-      >
+      
       <el-checkbox class="mycheckbox" v-model="checkedIndex1"
         >订单号</el-checkbox
       >
@@ -419,13 +408,7 @@
         </el-table-column>
         <el-table-column type="index" label="序号" :index="indexMethod">
         </el-table-column>
-        <el-table-column prop="financialSeriesNo" label="财务系列号" width="140" v-if="checkedIndex99">
-               <template slot-scope="scope">
-            <div style="color: skyblue;cursor:pointer" @click="orderNoDetail(scope.row)">
-              {{ scope.row.financialSeriesNo }}
-            </div>
-          </template>
-        </el-table-column>
+       
         <el-table-column
           prop="orderNo"
           label="订单号"
