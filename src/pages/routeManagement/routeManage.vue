@@ -171,7 +171,7 @@
           },
           {
             label: '更新时间',
-            prop: 'updateTime',
+            prop: 'airlineUpdateTime',
             show: true,
             width: '180'
           }
