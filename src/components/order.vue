@@ -67,10 +67,10 @@
               style="border: 1px solid black"
               type="text"
               maxlength="6"
-              onKeyUp="value=value.replace(/[^0-9]/g,'')"
+              onkeyup="this.value= this.value.match(/^\d{0,4}(\.\d{0,2})?/)? this.value.match(/^\d{0,4}(\.\d{0,2})?/)[0] : ''"
               ref="input1"
               @blur="
-                inputData.input3 = $event.target.value;
+                inputData.input3 = Number($event.target.value).toFixed(2);
                 getWeight();
               "
               spellcheck="false"
@@ -89,10 +89,10 @@
             <input
               style="border: 1px solid black"
               type="text"
-              onkeyup="this.value= this.value.match(/^-?\d{0,4}(\.\d{0,4})?/)? this.value.match(/^-?\d{0,4}(\.\d{0,4})?/)[0] : ''"
+              onkeyup="this.value= this.value.match(/^-?\d{0,4}(\.\d{0,3})?/)? this.value.match(/^-?\d{0,4}(\.\d{0,3})?/)[0] : ''"
               ref="input2"
               @blur="
-                inputData.input4 = $event.target.value;
+                inputData.input4 = Number($event.target.value).toFixed(3);
                 getWeight();
               "
               spellcheck="false"
@@ -125,7 +125,7 @@
     <div class="itemList">
       <div class="item1" v-for="(itm, indx) in texts" :key="indx">
         <div class="text">
-          <span v-if="itm.title1 != '操作信息'" style="color: red">*</span
+          <span v-if="(datatype == 'order0' && itm.title1 != '操作信息' && itm.title1 != '通知人') || (datatype != 'order0' && itm.title1 != '操作信息')" style="color: red">*</span
           >{{ itm.title1 }}
         </div>
         <div class="text">{{ itm.title2 }}</div>
@@ -219,18 +219,11 @@
         <div class="radio">
           <div class="text">支付信息</div>
           <div class="text">Accounting Information</div>
-          <el-radio-group v-model="radio" @change="radioChange">
+          <el-radio-group v-model="radio" @change="radioChange" :disabled="datatype == 'order0'">
             <el-radio :label="0">运费预付</el-radio>
             <el-radio :label="1">运费到付</el-radio>
           </el-radio-group>
-           <div class="text" style="margin-top:15px"><span style="color:red">*</span> 代理名字和城市</div>
-          <div class="text">Issuing Carrier's Agent Name and City</div>
-          <el-input v-model="carrierInfo" 
-              onKeyUp="value=value.replace(/[\u4e00-\u9fa5]/g,'')"
-              @blur="carrierInfo = $event.target.value"
-              maxlength="30"
-              >
-          </el-input>
+       
         </div>
       </div>
       <div class="lis1">
@@ -270,6 +263,7 @@
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
+                :disabled="item.disabled"
               >
               </el-option>
             </el-select>
@@ -319,6 +313,7 @@
 </template>
 <script>
 import axios from "../../static/axios.min.js";
+const { BILL_URL:billUrl} = process.env
 export default {
   props: {
     datatype: String,
@@ -332,7 +327,7 @@ export default {
     return {
       initWtal:"",
       //调接口新字段 
-      carrierInfo:'',
+      // carrierInfo:'',
       // 绑定key值重新渲染
       previewKey: 1,
       // 弹出框状态
@@ -376,12 +371,7 @@ export default {
           content: "",
           maxLength: "245",
         }, 
-        {
-          title1: "唛头",
-          title2: "Shipping mark",
-          content: "",
-          maxLength: "100",
-        },
+       
         {
           title1: "操作信息",
           title2: "Handling information",
@@ -426,7 +416,9 @@ export default {
   },
   mounted() {
     this.initData();
-    // console.log("mounted")
+    if(this.datatype =="order0") {
+      this.options[1].disabled = true
+    }
   },
   activated() {
     // console.log('activated');
@@ -516,7 +508,7 @@ export default {
         this.newAddData
       );
       this.inputData.input1 = this.newAddData;
-      this.carrierInfo = this.mainData.carrierInfo
+      // this.carrierInfo = this.mainData.carrierInfo
       this.radioSelect = 0;
       if(!self){
         this.radioSelectChange();
@@ -541,15 +533,14 @@ export default {
         this.texts[1].content = this.mainData.consigneeInfo;
         this.texts[2].content = this.mainData.notificationInfo;
         this.texts[3].content = this.mainData.goodsInfo;
-        this.texts[4].content = this.mainData.shippingMark;
-        this.texts[5].content = this.mainData.handlingInfo;
-        this.carrierInfo = this.mainData.carrierInfo
+        this.texts[4].content = this.mainData.handlingInfo;
+        // this.carrierInfo = this.mainData.carrierInfo
 
-        if (this.mainData.wtVal == "0") {
-          this.radio = 0;
-        } else if (this.mainData.wtVal == "1") {
-          this.radio = 1;
-        }
+        // if (this.mainData.wtVal == "0") {
+        //   this.radio = 0;
+        // } else if (this.mainData.wtVal == "1") {
+        //   this.radio = 1;
+        // }
         let json = this.mainData.otherCharges;
         var arr = [];
         // 数据处理
@@ -600,7 +591,7 @@ export default {
               this.radioSelectChange();
             }
             if (data) {
-              this.carrierInfo = data.carrierInfo
+              // this.carrierInfo = data.carrierInfo
               this.inputData.input1 = data.hawb;
               this.inputData.input2 = data.pieces;
               this.inputData.input3 = data.grossWeight;
@@ -610,8 +601,7 @@ export default {
               this.texts[1].content = data.consigneeInfo;
               this.texts[2].content = data.notificationInfo;
               this.texts[3].content = data.goodsInfo;
-              this.texts[4].content = data.shippingMark;
-              this.texts[5].content = data.handlingInfo;
+              this.texts[4].content = data.handlingInfo;
             }
           }
         }
@@ -659,8 +649,7 @@ export default {
               this.texts[1].content = data.consigneeInfo;
               this.texts[2].content = data.notificationInfo;
               this.texts[3].content = data.goodsInfo;
-              this.texts[4].content = data.shippingMark;
-              this.texts[5].content = data.handlingInfo;
+              this.texts[4].content = data.handlingInfo;
             }
           }
         }
@@ -671,7 +660,7 @@ export default {
       this.dialogCangDan = true;
       var order = this.mainData.orderNo;
       this.previewKey = this.previewKey + 1;
-      this.cangDanPath = `http://10.8.0.1/trackTest/bill-of-lading/preview/ware/pdf/${order}`;
+      this.cangDanPath = `${billUrl}/preview/ware/pdf/${order}`;
     },
     // 限制系统分单不可输入
     radioSelectChange(self) {
@@ -712,14 +701,13 @@ export default {
           consigneeInfo: this.texts[1].content,
           notificationInfo: this.texts[2].content,
           goodsInfo: this.texts[3].content,
-          shippingMark: this.texts[4].content,
-          handlingInfo: this.texts[5].content,
+          handlingInfo: this.texts[4].content,
           otherCharges: JSON.stringify(obj),
           wtVal: this.radio,
-          carrierInfo:this.carrierInfo
+          // carrierInfo:this.carrierInfo
         };
         axios
-          .post("http://10.8.0.1/trackTest/bill-of-lading/edit", json)
+          .post(billUrl+"/edit", json)
           .then((data) => {
             if (data.data.code == 200) {
               this.$message.success("保存成功");
@@ -760,18 +748,17 @@ export default {
             consigneeInfo: this.texts[1].content,
             notificationInfo: this.texts[2].content,
             goodsInfo: this.texts[3].content,
-            shippingMark: this.texts[4].content,
-            handlingInfo: this.texts[5].content,
+            handlingInfo: this.texts[4].content,
             hawb: this.inputData.input1,
             pieces: this.inputData.input2,
             grossWeight: this.inputData.input3,
             measurement: this.inputData.input4,
             chargeableWeight: this.inputData.input5,
             wtVal: this.radio,
-            carrierInfo:this.carrierInfo
+            // carrierInfo:this.carrierInfo
           };
           axios
-            .post("http://10.8.0.1/trackTest/bill-of-lading/edit", json)
+            .post(billUrl+"/edit", json)
             .then((data) => {
               if (data.data.code == 200) {
                 this.$message.success("保存成功");
@@ -786,19 +773,18 @@ export default {
             consigneeInfo: this.texts[1].content,
             goodsInfo: this.texts[3].content,
             grossWeight: this.inputData.input3,
-            handlingInfo: this.texts[5].content,
+            handlingInfo: this.texts[4].content,
             hawb: this.inputData.input1,
             measurement: this.inputData.input4,
             notificationInfo: this.texts[2].content,
             orderNo: this.mainData.orderNo,
             pieces: this.inputData.input2,
             shipperInfo: this.texts[0].content,
-            shippingMark: this.texts[4].content,
             wtVal: this.radio,
-            carrierInfo:this.carrierInfo
+            // carrierInfo:this.carrierInfo
           };
           axios
-            .post("http://10.8.0.1/trackTest/bill-of-lading/save", params)
+            .post(billUrl+"/save", params)
             .then((data) => {
               if (data.data.code == 200) {
                 this.$message.success("保存成功");
@@ -828,12 +814,11 @@ export default {
         if (
           this.texts[0].content != "" &&
           this.texts[1].content != "" &&
-          this.texts[2].content != "" &&
           this.texts[3].content != "" &&
-          this.texts[4].content != "" &&
           this.tableData[0].name != "" &&
-          this.tableData[0].value != "" &&
-          this.carrierInfo != ""
+          this.tableData[0].value != "" 
+          
+          //&& this.carrierInfo != ""
         ) {
           if (this.noPrice == 1) {
              this.$message.warning("价格无法找到,支持excel版本下载后本地修改");
@@ -850,13 +835,12 @@ export default {
             this.texts[1].content &&
             this.texts[2].content &&
             this.texts[3].content &&
-            this.texts[4].content &&
             this.inputData.input1 &&
             this.inputData.input2 &&
             this.inputData.input3 &&
             this.inputData.input4 &&
-            this.inputData.input5 &&
-            this.carrierInfo
+            this.inputData.input5 
+            // &&this.carrierInfo
           ) {
             if (this.noPrice == 1) {
              this.$message.warning("价格无法找到,支持excel版本下载后本地修改");
@@ -871,10 +855,9 @@ export default {
             this.texts[1].content &&
             this.texts[2].content &&
             this.texts[3].content &&
-            this.texts[4].content &&
             this.inputData.input1 &&
-            this.inputData.input2 &&
-            this.carrierInfo
+            this.inputData.input2
+            // &&this.carrierInfo
           ) {
             if (this.noPrice == 1) {
              this.$message.warning("价格无法找到,支持excel版本下载后本地修改");
@@ -895,8 +878,7 @@ export default {
         this.texts[2].content = "";
         this.texts[3].content = "";
         this.texts[4].content = "";
-        this.texts[5].content = "";
-        this.carrierInfo = '';
+        // this.carrierInfo = '';
         this.tableData = [{}];
       } else {
         if(this.radioSelect == 1){
@@ -911,8 +893,7 @@ export default {
         this.texts[2].content = "";
         this.texts[3].content = "";
         this.texts[4].content = "";
-        this.texts[5].content = "";
-        this.carrierInfo = '';
+        // this.carrierInfo = '';
 
       }
     },
@@ -932,11 +913,10 @@ export default {
           this.texts[1].content != this.mainData.consigneeInfo ||
           this.texts[2].content != this.mainData.notificationInfo ||
           this.texts[3].content != this.mainData.goodsInfo ||
-          this.texts[4].content != this.mainData.shippingMark ||
-          this.texts[5].content != this.mainData.handlingInfo ||
+          this.texts[4].content != this.mainData.handlingInfo ||
           this.radio != this.mainData.wtVal ||
-          json != getjson ||
-          this.carrierInfo != this.mainData.carrierInfo
+          json != getjson 
+          // ||this.carrierInfo != this.mainData.carrierInfo
         ) {
           this.$refs.downloadPop.disabled = true;
           this.$message.error("请先保存数据后再预览和下载最新的数据");
@@ -968,9 +948,8 @@ export default {
                 this.texts[1].content != data.consigneeInfo ||
                 this.texts[2].content != data.notificationInfo ||
                 this.texts[3].content != data.goodsInfo ||
-                this.texts[4].content != data.shippingMark ||
-                this.texts[5].content != data.handlingInfo ||
-                this.carrierInfo != data.carrierInfo ||
+                this.texts[4].content != data.handlingInfo ||
+                // this.carrierInfo != data.carrierInfo ||
                 this.radio != data.wtVal
               ) {
                 this.$refs.downloadPop.disabled = true;
@@ -1000,10 +979,9 @@ export default {
                 this.texts[1].content != data.consigneeInfo ||
                 this.texts[2].content != data.notificationInfo ||
                 this.texts[3].content != data.goodsInfo ||
-                this.texts[4].content != data.shippingMark ||
-                this.texts[5].content != data.handlingInfo ||
-                this.radio != data.wtVal || 
-                this.carrierInfo != data.carrierInfo
+                this.texts[4].content != data.handlingInfo ||
+                this.radio != data.wtVal 
+                // || this.carrierInfo != data.carrierInfo
               ) {
                 this.$refs.downloadPop.disabled = true;
                 this.$message.error("请先保存数据后再预览和下载最新的数据");
@@ -1024,12 +1002,10 @@ export default {
           if (
             !this.texts[0].content ||
             !this.texts[1].content ||
-            !this.texts[2].content ||
             !this.texts[3].content ||
-            !this.texts[4].content ||
             !this.tableData[0].name ||
-            !this.tableData[0].value || 
-            !this.carrierInfo
+            !this.tableData[0].value
+            // ||!this.carrierInfo
           ) {
             this.$message.warning("*为必填项，请填写后再预览或下载");
             return;
@@ -1041,13 +1017,13 @@ export default {
           } else {
             axios
               .get(
-                `http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${id}`
+                `${billUrl}/preview/bill/pdf/${id}`
               )
               .then((data) => {
                 if (data.data.code) {
                   this.$message.error("请求错误");
                 } else {
-                  this.filePath = `http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${id}`;
+                  this.filePath = `${billUrl}/preview/bill/pdf/${id}`;
                   this.dialogVisible = true;
                 }
               });
@@ -1075,13 +1051,13 @@ export default {
           } else {
             axios
               .get(
-                `http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${data.id}`
+                `billUrl/preview/bill/pdf/${data.id}`
               )
               .then((res) => {
                 if (res.data.code) {
                   this.$message.error("请求错误");
                 } else {
-                  this.filePath = `http://10.8.0.1/trackTest/bill-of-lading/preview/bill/pdf/${data.id}`;
+                  this.filePath = `${billUrl}/preview/bill/pdf/${data.id}`;
                   this.dialogVisible = true;
                 }
               });
@@ -1102,13 +1078,13 @@ export default {
       let typ = this.value;
       if (type == "order0") {
         let id = this.mainData.id;
-        this.dataPath = `http://10.8.0.1/trackTest/bill-of-lading/download/bill/${typ}/${id}`;
+        this.dataPath = `${billUrl}/download/bill/${typ}/${id}`;
         return;
       }
       let idx = type.slice(-1);
       let data = this.mainData.hawbList[idx - 1];
       if (data) {
-        this.dataPath = `http://10.8.0.1/trackTest/bill-of-lading/download/bill/${typ}/${data.id}`;
+        this.dataPath = `${billUrl}/download/bill/${typ}/${data.id}`;
         return;
       }
     },
@@ -1125,9 +1101,7 @@ export default {
           if (
             !this.texts[0].content ||
             !this.texts[1].content ||
-            !this.texts[2].content ||
             !this.texts[3].content ||
-            !this.texts[4].content ||
             !this.tableData[0].name ||
             !this.tableData[0].value
           ) {
@@ -1170,9 +1144,13 @@ export default {
 }
 .itemList {
   display: flex;
-  justify-content: space-around;
+  // justify-content: space-around;
   flex-wrap: wrap;
   margin-top: 50px;
+  .item1{
+    margin-right:20px;
+    margin-left:20px;
+  }
 }
 .text {
   height: 20px;

@@ -39,7 +39,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="付款单位"
+            :label="titleType==1?'收款单位':'付款单位'"
             >
             <template slot-scope="scope">
               <span v-if="expenseType == 1">

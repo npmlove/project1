@@ -168,6 +168,7 @@ import order3 from "../../components/order.vue";
 import order4 from "../../components/order.vue";
 import order5 from "../../components/order.vue";
 import axios from "../../../static/axios.min.js";
+const { BILL_URL:billUrl} = process.env
 export default {
   props:{
     orderEmbed:{
@@ -197,11 +198,18 @@ export default {
       
     };
   },
+  created(){
+
+  },
   mounted(){
     if(this.orderEmbed){
       this.orderNo = this.orderEmbed
       this.tabShow()
     }
+   if(this.$route.params.orderNo){
+      this.orderNo = this.$route.params.orderNo
+      this.tabShow()
+   }
   },
   methods: {
     // 子组件调用 返还页面数据
@@ -344,7 +352,7 @@ export default {
     initData() {
       let param = this.orderNo;
       axios
-        .get(`http://10.8.0.1/trackTest/bill-of-lading/${param}`)
+        .get(`${billUrl}/${param}`)
         .then((data) => {  
            if(data.data.ext) {
             this.noPrice = 1
@@ -378,7 +386,7 @@ export default {
       if (this.mainData.hawbList) {
         let id = this.mainData.hawbList[i - 1].id;
         axios
-          .get("http://10.8.0.1/trackTest/bill-of-lading/delete/" + id)
+          .get(billUrl+"/delete/" + id)
           .then((data) => {
             if (data.data.code == 200) {
               this.$message.success("分单删除成功");

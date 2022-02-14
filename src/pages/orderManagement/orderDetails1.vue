@@ -73,12 +73,24 @@
         >
       </div>
       <div class="flex">
+        <img src="../../assets/orderNo.svg" alt="" style="width:15px;height:15px" @click="jumpToOrder">
         <span>运单号 </span>
         <span>
           <el-input
             v-model="initData.waybillNo"
             size="mini"
             placeholder="请输入内容"
+          ></el-input>
+        </span>
+      </div>
+      <div class="flex">
+        <span>分单号 </span>
+        <span>
+          <el-input
+            v-model="initData.subWaybillNo"
+            size="mini"
+            placeholder="请输入内容"
+            maxlength="80"
           ></el-input>
         </span>
       </div>
@@ -898,6 +910,15 @@ export default {
     this.initPolPod();
   },
   methods: {
+    //跳转到提单页面
+    jumpToOrder(){
+      this.$router.push({
+        name:"ladingBillDownLoad",
+        params:{
+          orderNo:this.initData.orderNo
+        }
+      })
+    },
     trayAddClick(index, key) {
       var json = {
         trayNumber: "",
@@ -1090,7 +1111,7 @@ export default {
           }
         }
       }
-      console.log(this.initData.waybillNo)
+      console.log(this.initData)
       if (this.initData.waybillNo) {
         // 校验运单号
         const { waybillNo } = this.initData;
@@ -1105,6 +1126,7 @@ export default {
       }
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
       let order = this.initData;
+      console.log(this.initData.subWaybillNo)
       if (order.hasOwnProperty("apOrderPriceList")) {
         delete order.apOrderPriceList;
       }

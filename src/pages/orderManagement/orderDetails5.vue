@@ -71,12 +71,24 @@
         >
       </div>
       <div class="flex">
+        <img src="../../assets/orderNo.svg" alt="" style="width:15px;height:15px" @click="jumpToOrder">
         <span>运单号 </span>
         <span>
           <el-input
             v-model="initData.waybillNo"
             size="mini"
             disabled
+            placeholder="请输入内容"
+          ></el-input>
+        </span>
+      </div>
+       <div class="flex">
+        <span>分单号 </span>
+        <span>
+          <el-input
+            v-model="initData.subWaybillNo"
+            size="mini"
+            maxlength="80"
             placeholder="请输入内容"
           ></el-input>
         </span>
@@ -832,6 +844,15 @@ export default {
     ImageUploader,
   },
   methods: {
+      //跳转到提单页面
+    jumpToOrder(){
+      this.$router.push({
+        name:"ladingBillDownLoad",
+        params:{
+          orderNo:this.initData.orderNo
+        }
+      })
+    },
     //下载pdf
     downLoadPDFs(item) {
       axios({
