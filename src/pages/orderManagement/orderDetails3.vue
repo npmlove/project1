@@ -105,6 +105,7 @@
             size="mini"
             maxlength="80"
             placeholder="请输入内容"
+            :disabled="initData.status>=13"
           ></el-input>
         </span>
       </div>
