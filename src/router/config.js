@@ -430,7 +430,7 @@ const orderManagementCenter = [{
       name: 'orderManage',
       meta: {
         title: '订单列表',
-        keepAlive: false,
+        keepAlive: true,
         needLogin: true
       }
     },
