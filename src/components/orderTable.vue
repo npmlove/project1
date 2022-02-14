@@ -412,7 +412,7 @@ export default {
     top: 0px;
     height: 50px;
     // width: 100%;
-    min-width: 1600px;
+    // min-width: 1600px;
     // padding: 10px 0 ;
     // border:1px solid silver
     background:#f0f8ff

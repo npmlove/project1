@@ -204,8 +204,33 @@
           </el-form-item>
         </div>
       </el-form>
-      <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData">
+      <div style="padding: 20px 0; font-size: 14px; display: flex; align-items: center; justify-content: flex-end;">
+        <span style="margin-right: 10px;" v-show="timerSwitch">{{ currentCountDownText }}</span>
+        <span style="margin-right: 20px">定时刷新</span>
+        <el-switch
+          v-model="timerSwitch"
+          active-text="开"
+          inactive-text="关"
+          @change="val => setIntervalTimer(val)"
+          ></el-switch>
+      </div>
+      <el-tabs class="order-manage-tabs" v-model="typeCode" type="border-card" @tab-click="tabClickData">
         <el-tab-pane :label="'全部订单('+countInfo.countAll+')'" name="全部订单">
+          <Table
+            v-loading="ifLoading"
+            :tableData='tableData'
+            :sumInfo='sumInfo'
+            :columns='columns'
+            :operation='operation'
+            :total='total'
+            :currentPage='pageNum'
+            :pageSize='pageSize'
+            @orderDetails="orderDetails"
+            @sizeChange='handleSizeChange'
+            @currentChange='handleCurrentChange'>
+          </Table>
+        </el-tab-pane>
+        <el-tab-pane :label="'待分配航线('+ (countInfo.countAssignPrinc || 0) +')'" name="9">
           <Table
             v-loading="ifLoading"
             :tableData='tableData'
@@ -447,8 +472,17 @@
         countInfo:{},
         payBefore:[],
         paying:[],
-        airManger:[]
+        airManger:[],
+        timerSwitch: false, // 定时刷新开关
+				intervalTimer: null, // 定时刷新定时器
+				currentCountDown: 0, // 定时刷新倒计时,单位毫秒（当前）
+				countDown: 30 * 1000, // 定时刷新倒计时,单位毫秒（当前）
       }
+    },
+    computed: {
+      currentCountDownText() {
+        return `${this.currentCountDown / 1000}s 后刷新`
+      },
     },
     mounted() {
       this.initData()
@@ -456,6 +490,9 @@
       this.initAgentList()
       this.initAirportSearchByPage()
       this.operateData()
+    },
+    beforeDestroy() {
+      this.setIntervalTimer(false)
     },
     methods: {
        //售前售中客服、航线负责人数据
@@ -658,6 +695,23 @@
         this.initData()
         this.initOrderCountList()
       },
+      // 定时刷新|毫秒
+      setIntervalTimer(begin) {
+        clearInterval(this.intervalTimer)
+        if (!begin) {
+          return
+        }
+        this.currentCountDown = this.countDown
+        this.intervalTimer = setInterval(() => {
+          this.currentCountDown -= 1000
+          if (this.currentCountDown < 0) {
+            this.currentCountDown = 0
+            this.searchClick()
+            this.currentCountDown = this.countDown
+            this.setIntervalTimer(true)
+          }
+        }, 1000)
+      },
       //重置
       restClick() {
         this.orderNo = ''
@@ -694,7 +748,7 @@
     watch: {
       tableData(idx) {
         return idx
-      }
+      },
     },
     components: {
       Table
