@@ -76,6 +76,7 @@
             v-model="initData.subWaybillNo"
             size="mini"
             maxlength="80"
+            :disabled="initData.status>=13"
             placeholder="请输入内容"
           ></el-input>
         </span>
