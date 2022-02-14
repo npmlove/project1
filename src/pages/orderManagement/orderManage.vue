@@ -204,8 +204,23 @@
           </el-form-item>
         </div>
       </el-form>
-      <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData">
+      <el-tabs class="order-manage-tabs" v-model="typeCode" type="border-card" @tab-click="tabClickData">
         <el-tab-pane :label="'全部订单('+countInfo.countAll+')'" name="全部订单">
+          <Table
+            v-loading="ifLoading"
+            :tableData='tableData'
+            :sumInfo='sumInfo'
+            :columns='columns'
+            :operation='operation'
+            :total='total'
+            :currentPage='pageNum'
+            :pageSize='pageSize'
+            @orderDetails="orderDetails"
+            @sizeChange='handleSizeChange'
+            @currentChange='handleCurrentChange'>
+          </Table>
+        </el-tab-pane>
+        <el-tab-pane :label="'待分配航线('+ (countInfo.countAssignPrinc || 0) +')'" name="9">
           <Table
             v-loading="ifLoading"
             :tableData='tableData'
@@ -456,6 +471,9 @@
       this.initAgentList()
       this.initAirportSearchByPage()
       this.operateData()
+    },
+    activated() {
+      this.searchClick()
     },
     methods: {
        //售前售中客服、航线负责人数据
