@@ -518,9 +518,7 @@
             "
             >添加费用</el-button
           >
-          <br />
-          <br />
-          <br />
+          
           <div
             class="ml_20"
             v-if="initData.canCheckFlag == 1 && item.status == 0 && notAirPeople"
@@ -552,8 +550,8 @@
                 >修改账单</span
               >
             </p>
-            <p class="pTips" v-if="item.status == 2">
-              <span>账单已确认</span>
+             <p class="pTips" v-if="initData.orderInvoiceApply && initData.orderInvoiceApply.orderInvoiceApply && initData.orderInvoiceApply.orderInvoiceApply.length>0">
+              <span style="text-decoration:underline" :style="{color:initData.orderInvoiceApply.abnormalFlag ? 'red':'rgb(2, 175, 240)'}" @click="shiftShowBill">开票记录</span>
               <span
                 @click="reWriteBill(index)"
                 v-if="
@@ -562,7 +560,17 @@
                 >修改账单</span
               >
             </p>
-            <p class="pTips" v-if="item.status == 3">
+            <!-- <p class="pTips" v-if="item.status == 2">
+              <span>账单已确认</span>
+              <span
+                @click="reWriteBill(index)"
+                v-if="
+                  initData.financeStatus == 0 || initData.financeStatus == 4
+                "
+                >修改账单</span
+              >
+            </p> -->
+            <!-- <p class="pTips" v-if="item.status == 3">
               <span>账单已确认，开票已申请</span>
               <span
                 @click="reWriteBill(index)"
@@ -581,7 +589,8 @@
                 "
                 >修改账单</span
               >
-            </p>
+            </p> -->
+            <billHistory v-if="showBillHistory" @shiftShowBill ="shiftShowBill" :tableData="this.initData.orderInvoiceApply.orderInvoiceApply"></billHistory>
           </div>
           <!-- 新增账单 -->
           <div v-if="notAirPeople"> 
@@ -688,9 +697,11 @@ import EntryGuide from "./components/EntryGuide.vue";
 import DepartureDatePicker from "./components/DepartureDatePicker";
 import { judgeWaybillNo } from "@/util/util";
 import ImageUploader  from './components/ImageUploader'
+import billHistory from './components/billHistory'
 export default {
   data() {
     return {
+      showBillHistory:false,
       filePath: '',
       notAirPeople:true,
       notSaleBefore:true,
@@ -846,6 +857,7 @@ export default {
     clearInterval(this.billTimer);
   },
   components: {
+    billHistory,
     binList,
     ladingBill,
     billOrder,
@@ -856,6 +868,10 @@ export default {
     ImageUploader,
   },
   methods: {
+    //切换开票记录表格显示
+    shiftShowBill(){
+      this.showBillHistory = !this.showBillHistory
+    },
     //下载pdf
     downLoadPDFs(item) {
       axios({
@@ -1735,7 +1751,8 @@ export default {
 }
 .pTips {
   margin-left: 25px;
-  margin-top: 20px;
+  margin-top: 5x;
+  margin-bottom:15px;
 }
 .pTips > span:nth-child(2) {
   color: rgb(2, 175, 240);

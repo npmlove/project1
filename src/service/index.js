@@ -210,6 +210,8 @@ const serviceApi = {
   getAccountStatement :pulicWeb + '/t-rcv-records/getAccountStatement',
   //应收统计 - 导出对账单
   exportCheckPdf :pulicWeb +'/t-rcv-records/exportCheckPdf',
+  //应收统计 - 预收核销弹框表格
+  receiptSearch :pulicWeb +'/t-advance-receipt/searchByPage',
    // 查询应付信息列表
    searchWoByPageBill: pulicWeb + '/t-order-payment/searchWoByPage',
    // 对账导入excel

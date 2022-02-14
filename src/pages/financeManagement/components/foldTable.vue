@@ -9,6 +9,7 @@
             v-for="(item, index) in columns"
             :key="index"
             :style="{ flex: item.width ? `0 0 ${item.width + 'px'}` : '' }"
+            v-show="checkedTable.indexOf(item.label) !== -1 ||item.checkBox"
           >
           <div v-if="item.checkBox">
                <el-checkbox
@@ -31,6 +32,7 @@
               v-for="(item, index) in columns"
               :key="index"
               :style="{ flex: item.width ? `0 0 ${item.width + 'px'}` : '' }"
+              v-show="checkedTable.indexOf(item.label) !== -1 ||item.checkBox"
             >
               <div v-if="item.checkBox == true">
                 <el-checkbox
@@ -38,6 +40,22 @@
                   :disabled="pageSkipAll"
                   @change="check=>changeCheckBox(check,item2,index2)"
                 ></el-checkbox>
+              </div>
+               <div v-else-if="item.key =='financialSeriesNo'">
+                <div v-if="item2.orderInfos &&item2.orderInfos.length >0 ">
+                     <el-popover
+                        placement="bottom-start"
+                        width="100"
+                        trigger="hover"
+                        popper-class="invoicePopper"
+                        >
+                        <div v-for="(item11,index11) in item2.orderInfos" :key ="index11">{{item11.financialSeriesNo}}</div>
+                        <div slot="reference" @click="$emit('showOrderWayBill',item2)" style="color:skyblue;cursor:pointer">{{item2.financialSeriesNo}}</div>
+                     </el-popover>
+                  </div>
+                    <div v-else>
+                        <div @click="$emit('showOrderWayBill',item2)" style="color:skyblue;cursor:pointer">{{item2.financialSeriesNo}}</div>
+                    </div>
               </div>
               <div v-else-if="item.key =='orderNo'">
                 <div v-if="item2.orderInfos &&item2.orderInfos.length >0 ">
@@ -52,7 +70,7 @@
                      </el-popover>
                   </div>
                     <div v-else>
-                        <div@click="$emit('showOrderWayBill',item2)" style="color:skyblue;cursor:pointer">{{item2.orderNo}}</div>
+                        <div @click="$emit('showOrderWayBill',item2)" style="color:skyblue;cursor:pointer">{{item2.orderNo}}</div>
                     </div>
               </div>
               <div v-else-if="item.key =='waybillNo'">
@@ -166,7 +184,7 @@
                   </div>
                  </div>
               <div v-else :style="styleObject(item, item2)" class="tb-span" >
-                {{ item2[item.key] }}{{item.unit?item.unit:''}}
+                {{item.unit?item.unit+" ":''}}{{ item2[item.key] }}
               </div>
             </div>
           </div>
@@ -177,6 +195,7 @@
                 class="tb-td"
                 v-for="(item, index4) of columns"
                 :key="index4"
+                v-show="checkedTable.indexOf(item.label) !== -1 ||item.checkBox"
                 :style="{ flex: item.width ? `0 0 ${item.width + 'px'}` : '' }"
               >
                 <div v-if="item.checkBox == true" style="opacity:0">
@@ -214,37 +233,48 @@
 // import anime from '../../utils/anime.es'
 export default {
   props: {
+    //显示表格列
+    checkedTable:{
+      type:Array,
+      default:()=>{
+        return ['序号','财务系列号','订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票备注','开票信息','申请开票金额','发票种类','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','邮寄状态','发票状态','是否上传']
+      }
+    },
     //列配置
     columns: {
       type: Array,
       default: () => {
         return [
           { checkBox: true, width: 50 },
+          { label: "财务系列号", width: 140, key: "financialSeriesNo" },
           { label: "订单号", width: 140, key: "orderNo" },
           { label: "运单号", width: 110, key: "waybillNo" },
           { label: "订舱公司", width: 160, key: "customerName" },
-          { label: "航班日期", width: 110, key: "departureDate" },
-          { label: "交单时间", width: 110, key: "presentationTime" },
           { label: "发票抬头", width: 140, key: "invoiceTitle" },
           { label: "开票信息", width: 60, key: "showInvoice" },
-          { label: "应收费用总金额", width: 100, key: "totalArCny" },
+          { label: "发票种类", width: 100, key: "invoiceType" },
           {
             label: "申请开票金额",
             width: 120,
             key: "applyAmount",
-            unit: "CNY",
+            unit: "¥",
           },
-          { label: "发票种类", width: 100, key: "invoiceType" },
-          { label: "申请人", width: 100, key: "applicant" },
-          { label: "申请时间", width: 120, key: "applyTime" },
+          { label: "已开票金额", width: 100, key: "invoicedAmount",unit:"¥"},
+          { label: "开票备注", width: 80, key: "invoicedAmount" },
+
           { label: "开票进度", width: 80, key: "invoicingStatus" },
-          { label: "已开票金额", width: 100, key: "invoicedAmount" },
           { label: "发票号码", width: 160, key: "invoiceNum" },
-          { label: "开票时间", width: 160, key: "invoicingTime" },
-          { label: "快递信息", width: 160, key: "expressInfo" },
-          { label: "邮寄状态", width: 100, key: "expressStatus" },
           { label: "发票状态", width: 100, key: "invoiceStatus" },
           { label: "是否上传", width: 100, key: "upload" },
+          { label: "开票时间", width: 160, key: "invoicingTime" },
+          { label: "航班日期", width: 110, key: "departureDate" },
+          { label: "交单时间", width: 110, key: "presentationTime" },
+          { label: "申请时间", width: 120, key: "applyTime" },
+         
+          // { label: "应收费用总金额", width: 100, key: "totalArCny" },
+        
+          { label: "快递信息", width: 160, key: "expressInfo" },
+          { label: "邮寄状态", width: 100, key: "expressStatus" },
         ];
       },
     },
@@ -381,9 +411,9 @@ export default {
       .tb-father {
         display: flex;
         &:nth-child(odd) {
-          min-width: 2390px;
           background-color: #ffffff;
           .tb-td {
+          background-color: #ffffff;
             &:first-child {
               background-color: #ffffff;
               position: sticky;
@@ -393,9 +423,8 @@ export default {
           }
         }
         &:nth-child(even) {
-          min-width: 2390px;
-          background-color: #f2f6ff;
           .tb-td {
+          background-color: #f2f6ff;
             &:first-child {
               background-color: #f2f6ff;
               position: sticky;
@@ -455,13 +484,12 @@ export default {
         }
       }
       .tb-son {
-        min-width:2395px;
+        min-width:2510px;
         .tb-tr {
           display: flex;
           &:nth-child(odd) {
-            min-width: 2380px;
-            background-color: #ffffff;
             .tb-td {
+              background-color: #ffffff;
               &:first-child {
                 background-color: #ffffff;
                 position: sticky;
@@ -471,9 +499,8 @@ export default {
             }
           }
           &:nth-child(even) {
-            min-width: 2380px;
-            background-color: #f2f6ff;
             .tb-td {
+              background-color: #f2f6ff;
               &:first-child {
                 background-color: #f2f6ff;
                 position: sticky;

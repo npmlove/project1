@@ -8,10 +8,16 @@
         label-position="left"
       >
         <div class="content-search-normal" style="position: relative">
-          <el-form-item label="订单号:" class="formItem" label-width="80px">
+             <div style="position:absolute;right:10px;top:10px">
+              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+          </div>
+          </div>
+          <el-form-item label="订单号:" class="formItem">
             <el-input
               v-model="selectResult.orderNo"
-              style="width: 200px"
+              style="width: 160px"
               size="medium"
               @blur="selectResult.orderNo = $event.target.value"
               maxlength="15"
@@ -21,10 +27,10 @@
             ></el-input>
           </el-form-item>
 
-          <el-form-item label="运单号:" class="formItem" label-width="80px">
+          <el-form-item label="运单号:" class="formItem orderNOs">
             <el-input
               v-model="selectResult.waybillNo"
-              style="width: 200px"
+              style="width: 130px"
               size="medium"
               onkeyup="this.value = this.value.replace(/[^\d]/g,'');"
               @blur="selectResult.waybillNo = $event.target.value.substr(0,11)"
@@ -32,8 +38,17 @@
               placeholder="请输入运单号"
             ></el-input>
           </el-form-item>
-
-          <el-form-item label="订舱客户:" class="formItem" label-width="80px">
+            <el-form-item label="财务系列号:" class="formItem" >
+            <el-input
+              v-model="selectResult.customerName"
+              style="width: 180px"
+              size="medium"
+              maxlength="30"
+              clearable
+              placeholder="请输入财务系列号"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="订舱客户:" class="formItem">
             <el-input
               v-model="selectResult.customerName"
               style="width: 200px"
@@ -44,7 +59,7 @@
             ></el-input>
           </el-form-item>
 
-          <el-form-item label="代理上家:" class="formItem" label-width="80px">
+          <el-form-item label="代理上家:" class="formItem">
             <el-select
               v-model="selectResult.agentId"
               placeholder="请输入代理上家"
@@ -68,7 +83,77 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="航司:" class="formItem" label-width="80px">
+          <el-form-item label="开票进度:" class="formItem">
+            <el-select
+              v-model="selectResult.invoicingStatus"
+              placeholder="请选择开票进度"
+              style="width: 155px"
+              multiple
+              collapse-tags
+              @change="dealAllChange"
+            >
+              <el-option
+                v-for="(item,index) in billProgress"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+           <el-form-item label="起运港:" class="formItem" v-show="selectControl">
+            <el-select
+              v-model="selectResult.pol"
+              id="pol"
+              placeholder="起运港三字码"
+              :remote-method="polMethod"
+              :loading="loading"
+              clearable
+              filterable
+              maxlength="15"
+              remote
+              reserve-keyword
+              style="width: 140px"
+            >
+              <el-option
+                v-for="(item, index) in polOpt"
+                :disabled="pod == item.threeLetterCode"
+                :key="item.threeLetterCode"
+                :value="item.threeLetterCode"
+              >
+                <span>{{ item.threeLetterCode }}</span>
+                <span style="margin-left: 5px">{{ item.name }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="目的港:" class="formItem" v-show="selectControl" style="margin-right:35px">
+            <el-select
+              v-model="selectResult.pod"
+              id="pod"
+              placeholder="目的港三字码"
+              :remote-method="podMethod"
+              maxlength="15"
+              :loading="loading"
+              clearable
+              filterable
+              remote
+              reserve-keyword
+              style="width: 140px"
+            >
+              <el-option
+                v-for="item in podOpt"
+                :disabled="pol == item.threeLetterCode"
+                :key="item.threeLetterCode"
+                :value="item.threeLetterCode"
+              >
+                <span>{{ item.threeLetterCode }}</span>
+                <span style="margin-left: 5px">{{ item.name }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="航司:" class="formItem" v-show="selectControl" style="margin-right:30px">
             <el-select
               id="airCompany"
               v-model="selectResult.airCompanyCode"
@@ -93,78 +178,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-
-          <el-form-item label="起运港:" class="formItem" label-width="80px" v-show="selectControl">
-            <el-select
-              v-model="selectResult.pol"
-              id="pol"
-              placeholder="起运港三字码"
-              :remote-method="polMethod"
-              :loading="loading"
-              clearable
-              filterable
-              maxlength="15"
-              remote
-              reserve-keyword
-              style="width: 200px"
-            >
-              <el-option
-                v-for="(item, index) in polOpt"
-                :disabled="pod == item.threeLetterCode"
-                :key="item.threeLetterCode"
-                :value="item.threeLetterCode"
-              >
-                <span>{{ item.threeLetterCode }}</span>
-                <span style="margin-left: 5px">{{ item.name }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item label="目的港:" class="formItem" label-width="80px" v-show="selectControl">
-            <el-select
-              v-model="selectResult.pod"
-              id="pod"
-              placeholder="目的港三字码"
-              :remote-method="podMethod"
-              maxlength="15"
-              :loading="loading"
-              clearable
-              filterable
-              remote
-              reserve-keyword
-              style="width: 200px"
-            >
-              <el-option
-                v-for="item in podOpt"
-                :disabled="pol == item.threeLetterCode"
-                :key="item.threeLetterCode"
-                :value="item.threeLetterCode"
-              >
-                <span>{{ item.threeLetterCode }}</span>
-                <span style="margin-left: 5px">{{ item.name }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item label="开票进度:" class="formItem" label-width="80px" v-show="selectControl">
-            <el-select
-              v-model="selectResult.invoicingStatus"
-              placeholder="请选择开票进度"
-              style="width: 200px"
-              multiple
-              collapse-tags
-              @change="dealAllChange"
-            >
-              <el-option
-                v-for="(item,index) in billProgress"
-                :key="index"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="售前客服:" class="formItem" label-width="80px" v-show="selectControl">
+          
+          <el-form-item label="售前客服:" class="formItem" v-show="selectControl">
             <el-select
               id="pscsId"
               v-model="selectResult.pscsId"
@@ -186,7 +201,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="售中客服:" class="formItem" label-width="80px" v-show="selectControl">
+          <el-form-item label="售中客服:" class="formItem" v-show="selectControl">
             <el-select
               id="mscsId"
               v-model="selectResult.mscsId"
@@ -208,11 +223,30 @@
               </el-option>
             </el-select>
           </el-form-item>
-
+            <el-form-item label="航线:" class="formItem" v-show="selectControl">
+            <el-select
+            id="principalId"
+              v-model="selectResult.principalId"
+              placeholder="请输入航线"
+              :loading="loading"
+              clearable
+              filterable
+              remote
+              reserve-keyword
+              style="width: 200px"
+            >
+              <el-option
+                v-for="item in airManger"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item
             label="航班日期:"
             style="width: 480px"
-            label-width="80px"
              v-show="selectControl"
           >
             <el-date-picker
@@ -257,35 +291,9 @@
             >
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="航线:" class="formItem" label-width="80px" v-show="selectControl">
-            <el-select
-            id="principalId"
-              v-model="selectResult.principalId"
-              placeholder="请输入航线"
-              :loading="loading"
-              clearable
-              filterable
-              remote
-              reserve-keyword
-              style="width: 200px"
-            >
-              <el-option
-                v-for="item in airManger"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <div style="text-align:center">
-              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
-            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span>
-          </div>
-          </div>
-          <div class="operateButton" style="margin-bottom:10px">
+        
+        
+          <div class="operateButton" >
             <el-button
               @click="searchClick('search')"
               size="mini"
@@ -330,6 +338,7 @@
               <p>暂无数据</p>
             </template>
             <el-table-column type="selection" width="50" :selectable="ifDisabled" fixed="left"></el-table-column>
+            <el-table-column label="财务系列号" width="160" v-if="checkedTable.indexOf('财务系列号') !== -1"></el-table-column>
             <el-table-column
               label="订单号"
               min-width="160"
@@ -350,20 +359,7 @@
               type=""
               v-if="checkedTable.indexOf('运单号') !== -1"
             ></el-table-column>
-            <el-table-column
-              prop="departureDate"
-              label="航班日期"
-              min-width="100"
-              type=""
-              v-if="checkedTable.indexOf('航班日期') !== -1"
-            ></el-table-column>
-            <el-table-column
-              prop="presentationTime"
-              label="交单时间"
-              min-width="100"
-              type=""
-              v-if="checkedTable.indexOf('交单时间') !== -1"
-            ></el-table-column>
+            
             <el-table-column
               prop="customerName"
               label="订舱客户"
@@ -379,57 +375,20 @@
               v-if="checkedTable.indexOf('代理上家') !== -1"
             ></el-table-column>
             <el-table-column
-              prop="airCompanyCode"
-              label="航司"
-              min-width="80"
+              prop="departureDate"
+              label="航班日期"
+              min-width="100"
               type=""
-              v-if="checkedTable.indexOf('航司') !== -1"
+              v-if="checkedTable.indexOf('航班日期') !== -1"
             ></el-table-column>
             <el-table-column
-              prop="pol"
-              label="起运港"
-              min-width="80"
+              prop="presentationTime"
+              label="交单时间"
+              min-width="100"
               type=""
-              v-if="checkedTable.indexOf('起运港') !== -1"
+              v-if="checkedTable.indexOf('交单时间') !== -1"
             ></el-table-column>
-            <el-table-column
-              prop="pod"
-              label="目的港"
-              min-width="80"
-              type=""
-              v-if="checkedTable.indexOf('目的港') !== -1"
-            ></el-table-column>
-            <el-table-column
-              prop="cargoInfo"
-              label="货物信息"
-              min-width="190"
-              type=""
-              v-if="checkedTable.indexOf('货物信息') !== -1"
-            >
-              <template slot-scope="scope">
-               <span>
-                 <div>{{ scope.row.cargoInfo.split(",")[0] }}</div>
-                  <div>{{ scope.row.cargoInfo.split(",")[1] }}PCS/{{ scope.row.cargoInfo.split(",")[3] }}KGS/{{ scope.row.cargoInfo.split(",")[2] }}CBM</div>
-                  <div>1:{{ scope.row.cargoInfo.split(",")[4] }}</div>
-               </span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="operator"
-              label="操作人员"
-              min-width="160"
-              type=""
-              v-if="checkedTable.indexOf('操作人员') !== -1"
-            >
-            <template slot-scope="scope">
-              <span>
-                <div>售前：{{ scope.row.operator.split(",")[0] }}</div>
-                <div>售中：{{ scope.row.operator.split(",")[1] }}</div>
-                <div>航线：{{ scope.row.operator.split(",")[2] }}</div>
-              </span>
-            </template>
-            </el-table-column>
-            <el-table-column
+                 <el-table-column
               label="应收金额"
               align="center"
               v-if="checkedTable.indexOf('应收金额') !== -1"
@@ -510,6 +469,59 @@
                 </div>
               </template>
             </el-table-column>
+            <el-table-column
+              prop="airCompanyCode"
+              label="航司"
+              min-width="80"
+              type=""
+              v-if="checkedTable.indexOf('航司') !== -1"
+            ></el-table-column>
+            <el-table-column
+              prop="pol"
+              label="起运港"
+              min-width="80"
+              type=""
+              v-if="checkedTable.indexOf('起运港') !== -1"
+            ></el-table-column>
+            <el-table-column
+              prop="pod"
+              label="目的港"
+              min-width="80"
+              type=""
+              v-if="checkedTable.indexOf('目的港') !== -1"
+            ></el-table-column>
+            <el-table-column
+              prop="cargoInfo"
+              label="货物信息"
+              min-width="190"
+              type=""
+              v-if="checkedTable.indexOf('货物信息') !== -1"
+            >
+              <template slot-scope="scope">
+               <span>
+                 <div>{{ scope.row.cargoInfo.split(",")[0] }}</div>
+                  <div>{{ scope.row.cargoInfo.split(",")[1] }}PCS/{{ scope.row.cargoInfo.split(",")[3] }}KGS/{{ scope.row.cargoInfo.split(",")[2] }}CBM</div>
+                  <div>1:{{ scope.row.cargoInfo.split(",")[4] }}</div>
+               </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="operator"
+              label="操作人员"
+              min-width="160"
+              type=""
+              v-if="checkedTable.indexOf('操作人员') !== -1"
+            >
+            <template slot-scope="scope">
+              <span>
+                <div>售前：{{ scope.row.operator.split(",")[0] }}</div>
+                <div>售中：{{ scope.row.operator.split(",")[1] }}</div>
+                <div>航线：{{ scope.row.operator.split(",")[2] }}</div>
+              </span>
+            </template>
+            </el-table-column>
+       
+            
           </el-table>
           <div style="display: flex; justify-content: space-between">
             <div>
@@ -733,17 +745,13 @@ export default {
       isIndeterminate: true,
       direction: "rtl",
       checkedTable: [
+        "财务系列号",
         "订单号",
         "运单号",
         "航班日期",
         "交单时间",
         "订舱客户",
         "代理上家",
-        "货物信息",
-        "操作人员",
-        "航司",
-        "起运港",
-        "目的港",
         "应收金额",
         "应付金额",
         "利润",
@@ -752,17 +760,13 @@ export default {
         "开票金额",
         "订单状态",],
       tableOptions: [
+        "财务系列号",
         "订单号",
         "运单号",
-        "航班日期",
-        "交单时间",
         "订舱客户",
         "代理上家",
-        "货物信息",
-        "操作人员",
-        "航司",
-        "起运港",
-        "目的港",
+        "航班日期",
+        "交单时间",
         "应收金额",
         "应付金额",
         "利润",
@@ -770,6 +774,11 @@ export default {
         "开票进度",
         "开票金额",
         "订单状态",
+        "航司",
+        "起运港",
+        "目的港",
+        "货物信息",
+        "操作人员",
       ],
       //开票进度
       billProgress:[
@@ -1283,11 +1292,11 @@ export default {
         }
       }
       totalOrgn = "";
-      totalOrgn += value1 || value1 == 0 ? value1 + "CNY" + "\n" : "";
-      totalOrgn += value2 ? value2 + "HKD" + "\n" : "";
-      totalOrgn += value3 ? value3 + "USD" + "\n" : "";
-      totalOrgn += value4 ? value4 + "EUR" + "\n" : "";
-      totalOrgn += value5 ? value5 + "GBP" + "\n": "";
+      totalOrgn += value1 || value1 == 0 ? "¥ " + value1 +  "\n" : "";
+      totalOrgn += value2 ? "HK$ " + value2 + "\n" : "";
+      totalOrgn += value3 ?  "$ " + value3 +"\n" : "";
+      totalOrgn += value4 ? " € " + value4 +  "\n" : "";
+      totalOrgn += value5 ? "￡ " +value5 +  "\n": "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return totalOrgn;
     },
@@ -1519,6 +1528,10 @@ export default {
 
 <style scoped lang="less">
 @import url("../../assets/icon/iconfont.css");
+.el-button--primary{
+  width:100px;
+  // text-align: center;
+}
 /deep/ .el-table {
   th {
     height:35px
@@ -1532,12 +1545,18 @@ export default {
         text-overflow: ellipsis!important;
       }
      }
+     .orderNOs{
+      /deep/.el-input__inner {
+        text-overflow: clip!important;
+      }
+     }
 .operateButton {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: -10px;
+  justify-content: center;
+  // margin-top:-5px;
+  // margin-bottom: -10px;
   button {
-    margin: 0px 10px 20px 10px;
+    margin: 0px 10px 10px 10px;
   }
 }
 /deep/ .el-table {
@@ -1563,7 +1582,7 @@ export default {
 }
 
 .el-form--inline .el-form-item {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   margin-right: 0px;
   vertical-align: bottom;
 }
@@ -1614,8 +1633,8 @@ export default {
   padding: 20px 20px 0 20px !important;
   background: #fff;
   .formItem {
-    width: 320px;
-    margin-top: -5px;
+    // width: 320px;
+    margin: 0px 25px 5px 0;
   }
 }
 

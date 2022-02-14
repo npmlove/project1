@@ -9,51 +9,136 @@
         label-position="left"
       >
         <div class="content-search-normal" style="position: relative">
-          <el-form-item class="test" label="订单号" label-width="90px">
+             <div style="position:absolute;right:10px;top:10px">
+              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+          </div>
+          </div>
+          <el-form-item class="test" label="订单号:">
             <el-autocomplete
               class="inline-input"
               v-model="testNos"
               :fetch-suggestions="querySearch"
               placeholder="请输入订单号"
               clearable
+              style="width:160px"
               @select="dealNo"
               :trigger-on-focus="true"
             >
             </el-autocomplete>
           </el-form-item>
-          <el-form-item label="运单号" label-width="90px">
+          <el-form-item label="运单号:" >
             <el-autocomplete
               class="inline-input"
               clearable
               v-model="testBIllNos"
               @select="dealNo2"
+              style="width:160px"
               :fetch-suggestions="querySearch2"
               placeholder="请输入运单号"
               :trigger-on-focus="true"
             >
             </el-autocomplete>
           </el-form-item>
-          <el-form-item label="应付对象" label-width="90px">
+            <el-form-item label="财务系列号:">
+            <el-input
+              v-model="formInline.financialSeriesNo"
+              style="width: 180px"
+              size="medium"
+              maxlength="12"
+              clearable
+              placeholder="请输入财务系列号"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="应付对象:">
             <el-input
               v-model="formInline.expenseUnitName"
               clearable
               placeholder="请输入应付对象"
+              style="width:170px"
             ></el-input>
           </el-form-item>
-          <el-form-item label="订舱公司" label-width="90px">
+          <el-form-item label="订舱公司:" >
             <el-input
               v-model="formInline.customerName"
               clearable
               placeholder="请输入订舱公司"
+              style="width:170px"
+
             ></el-input>
           </el-form-item>
-          <el-form-item label="航司" label-width="90px">
+            <el-form-item
+            label="核销状态:"
+          >
+            <el-select
+              v-model="formInline.payWriteOffStatusList"
+              @change="dealPayList"
+              multiple
+              collapse-tags
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in payWriteOffStatusArray"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+           <el-form-item
+            label="起运港:"
+            v-show="selectControl"
+          >
+            <el-select
+              v-model="formInline.pol"
+              filterable
+              remote
+              clearable
+              reserve-keyword
+              placeholder="请输入起运港"
+              :remote-method="remoteMethodTwo"
+            >
+              <el-option
+                v-for="item in optionTwo"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="目的港:"
+            v-show="selectControl"
+          >
+            <el-select
+              v-model="formInline.pod"
+              filterable
+              remote
+              clearable
+              reserve-keyword
+              placeholder="请输入目的港"
+              :remote-method="remoteMethodThree"
+            >
+              <el-option
+                v-for="item in optionThree"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="航司:"  v-show="selectControl">
             <el-select
               v-model="formInline.airCompanyCode"
               filterable
               remote
               clearable
               reserve-keyword
+              style="width:185px"
               placeholder="请输入航司名称"
               :remote-method="remoteMethodFour"
             >
@@ -66,36 +151,76 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item
-            label="代理上家"
-            label-width="90px"
+           <el-form-item
+            label="售前客服:"
             v-show="selectControl"
           >
             <el-select
-              v-model="formInline.agentName"
+              id="selectOne"
+              v-model="formInline.pscsId"
               filterable
-              remote
               clearable
-              reserve-keyword
-              placeholder="请输入订舱代理上家"
-              :remote-method="remoteMethod"
+              placeholder="请选择"
+              style="width:170px"
             >
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in preSaleList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+            <el-form-item
+            label="售中客服:"
+            v-show="selectControl"
+          >
+            <el-select
+              id="selectThree"
+              v-model="formInline.mscsId"
+              filterable
+              clearable
+              style="width:170px"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in onSaleList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
               >
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item
-            label="下单日期"
-            label-width="90px"
+            label="航线:"
+            v-show="selectControl"
+          >
+            <el-select
+              id="selectTwo"
+              style="width:170px"
+              v-model="formInline.principalId"
+              filterable
+              clearable
+              placeholder="请输入航线"
+            >
+              <el-option
+                v-for="item in airLineList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        
+          <el-form-item
+            label="交单时间:"
             v-show="selectControl"
           >
             <el-date-picker
-              v-model="formInline.startOrderTime"
+              v-model="formInline.startPresentationTime"
               type="date"
               clearable
               style="width: 186px"
@@ -105,7 +230,7 @@
             </el-date-picker
             >-
             <el-date-picker
-              v-model="formInline.endOrderTime"
+              v-model="formInline.endPresentationTime"
               type="date"
               clearable
               :value-format="formatDate"
@@ -115,8 +240,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item
-            label="航班日期"
-            label-width="90px"
+            label="航班日期:"
             v-show="selectControl"
           >
             <el-date-picker
@@ -139,55 +263,9 @@
             >
             </el-date-picker>
           </el-form-item>
+         
           <el-form-item
-            label="起运港"
-            label-width="90px"
-            v-show="selectControl"
-          >
-            <el-select
-              v-model="formInline.pol"
-              filterable
-              remote
-              clearable
-              reserve-keyword
-              placeholder="请输入起运港"
-              :remote-method="remoteMethodTwo"
-            >
-              <el-option
-                v-for="item in optionTwo"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label="目的港"
-            label-width="90px"
-            v-show="selectControl"
-          >
-            <el-select
-              v-model="formInline.pod"
-              filterable
-              remote
-              clearable
-              reserve-keyword
-              placeholder="请输入目的港"
-              :remote-method="remoteMethodThree"
-            >
-              <el-option
-                v-for="item in optionThree"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label="结算方式"
-            label-width="90px"
+            label="结算方式:"
             v-show="selectControl"
           >
             <el-select v-model="formInline.payWay" placeholder="请选择">
@@ -200,20 +278,22 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item
-            label="核销状态"
-            label-width="90px"
+        
+           <el-form-item
+            label="代理上家:"
             v-show="selectControl"
           >
             <el-select
-              v-model="formInline.payWriteOffStatusList"
-              @change="dealPayList"
-              multiple
-              collapse-tags
-              placeholder="请选择"
+              v-model="formInline.agentName"
+              filterable
+              remote
+              clearable
+              reserve-keyword
+              placeholder="请输入订舱代理上家"
+              :remote-method="remoteMethod"
             >
               <el-option
-                v-for="item in payWriteOffStatusArray"
+                v-for="item in options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -221,101 +301,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item
-            label="售前客服"
-            label-width="90px"
-            v-show="selectControl"
-          >
-            <el-select
-              id="selectOne"
-              v-model="formInline.pscsId"
-              filterable
-              clearable
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in preSaleList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label="航线负责人"
-            label-width="90px"
-            v-show="selectControl"
-          >
-            <el-select
-              id="selectTwo"
-              v-model="formInline.principalId"
-              filterable
-              clearable
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in airLineList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label="售中客服"
-            label-width="90px"
-            v-show="selectControl"
-          >
-            <el-select
-              id="selectThree"
-              v-model="formInline.mscsId"
-              filterable
-              clearable
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in onSaleList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <div style="text-align: center">
-            <div
-              style="cursor: pointer; display: inline-block"
-              @click="shiftSelectControl"
-            >
-              <img
-                v-if="selectControl"
-                src="../../assets/doubleArrowUp.png"
-                alt=""
-                style="
-                  width: 30px;
-                  height: 30px;
-                  margin: 0 0 18px 0;
-                  transform: translateY(7px);
-                "
-              />
-              <img
-                v-if="!selectControl"
-                src="../../assets/doubleArrowDown.png"
-                alt=""
-                style="
-                  width: 30px;
-                  height: 30px;
-                  margin: 0 0 18px 0;
-                  transform: translateY(7px);
-                "
-              />
-              <span style="fontSize: 15px; fontWeight: bold">{{
-                selectControl ? "点击收起部分搜索条件" : "点击展开所有搜索条件"
-              }}</span>
-            </div>
-          </div>
+        
+         
           <div class="operateButton">
             <el-button size="mini" type="primary" @click="onSubmit"
               >查询</el-button
@@ -336,6 +323,9 @@
     >
       <el-checkbox v-model="checkedIndex0" style="margin: 0 0 20px 20px"
         >全选</el-checkbox
+      >
+       <el-checkbox class="mycheckbox" v-model="checkedIndex99"
+        >财务系列号</el-checkbox
       >
       <el-checkbox class="mycheckbox" v-model="checkedIndex1"
         >订单号</el-checkbox
@@ -428,6 +418,13 @@
         >
         </el-table-column>
         <el-table-column type="index" label="序号" :index="indexMethod">
+        </el-table-column>
+        <el-table-column prop="financialSeriesNo" label="财务系列号" width="140" v-if="checkedIndex99">
+               <template slot-scope="scope">
+            <div style="color: skyblue;cursor:pointer" @click="orderNoDetail(scope.row)">
+              {{ scope.row.financialSeriesNo }}
+            </div>
+          </template>
         </el-table-column>
         <el-table-column
           prop="orderNo"
@@ -597,88 +594,7 @@
           <el-button type="primary" size="mini" @click="calcSlectData"
             >数据统计</el-button
           >
-          <div v-show="computedDataStatic">
-            <div class="calcDataContont">
-              <div class="dataCount">
-                应付总金额:
-                {{
-                  dataStaticObj.totalApCny
-                    ? dataStaticObj.totalApCny.toLocaleString("en-US")
-                    : 0
-                }}
-              </div>
-              <div class="dataCount">
-                已核销总金额:
-                {{
-                  dataStaticObj.totalApWoCny
-                    ? dataStaticObj.totalApWoCny.toLocaleString("en-US")
-                    : 0
-                }}
-              </div>
-              <div class="dataCount">
-                未核销总金额:
-                {{
-                  dataStaticObj.totalApUnwoCny
-                    ? dataStaticObj.totalApUnwoCny.toLocaleString("en-US")
-                    : 0
-                }}
-              </div>
-            </div>
-            <div class="calcDataContont">
-              
-              <div style="display: flex" class="dataCount">
-                <div>应付原币:</div>
-                <div>
-                  <div
-                    v-for="(item, index) in dataStaticObj.totalApOrgn"
-                    :key="index"
-                  >
-                    <div v-if="item.currency == 1">{{ item.amount }}CNY</div>
-                    <div v-if="item.currency == 2">{{ item.amount }}HKD</div>
-                    <div v-if="item.currency == 3">{{ item.amount }}USD</div>
-                    <div v-if="item.currency == 4">{{ item.amount }}EUR</div>
-                    <div v-if="item.currency == 5">{{ item.amount }}GBP</div>
-                  </div>
-                  <div v-if="!dataStaticObj.totalApOrgn"> 0CNY
-                  </div>
-                </div>
-              </div>
-<div style="display: flex" class="dataCount">
-                <div>已核销原币:</div>
-                <div>
-                  <div
-                    v-for="(item, index) in dataStaticObj.totalApWoOrgn"
-                    :key="index"
-                  >
-                    <div v-if="item.currency == 1">{{ item.amount }}CNY</div>
-                    <div v-if="item.currency == 2">{{ item.amount }}HKD</div>
-                    <div v-if="item.currency == 3">{{ item.amount }}USD</div>
-                    <div v-if="item.currency == 4">{{ item.amount }}EUR</div>
-                    <div v-if="item.currency == 5">{{ item.amount }}GBP</div>
-                  </div>
-                  <div v-if="!dataStaticObj.totalApWoOrgn"> 0CNY
-                  </div>
-                </div>
-              </div>
-              <div style="display: flex" class="dataCount">
-                <div>未核销原币:</div>
-                <div>
-                  <div
-                    v-for="(item, index) in dataStaticObj.totalApUnwoOrgn"
-                    :key="index"
-                  >
-                    <div v-if="item.currency == 1">{{ item.amount }}CNY</div>
-                    <div v-if="item.currency == 2">{{ item.amount }}HKD</div>
-                    <div v-if="item.currency == 3">{{ item.amount }}USD</div>
-                    <div v-if="item.currency == 4">{{ item.amount }}EUR</div>
-                    <div v-if="item.currency == 5">{{ item.amount }}GBP</div>
-                  </div>
-                  <div v-if="!dataStaticObj.totalApUnwoOrgn"> 0CNY
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          
         </div>
 
         <div style="display: flex">
@@ -714,7 +630,90 @@
           >
           </el-pagination>
         </div>
+        
       </div>
+      <div v-show="computedDataStatic">
+            <div class="calcDataContont">
+              <div class="dataCount">
+                应付总金额:
+                {{
+                  dataStaticObj.totalApCny
+                    ? dataStaticObj.totalApCny.toLocaleString("en-US")
+                    : 0
+                }}
+              </div>
+              <div class="dataCount">
+                已核销总金额:
+                {{
+                  dataStaticObj.totalApWoCny
+                    ? dataStaticObj.totalApWoCny.toLocaleString("en-US")
+                    : 0
+                }}
+              </div>
+              <div class="dataCount">
+                未核销总金额:
+                {{
+                  dataStaticObj.totalApUnwoCny
+                    ? dataStaticObj.totalApUnwoCny.toLocaleString("en-US")
+                    : 0
+                }}
+              </div>
+            </div>
+            <div class="calcDataContont">
+              
+              <div style="display: flex" class="dataCount">
+                <div>应付原币:</div>
+                <div style="margin-left:5px">
+                  <div
+                    v-for="(item, index) in dataStaticObj.totalApOrgn"
+                    :key="index"
+                  >
+                    <div v-if="item.currency == 1"> {{"¥ " + item.amount }}</div>
+                    <div v-if="item.currency == 2">{{"HK$ " + item.amount }}</div>
+                    <div v-if="item.currency == 3">{{ "$ " + item.amount }}</div>
+                    <div v-if="item.currency == 4">{{"€ " + item.amount }}</div>
+                    <div v-if="item.currency == 5">{{"￡ " + item.amount }}</div>
+                  </div>
+                  <div v-if="!dataStaticObj.totalApOrgn"> {{"¥ "}}0
+                  </div>
+                </div>
+              </div>
+<div style="display: flex" class="dataCount">
+                <div>已核销原币:</div>
+                <div style="margin-left:5px">
+                  <div
+                    v-for="(item, index) in dataStaticObj.totalApWoOrgn"
+                    :key="index"
+                  >
+                    <div v-if="item.currency == 1">{{"¥ " + item.amount }}</div>
+                    <div v-if="item.currency == 2">{{"HK$ " + item.amount }}</div>
+                    <div v-if="item.currency == 3">{{ "$ " + item.amount }}</div>
+                    <div v-if="item.currency == 4">{{"€ " + item.amount }}</div>
+                    <div v-if="item.currency == 5">{{"￡ " + item.amount }}</div>
+                  </div>
+                  <div v-if="!dataStaticObj.totalApWoOrgn">{{"¥ "}} 0
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex" class="dataCount">
+                <div>未核销原币:</div>
+                <div style="margin-left:5px">
+                  <div
+                    v-for="(item, index) in dataStaticObj.totalApUnwoOrgn"
+                    :key="index"
+                  >
+                    <div v-if="item.currency == 1">{{"¥ " + item.amount }}</div>
+                    <div v-if="item.currency == 2">{{"HK$ " + item.amount }}</div>
+                    <div v-if="item.currency == 3">{{ "$ " + item.amount }}</div>
+                    <div v-if="item.currency == 4">{{"€ " + item.amount }}</div>
+                    <div v-if="item.currency == 5">{{"￡ " + item.amount }}</div>
+                  </div>
+                  <div v-if="!dataStaticObj.totalApUnwoOrgn">{{"¥ "}}0
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
     </div>
 
     <!-- 对账模态框组件 -->
@@ -959,8 +958,9 @@ export default {
         agentName: "",
         startDepartureDate: "",
         endDepartureDate: "",
-        startOrderTime: "",
-        endOrderTime: "",
+        startPresentationTime: "",
+        endPresentationTime: "",
+        financialSeriesNo:"",
         pol: "",
         pod: "",
         payWay: "",
@@ -1045,6 +1045,7 @@ export default {
       verificationArr: [], //传递给核销组件的数组
       tableColumnArray: {}, // 表头默认显示状态
       checkedIndex0: true, // 默认全选
+      checkedIndex99:true,
       checkedIndex1: true,
       checkedIndex2: true,
       checkedIndex3: true,
@@ -1062,6 +1063,8 @@ export default {
       checkedIndex15: true,
       checkedIndex16: true,
       checkedIndex17: true,
+      //数据统计按钮 统计勾选数据id
+      idsArray:[]
     };
   },
   async mounted() {
@@ -1072,6 +1075,7 @@ export default {
   watch: {
     checkedIndex0(newValue) {
       if (newValue == true) {
+        this.checkedIndex99 = true;
         this.checkedIndex1 = true;
         this.checkedIndex2 = true;
         this.checkedIndex3 = true;
@@ -1090,6 +1094,7 @@ export default {
         this.checkedIndex16 = true;
         this.checkedIndex17 = true;
       } else {
+        this.checkedIndex99 = false;
         this.checkedIndex1 = false;
         this.checkedIndex2 = false;
         this.checkedIndex3 = false;
@@ -1118,6 +1123,7 @@ export default {
   methods: {
     handleSelectionChange(e) {
         this.selectTableData = e
+        this.idsArray = e.map(item=>item.ids)
       },
      handleCurrentChangeS(e) {
       this.pageNum = e
@@ -1154,11 +1160,11 @@ export default {
       }
       totalOrgn = ''
 
-      totalOrgn += value1 || value1 == 0 ? value1 + 'CNY' + '+' : ''
-      totalOrgn += value2 ? value2 + 'HKD' + '+' : ''
-      totalOrgn += value3 ? value3 + 'USD' + '+' : ''
-      totalOrgn += value4 ? value4 + 'EUR' + '+' : ''
-      totalOrgn += value5 ? value5 + 'GBP' : ''
+      totalOrgn += value1 || value1 == 0 ? "¥ " +value1  + '+' : ''
+      totalOrgn += value2 ?  "HK$ " +value2  + '+' : ''
+      totalOrgn += value3 ?  "$ " +value3  + '+' : ''
+      totalOrgn += value4 ? "€ " +value4  + '+' : ''
+      totalOrgn += value5 ? "￡ " +value5  : ''
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
       return totalOrgn;
     },
@@ -1247,8 +1253,9 @@ export default {
         agentName: "",
         startDepartureDate: "",
         endDepartureDate: "",
-        startOrderTime: "",
-        endOrderTime: "",
+        startPresentationTime: "",
+        endPresentationTime: "",
+        financialSeriesNo:"",
         pol: "",
         pod: "",
         payWay: "",
@@ -1379,6 +1386,7 @@ export default {
       let params = Object.assign(
         {},
         formInline,
+        { ids:this.idsArray},
         { pageNum: currentPage, woStatus: woStatus },
         { pageSize: tempTotal }
       );
@@ -1637,6 +1645,44 @@ export default {
     },
     // 数据统计
     async calcSlectData() {
+      if(this.computedDataStatic == false) {
+      let {
+        formInline,
+        currentPage,
+        woStatus,
+        slectAllDataStatic,
+        countAuth,
+        countErr,
+        countNoAuth,
+      } = this;
+      let tempTotal = "";
+      if (woStatus == 0) {
+        tempTotal = countAuth;
+      } else if (woStatus == 1) {
+        tempTotal = countNoAuth;
+      } else if (woStatus == 2) {
+        tempTotal = countErr;
+      }
+      let params = Object.assign(
+        {},
+        formInline,
+        { ids:this.idsArray},
+        { pageNum: currentPage, woStatus: woStatus },
+        { pageSize: tempTotal }
+      );
+      if (params.payWriteOffStatusList.indexOf("") != -1) {
+        params.payWriteOffStatusList = [];
+      }
+      this.$http.post(this.$service.dataStatistics, params).then((res) => {
+        if (res.code == 200) {
+          let tempObj = res.data;
+          tempObj.totalApUnwoOrgn = JSON.parse(tempObj.totalApUnwoOrgn);
+          tempObj.totalApOrgn = JSON.parse(tempObj.totalApOrgn);
+          tempObj.totalApWoOrgn = JSON.parse(tempObj.totalApWoOrgn);
+          this.dataStaticObj = tempObj;
+        }
+      });
+      }
       this.computedDataStatic = !this.computedDataStatic;
       this.computedDataType = this.computedDataStatic == false ? "" : "primary";
     },
@@ -1803,15 +1849,15 @@ export default {
         let st = JSON.parse(tempString);
         let ss = st.map((res) => {
           if (res.currency == 1) {
-            return res.amount + "￥";
+            return "￥" + res.amount;
           } else if (res.currency == 2) {
-            return res.amount + "HK$";
+            return "HK$" + res.amount ;
           } else if (res.currency == 3) {
-            return res.amount + "$";
+            return  "$" + res.amount ;
           } else if (res.currency == 4) {
-            return res.amount + "€";
+            return "€" + res.amount ;
           } else if (res.currency == 5) {
-            return res.amount + "￡";
+            return "￡"+ res.amount;
           }
         });
 
@@ -1825,6 +1871,10 @@ export default {
 </script>
 
 <style scoped lang="less">
+ .el-button--primary{
+      width:100px;
+      // text-align: center;
+  }
 /deep/.pageSkip {
   padding: 3px 5px !important;
 }
@@ -1850,7 +1900,7 @@ export default {
       background: #fff;
       /deep/.el-form-item {
         margin-left: 15px;
-        margin-bottom:18px!important
+        margin-bottom:8px!important
       }
       .formItem {
         width: 320px;
@@ -1858,7 +1908,7 @@ export default {
       }
       .operateButton {
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
         margin-bottom: -10px;
         button {
           margin: 0px 10px 20px 10px;

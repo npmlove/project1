@@ -2,31 +2,99 @@
   <div class="content-wrapper">
     <div class="content">
       <el-form :inline="true" size="medium" class="demo-form-inline" label-position="left">
-        <div class="content-search-normal">
-          <el-form-item label="订单号:" class="formItem" label-width="80px">
-            <el-input v-model="orderNo" style="width: 190px;" size="medium" :maxlength="inputMax" clearable
+        <div class="content-search-normal" style="position:relative">
+              <div style="position:absolute;right:10px;top:10px">
+              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+          </div>
+          </div>
+          <el-form-item label="订单号:">
+            <el-input v-model="orderNo" style="width: 170px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入订单号"></el-input>
           </el-form-item>
 
-          <el-form-item label="运单号:" class="formItem" label-width="80px">
-            <el-input v-model="waybillNo" style="width: 200px;" size="medium"  clearable
+          <el-form-item label="运单号:">
+            <el-input v-model="waybillNo" style="width: 170px;" size="medium"  clearable
                       placeholder="请输入运单号"></el-input>
           </el-form-item>
-
-          <el-form-item label="应收对象:" class="formItem" label-width="80px">
+          <el-form-item label="财务系列号:">
+            <el-input
+              v-model="customerName"
+              style="width: 180px"
+              size="medium"
+              maxlength="12"
+              clearable
+              placeholder="请输入财务系列号"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="应收对象:">
             <el-input v-model="reconciliationUnit" style="width: 230px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入应收对象"></el-input>
           </el-form-item>
 
-          <el-form-item label="开户行:" class="formItem" label-width="80px">
-            <el-input v-model="accountBank" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
+          <el-form-item label="开户行:">
+            <el-input v-model="accountBank" style="width: 195px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入开户行"></el-input>
           </el-form-item>
-          <el-form-item label="户名:" class="formItem" label-width="80px">
-            <el-input v-model="accountName" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
+          <el-form-item label="户名:">
+            <el-input v-model="accountName" style="width: 190px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入户名"></el-input>
           </el-form-item>
+          
+          <el-form-item
+            label="付款日期:"
+            v-if="this.selectControl"
+          >
+            <el-date-picker
+              style="width: 157px"
+              value-format="yyyy-MM-dd"
+              v-model="startPayTime"
+              type="date"
+              :picker-options="pickerOptionsStartOne"
+              placeholder="选择日期"
+            >
+            </el-date-picker
+            >
+            -
+            <el-date-picker
+              style="width: 157px"
+              value-format="yyyy-MM-dd"
+              v-model="endPayTime"
+              type="date"
+              :picker-options="pickerOptionsEndOne"
+              placeholder="选择日期"
+            >
+            </el-date-picker>
+          </el-form-item>
 
+
+          <el-form-item
+            label="核销日期:"
+            v-if="this.selectControl"
+          >
+            <el-date-picker
+              style="width: 157px"
+              value-format="yyyy-MM-dd"
+              v-model="startWriteOffTime"
+              type="date"
+              :picker-options="pickerOptionsStartTwo"
+              placeholder="选择日期"
+            >
+            </el-date-picker
+            >
+            -
+            <el-date-picker
+              style="width: 157px"
+              value-format="yyyy-MM-dd"
+              v-model="endWriteOffTime"
+              type="date"
+              :picker-options="pickerOptionsEndTwo"
+              placeholder="选择日期"
+            >
+            </el-date-picker>
+          </el-form-item>
+         
 
           <!--          <el-form-item>
                       <el-date-picker
@@ -51,9 +119,9 @@
                     </el-form-item>-->
 
 
-          <el-form-item label="收款方式:" class="formItem" label-width="80px">
+          <el-form-item label="收款方式:"  v-if="this.selectControl">
             <el-select v-model="writeOffWay" placeholder="收款方式" :loading="loading" clearable filterable remote
-                       reserve-keyword style="width: 190px;">
+                       reserve-keyword style="width: 150px;">
               <el-option
                 v-for="item in writeOffWayOpt"
                 :key="item.id"
@@ -62,9 +130,9 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="结算方式:" class="formItem" label-width="80px" v-if="this.selectControl">
+          <el-form-item label="结算方式:" v-if="this.selectControl">
             <el-select v-model="payWay" placeholder="结算方式" :remote-method="agentMethod" :loading="loading" clearable
-                       filterable remote reserve-keyword style="width: 200px;">
+                       filterable remote reserve-keyword style="width: 140px;">
               <el-option
                 v-for="item in payWayOpt"
                 :key="item.value"
@@ -73,7 +141,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="核销状态:" class="formItem" label-width="80px" v-if="this.selectControl">
+          <el-form-item label="核销状态:" class="formItem" v-if="this.selectControl">
             <el-select v-model="rcvWriteOffStatus" multiple collapse-tags placeholder="核销状态" @change="dealAllChange"
                        :loading="loading"
                        clearable filterable remote reserve-keyword style="width: 230px;">
@@ -86,69 +154,6 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item
-            label="付款日期:"
-            style="width: 480px"
-            label-width="80px"
-            v-if="this.selectControl"
-          >
-            <el-date-picker
-              style="width: 180px"
-              value-format="yyyy-MM-dd"
-              v-model="startPayTime"
-              type="date"
-              :picker-options="pickerOptionsStartOne"
-              placeholder="选择日期"
-            >
-            </el-date-picker
-            >
-            -
-            <el-date-picker
-              style="width: 180px"
-              value-format="yyyy-MM-dd"
-              v-model="endPayTime"
-              type="date"
-              :picker-options="pickerOptionsEndOne"
-              placeholder="选择日期"
-            >
-            </el-date-picker>
-          </el-form-item>
-
-
-          <el-form-item
-            label="核销日期:"
-            style="width: 480px"
-            label-width="80px"
-            v-if="this.selectControl"
-          >
-            <el-date-picker
-              style="width: 180px"
-              value-format="yyyy-MM-dd"
-              v-model="startWriteOffTime"
-              type="date"
-              :picker-options="pickerOptionsStartTwo"
-              placeholder="选择日期"
-            >
-            </el-date-picker
-            >
-            -
-            <el-date-picker
-              style="width: 180px"
-              value-format="yyyy-MM-dd"
-              v-model="endWriteOffTime"
-              type="date"
-              :picker-options="pickerOptionsEndTwo"
-              placeholder="选择日期"
-            >
-            </el-date-picker>
-          </el-form-item>
-          <div style="text-align:center">
-            <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
-              <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-              <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-              <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span>
-            </div>
-          </div>
           <div class="operateButton">
             <el-button
               @click="searchClick"
@@ -253,26 +258,7 @@
             <el-checkbox v-model="pageSkipChecked" @change="selectAllTable">跨页全选</el-checkbox>
           </el-button>
           <el-button type="primary" size="mini" @click="getStatistData">数据统计</el-button>
-          <div style="margin-top: 15px;display:flex;font-size:12px" v-if="statistDataShow">
-            <div class="statist">
-              <div>应收总金额:{{ statistData.totalArCny }}</div>
-              <div v-html="dealOrgnS(statistData.totalArOrgn,'应收原币')" style="white-space:pre-wrap;text-align:right"
-                   class="statists"></div>
-            </div>
-            <div class="statist">
-              <div>已核销总金额:{{ statistData.totalRcWoCny }}</div>
-              <div v-html="dealOrgnS(statistData.totalRcWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right"
-                   class="statists"></div>
-            </div>
-            <div class="statist">
-              <div>未核销总金额:{{ statistData.totalRcUnwoCny }}</div>
-              <div v-html="dealOrgnS(statistData.totalRcUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right"
-                   class="statists"></div>
-            </div>
-            <div class="statist" style="color:red;font-size:20px" v-if="statistData.hasAbNormal">
-              <div>存在异常订单！</div>
-            </div>
-          </div>
+          
         </div>
         <div style="display:flex;">
           <div style="widht:100%;margin:5px 10px 0 0">
@@ -296,6 +282,35 @@
 
 
       </div>
+      <div style="display:flex;font-size:12px;background: rgb(255, 255, 255)" v-if="statistDataShow">
+            <div class="statist">
+              <div>应收总金额:{{ statistData.totalArCny }}</div>
+              <div style="white-space:pre-wrap;display:flex"
+                   class="statists">
+                   <div>应收原币:</div>
+                   <div v-html="dealOrgnS(statistData.totalArOrgn)" ></div>
+                   </div>
+            </div>
+            <div class="statist">
+              <div>已核销总金额:{{ statistData.totalRcWoCny }}</div>
+              <div style="white-space:pre-wrap;display:flex"
+                   class="statists">
+                   <div>已核销原币:</div>
+                   <div v-html="dealOrgnS(statistData.totalRcWoOrgn)"></div>
+                   </div>
+            </div>
+            <div class="statist">
+              <div>未核销总金额:{{ statistData.totalRcUnwoCny }}</div>
+              <div style="white-space:pre-wrap;display:flex"
+                   class="statists">
+                   <div>未核销原币:</div>
+                   <div v-html="dealOrgnS(statistData.totalRcUnwoOrgn)"></div>
+                   </div>
+            </div>
+            <div class="statist" style="color:red;font-size:20px" v-if="statistData.hasAbNormal">
+              <div>存在异常订单！</div>
+            </div>
+        </div>
     </div>
     <el-dialog title="应收核销操作记录" :visible.sync="logDialogVisible" width="80%">
       <Table
@@ -383,6 +398,7 @@ export default {
       checkAll: false,
       checkedTable: [
         "序号",
+        "财务系列号",
         "订单号",
         "运单号",
         "应收对象",
@@ -402,6 +418,7 @@ export default {
       ],
       tableOptions: [
         "序号",
+        "财务系列号",
         "订单号",
         "运单号",
         "应收对象",
@@ -459,6 +476,7 @@ export default {
       columns: [
         {label: 'id', prop: "id", show: false, width: '50'},
         {label: '序号', show: true, width: '50'},
+        {label: '财务系列号', prop: 'orderNos', show: true, width: '150'},
         {label: '订单号', prop: 'orderNo', show: true, width: '150'},
         {label: '运单号', prop: 'waybillNo', show: true, width: '150'},
         {label: '应收对象', prop: 'reconciliationUnit', show: true, width: '160'},
@@ -706,11 +724,11 @@ export default {
         }
       }
       totalOrgn = "";
-      totalOrgn += (value1 || value1 == 0) ? value1.toLocaleString('en-US') + "CNY" + "\n" : "";
-      totalOrgn += (value2 || value2 == 0) ? value2.toLocaleString('en-US') + "HKD" + "\n" : "";
-      totalOrgn += (value3 || value3 == 0) ? value3.toLocaleString('en-US') + "USD" + "\n" : "";
-      totalOrgn += (value4 || value4 == 0) ? value4.toLocaleString('en-US') + "EUR" + "\n" : "";
-      totalOrgn += (value5 || value5 == 0) ? value5.toLocaleString('en-US') + "GBP" + "\n" : "";
+      totalOrgn += (value1 || value1 == 0) ? "¥ " + value1.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value2 || value2 == 0) ?  "HK$ " + value2.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value3 || value3 == 0) ?  "$ " + value3.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value4 || value4 == 0) ? "€ " + value4.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value5 || value5 == 0) ? "￡ " + value5.toLocaleString('en-US') + "\n" : "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return (extraWord ? extraWord + ":" : "") + totalOrgn;
     },
@@ -896,11 +914,11 @@ export default {
       }
       totalOrgn = ''
 
-      totalOrgn += value1 || value1 == 0 ? value1 + 'CNY' + '+' : ''
-      totalOrgn += value2 ? value2 + 'HKD' + '+' : ''
-      totalOrgn += value3 ? value3 + 'USD' + '+' : ''
-      totalOrgn += value4 ? value4 + 'EUR' + '+' : ''
-      totalOrgn += value5 ? value5 + 'GBP' : ''
+      totalOrgn += value1 || value1 == 0 ? "¥ " + value1 + '+' : ''
+      totalOrgn += value2 ?  "HK$ " + value2 + '+' : ''
+      totalOrgn += value3 ?  "$ " + value3 + '+' : ''
+      totalOrgn += value4 ? "€ " + value4 + '+' : ''
+      totalOrgn += value5 ? "￡ " + value5 : ''
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
       return totalOrgn;
     },
@@ -1051,7 +1069,10 @@ export default {
 
 <style scoped lang="less">
 @import url("../../assets/icon/iconfont.css");
-
+ .el-button--primary{
+      width:100px;
+      // text-align: center;
+  }
 /deep/ .pageSkip {
   padding: 3px 5px !important
 }
@@ -1130,7 +1151,7 @@ export default {
 
 .operateButton {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-bottom: -10px;
 
   button {
@@ -1139,6 +1160,7 @@ export default {
 }
 .statist {
   margin-left:15px;
+  padding-bottom: 15px;
   .statists {
     margin-top:10px;
   }
@@ -1146,5 +1168,10 @@ export default {
 /deep/ .el-dialog {
   min-width: 480px;
   border-radius: 6px;
+}
+.el-form--inline .el-form-item {
+  margin-bottom: 10px;
+  margin-right: 20px;
+  vertical-align: bottom;
 }
 </style>
