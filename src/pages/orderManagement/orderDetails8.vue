@@ -917,7 +917,12 @@
           this.$http.post(this.$service.orderSaveOrder,data).then((data) => {
             if(data.code == 200){
               // this.$router.push('/orderManagement/orderManage')
-              this.initDetails()
+              // 这里是为了区分角色 只选择航线人员保存后返回上一页
+              if (this.orderOptionsList.agentId) {
+                this.initDetails()
+              } else {
+                this.$router.go(-1)
+              }
               this.$message.success("订单保存成功")
             } else {
               this.$message.error(data.message)

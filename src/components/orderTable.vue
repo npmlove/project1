@@ -100,7 +100,7 @@
               {{scope.row.statusDesc}}
               </div>
                 <div :style="{color:scope.row.reconciled=='已对账'?'#32CD32':'',fontWeight:scope.row.reconciled=='已对账'?'900':'500'}">{{scope.row.reconciled}}</div>
-            <div :style="{color:scope.row.writeOff=='已核销'?'#32CD32':'',fontWeight:scope.row.writeOff=='已核销'?'900':'500'}">{{scope.row.writeOff}}</div>
+            <div :style="{color:scope.row.writeOff=='已核销'?'#32CD32':'',fontWeight:scope.row.writeOff=='已核销'?'900':'500'}">{{`${scope.row.writeOff}${scope.row.writeOff === '部分核销' ? `￥${scope.row.totalRcWoCny}`: ''}`}}</div>
             <div :style="{color:scope.row.financeStatus=='1'?'#32CD32':'',fontWeight:scope.row.financeStatus=='1'?'900':'500'}">{{scope.row.financeStatus=="0"?"未交单":scope.row.financeStatus=="1"?"已交单":scope.row.financeStatus=="2"?"申请解锁":scope.row.financeStatus=="3"?"解锁待审核":"修改中"}}</div>
             
             </div>
@@ -110,7 +110,7 @@
               {{scope.row.statusDesc}}
               </div>
             <div :style="{color:scope.row.reconciled=='已对账'?'#32CD32':'',fontWeight:scope.row.reconciled=='已对账'?'900':'500'}">{{scope.row.reconciled}}</div>
-            <div :style="{color:scope.row.writeOff=='已核销'?'#32CD32':'',fontWeight:scope.row.writeOff=='已核销'?'900':'500'}">{{scope.row.writeOff}}</div>
+            <div :style="{color:scope.row.writeOff=='已核销'?'#32CD32':'',fontWeight:scope.row.writeOff=='已核销'?'900':'500'}">{{`${scope.row.writeOff}${scope.row.writeOff === '部分核销' ? `￥${scope.row.totalRcWoCny}`: ''}`}}</div>
             <div :style="{color:scope.row.financeStatus=='1'?'#32CD32':'',fontWeight:scope.row.financeStatus=='1'?'900':'500'}">{{scope.row.financeStatus=="0"?"未交单":scope.row.financeStatus=="1"?"已交单":scope.row.financeStatus=="2"?"申请解锁":scope.row.financeStatus=="3"?"解锁待审核":"修改中"}}</div>
             
 

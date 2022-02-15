@@ -2,13 +2,13 @@
   <div class="content-wrapper">
     <div class="content">
       <div style="font-size: 16px;font-weight: 100;margin-bottom: 10px;">数据导入</div>
-      <div style="font-size: 14px;color: #999;">温馨提示：请上传最新的价格信息，支持的文件格式：xlsx、png</div>
+      <div style="font-size: 14px;color: #999;">温馨提示：请按<a :href="href">下载模板</a>说明填写信息后上传，可支持多个文件同时导入，支持格式：xls</div>
       <div style="margin: 20px 0;display: flex;align-items: flex-start;">
         <el-upload
           style="display: inline-block;margin-left: 10px;"
           class="upload-demo"
           action="#"
-          :on-change="handleChange"
+          :on-change="((val)=>{handleChange(val,'')})"
           :on-preview="handlePreview"
           :on-remove="handleRemove"
           :auto-upload="false">
@@ -16,6 +16,23 @@
         </el-upload>
       </div>
 
+<div style="border-bottom: 1px solid rgba(153, 153, 153, 0.2);margin-bottom: 20px;"></div>
+
+      <div style="font-size: 16px;font-weight: 100;margin-bottom: 10px;">价格导入</div>
+      <div style="font-size: 14px;color: #999;">温馨提示：请上传最新的价格信息，支持的文件格式：xlsx、png</div>
+      <div style="margin: 20px 0;display: flex;align-items: flex-start;">
+        <el-upload
+          style="display: inline-block;margin-left: 10px;"
+          class="upload-demo"
+          action="#"
+          :on-change="((val)=>{handleChange(val,'true')})"
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :auto-upload="false">
+          <el-button type="primary" size="medium">立即导入</el-button>
+        </el-upload>
+      </div>
+  
       <div style="border-bottom: 1px solid rgba(153, 153, 153, 0.2);margin-bottom: 20px;"></div>
 
       <div style="font-size: 16px;font-weight: 100;margin-bottom: 10px;">下载航线价格表</div>
@@ -46,7 +63,7 @@
     },
     methods: {
       // 导入文件的上传
-      handleChange(file) {
+      handleChange(file,self) {
         this.excelInfo = file.raw;
         const isExcel = file.raw.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         const isLt2M = file.size / 1024 / 1024 < 2;
@@ -58,11 +75,29 @@
           this.$message.error('上传Excel文件不能超过 2MB!');
           return
         }
-        this.importExcel()
+        if(self) {
+           this.importExcel(self)
+        }
+        else{
+           this.importExcel()
+           }
+       
       },
-      importExcel() {
+      importExcel(self) {
         const formdate = new FormData();
         formdate.append("excel", this.excelInfo);
+        if(self) {
+          axios.post(this.$service.airPriceImport,formdate).then(res=>{
+             if(res.code==200) {
+               this.$message.success("导入成功")
+             } else {
+               this.$message.error(res.message)
+             }
+          })
+           
+         
+        }
+        else{
         axios.post(this.$service.airlineExcelImport, formdate, {responseType: 'arraybuffer'}).then(res => {
           let enc = new TextDecoder("utf-8");
           let uint8_msg = new Uint8Array(res);
@@ -87,6 +122,7 @@
           aLink.click()
           document.body.appendChild(aLink)
         })
+        } 
       },
       // 删除文件
       handleRemove(file) {

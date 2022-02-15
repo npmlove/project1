@@ -1,5 +1,5 @@
 //ng开发环境
-var pulicWeb = '/back/dcErp/faw'
+const { BASE_URL: pulicWeb } = process.env
 // var pulicWeb = '/faw'
 // var pulicWeb = '/faw'
 // var pulicWeb = '/back/dcErp/faw'
@@ -57,6 +57,8 @@ const serviceApi = {
   airlineExcelExport: pulicWeb + '/t-rates/exportExcel',
   //航线价格导入
   airlineExcelImport: pulicWeb + '/t-rates/importExcel',
+  // 二代价格导入
+  airPriceImport: pulicWeb + '/t-rates/importExcelOriginal',
   //航线价格导入
   downloadTemplate: pulicWeb + '/t-rates/downloadTemplate',
   //三字代码查询分页
