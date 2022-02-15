@@ -38,16 +38,7 @@
               placeholder="请输入运单号"
             ></el-input>
           </el-form-item>
-            <el-form-item label="财务系列号:" class="formItem" >
-            <el-input
-              v-model="selectResult.customerName"
-              style="width: 180px"
-              size="medium"
-              maxlength="30"
-              clearable
-              placeholder="请输入财务系列号"
-            ></el-input>
-          </el-form-item>
+           
           <el-form-item label="订舱客户:" class="formItem">
             <el-input
               v-model="selectResult.customerName"
@@ -338,7 +329,6 @@
               <p>暂无数据</p>
             </template>
             <el-table-column type="selection" width="50" :selectable="ifDisabled" fixed="left"></el-table-column>
-            <el-table-column label="财务系列号" width="160" v-if="checkedTable.indexOf('财务系列号') !== -1"></el-table-column>
             <el-table-column
               label="订单号"
               min-width="160"
@@ -745,7 +735,6 @@ export default {
       isIndeterminate: true,
       direction: "rtl",
       checkedTable: [
-        "财务系列号",
         "订单号",
         "运单号",
         "航班日期",
@@ -760,7 +749,6 @@ export default {
         "开票金额",
         "订单状态",],
       tableOptions: [
-        "财务系列号",
         "订单号",
         "运单号",
         "订舱客户",

@@ -1020,8 +1020,7 @@ export default {
         payWay: this.payWay,
         rcvWriteOffStatusList: this.rcvWriteOffStatus.length == 0 || this.rcvWriteOffStatus.indexOf("") != -1 ? null : this.rcvWriteOffStatus,
         woStatus: this.woStatus,
-        pageNum: this.pageNum,
-        pageSize: this.pageSize
+        rcvIds:this.rcvIds
       }
       this.$http.post(this.$service.sumWoDetail, json).then(data => {
         if (data.code == 200) {

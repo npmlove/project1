@@ -507,23 +507,7 @@
               <el-button type="primary" size="mini" @click="getStatistData"
                 >数据统计</el-button
               >
-              <div style="margin-top: 15px;display:flex;font-size:12px" v-if="statistDataShow">
-                <div class="statist">
-                  <div>应收总金额:{{statistData.totalArCny}}</div>
-                  <div v-html="dealOrgnS(statistData.totalArOrgn,'应收原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
-                </div>
-                <div class="statist">
-                  <div>已核销总金额:{{statistData.totalRcWoCny}}</div>
-                  <div v-html="dealOrgnS(statistData.totalRcWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
-                </div>
-                <div class="statist">
-                  <div>未核销总金额:{{statistData.totalRcUnwoCny}}</div>
-                  <div v-html="dealOrgnS(statistData.totalRcUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
-                </div>
-                <div class="statist" style="color:red;font-size:20px" v-if = "errorStatist">
-                  <div>存在异常订单！</div>
-                </div>
-              </div>
+            
             </div>
           <div style="display:flex">
             <div style="margin:23px 10px 0 0">
@@ -551,7 +535,23 @@
             </el-pagination>
           </div>
           </div>
-            
+              <div style="padding-bottom: 20px;display:flex;font-size:12px" v-if="statistDataShow">
+                <div class="statist">
+                  <div>应收总金额:{{statistData.totalArCny}}</div>
+                  <div v-html="dealOrgnS(statistData.totalArOrgn,'应收原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
+                </div>
+                <div class="statist">
+                  <div>已核销总金额:{{statistData.totalRcWoCny}}</div>
+                  <div v-html="dealOrgnS(statistData.totalRcWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
+                </div>
+                <div class="statist">
+                  <div>未核销总金额:{{statistData.totalRcUnwoCny}}</div>
+                  <div v-html="dealOrgnS(statistData.totalRcUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
+                </div>
+                <div class="statist" style="color:red;font-size:20px" v-if = "errorStatist">
+                  <div>存在异常订单！</div>
+                </div>
+              </div>
         </el-tab-pane>
       </el-tabs>
       <el-dialog :title="dialogTitleOne+' 订单详情'" :visible.sync="dialogFormVisibleOne" width="80%">
@@ -1405,7 +1405,13 @@
         this.errorStatist = false
         this.statistDataShow = !this.statistDataShow
         if(this.statistDataShow == false) return""
-        this.$http.post(this.$service.receivableSum,this.searchDataDeal()).then(res=>{
+        let requestS = JSON.parse(JSON.stringify(this.searchDataDeal()))
+        if(this.selectTableData) {
+          requestS.rcvIds = this.selectTableData.map(item=>item.id)
+        }
+        delete requestS.pageSize
+        delete requestS.pageNum
+        this.$http.post(this.$service.receivableSum,requestS).then(res=>{
           this.statistData = {
             totalArCny:res.data.totalArCny.toLocaleString('en-US'),
             totalArOrgn:res.data.totalArOrgn,

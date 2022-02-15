@@ -237,7 +237,7 @@ export default {
     checkedTable:{
       type:Array,
       default:()=>{
-        return ['序号','财务系列号','订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票备注','开票信息','申请开票金额','发票种类','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','邮寄状态','发票状态','是否上传']
+        return ['序号','订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票备注','开票信息','申请开票金额','发票种类','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','邮寄状态','发票状态','是否上传']
       }
     },
     //列配置
@@ -246,7 +246,6 @@ export default {
       default: () => {
         return [
           { checkBox: true, width: 50 },
-          { label: "财务系列号", width: 140, key: "financialSeriesNo" },
           { label: "订单号", width: 140, key: "orderNo" },
           { label: "运单号", width: 110, key: "waybillNo" },
           { label: "订舱公司", width: 160, key: "customerName" },

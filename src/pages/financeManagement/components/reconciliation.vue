@@ -31,9 +31,7 @@
                         label="对账单金额">
                         <template slot-scope="scope">
                             <span  v-if="scope.row.difference =='R'">已对账，不能重复对账</span>
-     
-                            <span  v-if="scope.row.difference > 0 ">{{scope.row.cost}}</span>
-                            <span  v-if="scope.row.difference < 0 ">{{scope.row.cost}}</span>
+                            <span>{{scope.row.cost}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -43,10 +41,11 @@
                     <el-table-column
                         label="差异" >
                         <template slot-scope="scope">
-                           <span class="text_color_blue" v-if="scope.row.difference =='R'">已对账，不能重复对账</span>
-                           <span v-if="scope.row.difference =='N'">未找到</span>
+                           <span class="text_color_red" v-if="scope.row.difference =='R'">已对账，不能重复对账</span>
+                           <span class="text_color_red" v-if="scope.row.difference =='N'">未找到</span>
                            <span class="text_color_red" v-if="scope.row.difference > 0 ">+{{scope.row.difference}}</span>
                            <span class="text_color_yellow" v-if="scope.row.difference < 0 ">-{{scope.row.difference}}</span>
+                           <span v-if="scope.row.difference = 0 ">{{scope.row.difference}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column

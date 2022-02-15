@@ -16,16 +16,7 @@
           <el-form-item label="运单号:" >
             <el-input v-model="selectResult.waybillNo" style="width: 135px;" size="medium" clearable placeholder="请输入运单号" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" @blur="selectResult.waybillNo = $event.target.value.substr(0,11)"></el-input>
           </el-form-item>
-           <el-form-item label="财务系列号:">
-            <el-input
-              v-model="selectResult.customerName"
-              style="width: 180px"
-              size="medium"
-              maxlength="30"
-              clearable
-              placeholder="请输入财务系列号"
-            ></el-input>
-          </el-form-item>
+         
           <el-form-item label="订舱客户:" >
             <el-input v-model="selectResult.customerName" style="width: 200px;" size="medium" maxlength="30" clearable placeholder="请输入订舱客户"></el-input>
           </el-form-item>
@@ -250,7 +241,6 @@
               fixed="left"
               :selectable="ifDisabled"
             ></el-table-column>
-            <el-table-column label="财务系列号" width="160" v-if="checkedTable.indexOf('财务系列号') !== -1"></el-table-column>
 
             <el-table-column
               prop="orderNo"
@@ -465,7 +455,7 @@
             </el-pagination>
             </div>
           </div>
-           <div v-if="statistDataShow" style="margin:15px 0 0 10px">
+           <div v-if="statistDataShow" style="margin:0px 0 0 10px">
                 <div style="display:flex;" class="allStatist">
                   <div class="statists">应收总金额:{{statistData.totalArCny}}</div>
                   <div class="statists">已核销总金额:{{statistData.totalRcWoCny}}</div>
@@ -565,7 +555,6 @@
       isIndeterminate: true,
       direction: "rtl",
       checkedTable: [  
-        "财务系列号",
         "订单号",
         "运单号",
         "航班日期",
@@ -580,7 +569,6 @@
         "应付未核销金额",
         "利润",],
       tableOptions: [
-        "财务系列号",
         "订单号",
         "运单号",
          "订舱客户",
@@ -899,6 +887,9 @@
         if(copyData.payWriteOffStatusList[0] === "") {
           delete copyData.payWriteOffStatusList
           }
+          delete copyData.pageNum
+          delete copyData.pageSize
+          copyData.orderIds = this.selectTableData.map(item=>item.id)
         this.statistDataShow = !this.statistDataShow
         if(this.statistDataShow == false) return""
         this.$http.post(this.$service.subWoList,copyData).then(data=>{

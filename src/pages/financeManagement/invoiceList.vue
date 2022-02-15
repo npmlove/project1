@@ -20,18 +20,7 @@
             <el-input v-model="selectResult.waybillNo" style="width: 140px;" size="medium" clearable placeholder="请输入运单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.waybillNo = $event.target.value.substr(0,11)"></el-input>
           </el-form-item>
         </div>
-        <div class="formItem" >
-         <el-form-item label="财务系列号:" class="formItem">
-            <el-input
-              v-model="selectResult.financialSeriesNo"
-              style="width: 190px"
-              size="medium"
-              maxlength="30"
-              clearable
-              placeholder="请输入财务系列号"
-            ></el-input>
-          </el-form-item>
-        </div>
+        
           <div class="formItem" style="margin-right:32px">
           <el-form-item label="发票抬头:" >
             <el-input v-model="selectResult.invoiceTitle" style="width: 225px;" size="medium" maxlength="30" clearable placeholder="请输入发票抬头"></el-input>
@@ -548,9 +537,9 @@
         checkAll: false,
         isIndeterminate: true,
         direction: 'rtl',
-        checkedTable:['财务系列号','订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票备注','开票信息','申请开票金额','发票种类','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','邮寄状态','发票状态','是否上传'],
+        checkedTable:['订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票备注','开票信息','申请开票金额','发票种类','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','邮寄状态','发票状态','是否上传'],
         
-        tableOptions:['财务系列号','订单号', '运单号', '订舱公司','发票抬头','开票信息','发票种类','申请开票金额','已开票金额','开票备注','开票进度','发票号码','发票状态','是否上传','开票时间','航班日期','交单时间','申请时间','快递信息','邮寄状态',],
+        tableOptions:['订单号', '运单号', '订舱公司','发票抬头','开票信息','发票种类','申请开票金额','已开票金额','开票备注','开票进度','发票号码','发票状态','是否上传','开票时间','航班日期','交单时间','申请时间','快递信息','邮寄状态',],
         //表格tab页
         tabName:["全部","合并开票","单独开票","异常"],
         tabNum:[0,0,0,0],
@@ -1529,7 +1518,8 @@
         this.statistDataShow = !this.statistDataShow
         if(this.statistDataShow == false) return""
         this.statistData = {shouldGet:0,applyInvoice:0,invoicedMoney:0}
-        let request = {financePageDTO:this.selectResultData()}
+        let request = {financePageDTO:JSON.parse(JSON.stringify(this.selectResultData()))}
+        request.financePageDTO.ids = this.selectTableData.map(item=>item.id)
         this.$http.post(this.$service.invoiceStatistics,request).then(res=>{
           this.statistData.shouldGet = res.data.totalArCny;
           this.statistData.applyInvoice =res.data.applyAmount;
