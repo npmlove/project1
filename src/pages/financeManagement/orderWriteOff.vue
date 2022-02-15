@@ -3,19 +3,25 @@
     <div class="content">
       <el-form :inline="true" size="medium" class="demo-form-inline" label-position="right">
         <div class="content-search-normal" style="position:relative">
-          <el-form-item label="订单号" label-width="100px">
-            <el-input v-model="selectResult.orderNo" style="width: 200px;" size="medium" maxlength="15" clearable placeholder="请输入订单号"></el-input>
+          <div style="position:absolute;right:10px;top:10px">
+              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+          </div>
+          </div>
+          <el-form-item label="订单号:" >
+            <el-input v-model="selectResult.orderNo" style="width: 160px;" size="medium" maxlength="15" clearable placeholder="请输入订单号"></el-input>
           </el-form-item>
 
-          <el-form-item label="运单号" label-width="100px">
-            <el-input v-model="selectResult.waybillNo" style="width: 200px;" size="medium" clearable placeholder="请输入运单号" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" @blur="selectResult.waybillNo = $event.target.value.substr(0,11)"></el-input>
+          <el-form-item label="运单号:" >
+            <el-input v-model="selectResult.waybillNo" style="width: 135px;" size="medium" clearable placeholder="请输入运单号" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" @blur="selectResult.waybillNo = $event.target.value.substr(0,11)"></el-input>
           </el-form-item>
-
-          <el-form-item label="订舱客户" label-width="100px">
+         
+          <el-form-item label="订舱客户:" >
             <el-input v-model="selectResult.customerName" style="width: 200px;" size="medium" maxlength="30" clearable placeholder="请输入订舱客户"></el-input>
           </el-form-item>
 
-          <el-form-item label="代理上家" label-width="100px">
+          <el-form-item label="代理上家:" >
            <el-select
               v-model="selectResult.agentId"
               placeholder="请输入代理上家"
@@ -38,83 +44,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-
-          <el-form-item label="航司" label-width="100px" >
-            <el-select v-model="selectResult.airCompanyCode" placeholder="请输入航司" id="airCompany" :remote-method="companyMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="(item,index) in airCompanyCodeOpt"
-                :key="index"
-                :label="item.name"
-                :value="item.airCompanyCode">
-                <span>{{ item.airCompanyCode }}</span>
-                <span style="margin-left: 5px">{{ item.name }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-        <div style="width:455px" class="formItem"  v-show="selectControl">
-          <el-form-item label="下单时间:" label-width="100px">
-            <el-date-picker
-             style="width:165px"
-              value-format="yyyy-MM-dd"
-              v-model="selectResult.startOrderTime"
-              type="date"
-              :picker-options="pickerOptionsStartTwo"
-              placeholder="选择日期">
-            </el-date-picker >-
-             <el-date-picker
-             style="width:165px"
-              value-format="yyyy-MM-dd"
-              v-model="selectResult.endOrderTime"
-              type="date"
-              :picker-options="pickerOptionsEndTwo"
-              placeholder="选择日期">
-            </el-date-picker>
-          </el-form-item>
-        </div>
-
-        <div style="width:455px" class="formItem" v-show="selectControl">
-          <el-form-item label="航班日期" label-width="100px">
-             <el-date-picker
-             style="width:165px"
-              value-format="yyyy-MM-dd"
-              v-model="selectResult.startDepartureDate"
-              type="date"
-              :picker-options="pickerOptionsStartOne"
-              placeholder="选择日期">
-            </el-date-picker >-
-             <el-date-picker
-             style="width:165px"
-              value-format="yyyy-MM-dd"
-              v-model="selectResult.endDepartureDate"
-              type="date"
-              :picker-options="pickerOptionsEndOne"
-              placeholder="选择日期">
-            </el-date-picker>
-          </el-form-item>
-        </div>
-         <el-form-item label="售前客服" class="formItem" label-width="100px" v-show="selectControl">
-            <el-select
-              id="pscsId"
-              v-model="selectResult.pscsId"
-              placeholder="请输入售前客服"
-              :loading="loading"
-              clearable
-              filterable
-              remote
-              reserve-keyword
-              style="width: 200px"
-            >
-              <el-option
-                v-for="item in payBefore"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item label="应收核销状态" label-width="100px" v-show="selectControl">
+             <el-form-item label="应收核销状态:">
             <el-select v-model="selectResult.rcvWriteOffStatusList" placeholder="应收核销状态" clearable multiple collapse-tags  @change="dealAllChange" style="width: 200px;">
               <el-option
                 v-for="(item,index) in writeOffStatus"
@@ -125,7 +55,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="应付核销状态" label-width="100px" v-show="selectControl">
+          <el-form-item label="应付核销状态:" >
             <el-select v-model="selectResult.payWriteOffStatusList" placeholder="应付核销状态" clearable multiple collapse-tags  @change="dealAllChange" style="width: 200px;">
               <el-option
                 v-for="(item,index) in writeOffStatus"
@@ -135,8 +65,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-
-          <el-form-item label="起运港" label-width="100px" v-show="selectControl">
+           <el-form-item label="起运港:"  v-show="selectControl">
             <el-select v-model="selectResult.pol" placeholder="起运港三字码" id="pol" :remote-method="polMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
               <el-option
                 v-for="(item,index) in polOpt"
@@ -149,7 +78,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="目的港" label-width="100px" v-show="selectControl">
+          <el-form-item label="目的港:"  v-show="selectControl">
             <el-select v-model="selectResult.pod" placeholder="目的港三字码" id="pod" :remote-method="podMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
               <el-option
                 v-for="item in podOpt"
@@ -161,8 +90,42 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="航司:"   v-show="selectControl">
+            <el-select v-model="selectResult.airCompanyCode" placeholder="请输入航司" id="airCompany" :remote-method="companyMethod" maxlength="15" :loading="loading" clearable filterable remote reserve-keyword style="width: 200px;">
+              <el-option
+                v-for="(item,index) in airCompanyCodeOpt"
+                :key="index"
+                :label="item.name"
+                :value="item.airCompanyCode">
+                <span>{{ item.airCompanyCode }}</span>
+                <span style="margin-left: 5px">{{ item.name }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        
+         <el-form-item label="售前客服:"  v-show="selectControl">
+            <el-select
+              id="pscsId"
+              v-model="selectResult.pscsId"
+              placeholder="请输入售前客服"
+              :loading="loading"
+              clearable
+              filterable
+              remote
+              reserve-keyword
+              style="width: 159px"
+            >
+              <el-option
+                v-for="item in payBefore"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
 
-          <el-form-item label="售中客服" class="formItem" label-width="100px" v-show="selectControl">
+          <el-form-item label="售中客服:"  v-show="selectControl">
             <el-select
               id="mscsId"
               v-model="selectResult.mscsId"
@@ -172,7 +135,7 @@
               filterable
               remote
               reserve-keyword
-              style="width: 200px"
+              style="width: 159px"
             >
                <el-option
                 v-for="item in paying"
@@ -183,7 +146,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-           <el-form-item label="航线:" class="formItem" label-width="80px" v-show="selectControl">
+           <el-form-item label="航线:" v-show="selectControl">
             <el-select
               id="principalId"
               v-model="selectResult.principalId"
@@ -204,13 +167,48 @@
               </el-option>
             </el-select>
           </el-form-item>
-           <div style="text-align:center">
-              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
-            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span> 
-          </div>
-          </div>
+     
+
+        <div style="width:455px" class="formItem" v-show="selectControl">
+          <el-form-item label="航班日期:">
+             <el-date-picker
+             style="width:165px"
+              value-format="yyyy-MM-dd"
+              v-model="selectResult.startDepartureDate"
+              type="date"
+              :picker-options="pickerOptionsStartOne"
+              placeholder="选择日期">
+            </el-date-picker >-
+             <el-date-picker
+             style="width:165px"
+              value-format="yyyy-MM-dd"
+              v-model="selectResult.endDepartureDate"
+              type="date"
+              :picker-options="pickerOptionsEndOne"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+        </div>
+          <div style="width:455px" class="formItem"  v-show="selectControl">
+          <el-form-item label="交单时间:">
+            <el-date-picker
+             style="width:165px"
+              value-format="yyyy-MM-dd"
+              v-model="selectResult.startPresentationTime"
+              type="date"
+              :picker-options="pickerOptionsStartTwo"
+              placeholder="选择日期">
+            </el-date-picker >-
+             <el-date-picker
+             style="width:165px"
+              value-format="yyyy-MM-dd"
+              v-model="selectResult.endPresentationTime"
+              type="date"
+              :picker-options="pickerOptionsEndTwo"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+        </div>
           <div class="operateButton">
               <el-button @click="searchClick(true)" size="mini" type="primary" icon="el-icon-search">查询</el-button>
               <el-button @click="restClick" size="mini" type="primary">清空</el-button>
@@ -242,8 +240,8 @@
               label="序号"
               fixed="left"
               :selectable="ifDisabled"
-              v-if="checkedTable.indexOf('序号') !== -1"
             ></el-table-column>
+
             <el-table-column
               prop="orderNo"
               label="订单号"
@@ -272,6 +270,13 @@
               v-if="checkedTable.indexOf('订舱客户') !== -1"
             ></el-table-column>
             <el-table-column
+              prop="agentName"
+              label="代理上家"
+              min-width="160"
+              type=""
+              v-if="checkedTable.indexOf('代理上家') !== -1"
+            ></el-table-column>
+            <el-table-column
               prop="departureDate"
               label="航班日期"
               min-width="100"
@@ -285,67 +290,6 @@
               type=""
               v-if="checkedTable.indexOf('交单时间') !== -1"
             ></el-table-column>
-
-            <el-table-column
-              prop="agentName"
-              label="代理上家"
-              min-width="160"
-              type=""
-              v-if="checkedTable.indexOf('代理上家') !== -1"
-            ></el-table-column>
-            <el-table-column
-              prop="airCompanyCode"
-              label="航司"
-              min-width="160"
-              type=""
-              v-if="checkedTable.indexOf('航司') !== -1"
-            ></el-table-column>
-            <el-table-column
-              prop="pol"
-              label="起运港"
-              min-width="160"
-              type=""
-              v-if="checkedTable.indexOf('起运港') !== -1"
-            ></el-table-column>
-            <el-table-column
-              prop="pod"
-              label="目的港"
-              min-width="160"
-              type=""
-              v-if="checkedTable.indexOf('目的港') !== -1"
-            ></el-table-column>
-             <el-table-column
-              prop="cargoInfo"
-              label="货物信息"
-              min-width="140"
-              type=""
-              v-if="checkedTable.indexOf('货物信息') !== -1"
-            >
-              <template slot-scope="scope">
-               <span>
-                 <div>{{ scope.row.cargoInfo.split(",")[0] }}</div>
-                  <div>{{ scope.row.cargoInfo.split(",")[1] }}PCS</div>
-                  <div>{{ scope.row.cargoInfo.split(",")[2] }}CBM</div>
-                  <div>{{ scope.row.cargoInfo.split(",")[3] }}KGS</div>
-                  <div>1:{{ scope.row.cargoInfo.split(",")[4] }}</div>
-               </span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="operator"
-              label="操作人员"
-              min-width="160"
-              type=""
-              v-if="checkedTable.indexOf('操作人员') !== -1"
-            >
-            <template slot-scope="scope">
-              <span>
-                <div>客服：{{ scope.row.operator.split(",")[1] }}</div>
-                <div>销售：{{ scope.row.operator.split(",")[0] }}</div>
-                <div>航线：{{ scope.row.operator.split(",")[2] }}</div>
-              </span>
-            </template>
-            </el-table-column>
             <el-table-column
               label="应收金额"
               v-if="checkedTable.indexOf('应收金额') !== -1"
@@ -424,6 +368,61 @@
               min-width="80"
               v-if="checkedTable.indexOf('利润') !== -1"
             ></el-table-column>
+            
+            <el-table-column
+              prop="airCompanyCode"
+              label="航司"
+              min-width="80"
+              type=""
+              v-if="checkedTable.indexOf('航司') !== -1"
+            ></el-table-column>
+            <el-table-column
+              prop="pol"
+              label="起运港"
+              min-width="80"
+              type=""
+              v-if="checkedTable.indexOf('起运港') !== -1"
+            ></el-table-column>
+            <el-table-column
+              prop="pod"
+              label="目的港"
+              min-width="80"
+              type=""
+              v-if="checkedTable.indexOf('目的港') !== -1"
+            ></el-table-column>
+             <el-table-column
+              prop="cargoInfo"
+              label="货物信息"
+              min-width="140"
+              type=""
+              v-if="checkedTable.indexOf('货物信息') !== -1"
+            >
+              <template slot-scope="scope">
+               <span>
+                 <div>{{ scope.row.cargoInfo.split(",")[0] }}</div>
+                  <div>{{ scope.row.cargoInfo.split(",")[1] }}PCS</div>
+                  <div>{{ scope.row.cargoInfo.split(",")[2] }}CBM</div>
+                  <div>{{ scope.row.cargoInfo.split(",")[3] }}KGS</div>
+                  <div>1:{{ scope.row.cargoInfo.split(",")[4] }}</div>
+               </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="operator"
+              label="操作人员"
+              min-width="160"
+              type=""
+              v-if="checkedTable.indexOf('操作人员') !== -1"
+            >
+            <template slot-scope="scope">
+              <span>
+                <div>客服：{{ scope.row.operator.split(",")[1] }}</div>
+                <div>销售：{{ scope.row.operator.split(",")[0] }}</div>
+                <div>航线：{{ scope.row.operator.split(",")[2] }}</div>
+              </span>
+            </template>
+            </el-table-column>
+           
           </el-table>
           <div style="display:flex;justify-content:space-between">
             <div>
@@ -431,24 +430,7 @@
               <el-button type="primary" size="mini" @click="getStatistData"
                 >数据统计</el-button
               >
-              <div v-if="statistDataShow" style="margin-top:15px">
-                <div style="display:flex;" class="allStatist">
-                  <div>应收总金额:{{statistData.totalArCny}}</div>
-                  <div class="statists">已核销总金额:{{statistData.totalRcWoCny}}</div>
-                  <div class="statists">未核销总金额:{{statistData.totalRcUnwoCny}}</div>
-                  <div class="statists" v-html="dealOrgnS(statistData.totalArOrgn,'应收原币')" style="white-space:pre-wrap;text-align:right"></div>
-                  <div class="statists" v-html="dealOrgnS(statistData.totalRcWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right"></div>
-                  <div class="statists" v-html="dealOrgnS(statistData.totalRcUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right"></div>
-                </div>
-                <div style="display:flex" class="allStatist">
-                  <div>应付总金额:{{statistData.totalApCny}}</div>
-                  <div class="statists" >已核销总金额:{{statistData.totalApWoCny}}</div>
-                  <div class="statists" >未核销总金额:{{statistData.totalApUnwoCny}}</div>
-                  <div class="statists" v-html="dealOrgnS(statistData.totalApOrgn,'应付原币')" style="white-space:pre-wrap;text-align:right"></div>
-                  <div class="statists" v-html="dealOrgnS(statistData.totalApWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right"></div>
-                  <div class="statists" v-html="dealOrgnS(statistData.totalApUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right"></div>
-                </div>
-              </div>
+             
 
             </div>
             <div style="display:flex;">
@@ -473,7 +455,24 @@
             </el-pagination>
             </div>
           </div>
-          
+           <div v-if="statistDataShow" style="margin:0px 0 0 10px">
+                <div style="display:flex;" class="allStatist">
+                  <div class="statists">应收总金额:{{statistData.totalArCny}}</div>
+                  <div class="statists">已核销总金额:{{statistData.totalRcWoCny}}</div>
+                  <div class="statists">未核销总金额:{{statistData.totalRcUnwoCny}}</div>
+                  <div class="statists" style="white-space:pre-wrap;display:flex"><div>应收原币</div><div style="margin-left:5px"  v-html="dealOrgnS(statistData.totalArOrgn)"></div></div>
+                  <div class="statists" style="white-space:pre-wrap;display:flex"><div>已核销原币</div><div style="margin-left:5px"  v-html="dealOrgnS(statistData.totalRcWoOrgn)"></div></div>
+                  <div class="statists" style="white-space:pre-wrap;display:flex"><div>未核销原币</div><div style="margin-left:5px"  v-html="dealOrgnS(statistData.totalRcUnwoOrgn)"></div> </div>
+                </div>
+                <div style="display:flex;padding-bottom:15px" class="allStatist">
+                  <div class="statists">应付总金额:{{statistData.totalApCny}}</div>
+                  <div class="statists">已核销总金额:{{statistData.totalApWoCny}}</div>
+                  <div class="statists">未核销总金额:{{statistData.totalApUnwoCny}}</div>
+                  <div class="statists" style="white-space:pre-wrap;display:flex"><div>应付原币</div ><div  style="margin-left:5px" v-html="dealOrgnS(statistData.totalApOrgn)"></div></div>
+                  <div class="statists" style="white-space:pre-wrap;display:flex"><div>已核销原币</div ><div style="margin-left:5px" v-html="dealOrgnS(statistData.totalApWoOrgn)"></div></div>
+                  <div class="statists" style="white-space:pre-wrap;display:flex"><div>未核销原币</div><div style="margin-left:5px"  v-html="dealOrgnS(statistData.totalApUnwoOrgn)"></div></div>
+                </div>
+              </div>
         </el-tab-pane>
       </el-tabs>
         <!-- 表格控制列显示 -->
@@ -555,16 +554,13 @@
       checkAll: false,
       isIndeterminate: true,
       direction: "rtl",
-      checkedTable: [  "序号",
+      checkedTable: [  
         "订单号",
         "运单号",
         "航班日期",
         "交单时间",
         "订舱客户",
         "代理上家",
-        "航司",
-        "起运港",
-        "目的港",
         "应收金额",
         "应收已核销金额",
         "应收未核销金额",
@@ -573,16 +569,12 @@
         "应付未核销金额",
         "利润",],
       tableOptions: [
-        "序号",
         "订单号",
         "运单号",
+         "订舱客户",
+        "代理上家",
         "航班日期",
         "交单时间",
-        "订舱客户",
-        "代理上家",
-        "航司",
-        "起运港",
-        "目的港",
         "应收金额",
         "应收已核销金额",
         "应收未核销金额",
@@ -590,7 +582,11 @@
         "应付已核销金额",
         "应付未核销金额",
         "利润",
-
+        "航司",
+        "起运港",
+        "目的港",
+        "货物信息",
+        "操作人员"
       ],
         //表格tab页
         tabName:["可操作","业务修改中","异常"],
@@ -603,8 +599,8 @@
           customerName:"",
           agentId:"",
           airCompanyCode:"",
-          startOrderTime:"",
-          endOrderTime:"",
+          startPresentationTime:"",
+          endPresentationTime:"",
           startDepartureDate:"",
           endDepartureDate:"",
           pscsId:"",
@@ -706,7 +702,7 @@
         // 下单时间
          pickerOptionsStartTwo: {
           disabledDate: time => {
-            let endDateVal = this.selectResult.startOrderTime
+            let endDateVal = this.selectResult.startPresentationTime
             if (endDateVal) {
               return time.getTime() > new Date(endDateVal).getTime()
             }
@@ -714,7 +710,7 @@
         },
         pickerOptionsEndTwo: {
           disabledDate: time => {
-            let beginDateVal = this.selectResult.endOrderTime
+            let beginDateVal = this.selectResult.endPresentationTime
             if (beginDateVal) {
               return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
@@ -772,11 +768,11 @@
         }
       }
       totalOrgn = "";
-      totalOrgn += (value1 || value1 == 0) ? value1 + "CNY" + "\n" : "";
-      totalOrgn += (value2 || value2 == 0) ? value2 + "HKD" + "\n" : "";
-      totalOrgn += (value3 || value3 == 0) ? value3 + "USD" + "\n" : "";
-      totalOrgn += (value4 || value4 == 0) ? value4 + "EUR" + "\n" : "";
-      totalOrgn += (value5 || value5 == 0) ? value5 + "GBP" + "\n": "";
+      totalOrgn += (value1 || value1 == 0) ? "¥ " + value1 + "\n" : "";
+      totalOrgn += (value2 || value2 == 0) ?  "HK$ " + value2 + "\n" : "";
+      totalOrgn += (value3 || value3 == 0) ?  "$ " + value3 + "\n" : "";
+      totalOrgn += (value4 || value4 == 0) ? "€ " + value4 + "\n" : "";
+      totalOrgn += (value5 || value5 == 0) ? "￡ " + value5 + "\n": "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return (extraWord?extraWord+":":"") +totalOrgn;
     },
@@ -806,11 +802,11 @@
         }
       }
       totalOrgn = "";
-      totalOrgn += (value1 || value1 == 0) ? value1.toLocaleString('en-US') + "CNY" + "\n" : "";
-      totalOrgn += (value2 || value2 == 0) ? value2.toLocaleString('en-US') + "HKD" + "\n" : "";
-      totalOrgn += (value3 || value3 == 0) ? value3.toLocaleString('en-US') + "USD" + "\n" : "";
-      totalOrgn += (value4 || value4 == 0) ? value4.toLocaleString('en-US') + "EUR" + "\n" : "";
-      totalOrgn += (value5 || value5 == 0) ? value5.toLocaleString('en-US') + "GBP" + "\n": "";
+      totalOrgn += (value1 || value1 == 0) ? "¥ " + value1.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value2 || value2 == 0) ? "HK$ " + value2.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value3 || value3 == 0) ? "$ " + value3.toLocaleString('en-US')  + "\n" : "";
+      totalOrgn += (value4 || value4 == 0) ? "€ " + value4.toLocaleString('en-US')  + "\n" : "";
+      totalOrgn += (value5 || value5 == 0) ? "￡ " + value5.toLocaleString('en-US')  + "\n": "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return (extraWord?extraWord+":":"") +totalOrgn;
     },
@@ -891,6 +887,9 @@
         if(copyData.payWriteOffStatusList[0] === "") {
           delete copyData.payWriteOffStatusList
           }
+          delete copyData.pageNum
+          delete copyData.pageSize
+          copyData.orderIds = this.selectTableData.map(item=>item.id)
         this.statistDataShow = !this.statistDataShow
         if(this.statistDataShow == false) return""
         this.$http.post(this.$service.subWoList,copyData).then(data=>{
@@ -1111,8 +1110,8 @@
           customerName:"",
           agentId:"",
           airCompanyCode:"",
-          startOrderTime:"",
-          endOrderTime:"",
+          startPresentationTime:"",
+          endPresentationTime:"",
           startDepartureDate:"",
           endDepartureDate:"",
           pscsId:"",
@@ -1189,6 +1188,10 @@
   // /deep/.el-table tbody tr:hover>td {
     // background-color:blue!important
 // }
+ .el-button--primary{
+      width:100px;
+      // text-align: center;
+  }
   /deep/ .el-tag.el-tag--info{
   max-width: 100px;
 }
@@ -1212,20 +1215,17 @@
     .formItem{
       display:inline-block;
       width: 320px;
-      margin-top:-5px;
+      // margin-top:-5px;
     }
   }
   .allStatist {
-    div {
-      flex:0 0 160px
-    }
+    
     .statists {
+      flex:0 0 170px;
       margin-right:15px;
     }
   }
-    .statists {
-      margin-right:15px;
-    }
+   
   .content-wrapper {
     width: 100%;
     box-sizing: border-box;
@@ -1236,7 +1236,7 @@
   }
 .operateButton {
     display:flex;
-    justify-content: flex-end;
+    justify-content: center;
     margin-bottom:-10px;
     .upLoad {
       /deep/.el-button--medium {
@@ -1310,4 +1310,9 @@
     min-width: 480px;
     border-radius: 6px;
   }
+  .el-form--inline .el-form-item {
+  margin-bottom: 10px;
+  margin-right: 10px;
+  vertical-align: bottom;
+}
 </style>

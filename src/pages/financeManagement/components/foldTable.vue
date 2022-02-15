@@ -9,6 +9,7 @@
             v-for="(item, index) in columns"
             :key="index"
             :style="{ flex: item.width ? `0 0 ${item.width + 'px'}` : '' }"
+            v-show="checkedTable.indexOf(item.label) !== -1 ||item.checkBox"
           >
           <div v-if="item.checkBox">
                <el-checkbox
@@ -31,6 +32,7 @@
               v-for="(item, index) in columns"
               :key="index"
               :style="{ flex: item.width ? `0 0 ${item.width + 'px'}` : '' }"
+              v-show="checkedTable.indexOf(item.label) !== -1 ||item.checkBox"
             >
               <div v-if="item.checkBox == true">
                 <el-checkbox
@@ -38,6 +40,22 @@
                   :disabled="pageSkipAll"
                   @change="check=>changeCheckBox(check,item2,index2)"
                 ></el-checkbox>
+              </div>
+               <div v-else-if="item.key =='financialSeriesNo'">
+                <div v-if="item2.orderInfos &&item2.orderInfos.length >0 ">
+                     <el-popover
+                        placement="bottom-start"
+                        width="100"
+                        trigger="hover"
+                        popper-class="invoicePopper"
+                        >
+                        <div v-for="(item11,index11) in item2.orderInfos" :key ="index11">{{item11.financialSeriesNo}}</div>
+                        <div slot="reference" @click="$emit('showOrderWayBill',item2)" style="color:skyblue;cursor:pointer">{{item2.financialSeriesNo}}</div>
+                     </el-popover>
+                  </div>
+                    <div v-else>
+                        <div @click="$emit('showOrderWayBill',item2)" style="color:skyblue;cursor:pointer">{{item2.financialSeriesNo}}</div>
+                    </div>
               </div>
               <div v-else-if="item.key =='orderNo'">
                 <div v-if="item2.orderInfos &&item2.orderInfos.length >0 ">
@@ -52,7 +70,7 @@
                      </el-popover>
                   </div>
                     <div v-else>
-                        <div@click="$emit('showOrderWayBill',item2)" style="color:skyblue;cursor:pointer">{{item2.orderNo}}</div>
+                        <div @click="$emit('showOrderWayBill',item2)" style="color:skyblue;cursor:pointer">{{item2.orderNo}}</div>
                     </div>
               </div>
               <div v-else-if="item.key =='waybillNo'">
@@ -166,17 +184,18 @@
                   </div>
                  </div>
               <div v-else :style="styleObject(item, item2)" class="tb-span" >
-                {{ item2[item.key] }}{{item.unit?item.unit:''}}
+                {{item.unit?item.unit+" ":''}}{{ item2[item.key] }}
               </div>
             </div>
           </div>
-          <div style="height:300px;overflow-y:scroll;" v-if="item2.ifFold && item2.hasChild" class="tb-son">
+          <div v-if="item2.ifFold && item2.hasChild" class="tb-son">
           <template v-for="(item3, key) in item2.invoiceInfos" id="fold">
             <div class="tb-tr" v-show="item2.ifFold && item2.hasChild" :key="key + '' + index2">
               <div
                 class="tb-td"
                 v-for="(item, index4) of columns"
                 :key="index4"
+                v-show="checkedTable.indexOf(item.label) !== -1 ||item.checkBox"
                 :style="{ flex: item.width ? `0 0 ${item.width + 'px'}` : '' }"
               >
                 <div v-if="item.checkBox == true" style="opacity:0">
@@ -214,6 +233,13 @@
 // import anime from '../../utils/anime.es'
 export default {
   props: {
+    //显示表格列
+    checkedTable:{
+      type:Array,
+      default:()=>{
+        return ['序号','订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票备注','开票信息','申请开票金额','发票种类','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','邮寄状态','发票状态','是否上传']
+      }
+    },
     //列配置
     columns: {
       type: Array,
@@ -381,9 +407,9 @@ export default {
       .tb-father {
         display: flex;
         &:nth-child(odd) {
-          min-width: 2390px;
           background-color: #ffffff;
           .tb-td {
+          background-color: #ffffff;
             &:first-child {
               background-color: #ffffff;
               position: sticky;
@@ -393,9 +419,8 @@ export default {
           }
         }
         &:nth-child(even) {
-          min-width: 2390px;
-          background-color: #f2f6ff;
           .tb-td {
+          background-color: #f2f6ff;
             &:first-child {
               background-color: #f2f6ff;
               position: sticky;
@@ -455,13 +480,14 @@ export default {
         }
       }
       .tb-son {
-        min-width:2395px;
+         height:300px;
+         overflow-y:scroll;
+         min-width:2200px;
         .tb-tr {
           display: flex;
           &:nth-child(odd) {
-            min-width: 2380px;
-            background-color: #ffffff;
             .tb-td {
+              background-color: #ffffff;
               &:first-child {
                 background-color: #ffffff;
                 position: sticky;
@@ -471,9 +497,8 @@ export default {
             }
           }
           &:nth-child(even) {
-            min-width: 2380px;
-            background-color: #f2f6ff;
             .tb-td {
+              background-color: #f2f6ff;
               &:first-child {
                 background-color: #f2f6ff;
                 position: sticky;

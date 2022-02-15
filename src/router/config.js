@@ -298,7 +298,7 @@ const financeManagementCenter = [{
       name: 'financeManage',
       meta: {
         title: '财务列表',
-        keepAlive: false,
+        keepAlive: true,
         needLogin: true
       }
     },
@@ -308,7 +308,7 @@ const financeManagementCenter = [{
       name: 'invoiceList',
       meta: {
         title: '发票列表',
-        keepAlive: false,
+        keepAlive: true,
         needLogin: true
       }
     },
@@ -318,7 +318,7 @@ const financeManagementCenter = [{
       name: 'orderWriteOff',
       meta: {
         title: '订单核销',
-        keepAlive: false,
+        keepAlive: true,
         needLogin: true
       }
     },
@@ -328,7 +328,7 @@ const financeManagementCenter = [{
       name: 'receivableStatistics',
       meta: {
         title: '应收统计',
-        keepAlive: false,
+        keepAlive: true,
         needLogin: true
       }
     },
@@ -338,7 +338,7 @@ const financeManagementCenter = [{
       name: 'receivableStatisticsDetails',
       meta: {
         title: '应收核销明细',
-        keepAlive: false,
+        keepAlive: true,
         needLogin: true
       }
     },
@@ -348,7 +348,7 @@ const financeManagementCenter = [{
       name: 'paysStatistics',
       meta: {
         title: '应付统计',
-        keepAlive: false,
+        keepAlive: true,
         needLogin: true
       }
     },
@@ -358,7 +358,7 @@ const financeManagementCenter = [{
       name: 'paysStatisticsDetails',
       meta: {
         title: '应付核销明细',
-        keepAlive: false,
+        keepAlive: true,
         needLogin: true
       }
     },
@@ -430,7 +430,7 @@ const orderManagementCenter = [{
       name: 'orderManage',
       meta: {
         title: '订单列表',
-        keepAlive: false,
+        keepAlive: true,
         needLogin: true
       }
     },

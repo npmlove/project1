@@ -39,14 +39,14 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="付款单位"
+            :label="titleType==1?'收款单位':'付款单位'"
             >
             <template slot-scope="scope">
               <span v-if="expenseType == 1">
-                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.expenseUnitName" clearable></el-input>
+                <el-input size="small" :disabled="scope.row.ingStatic || scope.row.extraDisabled || tableLock" v-model="scope.row.expenseUnitName" clearable></el-input>
               </span>
               <span v-if="expenseType == 2">
-                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择">
+                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled="tableLock">
                     <el-option
                       v-for="item in agentIdList"
                       :key="item.id"
@@ -60,19 +60,19 @@
           <el-table-column
             label="数量">
             <template slot-scope="scope">
-                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.quantity" clearable></el-input>    
+                <el-input size="small" :disabled="scope.row.ingStatic|| tableLock" v-model="scope.row.quantity" clearable ></el-input>    
             </template>
           </el-table-column>
           <el-table-column
             label="单价">
             <template slot-scope="scope">
-                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.price" clearable></el-input>    
+                <el-input size="small" :disabled="scope.row.ingStatic|| tableLock" v-model="scope.row.price" clearable ></el-input>    
             </template>
           </el-table-column>
           <el-table-column
             label="币种">
             <template slot-scope="scope">
-                <el-select v-model="scope.row.currency" :disabled="scope.row.ingStatic"   placeholder="请选择">
+                <el-select v-model="scope.row.currency" :disabled="scope.row.ingStatic || tableLock"   placeholder="请选择">
                   <el-option
                     v-for="item in moneyList"
                     :key="item.value"
@@ -105,7 +105,7 @@
           <el-table-column
             label="备注">
             <template slot-scope="scope">
-                <el-input size="small"  v-model="scope.row.remark" clearable></el-input>    
+                <el-input size="small"  v-model="scope.row.remark" clearable :disabled="tableLock"></el-input>    
             </template>
           </el-table-column>
         </el-table>
@@ -150,9 +150,10 @@ class tableObj{
   }
 }
 export default {
-  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount"],
+  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus'],
   data() {
     return {
+      tableLock:false,
       tableData: [], // 
       agentIdList:[],
       title:'',
@@ -192,6 +193,9 @@ export default {
     };
   },
   async mounted(){
+    if(this.currentStatus == 1) {
+      this.tableLock = true
+    }
     // 初始化table prop
 
     if(this.orderNoTemp == undefined){
@@ -229,6 +233,13 @@ export default {
       deep:true,
       handler(newValue){
          this.dealOriginData(newValue) 
+      }
+    },
+    currentStatus:{
+      handler(newValue,oldVale){
+        if(newValue == 1){
+           this.tableLock = true
+        }
       }
     }
   },
@@ -352,6 +363,7 @@ export default {
       let tempObj = new tableObj('',this.expenseUnitName)
 
       let a = Object.assign({},tempObj,{
+        extraDisabled:true,
         orderId:this.orderId,
         expenseType:this.expenseType,
         orderNo:this.orderNo,
@@ -362,6 +374,9 @@ export default {
     },
     // 删除
     deleOneTableObj(e){
+      if(this.tableLock) {
+        return false
+      }
       let index = e.$index
       let ttt = this.$parent.judgeDeleteBIll()
       if(ttt){
