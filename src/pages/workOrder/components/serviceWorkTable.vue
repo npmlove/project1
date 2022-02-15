@@ -462,7 +462,7 @@ export default {
                 return
             }
             let request = {}
-            request.roleName = this.pageRoleName
+            request.roleName = "售前客服"
             request.workOrderType = this.form.workOrderType
             request.urgency = this.form.urgency
             request.principalIds = this.form.airLinePeople.map(item=>item.split(",")[1]).join()

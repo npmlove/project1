@@ -482,7 +482,7 @@ export default {
       .tb-son {
          height:300px;
          overflow-y:scroll;
-        // min-width:2510px;
+         min-width:2200px;
         .tb-tr {
           display: flex;
           &:nth-child(odd) {

@@ -134,9 +134,9 @@
               :remote-method="remoteMethodFour"
             >
               <el-option
-                v-for="item in optionFour"
-                :key="item.airCompanyCode"
-                :label="item.label"
+                v-for="(item,index) in optionFour"
+                :key="index"
+                :label="item.name"
                 :value="item.airCompanyCode"
               >
               </el-option>
@@ -559,7 +559,7 @@
             <span v-if="scope.row.payWriteOffStatus == 4"
               >部分对账部分核销</span
             >
-            <span v-if="scope.row.payWriteOffStatus == 5">对账部分核销</span>
+            <span v-if="scope.row.payWriteOffStatus == 5">已对账部分核销</span>
             <span v-if="scope.row.payWriteOffStatus == 6">未对账已核销</span>
             <span v-if="scope.row.payWriteOffStatus == 7">部分对账已核销</span>
             <span v-if="scope.row.payWriteOffStatus == 8">已对账已核销</span>
@@ -701,6 +701,8 @@
 
     <!-- 对账模态框组件 -->
     <reconciliation
+      :idsArray="idsArray"
+      :selectResult="formInline"
       @farhersearch="onSubmit"
       :childPropsObj="childPropsObj"
       ref="reconciliationData"
@@ -1106,7 +1108,8 @@ export default {
   methods: {
     handleSelectionChange(e) {
         this.selectTableData = e
-        this.idsArray = e.map(item=>item.ids)
+        this.idsArray = e.map(item=>item.ids.split(","))
+        this.idsArray = this.idsArray.flat()
       },
      handleCurrentChangeS(e) {
       this.pageNum = e
@@ -1323,9 +1326,7 @@ export default {
         exportFile(res, "application/x-xls", "应付统计");
       } else {
         if (multipleSelection.length > 0) {
-          let idArray = multipleSelection.map((e) => {
-            return e.ids;
-          });
+          let idArray = this.idsArray
           let params = {
             ids: idArray,
             woStatus: woStatus,
@@ -1441,9 +1442,7 @@ export default {
           this.$service.companySearchByPage + `?keyWord=${e}`
         );
         console.log(res.data.records);
-        this.optionFour = res.data.records.map((item) => {
-          return { value: item.name, label: item.name };
-        });
+        this.optionFour = res.data.records;
       } else {
         this.optionFour = [];
       }
@@ -1484,7 +1483,7 @@ export default {
     },
     // 点击对账
     async fatherReconciliation() {
-      let tempArray = this.selectTableData
+      let tempArray = JSON.parse(JSON.stringify(this.selectTableData))
       if (tempArray.length >= 1) {
         let tempString = tempArray[0].expenseUnitName;
         let a = tempArray.filter((i) => {
@@ -1531,6 +1530,7 @@ export default {
               { ids: tempAds }
             );
             this.childPropsObj = testObj;
+            console.log(this.childPropsObj)
             setTimeout(() => {
               this.$refs.reconciliationData.input3 = "";
               this.$refs.reconciliationData.showModal();

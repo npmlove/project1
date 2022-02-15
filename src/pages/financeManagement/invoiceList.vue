@@ -1024,7 +1024,7 @@
       },
       //作废按钮
       delInvoice(){
-        console.log(this.ifDataDel())
+        // console.log(this.ifDataDel())0   
         if(this.pageSkipChecked) {
           this.$message({
             message: '作废不支持跨页全选',
@@ -1389,11 +1389,12 @@
       },
       //数据统计按钮
       getStatistData(){
-        console.log(this.tableData)
+        // console.log(this.tableData)
         this.statistDataShow = !this.statistDataShow
         if(this.statistDataShow == false) return""
         this.statistData = {shouldGet:0,applyInvoice:0,invoicedMoney:0}
-        let request = {financePageDTO:this.selectResultData()}
+      
+        let request = {financePageDTO:this.selectResultData(),iaId:this.selectTableData.map(item=>item.id)}
         this.$http.post(this.$service.invoiceStatistics,request).then(res=>{
           this.statistData.shouldGet = res.data.totalArCny;
           this.statistData.applyInvoice =res.data.applyAmount;

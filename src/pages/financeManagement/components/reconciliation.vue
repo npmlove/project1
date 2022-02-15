@@ -42,10 +42,10 @@
                         label="差异" >
                         <template slot-scope="scope">
                            <span class="text_color_red" v-if="scope.row.difference =='R'">已对账，不能重复对账</span>
-                           <span class="text_color_red" v-if="scope.row.difference =='N'">未找到</span>
-                           <span class="text_color_red" v-if="scope.row.difference > 0 ">+{{scope.row.difference}}</span>
-                           <span class="text_color_yellow" v-if="scope.row.difference < 0 ">-{{scope.row.difference}}</span>
-                           <span v-if="scope.row.difference = 0 ">{{scope.row.difference}}</span>
+                           <span class="text_color_red" v-else-if="scope.row.difference =='N'">未找到</span>
+                           <span class="text_color_red" v-else-if="scope.row.difference > 0 ">+{{scope.row.difference}}</span>
+                           <span class="text_color_yellow" v-else-if="scope.row.difference < 0 ">-{{scope.row.difference}}</span>
+                           <span v-else-if="scope.row.difference == 0 ">{{scope.row.difference}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -161,7 +161,7 @@
 import { postImage ,exportFile,moneyList} from '../../../util/util'
 export default {
     name:'reconciliation',
-    props:['childPropsObj'],
+    props:['childPropsObj','selectResult','idsArray'],
     data() {
         return {
             dialogVisible: false,
@@ -194,6 +194,7 @@ export default {
             immediate:true,
             handler(newValue,oldValue){
                 let {totalApCny,totalApUnwoOrgn,totalApWoOrgn,expenseUnitName,ids} = newValue ;
+                // console.log(expenseUnitName,"newValue")
                 if(totalApCny){      
                     this.opIds = ids
                     this.expenseUnitName = expenseUnitName
@@ -259,7 +260,12 @@ export default {
         upLoad(){
             let fileFormData = new FormData();
             fileFormData.append('excel', this.file)
-            fileFormData.append('expenseUnitName', this.expenseUnitName)
+            let copyResult = JSON.parse(JSON.stringify(this.selectResult))
+            copyResult.expenseUnitName = this.expenseUnitName
+            // console.log(this.idsArray)
+            fileFormData.append('financePageDTO', JSON.stringify(copyResult))                                                                                        
+            fileFormData.append('ids',JSON.stringify(this.idsArray))
+            // fileFormData.append('expenseUnitName', this.expenseUnitName)                                                                                        
             postImage(this.$service.importExcel,fileFormData).then((res)=>{     
                 if(res.code == 200){
                     this.tableData = res.data.orderPaymentBillList
