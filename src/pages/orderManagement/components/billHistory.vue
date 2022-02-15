@@ -39,7 +39,7 @@ export default {
     }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
     .el-table{
         width:1080px!important;
     }
