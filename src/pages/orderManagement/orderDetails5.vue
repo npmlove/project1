@@ -461,6 +461,13 @@
               <el-radio :label="2">需要</el-radio>
             </el-radio-group>
           </div>
+          <!-- 提货表单 -->
+          <pick-up-form
+            v-show="initData.isPickUp === 2"
+            :pickUpAddress.sync="initData.pickUpAddress"
+            :pickUpContacts.sync="initData.pickUpContacts"
+            :pickUpTel.sync="initData.pickUpTel"
+            :pickUpTime.sync="initData.pickUpTime" />
           <div class="mtop_10">
             <span class="mr_25">清关服务</span>
             <el-radio-group v-model="initData.cclType">
@@ -470,6 +477,12 @@
               <el-radio :label="4">DAP</el-radio>
             </el-radio-group>
           </div>
+          <!-- 送货表单 -->
+          <deliver-goods-form
+            v-show="initData.cclType !== 1"
+            :deliveryAddress.sync="initData.deliveryAddress"
+            :deliveryContacts.sync="initData.deliveryContacts"
+            :deliveryTel.sync="initData.deliveryTel" />
         </div>
         <h1 class="title">订单备注</h1>
         <div class="inData">
@@ -667,6 +680,8 @@ import EntryGuide from "./components/EntryGuide.vue";
 import DepartureDatePicker from './components/DepartureDatePicker'
 import { judgeWaybillNo } from "@/util/util";
 import ImageUploader  from './components/ImageUploader'
+import PickUpForm from './components/PickUpForm'
+import DeliverGoodsForm from './components/DeliverGoodsForm'
 export default {
   data() {
     return {
@@ -830,6 +845,8 @@ export default {
     EntryGuide,
     DepartureDatePicker,
     ImageUploader,
+    PickUpForm,
+    DeliverGoodsForm,
   },
   methods: {
     //下载pdf
@@ -1271,6 +1288,25 @@ export default {
         if (tempthree.length > 0) {
           this.$message.error("进仓数据未填写");
           return;
+        }
+        const { pickUpAddress ,pickUpContacts, pickUpTel, pickUpTime, isPickUp, deliveryAddress, deliveryContacts, deliveryTel, cclType } = this.initData
+        // 校验提货信息
+        if (isPickUp === 2) {
+          const checkPickUp = [pickUpAddress ,pickUpContacts, pickUpTel, pickUpTime].every(item => item)
+          if (!checkPickUp) {
+            return this.$message.error(
+              "请填写国内提货相关信息"
+            )
+          }
+        }
+        // 校验收货信息
+        if (cclType !== 1) {
+          const checkDelivery = [deliveryAddress, deliveryContacts, deliveryTel].every(item => item)
+          if (!checkDelivery) {
+            return this.$message.error(
+              "请填写送货相关信息"
+            )
+          }
         }
         // 获取应收账单的长度 为 12345
         let tempLength = this.initData.arOrderPriceList.length;
