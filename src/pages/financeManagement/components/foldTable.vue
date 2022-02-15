@@ -188,7 +188,7 @@
               </div>
             </div>
           </div>
-          <div style="height:300px;overflow-y:scroll;" v-if="item2.ifFold && item2.hasChild" class="tb-son">
+          <div v-if="item2.ifFold && item2.hasChild" class="tb-son">
           <template v-for="(item3, key) in item2.invoiceInfos" id="fold">
             <div class="tb-tr" v-show="item2.ifFold && item2.hasChild" :key="key + '' + index2">
               <div
@@ -249,31 +249,28 @@ export default {
           { label: "订单号", width: 140, key: "orderNo" },
           { label: "运单号", width: 110, key: "waybillNo" },
           { label: "订舱公司", width: 160, key: "customerName" },
+          { label: "航班日期", width: 110, key: "departureDate" },
+          { label: "交单时间", width: 110, key: "presentationTime" },
           { label: "发票抬头", width: 140, key: "invoiceTitle" },
           { label: "开票信息", width: 60, key: "showInvoice" },
-          { label: "发票种类", width: 100, key: "invoiceType" },
+          { label: "应收费用总金额", width: 100, key: "totalArCny" },
           {
             label: "申请开票金额",
             width: 120,
             key: "applyAmount",
-            unit: "¥",
+            unit: "CNY",
           },
-          { label: "已开票金额", width: 100, key: "invoicedAmount",unit:"¥"},
-          { label: "开票备注", width: 80, key: "invoicedAmount" },
-
-          { label: "开票进度", width: 80, key: "invoicingStatus" },
-          { label: "发票号码", width: 160, key: "invoiceNum" },
-          { label: "发票状态", width: 100, key: "invoiceStatus" },
-          { label: "是否上传", width: 100, key: "upload" },
-          { label: "开票时间", width: 160, key: "invoicingTime" },
-          { label: "航班日期", width: 110, key: "departureDate" },
-          { label: "交单时间", width: 110, key: "presentationTime" },
+          { label: "发票种类", width: 100, key: "invoiceType" },
+          { label: "申请人", width: 100, key: "applicant" },
           { label: "申请时间", width: 120, key: "applyTime" },
-         
-          // { label: "应收费用总金额", width: 100, key: "totalArCny" },
-        
+          { label: "开票进度", width: 80, key: "invoicingStatus" },
+          { label: "已开票金额", width: 100, key: "invoicedAmount" },
+          { label: "发票号码", width: 160, key: "invoiceNum" },
+          { label: "开票时间", width: 160, key: "invoicingTime" },
           { label: "快递信息", width: 160, key: "expressInfo" },
           { label: "邮寄状态", width: 100, key: "expressStatus" },
+          { label: "发票状态", width: 100, key: "invoiceStatus" },
+          { label: "是否上传", width: 100, key: "upload" },
         ];
       },
     },
@@ -483,7 +480,9 @@ export default {
         }
       }
       .tb-son {
-        min-width:2510px;
+         height:300px;
+         overflow-y:scroll;
+        // min-width:2510px;
         .tb-tr {
           display: flex;
           &:nth-child(odd) {

@@ -3,7 +3,7 @@
     <div class="content">
       <el-form :inline="true" size="medium" :model="selectResult" class="demo-form-inline" label-position="left">
         <div class="content-search-normal" style="position:relative">
-           <div style="position:absolute;right:10px;top:10px">
+             <div style="position:absolute;right:10px;top:10px">
               <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
             <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
             <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
@@ -11,24 +11,57 @@
           </div>
           <div class="formItem">
           <el-form-item label="订单号:" >
-            <el-input v-model="selectResult.orderNo" style="width: 165px;" size="medium" maxlength="15" clearable placeholder="请输入订单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.orderNo = $event.target.value"></el-input>
+            <el-input v-model="selectResult.orderNo"  size="medium" maxlength="15" clearable placeholder="请输入订单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.orderNo = $event.target.value"></el-input>
           </el-form-item>
         </div>
 
         <div class="formItem">
           <el-form-item label="运单号:" >
-            <el-input v-model="selectResult.waybillNo" style="width: 140px;" size="medium" clearable placeholder="请输入运单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.waybillNo = $event.target.value.substr(0,11)"></el-input>
+            <el-input v-model="selectResult.waybillNo"  size="medium" clearable placeholder="请输入运单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.waybillNo = $event.target.value.substr(0,11)"></el-input>
           </el-form-item>
         </div>
-        
-          <div class="formItem" style="margin-right:32px">
+        <div class="formItem">
+          <el-form-item label="订舱公司:" >
+            <el-input v-model="selectResult.customerName"  size="medium" maxlength="30" clearable placeholder="请输入订舱客户"></el-input>
+          </el-form-item>
+        </div>
+        <div class="formItem">
           <el-form-item label="发票抬头:" >
-            <el-input v-model="selectResult.invoiceTitle" style="width: 225px;" size="medium" maxlength="30" clearable placeholder="请输入发票抬头"></el-input>
+            <el-input v-model="selectResult.invoiceTitle"  size="medium" maxlength="30" clearable placeholder="请输入发票抬头"></el-input>
           </el-form-item>
         </div>
-          <div class="formItem">
+        <div class="formItem">
+          <el-form-item label="是否上传:" >
+            <el-select  v-model="selectResult.upload">
+              <el-option
+                v-for="(item,index) in ifUpload"
+                :key="index"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+         <div class="formItem" v-show="selectControl">
+          <el-form-item label="发票号:" >
+            <el-input v-model="selectResult.invoiceNum"  size="medium" maxlength="8" clearable placeholder="请输入发票号" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" @blur="selectResult.invoiceNum = $event.target.value"></el-input>
+          </el-form-item>
+        </div>
+        <div class="formItem" v-show="selectControl">
+          <el-form-item label="发票类型:" >
+            <el-select v-model="selectResult.invoiceType" multiple  collapse-tags @change="dealAllChange">
+              <el-option
+                v-for="(item,index) in billType"
+                :key="index"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <div class="formItem" v-show="selectControl">
           <el-form-item label="开票进度:" >
-            <el-select v-model="selectResult.invoicingStatus" multiple  collapse-tags style="width: 165px;" @change="dealAllChange">
+            <el-select v-model="selectResult.invoicingStatus" multiple  collapse-tags  @change="dealAllChange">
               <el-option
                 v-for="(item,index) in billProgress"
                 :key="index"
@@ -38,9 +71,9 @@
             </el-select>
           </el-form-item>
         </div>
-        <div class="formItem">
+        <div class="formItem" v-show="selectControl">
           <el-form-item label="发票状态:" >
-            <el-select v-model="selectResult.invoiceStatus" style="width: 160px;">
+            <el-select v-model="selectResult.invoiceStatus">
               <el-option
                 v-for="(item,index) in billState"
                 :key="index"
@@ -52,30 +85,8 @@
           </el-form-item>
         </div>
         <div class="formItem" v-show="selectControl">
-          <el-form-item label="订舱公司:" >
-            <el-input v-model="selectResult.customerName" style="width: 180px;" size="medium" maxlength="30" clearable placeholder="请输入订舱客户"></el-input>
-          </el-form-item>
-        </div>
-         <div class="formItem" v-show="selectControl">
-          <el-form-item label="发票号:" >
-            <el-input v-model="selectResult.invoiceNum" style="width: 135px;" size="medium" maxlength="8" clearable placeholder="请输入发票号" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" @blur="selectResult.invoiceNum = $event.target.value"></el-input>
-          </el-form-item>
-        </div>
-           <div class="formItem" v-show="selectControl">
-          <el-form-item label="发票类型:" >
-            <el-select v-model="selectResult.invoiceType" multiple  collapse-tags style="width: 210px;" @change="dealAllChange">
-              <el-option
-                v-for="(item,index) in billType"
-                :key="index"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </div>
-        <div class="formItem" v-show="selectControl">
           <el-form-item label="快递状态:" >
-            <el-select v-model="selectResult.expressStatus" style="width: 140px;">
+            <el-select v-model="selectResult.expressStatus" >
               <el-option
                 v-for="(item,index) in expressState"
                 :key="index"
@@ -85,23 +96,9 @@
             </el-select>
           </el-form-item>
         </div>
-        <div class="formItem" v-show="selectControl">
-          <el-form-item label="是否上传:" >
-            <el-select  v-model="selectResult.upload" style="width: 100px;">
-              <el-option
-                v-for="(item,index) in ifUpload"
-                :key="index"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </div>
-        
        <div  class="formItem" v-show="selectControl">
           <el-form-item label="航班日期" >
              <el-date-picker
-             style="width:140px"
               v-model="selectResult.startDepartureDate"
               type="date"
               :picker-options="pickerOptionsStartOne"
@@ -109,7 +106,6 @@
               placeholder="选择日期">
             </el-date-picker >-
              <el-date-picker
-             style="width:140px"
               v-model="selectResult.endDepartureDate"
               type="date"
               :picker-options="pickerOptionsEndOne"
@@ -121,7 +117,6 @@
         <div  class="formItem" v-show="selectControl">
           <el-form-item label="交单时间:" >
             <el-date-picker
-             style="width:140px"
               v-model="selectResult.startPresentationTime"
               type="date"
               :picker-options="pickerOptionsStartTwo"
@@ -129,7 +124,6 @@
               placeholder="选择日期">
             </el-date-picker >-
              <el-date-picker
-             style="width:140px"
               v-model="selectResult.endPresentationTime"
               type="date"
               value-format="yyyy-MM-dd"
@@ -141,7 +135,6 @@
         <div  class="formItem" v-show="selectControl">
           <el-form-item label="申请时间:" >
             <el-date-picker
-             style="width:150px"
               v-model="selectResult.startInvoiceApplyTime"
               :picker-options="pickerOptionsStartThree"
               value-format="yyyy-MM-dd"
@@ -149,7 +142,6 @@
               placeholder="选择日期">
             </el-date-picker >-
              <el-date-picker
-             style="width:150px"
               v-model="selectResult.endInvoiceApplyTime"
               :picker-options="pickerOptionsEndThree"
               value-format="yyyy-MM-dd"
@@ -161,7 +153,6 @@
         <div  class="formItem"  v-show="selectControl">
           <el-form-item label="开票日期:" >
             <el-date-picker
-             style="width:140px"
               v-model="selectResult.startInvoicingTime"
               :picker-options="pickerOptionsStartFour"
               value-format="yyyy-MM-dd"
@@ -169,7 +160,6 @@
               placeholder="选择日期">
             </el-date-picker >-
              <el-date-picker
-             style="width:140px"
               v-model="selectResult.endInvoicingTime"
               :picker-options="pickerOptionsEndFour"
               value-format="yyyy-MM-dd"
@@ -178,8 +168,8 @@
             </el-date-picker>
           </el-form-item>
         </div>
-      
-        <div class="operateButton" style="display:flex;justify-content:center">
+        
+        <div class="operateButton">
               <el-button @click="searchClick(true)" size="mini" type="primary" icon="el-icon-search" style="margin-right:0">查询</el-button>
               <el-button @click="restClick" size="mini" type="primary">清空</el-button>
         </div>
@@ -188,7 +178,7 @@
       </el-form>
       <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData" value="全部">
         <el-tab-pane v-for="(item,index) in tabName" :key="index" :label="item+'('+tabNum[index]+')'" :name="item">
-      <foldTable :tableData="tableData" :checkedTable="checkedTable" :pageSkipAll="pageSkipChecked" @changeCheckBox="handleSelectionChange" @showOrderWayBill="showOrderWayBill" @showInvoice="showInvoice" @openPost="openPost"></foldTable>
+      <foldTable :tableData="tableData" :pageSkipAll="pageSkipChecked" :checkedTable="checkedTable" @changeCheckBox="handleSelectionChange" @showOrderWayBill="showOrderWayBill" @showInvoice="showInvoice" @openPost="openPost"></foldTable>
              <div style="display:flex;justify-content:space-between">
                <div>
                  <el-button size="mini" class="pageSkip"><el-checkbox v-model="pageSkipChecked" @change="selectAllTable" style="color:white">跨页全选</el-checkbox></el-button>
@@ -217,6 +207,7 @@
                       </el-upload>
                       <el-button size='mini' type="primary" @click="exportList" style="height:28px">导出列表</el-button>
                       <el-button size='mini' type="primary" @click="drawer = true" style="height:28px">选择表格列</el-button>
+                      
                       <!-- <el-button @click="drawer = true" type="primary" size='mini'>选择表格列</el-button> -->
                     </div>
                   <el-pagination
@@ -231,7 +222,7 @@
                     >
                   </el-pagination>
                 </div>
-              
+               
              </div>
         </el-tab-pane>
       </el-tabs>
@@ -245,7 +236,8 @@
         <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange" style="margin:0 0 20px 20px">全选</el-checkbox>
         <el-checkbox-group
           v-model="checkedTable"
-          >
+          :min="0"
+          :max="21">
               <el-checkbox v-for="choose in tableOptions" :label="choose" @change="tableKey = tableKey == 1? 2:1" :key="choose" style="display:block;margin-left:20px">{{choose}}</el-checkbox>
         </el-checkbox-group>
       </el-drawer>
@@ -398,72 +390,33 @@
       </div>
     </el-dialog>
     <!-- 开票按钮 -->
-    <el-dialog title="开票信息" :visible.sync="invoicingDial" width="1200px" class="getInvoice">
+    <el-dialog title="开票信息" :visible.sync="invoicingDial" width="800px">
       <div class="invoicingDial">
-        <div style="width:50%;border:1px solid silver;padding:10px 6px;margin-right:10px">
-          <el-form style="display:flex;flex-wrap:wrap;" label-position="left">
-           <el-form-item label="单张发票金额:" label-width="115px" required style="width:260px">
-            <el-input size="medium" class="newDialNum" v-model="invoicingLeft.invoiceAmount" clearable placeholder="请输入发票金额" maxlength="13" onkeyup="this.value= this.value.match(/^-?\d{0,10}(\.\d{0,2})?/)? this.value.match(/^-?\d{0,10}(\.\d{0,2})?/)[0] : ''" @blur="invoicingLeft.invoiceAmount = $event.target.value" style="width:130px">
+        <div style="width:50%;border:1px solid silver;padding:10px 0;margin-right:10px">
+          <el-form>
+           <el-form-item label="开票金额" label-width="120px" required>
+            <el-input size="medium"  v-model="invoicingLeft.invoiceAmount" clearable placeholder="请输入开票金额" maxlength="12" onkeyup="this.value= this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)? this.value.match(/^-?\d{0,6}(\.\d{0,4})?/)[0] : ''" @blur="invoicingLeft.invoiceAmount = $event.target.value" style="width:170px">
             </el-input>
           </el-form-item>
-          <el-form-item label="开票首张号码:" label-width="110px" required style="width:300px">
-            <el-input size="medium"  v-model.number.trim="invoicingLeft.invoiceNum" clearable placeholder="请输入开票首张号码" maxlength="8" style="width:170px;" class="newDialNum">
+          <el-form-item label="开票首张号码" label-width="120px" required >
+            <el-input size="medium"  v-model.number.trim="invoicingLeft.invoiceNum" clearable placeholder="请输入开票首张号码" maxlength="8"style="width:170px">
             </el-input>
           </el-form-item>
-          <el-form-item label="开票张数:" label-width="85px" required style="width:260px">
-            <el-input size="medium" class="newDialNum"  v-model.number.trim="invoicingLeft.invoiceCount" clearable placeholder="请输入开票张数" maxlength="2"  style="width:150px" oninput ="value=value.replace(/[^0-9]/g,'')">
+          <el-form-item label="开票张数" label-width="120px" required>
+            <el-input size="medium"  v-model.number.trim="invoicingLeft.invoiceCount" clearable placeholder="请输入开票张数" maxlength="2"  style="width:170px">
             </el-input>
           </el-form-item>
-          <el-form-item label-width="85px" label="开票日期:" required style="width:300px">
+          <el-form-item label-width="120px" label="开票日期" required>
             <el-date-picker
               value-format="yyyy-MM-dd"
               v-model="invoicingLeft.invoicingTime"
               type="date"
-              placeholder="请选择开票日期"
-              style="width:194px">
+              placeholder="选择日期"
+              style="width:170px">
             </el-date-picker>
           </el-form-item>
-          
-          <el-form-item label="开票抬头:" required label-width="85px">
-            <div style="width:340px" v-if="ifNewInvoHead">{{openInvoExtraMessage.invoiceTitle}}</div>
-            <el-input  v-model="invoicingLeft.invoiceTitle" v-else size="medium" maxlength="30" placeholder="请输入开票抬头" style="width:340px"></el-input>
-          </el-form-item>
-          <el-form-item label="纳税人识别号:" required label-width="115px">
-            <div style="width:340px" v-if="ifNewInvoHead">{{openInvoExtraMessage.dutyParagraph}}</div>
-            <el-input v-model="invoicingLeft.dutyParagraph" v-else size="medium" maxlength="30" placeholder="请输入纳税人识别号" oninput ="value=value.replace(/[^0-9a-zA-Z]/g,'')" style="width:340px"></el-input>
-          </el-form-item>
-          <el-form-item label="公司地址:" required label-width="85px">
-            <div style="width:340px" v-if="ifNewInvoHead">{{openInvoExtraMessage.companyAddress}}</div>
-            <el-input v-model="invoicingLeft.companyAddress"  v-else size="medium" maxlength="40" placeholder="请输入公司地址" style="width:340px"></el-input>
-          </el-form-item>
-          <el-form-item label="公司电话:" required label-width="85px">
-            <div style="width:340px" v-if="ifNewInvoHead">{{openInvoExtraMessage.companyTel}}</div>
-            <el-input v-model="invoicingLeft.companyTel" v-else size="medium" maxlength="20" placeholder="请输入公司电话" style="width:340px"></el-input>
-          </el-form-item>
-          <el-form-item label="开户行:" required label-width="85px">
-            <div style="width:340px" v-if="ifNewInvoHead">{{openInvoExtraMessage.accountBank}}</div>
-            <el-input v-model="invoicingLeft.accountBank" v-else size="medium" maxlength="30" placeholder="请输入开户行" style="width:340px"></el-input>
-          </el-form-item>
-           <el-form-item label="银行账号:" required label-width="85px">
-            <div style="width:340px" v-if="ifNewInvoHead">{{openInvoExtraMessage.bankAccount}}</div>
-            <el-input v-model="invoicingLeft.bankAccount" v-else size="medium" maxlength="30" placeholder="请输入银行账号" style="width:340px"></el-input>
-          </el-form-item>
-          <el-form-item label="发票类型:" required label-width="85px">
-            <div style="width:340px" v-if="ifNewInvoHead">{{openInvoExtraMessage.invoiceType == 0?"普票":openInvoExtraMessage.invoiceType == 1?"专票":openInvoExtraMessage.invoiceType == 2?"电子普票":""}}</div>
-            <el-select v-model="invoicingLeft.invoiceType" style="width: 210px;" v-else>
-              <el-option
-                v-for="(item,index) in billTypeS"
-                :key="index"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
           </el-form>
-          <div style="text-align:center">
-            <span style="cursor:pointer;color:skyblue" @click="shiftNewInvoHead">{{ifNewInvoHead ?'新增抬头开票':'使用开票申请的抬头开票'}}</span>
-            <el-button type="primary" size="mini" style="margin-left:20px;cursor:pointer" @click="invoiceLeftConfirm">确认生成</el-button>
-          </div>
+          <el-button type="primary" style="float:right;margin-right:20px;" @click="invoiceLeftConfirm">确认生成</el-button>
         </div>
         <div style="width:50%;">
           <el-table
@@ -473,14 +426,6 @@
               <el-table-column label="序号" type="index"></el-table-column>
               <el-table-column label="发票金额" prop="invoiceAmount"></el-table-column>
               <el-table-column label="发票号码" prop="invoiceNum"></el-table-column>
-              <el-table-column label="发票抬头" prop="invoiceTitle"></el-table-column>
-              <el-table-column label="发票种类" prop="invoiceType">
-                <template slot-scope="scope">
-                  <div>
-                      {{scope.row.invoiceType == 0?"普票":scope.row.invoiceType == 1?"专票":scope.row.invoiceType == 2?"电子普票":""}}
-                  </div>
-                </template>
-              </el-table-column>
               <el-table-column width="30">
                 <template slot-scope="scope">
                   <span style="fontSize:15px;color:skyblue" @click="deleteInvoiceRight(scope)">X</span>
@@ -490,10 +435,10 @@
           </el-table>
         </div>
       </div>
-      <div style="display:flex;justify-content:space-between;width:70%;margin:15px auto 0">
+      <div style="display:flex;justify-content:space-between;margin-top:15px">
         <div>申请开票总金额：{{invoiceFootOne}}</div>
-        <div>未开票金额：{{invoiceFootTwo}}</div>
-        <div>生成的发票金额：{{invoiceFootThree}}</div>
+        <div>未开票总金额：{{invoiceFootTwo}}</div>
+        <div>发票金额：{{invoiceFootThree}}</div>
       </div>
           <!-- 底部按钮 -->
       <div slot="footer" class="dialog-footer">
@@ -518,17 +463,6 @@
     },
     data() {
       return {
-        openInvoExtraMessage:{
-          invoiceTitle:"",
-          dutyParagraph:"",
-          companyAddress:"",
-          companyTel:"",
-          accountBank:"",
-          bankAccount:"",
-          invoiceType:""
-        },
-        //开票弹框是否使用新的抬头开票
-        ifNewInvoHead:true,
         selectControl:false,
         tableKey :1,
         ifDisable:true,
@@ -538,8 +472,9 @@
         isIndeterminate: true,
         direction: 'rtl',
         checkedTable:['订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票备注','开票信息','申请开票金额','发票种类','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','邮寄状态','发票状态','是否上传'],
-        
         tableOptions:['订单号', '运单号', '订舱公司','发票抬头','开票信息','发票种类','申请开票金额','已开票金额','开票备注','开票进度','发票号码','发票状态','是否上传','开票时间','航班日期','交单时间','申请时间','快递信息','邮寄状态',],
+
+        
         //表格tab页
         tabName:["全部","合并开票","单独开票","异常"],
         tabNum:[0,0,0,0],
@@ -565,12 +500,6 @@
           {label:"增值税普通发票",value:"0"},
           {label:"增值税专用发票",value:"1"},
           {label:"增值税电子普通发票",value:"2"},
-      ],
-      //开票弹框 发票类型
-        billTypeS:[
-          {label:"普票",value:"0"},
-          {label:"专票",value:"1"},
-          {label:"电子普票",value:"2"},
       ],
       getBillType:["增值税普通发票","增值税专用发票","增值税电子普通发票"],
       //开票进度
@@ -672,7 +601,6 @@
           customerName:"",
           invoiceTitle:"",
           upload:"",
-          financialSeriesNo:"",
           invoiceNum:"",
           invoiceType:[""],
           invoicingStatus:[""],
@@ -735,7 +663,7 @@
         //开票按钮弹框是否显示
         invoicingDial:false,
         //开票左侧表单数据
-        invoicingLeft:{id:'',invoiceNum:"",invoiceCount:"",invoicingTime:"",invoiceAmount:"",invoiceTitle:"",dutyParagraph:"",companyAddress:"",companyTel:"",accountBank:"",bankAccount:"",invoiceType:""},
+        invoicingLeft:{id:'',invoiceNum:"",invoiceCount:"",invoicingTime:"",invoiceAmount:""},
         //开票右侧表格数据
         invoicingRight:[],
 
@@ -756,15 +684,12 @@
     },
     created() {
       this.tableData.forEach(item=>item.orderWayBill = false)
-      // console.log(this.tableData)
+      console.log(this.tableData)
     },
     mounted() {
         this.searchClick(true)
     },
     methods: {
-      shiftNewInvoHead() {
-        this.ifNewInvoHead = !this.ifNewInvoHead
-      },
        //下拉框搜索框控制
     shiftSelectControl(){
       this.selectControl = !this.selectControl
@@ -920,7 +845,7 @@
         }
         // 将相同类别的对象添加到统一个数组
         for (var i in arr) {
-            // console.log( _tmp);
+            console.log( _tmp);
             if ( arr[i][str] === _tmp ){
                 _t.push( arr[i] );
             } else {
@@ -1018,12 +943,12 @@
       },
       //表格选中事件
      handleSelectionChange(e){
-      //  console.log(e)
+       console.log(e)
        this.selectTableData = e
      },
       //查看开票信息
       showInvoice(message){
-        // console.log(message)
+        console.log(message)
         this.invoiceTableData = [JSON.parse(JSON.stringify(message))]
         this.invoiceDialog = true
       },
@@ -1099,7 +1024,7 @@
       },
       //作废按钮
       delInvoice(){
-        // console.log(this.ifDataDel())
+        console.log(this.ifDataDel())
         if(this.pageSkipChecked) {
           this.$message({
             message: '作废不支持跨页全选',
@@ -1210,9 +1135,9 @@
 
       //确认作废
       comfirmDele(){
-        // console.log(this.delData())
+        console.log(this.delData())
           let data = JSON.parse(JSON.stringify(this.delData()))
-          // console.log(data)
+          console.log(data)
           this.$http.post(this.$service.nullifyInvoiceMore,data).then(data=>{
             if(data.code == 200) {
               this.$message.success('发票作废成功')
@@ -1226,7 +1151,6 @@
       },
       //开票按钮
       invoicing(){
-        this.ifNewInvoHead = true
         if(this.pageSkipChecked) {
           this.$message({
             message: '开票不支持跨页全选',
@@ -1253,29 +1177,18 @@
           });
         }
         else {
-          this.invoicingLeft = {id:'',invoiceNum:"",invoiceCount:"",invoicingTime:"",invoiceAmount:"",invoiceTitle:"",dutyParagraph:"",companyAddress:"",companyTel:"",accountBank:"",bankAccount:"",invoiceType:""}
+          this.invoicingLeft = {id:'',invoiceNum:"",invoiceCount:"",invoicingTime:"",invoiceAmount:""}
           this.invoicingRight = []
           this.invoiceFootOne = this.selectTableData[0].applyAmount
           this.invoiceFootTwo = this.selectTableData[0].applyAmount - this.selectTableData[0].invoicedAmount
           this.invoiceFootThree = 0
           this.invoicingLeft.id = ""
           this.invoicingDial = true
-          this.openInvoExtraMessage={
-          invoiceTitle:this.selectTableData[0].invoiceTitle,
-          dutyParagraph:this.selectTableData[0].dutyParagraph,
-          companyAddress:this.selectTableData[0].companyAddress,
-          companyTel:this.selectTableData[0].companyTel,
-          accountBank:this.selectTableData[0].accountBank,
-          bankAccount:this.selectTableData[0].bankAccount,
-          invoiceType:this.selectTableData[0].invoiceType
-        }
         }
       },
      
       //开票弹框左侧确认生成
       invoiceLeftConfirm() {
-        let copyLeft = JSON.parse(JSON.stringify(this.invoicingLeft))
-        delete copyLeft.id
         if(this.invoicingLeft.invoiceCount>50){
           this.$message({
             message: '开票张数不能大于50',
@@ -1289,19 +1202,13 @@
             type: 'warning'
           });
         }
-        else if ((!this.invoicingLeft.invoiceAmount || !this.invoicingLeft.invoiceCount|| !this.invoicingLeft.invoiceNum || !this.invoicingLeft.invoicingTime) && this.ifNewInvoHead ){
+        else if (!this.invoicingLeft.invoiceAmount || !this.invoicingLeft.invoiceCount|| !this.invoicingLeft.invoiceNum || !this.invoicingLeft.invoicingTime ){
           this.$message({
             message: '请填写左侧全部信息后进行操作',
             type: 'warning'
           });
         }
-        else if (!this.ifNewInvoHead && Object.values(copyLeft).indexOf("") != -1){
-           this.$message({
-            message: '请填写左侧全部信息后进行操作',
-            type: 'warning'
-          });
-        }
-        else if(!Number(this.invoicingLeft.invoiceCount) || !Number(this.invoicingLeft.invoiceNum) || !Number(this.invoicingLeft.invoiceAmount)){
+          else if(!Number(this.invoicingLeft.invoiceCount) || !Number(this.invoicingLeft.invoiceNum) || !Number(this.invoicingLeft.invoiceAmount)){
           this.$message({
             message: '开票金额/首张号码/张数必须是数字',
             type: 'warning'
@@ -1322,48 +1229,16 @@
         else {
           const copyData = JSON.parse(JSON.stringify(this.copyTable))
           let data = copyData.filter(item=>item.id==this.selectTableData[0].id)[0]
-          data.toBeInvoiceList = JSON.parse(JSON.stringify(this.invoicingRight)) 
-          let copySInvoLeft = JSON.parse(JSON.stringify(this.invoicingLeft))
-          delete copySInvoLeft.id
-          delete copySInvoLeft.invoiceNum
-          delete copySInvoLeft.invoiceCount
-          delete copySInvoLeft.invoicingTime
-          delete copySInvoLeft.invoiceAmount
-          if(data.invoiceInfos) {
-            if(this.ifNewInvoHead) {
-               data.invoiceInfos.forEach(itemss =>Object.assign(itemss,this.openInvoExtraMessage))
-            }
-            else {
-               data.invoiceInfos.forEach(itemss =>Object.assign(itemss,copySInvoLeft))
-            }
-          }
-          if(data.toBeInvoiceList) {
-            if(this.ifNewInvoHead) {
-             data.toBeInvoiceList.forEach(itemsss=>Object.assign(itemsss,this.openInvoExtraMessage))
-            }
-            else 
-            {
-              data.toBeInvoiceList.forEach(itemsss=>Object.assign(itemsss,copySInvoLeft))
-            }
-          }
-          let copyInvoLeft = ""
-          if(this.ifNewInvoHead){
-             copyInvoLeft = Object.assign({},this.invoicingLeft,this.openInvoExtraMessage)
-          }
-          else {
-            copyInvoLeft = this.invoicingLeft
-          }
-          this.$http.post(this.$service.actionInvoice,{firstInvoiceInfo:copyInvoLeft,tInvoiceAppListVos:data}).then(data=>{
+          data.toBeInvoiceList = this.invoicingRight
+          this.$http.post(this.$service.actionInvoice,{firstInvoiceInfo:this.invoicingLeft,tInvoiceAppListVos:data}).then(data=>{
             if(data.code == 200) {
-              // console.log(this.invoicingRight,1111)
               this.invoicingRight.push(...data.data)
-              // console.log(this.invoicingRight)
               let totalMoney = 0
               this.invoicingRight.forEach(item=> {
               totalMoney+=item.invoiceAmount})
               this.invoiceFootThree = totalMoney
               this.$message.success("生成发票成功")
-              // this.invoicingLeft = {id:'',invoiceNum:"",invoiceCount:"",invoicingTime:"",invoiceAmount:"",invoiceTitle:"",dutyParagraph:"",companyAddress:"",companyTel:"",accountBank:"",bankAccount:"",invoiceType:""}
+              this.invoicingLeft = {id:'',invoiceNum:"",invoiceCount:"",invoicingTime:"",invoiceAmount:""}
             } else {
               this.$message.error(data.message)
             }
@@ -1374,7 +1249,7 @@
       },
       //开票弹出框 表格删除功能
       deleteInvoiceRight(e){
-        // console.log(this.invoicingRight)
+        console.log(this.invoicingRight)
         this.invoicingRight.splice(e.$index,1)
         let totalMoney = 0
             this.invoicingRight.forEach(item=> {
@@ -1390,7 +1265,7 @@
           const copyData = JSON.parse(JSON.stringify(this.copyTable))
           let data = copyData.filter(item=>item.id==this.selectTableData[0].id)[0]
           data.toBeInvoiceList = this.invoicingRight
-          this.$http.post(this.$service.confirmInvoice,{insertTitle:!this.ifNewInvoHead,tinvoiceAppListVo:data}).then(data=>{
+          this.$http.post(this.$service.confirmInvoice,data).then(data=>{
             if(data.code == 200) {
               this.searchClick(true)
               this.$message.success("开票成功")
@@ -1514,12 +1389,11 @@
       },
       //数据统计按钮
       getStatistData(){
-        // console.log(this.tableData)
+        console.log(this.tableData)
         this.statistDataShow = !this.statistDataShow
         if(this.statistDataShow == false) return""
         this.statistData = {shouldGet:0,applyInvoice:0,invoicedMoney:0}
-        let request = {financePageDTO:JSON.parse(JSON.stringify(this.selectResultData()))}
-        request.financePageDTO.ids = this.selectTableData.map(item=>item.id)
+        let request = {financePageDTO:this.selectResultData()}
         this.$http.post(this.$service.invoiceStatistics,request).then(res=>{
           this.statistData.shouldGet = res.data.totalArCny;
           this.statistData.applyInvoice =res.data.applyAmount;
@@ -1608,7 +1482,6 @@
                 item.waybillNo =item.orderInfos[0].waybillNo
                 item.departureDate =item.orderInfos[0].departureDate
                 item.presentationTime =item.orderInfos[0].presentationTime
-                item.financialSeriesNo =item.orderInfos[0].financialSeriesNo
               }
                //折叠操作控制
               if(item.invoiceInfos && item.invoiceInfos.length == 1) {
@@ -1618,7 +1491,7 @@
               }
             })
             this.tableData = getData
-            // console.log(this.tableData)
+            console.log(this.tableData)
             this.statistDataShow = false
             //控制跨页全选
             if(self) this.pageSkipChecked = false
@@ -1641,7 +1514,6 @@
           waybillNo:"",
           customerName:"",
           invoiceTitle:"",
-          financialSeriesNo:"",
           upload:"",
           invoiceNum:"",
           invoiceType:[""],
@@ -1759,9 +1631,12 @@
 </style>
 <style scoped lang="less">
   @import url("../../assets/icon/iconfont.css");
-  .el-button--primary{
+   .el-button--primary{
       width:100px;
       // text-align: center;
+  }
+  /deep/.el-form-item{
+    margin-bottom: 0;
   }
    /deep/ .el-checkbox__label {
      color:#000
@@ -1779,8 +1654,7 @@
   .content-search-normal {
     .formItem{
       display:inline-block;
-      // width: 320px;
-      margin:0 28px 5px 0;
+      margin:0 28px 10px 0;
     }
   }
   .operateButton {
@@ -1836,8 +1710,8 @@
   }
 
   .el-form--inline .el-form-item {
-    margin-bottom: 20px;
-    vertical-align: bottom;
+    // margin-bottom: 20px;
+    // vertical-align: bottom;
   }
 
   .parimary_btn {
@@ -1893,20 +1767,5 @@
   /deep/ .el-dialog {
     min-width: 480px;
     border-radius: 6px;
-  }
-  .el-form--inline .el-form-item {
-      margin-bottom: 5px;
-      margin-right: 0px;
-      vertical-align: bottom;
-  }
-  .getInvoice {
-    /deep/ .el-dialog__body {
-      padding:15px;
-    }
-  }
-  .newDialNum {
-    /deep/ .el-input__inner {
-      padding-right: 15px;
-    }
   }
 </style>
