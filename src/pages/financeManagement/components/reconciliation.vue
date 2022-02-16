@@ -7,7 +7,7 @@
         top="20vh"
         width="50%">
             <el-dialog
-                width="50%"
+                width="70%"
                 title="匹配结果"
                 :visible.sync="innerVisible"
                 append-to-body>
@@ -31,7 +31,7 @@
                         label="对账单金额">
                         <template slot-scope="scope">
                             <span  v-if="scope.row.difference =='R'">已对账，不能重复对账</span>
-                            <span>{{scope.row.cost}}</span>
+                            <span v-else>{{scope.row.cost}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -54,6 +54,7 @@
                     </el-table-column>
                     <el-table-column
                         prop="orderNo"
+                        width="180"
                         label="订单号" >
                     </el-table-column>
                     <el-table-column
@@ -341,7 +342,7 @@ export default {
                 this.exportErrExcel()
             }
             
-            
+            this.dialogVisible = false
             this.innerVisible = false 
         },
         backStyle({row, columnIndex}){
