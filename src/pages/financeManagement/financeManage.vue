@@ -1047,6 +1047,7 @@ export default {
             if(arrayIndex.indexOf(this.typeCode) != -1) {
               copyDate.financeStatus = arrayIndex.indexOf(this.typeCode)
             }
+            copyDate.ids = this.selectTableData.map(item=>item.id)
             this.statistDataShow = !this.statistDataShow
             if(this.statistDataShow == false) return""
             this.$http.post(this.$service.financeOrderCount,copyDate).then(data=>{
