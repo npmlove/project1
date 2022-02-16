@@ -563,7 +563,7 @@
                 >修改账单</span
               >
             </p>
-             <p class="pTips" v-if="initData.orderInvoiceApply && initData.orderInvoiceApply.orderInvoiceApply && initData.orderInvoiceApply.orderInvoiceApply.length>0">
+             <!-- <p class="pTips" v-if="initData.orderInvoiceApply && initData.orderInvoiceApply.orderInvoiceApply && initData.orderInvoiceApply.orderInvoiceApply.length>0">
               <span style="text-decoration:underline" :style="{color:initData.orderInvoiceApply.abnormalFlag ? 'red':'rgb(2, 175, 240)'}" @click="shiftShowBill">开票记录</span>
               <span
                 @click="reWriteBill(index)"
@@ -572,8 +572,8 @@
                 "
                 >修改账单</span
               >
-            </p>
-            <!-- <p class="pTips" v-if="item.status == 2">
+            </p> -->
+            <p class="pTips" v-if="item.status == 2">
               <span>账单已确认</span>
               <span
                 @click="reWriteBill(index)"
@@ -582,8 +582,8 @@
                 "
                 >修改账单</span
               >
-            </p> -->
-            <!-- <p class="pTips" v-if="item.status == 3">
+            </p>
+            <p class="pTips" v-if="item.status == 3">
               <span>账单已确认，开票已申请</span>
               <span
                 @click="reWriteBill(index)"
@@ -602,7 +602,7 @@
                 "
                 >修改账单</span
               >
-            </p> -->
+            </p>
             <!-- <billHistory v-if="showBillHistory" @shiftShowBill ="shiftShowBill" :tableData="this.initData.orderInvoiceApply.orderInvoiceApply"></billHistory> -->
           </div>
           <!-- 新增账单 -->
