@@ -43,7 +43,7 @@
                 <!-- <div>{{scope.row.polName}}</div> -->
               </div>
               <div class="hangxian-route-zhida">
-                 {{scope.row.legCount == '1' ? '直达' :scope.row.firstHub?scope.row.firstHub : '中转'}}
+                 {{scope.row.legCount == '1' ? '直达' :scope.row.firstHub?scope.row.firstHub : ''}}
               </div>
               <div class="hangxian-route-sanzima">
                 <div>{{scope.row.pod}}</div>
