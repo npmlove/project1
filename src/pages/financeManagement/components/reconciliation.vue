@@ -30,8 +30,8 @@
                      
                         label="对账单金额">
                         <template slot-scope="scope">
-                            <span  v-if="scope.row.difference =='R'">已对账，不能重复对账</span>
-                            <span v-else>{{scope.row.cost}}</span>
+                            <!-- <span  v-if="scope.row.difference =='R'">已对账，不能重复对账</span> -->
+                            <span>{{scope.row.cost}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column
