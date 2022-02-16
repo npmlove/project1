@@ -751,25 +751,12 @@ export default {
       return result
     },
     exportList() {
-      axios.post(this.$service.exportWoDetailExcel, {
+       var json = {
         overPageCheck: this.overPageCheck,
-        rcvIds: this.rcvIds,
-        orderNo: this.orderNo,
-        waybillNo: this.waybillNo,
-        reconciliationUnit: this.reconciliationUnit,
-        accountBank: this.accountBank,
-        accountName: this.accountName,
-        startPayTime: this.startPayTime,
-        endPayTime: this.endPayTime,
-        startWriteOffTime: this.startWriteOffTime,
-        endWriteOffTime: this.endWriteOffTime,
-        writeOffWay: this.writeOffWay,
-        payWay: this.payWay,
-        rcvWriteOffStatusList: this.rcvWriteOffStatus.length == 0 || this.rcvWriteOffStatus.indexOf("") != -1 ? null : this.rcvWriteOffStatus,
-        woStatus: this.woStatus,
-        pageNum: this.pageNum,
-        pageSize: this.pageSize
-      }, {
+        rcvIds: this.rcvIds.length>0?this.rcvIds:null,
+        financePageDTO:this.useRequest()
+      }
+      axios.post(this.$service.exportWoDetailExcel, json, {
         responseType: 'arraybuffer'
       }).then((res) => {
         let enc = new TextDecoder("utf-8");
@@ -1000,6 +987,25 @@ export default {
       this.pageSize = e
       this.initData()
     },
+    //请求数据用
+    useRequest(){
+      return {
+        orderNo:this.orderNo,
+      waybillNo:this.waybillNo,
+      reconciliationUnit:this.reconciliationUnit,
+      accountBank:this.accountBank,
+      accountName:this.accountName,
+      startPayTime:this.startPayTime,
+      endPayTime:this.endPayTime,
+      startWriteOffTime:this.startWriteOffTime,
+      endWriteOffTime:this.endWriteOffTime,
+      writeOffWay:this.writeOffWay ,
+      payWay:this.payWay,
+      rcvWriteOffStatus:this.rcvWriteOffStatus[0]==""?null:this.rcvWriteOffStatus,
+      woStatus: this.woStatus,
+
+      }
+    },
     //数据统计按钮
     getStatistData() {
       if (this.statistDataShow) {
@@ -1007,20 +1013,9 @@ export default {
         return;
       }
       var json = {
-        orderNo: this.orderNo,
-        waybillNo: this.waybillNo,
-        reconciliationUnit: this.reconciliationUnit,
-        accountBank: this.accountBank,
-        accountName: this.accountName,
-        startPayTime: this.startPayTime,
-        endPayTime: this.endPayTime,
-        startWriteOffTime: this.startWriteOffTime,
-        endWriteOffTime: this.endWriteOffTime,
-        writeOffWay: this.writeOffWay,
-        payWay: this.payWay,
-        rcvWriteOffStatusList: this.rcvWriteOffStatus.length == 0 || this.rcvWriteOffStatus.indexOf("") != -1 ? null : this.rcvWriteOffStatus,
-        woStatus: this.woStatus,
-        rcvIds:this.rcvIds
+        overPageCheck: this.overPageCheck,
+        rcvIds: this.rcvIds.length>0?this.rcvIds:null,
+        financePageDTO:this.useRequest()
       }
       this.$http.post(this.$service.sumWoDetail, json).then(data => {
         if (data.code == 200) {

@@ -880,19 +880,40 @@
       //数据统计
       getStatistData(){
         let copyData = JSON.parse(JSON.stringify(this.selectResult))
-         copyData.woStatus = this.typeCode == "可操作" ? 0 :this.typeCode == "业务修改中" ? 1 :this.typeCode == "异常" ?  2 :""
-        if(copyData.rcvWriteOffStatusList[0] === "") {
+        if(copyData.rcvWriteOffStatusList[0] ==""){
           delete copyData.rcvWriteOffStatusList
-          }
-        if(copyData.payWriteOffStatusList[0] === "") {
+        }
+        if(copyData.payWriteOffStatusList[0] ==""){
           delete copyData.payWriteOffStatusList
-          }
+        }
+        //  copyData.woStatus = this.typeCode == "可操作" ? 0 :this.typeCode == "业务修改中" ? 1 :this.typeCode == "异常" ?  2 :""
+        // if(copyData.rcvWriteOffStatusList[0] === "") {
+        //   delete copyData.rcvWriteOffStatusList
+        //   }
+        // if(copyData.payWriteOffStatusList[0] === "") {
+        //   delete copyData.payWriteOffStatusList
+        //   }
           delete copyData.pageNum
           delete copyData.pageSize
-          copyData.orderIds = this.selectTableData.map(item=>item.id)
+        //   copyData.orderIds = this.selectTableData.map(item=>item.id)
         this.statistDataShow = !this.statistDataShow
         if(this.statistDataShow == false) return""
-        this.$http.post(this.$service.subWoList,copyData).then(data=>{
+        let requestData = {}
+        if(this.pageSkipChecked == true) {
+          requestData.overPageCheck = true
+          requestData.financePageDTO = copyData
+        } else {
+          requestData.overPageCheck = false
+          requestData.orderIds = []
+          this.selectTableData.forEach((item,index)=>{
+            requestData.orderIds[index] = item.id
+          })
+          if(requestData.orderIds.length==0) {
+            requestData.orderIds = null
+          }
+          requestData.financePageDTO = copyData
+        }
+        this.$http.post(this.$service.subWoList,requestData).then(data=>{
           if(data.code == 200) {
           this.statistData = data.data
           this.statistData.totalArCny = this.statistData.totalArCny.toLocaleString('en-US')

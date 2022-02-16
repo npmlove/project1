@@ -288,7 +288,7 @@
               </div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.expenseUnitName" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
+                <el-input v-else :disabled="orderStatus.indexOf(status) < 0 || childerItem.orderDisabled? true : false" v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.price" :disabled="true" size="small" style="width: 90%;"></el-input>
@@ -918,11 +918,7 @@
             if(data.code == 200){
               // this.$router.push('/orderManagement/orderManage')
               // 这里是为了区分角色 只选择航线人员保存后返回上一页
-              if (this.orderOptionsList.agentId) {
-                this.initDetails()
-              } else {
-                this.$router.go(-1)
-              }
+              this.initDetails()
               this.$message.success("订单保存成功")
             } else {
               this.$message.error(data.message)
@@ -935,7 +931,7 @@
           this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
             if(data.code == 200){
               // this.$router.push('/orderManagement/orderManage')
-              this.$utils.orderDetailRefresh(this.detailsArr)
+              // this.$utils.orderDetailRefresh(this.detailsArr)
               this.$message.success("订单审核通过")
             } else {
               this.$message.error(data.message)
@@ -1293,7 +1289,7 @@
           expenseName: '',
           expenseType: 1,
           expenseUnitId: '',
-          expenseUnitName: '',
+          expenseUnitName: this.arOrderPriceList[0].expenseUnitName,
           id: '',
           orderId: this.orderId,
           price: '',
@@ -1301,6 +1297,7 @@
           remark: '',
           totalCny: '',
           totalOrgn: '',
+          orderDisabled:true
         }
         this.arOrderPriceList.push(json)
       },
