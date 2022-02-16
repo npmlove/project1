@@ -1508,6 +1508,9 @@ export default {
           delete order.trayDetail;
         }
         let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
+        if(orderPriceList.some(item=>!item.quantity || !item.price)){
+          return this.$message.warning("请填写费用金额")
+        }
       let orderCargoDetailList = this.$refs.typeThree.tableData
       for(var i=1;i<orderCargoDetailList.length;i++){
           orderCargoDetailList[i].id = '',
