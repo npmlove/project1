@@ -265,7 +265,7 @@ export default {
             if(!this.slectAllDataStatic) {
                 copyResult.ids = this.idsArray
             }   
-            if(copyResult[0]=="") {
+            if(copyResult.payWriteOffStatusList[0]=="") {
                 copyResult.payWriteOffStatusList = []
             }
             // console.log(this.idsArray)
