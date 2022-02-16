@@ -3,8 +3,8 @@
     <div>
       <h1 class="title flex">
           <span>{{title}}</span> 
-          <span style="margin-left:30px;margin-right:5px" v-if="titleType==1">结算方式:</span>
-              <el-select v-if="titleType==1" :disabled="payWayDisabled" v-model="copyPayWay" clearable placeholder="请选择结算方式" size="small" @change="changePayWay">
+          <span style="margin-left:30px;margin-right:5px" v-if="titleType==1 && !newBill">结算方式:</span>
+              <el-select v-if="titleType==1 && !newBill" :disabled="payWayDisabled" v-model="copyPayWay" clearable placeholder="请选择结算方式" size="small" @change="changePayWay">
                 <el-option
                   v-for="(item,index) in payWayOpt"
                   :key="index"
@@ -159,7 +159,7 @@ class tableObj{
   }
 }
 export default {
-  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay"],
+  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay","newBill"],
   data() {
     return {
      copyPayWay:'',

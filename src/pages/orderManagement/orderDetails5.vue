@@ -503,7 +503,7 @@
         <!-- 应付账单可以最多有5个 做个循环 循环组件ref -->
         <div v-for="(item, index) in initData.arOrderPriceList" :key="index">
           <!-- 组件部分 -->
-          <bill-order @changePayWay="changePayWay" :payWay="initData.payWay"  :getList="item.list" :ref="`typeBill${index}`" :currentStatus="item.status" v-show="notAirPeople" :notSaleBefore="true" :titleType="1" :vertifyAmount="initData.totalRcWoCny"/>
+          <bill-order @changePayWay="changePayWay" :newBill="index==0?false:true" :payWay="initData.payWay"  :getList="item.list" :ref="`typeBill${index}`" :currentStatus="item.status" v-show="notAirPeople" :notSaleBefore="true" :titleType="1" :vertifyAmount="initData.totalRcWoCny"/>
           <!-- 操作部分 -->
           <el-button
             class="setWidth ml_20"
@@ -582,6 +582,7 @@
           <div v-if="notAirPeople">
             <el-button
               v-if="
+              
                 index == initData.arOrderPriceList.length - 1 &&
                 index !== 4 &&
                 item.status == 3 &&
@@ -596,6 +597,7 @@
         </div>
         <div v-if="creatNewBillBoolen && notAirPeople">
           <billOrder
+            :newBill = "true"
             ref="typeNewBill"
             :titleType="1"
             :getList="[]"
