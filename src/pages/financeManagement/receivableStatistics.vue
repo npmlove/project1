@@ -1405,13 +1405,29 @@
         this.errorStatist = false
         this.statistDataShow = !this.statistDataShow
         if(this.statistDataShow == false) return""
+        // let requestS = JSON.parse(JSON.stringify(this.searchDataDeal()))
+        // if(this.selectTableData) {
+        //   requestS.rcvIds = this.selectTableData.map(item=>item.id)
+        // }
+        // delete requestS.pageSize
+        // delete requestS.pageNum
         let requestS = JSON.parse(JSON.stringify(this.searchDataDeal()))
-        if(this.selectTableData) {
-          requestS.rcvIds = this.selectTableData.map(item=>item.id)
-        }
         delete requestS.pageSize
         delete requestS.pageNum
-        this.$http.post(this.$service.receivableSum,requestS).then(res=>{
+        let requestData;
+        if(this.pageSkipChecked == true) {
+          requestData = {
+            financePageDTO:requestS,
+            overPageCheck:true,
+          }
+        } else {
+          requestData = {
+            financePageDTO:requestS,
+            rcvIds:this.selectTableData.map(item=>item.id),
+            overPageCheck:false,
+          }
+        }
+        this.$http.post(this.$service.receivableSum,requestData).then(res=>{
           this.statistData = {
             totalArCny:res.data.totalArCny.toLocaleString('en-US'),
             totalArOrgn:res.data.totalArOrgn,

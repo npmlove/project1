@@ -161,7 +161,7 @@
 import { postImage ,exportFile,moneyList} from '../../../util/util'
 export default {
     name:'reconciliation',
-    props:['childPropsObj','selectResult','idsArray'],
+    props:['childPropsObj','selectResult','idsArray',"slectAllDataStatic"],
     data() {
         return {
             dialogVisible: false,
@@ -262,9 +262,15 @@ export default {
             fileFormData.append('excel', this.file)
             let copyResult = JSON.parse(JSON.stringify(this.selectResult))
             copyResult.expenseUnitName = this.expenseUnitName
+            if(!this.slectAllDataStatic) {
+                copyResult.ids = this.idsArray
+            }   
+            if(copyResult[0]=="") {
+                copyResult.payWriteOffStatusList = []
+            }
             // console.log(this.idsArray)
             fileFormData.append('financePageDTO', JSON.stringify(copyResult))                                                                                        
-            fileFormData.append('ids',JSON.stringify(this.idsArray))
+            // fileFormData.append('ids',JSON.stringify(this.idsArray))
             // fileFormData.append('expenseUnitName', this.expenseUnitName)                                                                                        
             postImage(this.$service.importExcel,fileFormData).then((res)=>{     
                 if(res.code == 200){

@@ -288,7 +288,7 @@
               </div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.expenseUnitName" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
+                <el-input v-else :disabled="orderStatus.indexOf(status) < 0 || childerItem.orderDisabled? true : false" v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.price" :disabled="true" size="small" style="width: 90%;"></el-input>
@@ -1293,7 +1293,7 @@
           expenseName: '',
           expenseType: 1,
           expenseUnitId: '',
-          expenseUnitName: '',
+          expenseUnitName: this.arOrderPriceList[0].expenseUnitName,
           id: '',
           orderId: this.orderId,
           price: '',
@@ -1301,6 +1301,7 @@
           remark: '',
           totalCny: '',
           totalOrgn: '',
+          orderDisabled:true
         }
         this.arOrderPriceList.push(json)
       },

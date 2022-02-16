@@ -406,7 +406,6 @@
           width="55"
         >
         </el-table-column>
-        <el-table-column type="index" label="序号" :index="indexMethod">
         </el-table-column>
        
         <el-table-column
@@ -703,6 +702,7 @@
     <reconciliation
       :idsArray="idsArray"
       :selectResult="formInline"
+      :slectAllDataStatic="slectAllDataStatic"
       @farhersearch="onSubmit"
       :childPropsObj="childPropsObj"
       ref="reconciliationData"
@@ -1874,6 +1874,7 @@ export default {
   box-sizing: border-box;
   /*height: 100%;*/
   padding: 20px;
+  padding-top:0;
   overflow: hidden;
   background-color: #f3f6f9 !important;
   .content {
