@@ -225,7 +225,7 @@ export default {
       this.orderNo = this.orderNoTemp
       await this.getRates()
       await this.initExpenseCode()
-      this.addOneTableObj()
+      this.addOneTableObj(true)
     }
   },
   watch:{
@@ -359,11 +359,11 @@ export default {
     return {temArray : dest,tempStr:str.substr(0, str.length - 1)}
     },
     // 添加
-    addOneTableObj(){
+    addOneTableObj(ifNewBill){
       let tempObj = new tableObj('',this.expenseUnitName)
 
       let a = Object.assign({},tempObj,{
-        extraDisabled:true,
+        extraDisabled:ifNewBill?false:true,
         orderId:this.orderId,
         expenseType:this.expenseType,
         orderNo:this.orderNo,

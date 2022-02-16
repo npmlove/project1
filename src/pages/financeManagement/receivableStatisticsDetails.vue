@@ -194,6 +194,7 @@
             :currentPage='pageNum'
             :pageSize='pageSize'
             @sizeChange='handleSizeChange'
+            @handleSelect='handleSelect'
             @showWOLogs='showWOLogs'
             @showFees='showFees'
             @currentChange='handleCurrentChange'>
@@ -210,6 +211,7 @@
             :total='total'
             :currentPage='pageNum'
             :pageSize='pageSize'
+            @handleSelect='handleSelect'
             @sizeChange='handleSizeChange'
             @showWOLogs='showWOLogs'
             @showFees='showFees'

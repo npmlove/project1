@@ -118,6 +118,7 @@
             v-model="initData.agentName"
             filterable
             size="mini"
+            @change="changeAgent"
             :disabled="canSelectAgent"
             placeholder="请选择"
           >
@@ -626,6 +627,7 @@
             :notSaleBefore="true"
             ref="typeNewBill"
             :getList="[]"
+            :titleType="1"
             :orderIdTemp="orderId"
             :orderNoTemp="orderNo"
           />
@@ -886,6 +888,11 @@ export default {
     DeliverGoodsForm,
   },
   methods: {
+    //代理修改应付账单空运费联动修改
+    changeAgent(val){
+      // console.log(val)
+      this.$refs.typeTwo.tableData[0].expenseUnitName=val
+    },
     //切换开票记录表格显示
     shiftShowBill(){
       this.showBillHistory = !this.showBillHistory
@@ -1313,7 +1320,7 @@ export default {
         this.$refs.typeBill4[0].addOneTableObj();
       } else if (e == 100) {
         // 这里是新增账单
-        this.$refs.typeNewBill.addOneTableObj();
+        this.$refs.typeNewBill.addOneTableObj(true);
       } else if (e == 200) {
         this.$refs.typeTwo.addOneTableObj();
       }
