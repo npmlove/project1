@@ -891,7 +891,7 @@ export default {
   methods: {
     changePayWay(val){
       this.initData.payWay = val
-      console.log(val)
+      // console.log(val)
     },
     //代理修改应付账单空运费联动修改
     changeAgent(val){
@@ -1356,7 +1356,7 @@ export default {
           res.ingStatic = false;
         }
       });
-      const { billId } = this.initData.arOrderPriceList[0].list[0];
+      const { billId } = this.initData.arOrderPriceList[e].list[0];
       this.$http
         .post(this.$service.modifyBill, { billId: billId })
         .then((res) => {
@@ -1508,6 +1508,9 @@ export default {
           delete order.trayDetail;
         }
         let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
+        if(orderPriceList.some(item=>!item.quantity || !item.price)){
+          return this.$message.warning("请填写费用金额")
+        }
       let orderCargoDetailList = this.$refs.typeThree.tableData
       for(var i=1;i<orderCargoDetailList.length;i++){
           orderCargoDetailList[i].id = '',
@@ -1685,6 +1688,7 @@ export default {
           console.log(res);
           if (res.code == 200) {
             // this.$router.push("/orderManagement/orderManage");
+            this.creatNewBillBoolen = false
             this.getOriganData()
           } else {
             console.log(res.message);

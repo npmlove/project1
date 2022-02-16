@@ -1243,7 +1243,7 @@ export default {
           res.ingStatic = false;
         }
       });
-      const { billId } = this.initData.arOrderPriceList[0].list[0];
+      const { billId } = this.initData.arOrderPriceList[e].list[0];
       this.$http
         .post(this.$service.modifyBill, { billId: billId })
         .then((res) => {
@@ -1369,6 +1369,9 @@ export default {
           delete order.trayDetail;
         }
         let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
+         if(orderPriceList.some(item=>!item.quantity || !item.price)){
+          return this.$message.warning("请填写费用金额")
+        }
         let orderCargoDetailList = arrayTypeThree;
         let params = {
           order: order,
@@ -1526,6 +1529,7 @@ export default {
           console.log(res);
           if (res.code == 200) {
             // this.$router.push("/orderManagement/orderManage");
+            this.creatNewBillBoolen = false
             this.getOriganData()
           } else {
             console.log(res.message);
