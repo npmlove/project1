@@ -634,6 +634,7 @@
           <billOrder
             ref="typeNewBill"
             :getList="[]"
+            :titleType="1"
             :orderIdTemp="orderId"
             :orderNoTemp="orderNo"
             :notSaleBefore="notSaleBefore"
@@ -1232,7 +1233,7 @@ export default {
         this.$refs.typeBill4[0].addOneTableObj();
       } else if (e == 100) {
         // 这里是新增账单
-        this.$refs.typeNewBill.addOneTableObj();
+        this.$refs.typeNewBill.addOneTableObj(true);
       } else if (e == 200) {
         this.$refs.typeTwo.addOneTableObj();
       }

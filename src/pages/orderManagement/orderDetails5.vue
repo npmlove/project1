@@ -595,6 +595,7 @@
         <div v-if="creatNewBillBoolen && notAirPeople">
           <billOrder
             ref="typeNewBill"
+            :titleType="1"
             :getList="[]"
             :orderIdTemp="orderId"
             :orderNoTemp="orderNo"
@@ -1198,7 +1199,7 @@ export default {
         this.$refs.typeBill4[0].addOneTableObj();
       } else if (e == 100) {
         // 这里是新增账单
-        this.$refs.typeNewBill.addOneTableObj();
+        this.$refs.typeNewBill.addOneTableObj(true);
       } else if (e == 200) {
         this.$refs.typeTwo.addOneTableObj();
       }

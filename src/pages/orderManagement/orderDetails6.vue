@@ -583,6 +583,7 @@
             ref="typeNewBill"
             :getList="[]"
             :orderIdTemp="orderId"
+            :titleType="1"
             :orderNoTemp="orderNo"
           />
           <el-button class="setWidth ml_20" @click="fatherAddOneItem(100)"
@@ -1175,7 +1176,7 @@ export default {
         this.$refs.typeBill4[0].addOneTableObj();
       } else if (e == 100) {
         // 这里是新增账单
-        this.$refs.typeNewBill.addOneTableObj();
+        this.$refs.typeNewBill.addOneTableObj(true);
       } else if (e == 200) {
         this.$refs.typeTwo.addOneTableObj();
       }
