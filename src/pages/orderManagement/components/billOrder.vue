@@ -3,6 +3,15 @@
     <div>
       <h1 class="title flex">
           <span>{{title}}</span> 
+          <span style="margin-left:30px;margin-right:5px" v-if="titleType==1">结算方式:</span>
+              <el-select v-if="titleType==1" :disabled="payWayDisabled" v-model="copyPayWay" clearable placeholder="请选择结算方式" size="small" @change="changePayWay">
+                <el-option
+                  v-for="(item,index) in payWayOpt"
+                  :key="index"
+                  :label="item.Name"
+                  :value="item.Value">
+                </el-option>
+              </el-select>
       </h1>
       <h1 class="title flex" style="margin-top:20px;margin-bottom:10px">
         <span class="calcSome">
@@ -150,9 +159,21 @@ class tableObj{
   }
 }
 export default {
-  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus'],
+  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay"],
   data() {
     return {
+     copyPayWay:'',
+     payWayDisabled:false,
+     payWayOpt: [
+          {
+            Name: '付款买单',
+            Value: 0
+          },
+          {
+            Name: '月结买单',
+            Value: 1
+          }
+        ],
       tableLock:false,
       tableData: [], // 
       agentIdList:[],
@@ -244,6 +265,11 @@ export default {
     }
   },
   methods:{
+    //改变结算方式
+    changePayWay(val){
+      // console.log(val)
+      this.$emit('changePayWay',val)
+    },
     //代理公司
     initAgent() {
         var data = {
@@ -396,7 +422,14 @@ export default {
       }
 
     },
-  }  
+  }, 
+   created(){
+     this.copyPayWay = this.payWay 
+    //  console.log(this.payWay)
+     if(this.payWay==0) {
+       this.payWayDisabled = true
+     }
+   }
 }
 </script>
 <style scoped>
@@ -412,8 +445,8 @@ export default {
 .title{
   font-size: 20px;
   font-weight: 800;
-  display: flex;
-  justify-content: space-between;
+  /* display: flex;
+  justify-content: space-between; */
 }
 .inData{
   margin-top: 10px;
