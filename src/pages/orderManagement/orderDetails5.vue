@@ -102,6 +102,8 @@
           <el-select
             v-model="initData.agentName"
             filterable
+            @change="changeAgent"
+
             size="mini"
             :disabled="canSelectAgent"
             placeholder="请选择"
@@ -850,6 +852,11 @@ export default {
     DeliverGoodsForm,
   },
   methods: {
+     //代理修改应付账单空运费联动修改
+    changeAgent(val){
+      // console.log(val)
+      this.$refs.typeTwo.tableData[0].expenseUnitName=val
+    },
     //下载pdf
     downLoadPDFs(item) {
       axios({
