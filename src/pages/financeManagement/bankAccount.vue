@@ -164,7 +164,7 @@
            return
          }
         
-        this.bankMessage.bankAccount = this.bankMessage.bankAccount.replace(/[^\d.]/g,'')
+        // this.bankMessage.bankAccount = this.bankMessage.bankAccount.replace(/[^\d.]/g,'')
         this.$http.post(this.$service.editBankAccount,this.bankMessage).then(
           data =>{
             if(data.code == 200) {
@@ -172,6 +172,7 @@
               this.searchBankAccount()
             } else {
                 this.$message.error(data.message)
+                console.log(data.message);
               }
           }
         ).catch(() => {
