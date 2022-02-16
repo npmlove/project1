@@ -173,6 +173,7 @@
             :pageSize='pageSize'
             @sizeChange='handleSizeChange'
             @showWOLogs='showWOLogs'
+            @handleSelect='handleSelect'
             @showFees='showFees'
             @currentChange='handleCurrentChange'>
           </Table>
@@ -187,6 +188,7 @@
             :operation='operation'
             :total='total'
             :currentPage='pageNum'
+            @handleSelect='handleSelect'
             :pageSize='pageSize'
             @sizeChange='handleSizeChange'
             @showWOLogs='showWOLogs'
