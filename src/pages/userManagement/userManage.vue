@@ -160,7 +160,7 @@
         rules: {
           customerServiceId: [{required: true, message: '请选择售前客服', trigger: 'change'}],
           certificationBody: [{max: 20, message: '认证主体最长20个字符', trigger: 'change'},{required: true, message: '请绑定认证主体', trigger: 'change'}],
-          qqInput:[{max:16,min:6,message:'QQ长度在6到16位',trigger: 'blur'}]
+          qqInput:[{max:16,min:6,message:'QQ长度在6到16位',trigger: 'blur'},{required:true,message:'请输入QQ号',trigger:'change'}]
         },
         creditTerm:{
           creditTerm:'',
