@@ -891,7 +891,7 @@ export default {
   methods: {
     changePayWay(val){
       this.initData.payWay = val
-      console.log(val)
+      // console.log(val)
     },
     //代理修改应付账单空运费联动修改
     changeAgent(val){

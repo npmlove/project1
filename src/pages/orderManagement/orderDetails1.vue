@@ -684,6 +684,8 @@
       </div>
       <div v-show="radio1 == '2'" class="details">
         <bill-order
+        @changePayWay="changePayWay" 
+        :payWay="initData.payWay"
           v-show="notAirPeople"
           :getList="initData.arOrderPriceList[0].list"
           :notSaleBefore="true"
@@ -898,6 +900,10 @@ export default {
     this.initPolPod();
   },
   methods: {
+    changePayWay(val){
+      this.initData.payWay = val
+      // console.log(val)
+    },
     trayAddClick(index, key) {
       var json = {
         trayNumber: "",
