@@ -1,12 +1,14 @@
 <template>
   <div class="order_table">
-    <div style="display:flex;justify-content:space-around;margin-bottom:15px;fontSize:13px;fontWeight:600" id="widthS">
-      <div>订单量:<span style="margin-left:5px">{{sumInfo.orderVols}}</span> </div>
-      <div>正常单/取消单:<span style="margin-left:5px">{{sumInfo.normalVols}}/{{sumInfo.cancelledVols}}</span> </div>
-      <div>正常单计费重:<span style="margin-left:5px">{{sumInfo.normalCws}}</span> </div>
-      <div>应收总计:<span style="margin-left:5px">{{sumInfo.arCnys}}</span> </div>
-      <div>应付总计:<span style="margin-left:5px">{{sumInfo.apCnys}}</span> </div>
-      <div>利润:<span style="margin-left:5px">{{sumInfo.profits}}</span> </div>
+    <div style="display:flex;padding: 0 10px 15px;fontSize:13px;fontWeight:600; flex-wrap: wrap; padding" id="widthS">
+      <div style="min-width: 14%; margin: 5px 10px;">订单量:<span style="margin-left:5px">{{sumInfo.orderVols}}</span> </div>
+      <div style="min-width: 14%; margin: 5px 10px;">正常单/取消单:<span style="margin-left:5px">{{sumInfo.normalVols}}/{{sumInfo.cancelledVols}}</span> </div>
+      <div style="min-width: 14%; margin: 5px 10px;">正常单计费重:<span style="margin-left:5px">{{sumInfo.normalCws}}</span> </div>
+      <div style="min-width: 14%; margin: 5px 10px;">应收总计:<span style="margin-left:5px">{{sumInfo.arCnys}}</span> </div>
+      <div style="min-width: 14%; margin: 5px 10px;">应付总计:<span style="margin-left:5px">{{sumInfo.apCnys}}</span> </div>
+      <div style="min-width: 14%; margin: 5px 10px;">利润:<span style="margin-left:5px">{{sumInfo.profits}}</span> </div>
+      <div style="min-width: 14%; margin: 5px 10px;">应收已核销人民币:<span style="margin-left:5px">{{sumInfo.arWoCny}}</span> </div>
+      <div style="min-width: 14%; margin: 5px 10px;">应收未核销人民币:<span style="margin-left:5px">{{sumInfo.arUnWoCny}}</span> </div>
     </div>
     <el-table stripe ref="multipleTable" @sort-change="handleSort" @selection-change="handleSelect" :data="tableData" style="width: 100%;">
       <template slot="empty">
