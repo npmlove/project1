@@ -492,7 +492,7 @@
       this.operateData()
     },
     activated() {
-      this.searchClick()
+      // this.searchClick()
     },
     beforeDestroy() {
       this.setIntervalTimer(false)

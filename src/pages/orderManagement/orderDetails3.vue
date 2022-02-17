@@ -78,6 +78,7 @@
         <span>订舱单价 </span>
         <span>
           <el-input
+            :disabled="initData.arOrderPriceList[0].status != 0"
             v-model="initData.bookingPrice"
             size="mini"
             placeholder="请输入内容"
@@ -991,10 +992,11 @@ export default {
     },
     // 如果子组件中有空运费 输入bookingPrice的时候同时修改子组件单价
     dealBookingPrice(e) {
-      console.log(e);
+      // console.log(e);
       if (e) {
         // 应收
-        let a = this.$refs.typeBill0[0].tableData;
+        // console.log(this.$refs.typeBill0)
+        let a = this.$refs.typeBill0&& this.$refs.typeBill0[0].tableData;
         for (let i in a) {
           if (a[i].expenseName == "空运费") {
             a[i].price = e;
@@ -1015,7 +1017,7 @@ export default {
       // 取到子组件typeOne
       if (num) {
         // 应收
-        let a = this.$refs.typeBill0[0].tableData;
+        let a = this.$refs.typeBill0 && this.$refs.typeBill0[0].tableData;
         for (let i in a) {
           if (a[i].expenseName == "空运费") {
             a[i].quantity = num;
