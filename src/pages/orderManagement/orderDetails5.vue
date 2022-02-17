@@ -71,13 +71,25 @@
         >
       </div>
       <div class="flex">
+        <img src="../../assets/orderNo.svg" alt="" style="width:15px;height:15px" @click="jumpToOrder">
         <span>运单号 </span>
         <span>
           <el-input
             v-model="initData.waybillNo"
             size="mini"
-            disabled
             placeholder="请输入内容"
+          ></el-input>
+        </span>
+      </div>
+       <div class="flex">
+        <span>分单号 </span>
+        <span>
+          <el-input
+            v-model="initData.subWaybillNo"
+            size="mini"
+            placeholder="请输入内容"
+            maxlength="80"
+            :disabled="initData.status>21"
           ></el-input>
         </span>
       </div>
