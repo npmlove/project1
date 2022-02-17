@@ -32,7 +32,7 @@
             <div class="dingdan" :style="'width:'+tableWidthS+'px'">
               <div style="margin-left:25px;fontWeight:700"> <img src="@/assets/huixingzhen.png" style="width:15px;height:15px" alt="" v-if="scope.row.fastOrderFlag == 1"> 订单号：{{scope.row.orderNo}}</div>
               <div style="fontWeight:700">进仓编号：{{scope.row.inboundNo || '暂无'}}</div>
-              <div style="fontWeight:700"> 运单号：{{scope.row.waybillNo || '暂无'}} <span v-if="scope.row.subWaybillNo" style="margin-left:5px;color:red">有分单</span></div>
+              <div style="fontWeight:700"> 运单号：{{scope.row.waybillNo || '暂无'}} <span v-if="scope.row.subWaybillNo" style="margin-left:5px">出分单</span></div>
               <div style="fontWeight:700">下单时间：{{scope.row.orderTime || '暂无'}}</div>
               <div @click="orderDetails(scope)" style="color: #2273ce;cursor: pointer;margin-right:25px">订单详情</div>
             </div>
