@@ -945,7 +945,7 @@
       //生成对账单弹框数据
       dialFourTable:[],
       dialFourDatas:{},
-      dialCheckInfo:{feeWarnInfo:"",accountName:"上海飞莱达供应链管理有限公司",accountBank:"中国银行上海万科支行",bankAccountCny:"4390817",bankAccountUsd:"",statementWarnInfo:""},
+      dialCheckInfo:{feeWarnInfo:"上信息请确认签字盖章回传,如若未回复三个工作日内默认确认,请悉知！",accountName:"上海飞莱达供应链管理有限公司",accountBank:"中国银行上海万科支行",bankAccountCny:"4390817",bankAccountUsd:"",statementWarnInfo:"若有异议,请联系我司财务部,联系电话:17898843921"},
       //航班日期选择器
          // 限制结束日期大于开始日期
         pickerOptionsStartOne: {
@@ -1198,7 +1198,7 @@
             message:"应收对象不一致,请重新勾选"
           })
         } else {
-        this.dialCheckInfo={feeWarnInfo:"",accountName:"上海飞莱达供应链管理有限公司",accountBank:"中国银行上海万科支行",bankAccountCny:"4390817",bankAccountUsd:"",statementWarnInfo:""}
+        this.dialCheckInfo={feeWarnInfo:"上信息请确认签字盖章回传,如若未回复三个工作日内默认确认,请悉知！",accountName:"上海飞莱达供应链管理有限公司",accountBank:"中国银行上海万科支行",bankAccountCny:"4390817",bankAccountUsd:"",statementWarnInfo:"若有异议,请联系我司财务部,联系电话:17898843921"}
         let requestData = {}
         if(this.pageSkipChecked == false) {
           requestData.overPageCheck = false
