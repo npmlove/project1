@@ -705,6 +705,15 @@ export default {
     await this.initSysSetTing();
   },
   methods: {
+    //跳转到提单页面
+    jumpToOrder(){
+      this.$router.push({
+        name:"ladingBillDownLoad",
+        params:{
+          orderNo:this.initData.orderNo
+        }
+      })
+    },
     changePayWay(val){
       this.initData.payWay = val
       // console.log(val)
