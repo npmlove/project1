@@ -70,6 +70,9 @@
         <span>
           <el-input
             v-model="initData.flightNo"
+            @blur="initData.flightNo = $event.target.value"
+            maxlength='6'
+            onkeyup="value=value.replace(/[\W]/g,'')"
             size="mini"
             placeholder="请输入航班号" />
         </span>
