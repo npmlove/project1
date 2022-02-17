@@ -673,7 +673,7 @@
         </p>
         </div>
         <opeartes ref="addOpearte" :oplist="operateList" />
-        <div class="line"></div>
+        <div class="line" v-if="notSaleBefore"></div>
         <div class="paddingBottom"></div>
       </div>
       <div v-if="radio1 == '111'" style="margin:-20px 0 0 -20px">

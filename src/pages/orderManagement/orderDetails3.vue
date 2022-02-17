@@ -703,7 +703,7 @@
         </p>
         </div>
         <opeartes ref="addOpearte" :oplist="operateList" />
-        <div class="line"></div>
+        <div class="line" v-if="notSaleBefore"></div>
         <div class="paddingBottom"></div>
       </div>
       <!-- 进仓指引 -->
