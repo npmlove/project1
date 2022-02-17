@@ -135,12 +135,12 @@
             show: true,
             width: '150'
           },
-          {
-            label: '状态',
-            prop: 'status',
-            show: true,
-            width: '100'
-          },
+          // {
+          //   label: '状态',
+          //   prop: 'status',
+          //   show: true,
+          //   width: '100'
+          // },
           {
             label: '注册时间',
             prop: 'createTime',
@@ -157,10 +157,10 @@
               label: '编辑',
               method: 'edit'
             },
-            {
-              label: '删除',
-              method: 'del'
-            },
+            // {
+            //   label: '删除',
+            //   method: 'del'
+            // },
             {
               label: '密码重置',
               method: 'revise'
