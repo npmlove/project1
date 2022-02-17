@@ -55,6 +55,9 @@
         <span>航班号 </span>
         <span>
           <el-input
+           @blur="initData.flightNo = $event.target.value"
+            onkeyup="value=value.replace(/[\W]/g,'')"
+            maxlength='6'
             v-model="initData.flightNo"
             size="mini"
             placeholder="请输入航班号" />
@@ -72,7 +75,7 @@
           ></span
         >
       </div>
-      <div class="flex">
+       <div class="flex">
         <img src="../../assets/orderNo.svg" alt="" style="width:15px;height:15px" @click="jumpToOrder">
         <span>运单号 </span>
         <span>
@@ -92,6 +95,10 @@
             placeholder="请输入内容"
             maxlength="80"
           ></el-input>
+        </span>
+          <span style="fontSize:10px;fontWeight:400;color:#999;transform:translateY(-16px);margin-left:6px">
+        <img src="../../assets/billOrderTip.svg" alt="" style="width:15px;height:15px">
+        请使用逗号隔开
         </span>
       </div>
       <div>
@@ -696,6 +703,8 @@
       </div>
       <div v-show="radio1 == '2'" class="details">
         <bill-order
+        @changePayWay="changePayWay" 
+        :payWay="initData.payWay"
           v-show="notAirPeople"
           :getList="initData.arOrderPriceList[0].list"
           :notSaleBefore="true"
@@ -919,6 +928,10 @@ export default {
         }
       })
     },
+    changePayWay(val){
+      this.initData.payWay = val
+      // console.log(val)
+    },
     trayAddClick(index, key) {
       var json = {
         trayNumber: "",
@@ -1139,6 +1152,9 @@ export default {
       let arrayTypeOne = this.$refs.typeOne.tableData;
       let arrayTypeTwo = this.$refs.typeTwo.tableData;
       let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
+       if(orderPriceList.some(item=>!item.quantity || !item.price)){
+          return this.$message.warning("请填写费用金额")
+        }
       let tempArray = this.initData.orderOptionsList;
       let params = {};
       if (this.isShow5) {

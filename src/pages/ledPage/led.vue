@@ -1,5 +1,5 @@
 <template>
-  <dv-full-screen-container style="height: 100vh; width: 100vw">
+  <resizeContainer style="height: 100vh; width: 100vw">
     <div
       style="background: #000; width: 100%; height: 100%"
       v-if="ifShowLed == 1"
@@ -122,17 +122,19 @@
       </div>
     </div>
     <div v-if="ifShowLed == 2"></div>
-  </dv-full-screen-container>
+  </resizeContainer>
 </template>
 <script>
 import worldMap from "./components/worldMap.vue";
 import doubleBarChart from "./components/doubleBarChart.vue";
+import resizeContainer from "../../components/resizeContainer.vue"
 import seamlessTable from "./components/seamlessTable.vue";
 export default {
   components: {
     worldMap,
     doubleBarChart,
     seamlessTable,
+    resizeContainer
   },
   created() {
     Date.prototype.format = function (fmt) {

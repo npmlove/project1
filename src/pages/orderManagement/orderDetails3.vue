@@ -61,7 +61,7 @@
               :label="item.airCompanyCode + '-' + item.name"
               :value="item.airCompanyCode"
             >
-            </el-option>
+            </el-option>                                                                                                                                                    
           </el-select>
         </span>
       </div>
@@ -70,6 +70,9 @@
         <span>
           <el-input
             v-model="initData.flightNo"
+            @blur="initData.flightNo = $event.target.value"
+            maxlength='6'
+            onkeyup="value=value.replace(/[\W]/g,'')"
             size="mini"
             placeholder="请输入航班号" />
         </span>
@@ -78,6 +81,7 @@
         <span>订舱单价 </span>
         <span>
           <el-input
+            :disabled="initData.canPriceChange"
             v-model="initData.bookingPrice"
             size="mini"
             placeholder="请输入内容"
@@ -86,7 +90,7 @@
           ></span
         >
       </div>
-      <div class="flex">
+     <div class="flex">
         <img src="../../assets/orderNo.svg" alt="" style="width:15px;height:15px" @click="jumpToOrder">
         <span>运单号 </span>
         <span>
@@ -97,17 +101,22 @@
           ></el-input>
         </span>
       </div>
-       <div class="flex">
+      <div class="flex">
         <span>分单号 </span>
         <span>
           <el-input
             v-model="initData.subWaybillNo"
             size="mini"
-            maxlength="80"
             placeholder="请输入内容"
-            :disabled="initData.status>=13"
+            maxlength="80"
+            :disabled="initData.status>21"
           ></el-input>
         </span>
+        <span style="fontSize:10px;fontWeight:400;color:#999;transform:translateY(-16px);margin-left:6px">
+        <img src="../../assets/billOrderTip.svg" alt="" style="width:15px;height:15px">
+        请使用逗号隔开
+        </span>
+
       </div>
       <div>
         <span>目的港 </span>
@@ -131,6 +140,7 @@
             v-model="initData.agentName"
             filterable
             size="mini"
+            @change="changeAgent"
             :disabled="canSelectAgent"
             placeholder="请选择"
           >
@@ -493,6 +503,13 @@
               <el-radio :label="2">需要</el-radio>
             </el-radio-group>
           </div>
+          <!-- 提货表单 -->
+          <pick-up-form
+            v-show="initData.isPickUp === 2"
+            :pickUpAddress.sync="initData.pickUpAddress"
+            :pickUpContacts.sync="initData.pickUpContacts"
+            :pickUpTel.sync="initData.pickUpTel"
+            :pickUpTime.sync="initData.pickUpTime" />
           <div class="mtop_10">
             <span class="mr_25">清关服务</span>
             <el-radio-group v-model="initData.cclType">
@@ -502,6 +519,12 @@
               <el-radio :label="4">DAP</el-radio>
             </el-radio-group>
           </div>
+          <!-- 送货表单 -->
+          <deliver-goods-form
+            v-show="initData.cclType !== 1"
+            :deliveryAddress.sync="initData.deliveryAddress"
+            :deliveryContacts.sync="initData.deliveryContacts"
+            :deliveryTel.sync="initData.deliveryTel" />
         </div>
         <h1 class="title">订单备注</h1>
         <div class="inData">
@@ -520,7 +543,7 @@
         <!-- 应付账单可以最多有5个 做个循环 循环组件ref -->
         <div v-for="(item, index) in initData.arOrderPriceList" :key="index">
           <!-- 组件部分 -->
-          <bill-order :getList="item.list" :ref="`typeBill${index}`"  v-show="notAirPeople" :notSaleBefore="true" :titleType="1" :vertifyAmount="initData.totalRcWoCny"/>
+          <bill-order @changePayWay="changePayWay" :newBill="index==0?false:true" :payWay="initData.payWay"  :getList="item.list" :ref="`typeBill${index}`" :currentStatus="item.status" v-show="notAirPeople" :notSaleBefore="true" :titleType="1" :vertifyAmount="initData.totalRcWoCny"/>
           <!-- 操作部分 -->
           <el-button
             class="setWidth ml_20"
@@ -531,9 +554,7 @@
             "
             >添加费用</el-button
           >
-          <br />
-          <br />
-          <br />
+          
           <div
             class="ml_20"
             v-if="initData.canCheckFlag == 1 && item.status == 0 && notAirPeople"
@@ -565,6 +586,16 @@
                 >修改账单</span
               >
             </p>
+             <!-- <p class="pTips" v-if="initData.orderInvoiceApply && initData.orderInvoiceApply.orderInvoiceApply && initData.orderInvoiceApply.orderInvoiceApply.length>0">
+              <span style="text-decoration:underline" :style="{color:initData.orderInvoiceApply.abnormalFlag ? 'red':'rgb(2, 175, 240)'}" @click="shiftShowBill">开票记录</span>
+              <span
+                @click="reWriteBill(index)"
+                v-if="
+                  initData.financeStatus == 0 || initData.financeStatus == 4
+                "
+                >修改账单</span
+              >
+            </p> -->
             <p class="pTips" v-if="item.status == 2">
               <span>账单已确认</span>
               <span
@@ -595,6 +626,7 @@
                 >修改账单</span
               >
             </p>
+            <!-- <billHistory v-if="showBillHistory" @shiftShowBill ="shiftShowBill" :tableData="this.initData.orderInvoiceApply.orderInvoiceApply"></billHistory> -->
           </div>
           <!-- 新增账单 -->
           <div v-if="notAirPeople"> 
@@ -614,9 +646,11 @@
         </div>
         <div v-if="creatNewBillBoolen && notAirPeople">
           <billOrder
+            :newBill = "true"
             :notSaleBefore="true"
             ref="typeNewBill"
             :getList="[]"
+            :titleType="1"
             :orderIdTemp="orderId"
             :orderNoTemp="orderNo"
           />
@@ -632,7 +666,7 @@
         </div>
         <div class="line"></div>
         <div></div>
-        <billOrder :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"  :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
+        <billOrder @changeAgentName="changeAgentName" :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"  :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
         <!-- 应收添加 -->
         <el-button
           class="setWidth ml_20"
@@ -672,7 +706,7 @@
         </p>
         </div>
         <opeartes ref="addOpearte" :oplist="operateList" />
-        <div class="line"></div>
+        <div class="line" v-if="notSaleBefore"></div>
         <div class="paddingBottom"></div>
       </div>
       <!-- 进仓指引 -->
@@ -701,9 +735,13 @@ import EntryGuide from "./components/EntryGuide.vue";
 import DepartureDatePicker from "./components/DepartureDatePicker";
 import { judgeWaybillNo } from "@/util/util";
 import ImageUploader  from './components/ImageUploader'
+import billHistory from './components/billHistory'
+import PickUpForm from './components/PickUpForm'
+import DeliverGoodsForm from './components/DeliverGoodsForm'
 export default {
   data() {
     return {
+      showBillHistory:false,
       filePath: '',
       notAirPeople:true,
       notSaleBefore:true,
@@ -841,6 +879,7 @@ export default {
   },
 
   created() {
+    console.log(this.creatNewBillBoolen)
     let dataShow = JSON.parse(sessionStorage.getItem("userInfo"))
     if(dataShow.name != "admin"){
       if(dataShow.roleName == "航线负责人") {
@@ -859,6 +898,7 @@ export default {
     clearInterval(this.billTimer);
   },
   components: {
+    billHistory,
     binList,
     ladingBill,
     billOrder,
@@ -867,9 +907,14 @@ export default {
     EntryGuide,
     DepartureDatePicker,
     ImageUploader,
+    PickUpForm,
+    DeliverGoodsForm,
   },
   methods: {
-      //跳转到提单页面
+    changeAgentName(val){
+      this.initData.agentName = val
+    },
+    //跳转到提单页面
     jumpToOrder(){
       this.$router.push({
         name:"ladingBillDownLoad",
@@ -877,6 +922,19 @@ export default {
           orderNo:this.initData.orderNo
         }
       })
+    },
+    changePayWay(val){
+      this.initData.payWay = val
+      // console.log(val)
+    },
+    //代理修改应付账单空运费联动修改
+    changeAgent(val){
+      // console.log(val)
+      this.$refs.typeTwo.tableData[0].expenseUnitName=val
+    },
+    //切换开票记录表格显示
+    shiftShowBill(){
+      this.showBillHistory = !this.showBillHistory
     },
     //下载pdf
     downLoadPDFs(item) {
@@ -945,17 +1003,18 @@ export default {
     },
     // 如果子组件中有空运费 输入bookingPrice的时候同时修改子组件单价
     dealBookingPrice(e) {
-      console.log(e);
+      // console.log(e);
       if (e) {
         // 应收
-        let a = this.$refs.typeBill0[0].tableData;
+        // console.log(this.$refs.typeBill0)
+        let a = this.$refs.typeBill0&& this.$refs.typeBill0[0].tableData;
         for (let i in a) {
           if (a[i].expenseName == "空运费") {
             a[i].price = e;
             this.$set(a[i], "price", e);
           }
         }
-        let b = this.$refs.typeTwo.tableData;
+        let b = this.$refs.typeTwo && this.$refs.typeTwo.tableData;
         for (let i in b) {
           if (b[i].expenseName == "空运费") {
             b[i].price = e;
@@ -969,14 +1028,14 @@ export default {
       // 取到子组件typeOne
       if (num) {
         // 应收
-        let a = this.$refs.typeBill0[0].tableData;
+        let a = this.$refs.typeBill0 && this.$refs.typeBill0[0].tableData;
         for (let i in a) {
           if (a[i].expenseName == "空运费") {
             a[i].quantity = num;
             this.$set(a[i], "quantity", num);
           }
         }
-        let b = this.$refs.typeTwo.tableData;
+        let b = this.$refs.typeTwo && this.$refs.typeTwo.tableData;
         for (let i in b) {
           if (b[i].expenseName == "空运费") {
             b[i].quantity = num;
@@ -1301,7 +1360,7 @@ export default {
         this.$refs.typeBill4[0].addOneTableObj();
       } else if (e == 100) {
         // 这里是新增账单
-        this.$refs.typeNewBill.addOneTableObj();
+        this.$refs.typeNewBill.addOneTableObj(true);
       } else if (e == 200) {
         this.$refs.typeTwo.addOneTableObj();
       }
@@ -1332,7 +1391,7 @@ export default {
           res.ingStatic = false;
         }
       });
-      const { billId } = this.initData.arOrderPriceList[0].list[0];
+      const { billId } = this.initData.arOrderPriceList[e].list[0];
       this.$http
         .post(this.$service.modifyBill, { billId: billId })
         .then((res) => {
@@ -1382,6 +1441,25 @@ export default {
         }
       } else {
         this.initData.waybillNo = null
+      }
+      const { pickUpAddress ,pickUpContacts, pickUpTel, pickUpTime, isPickUp, deliveryAddress, deliveryContacts, deliveryTel, cclType } = this.initData
+      // 校验提货信息
+      if (isPickUp === 2) {
+        const checkPickUp = [pickUpAddress ,pickUpContacts, pickUpTel, pickUpTime].every(item => item)
+        if (!checkPickUp) {
+          return this.$message.error(
+            "请填写国内提货相关信息"
+          )
+        }
+      }
+      // 校验收货信息
+      if (cclType !== 1) {
+        const checkDelivery = [deliveryAddress, deliveryContacts, deliveryTel].every(item => item)
+        if (!checkDelivery) {
+          return this.$message.error(
+            "请填写送货相关信息"
+          )
+        }
       }
       let boolenNo = judgeWaybillNo(inboundNo);
       if (boolenNo) {
@@ -1465,6 +1543,9 @@ export default {
           delete order.trayDetail;
         }
         let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
+        if(orderPriceList.some(item=>!item.quantity || !item.price)){
+          return this.$message.warning("请填写费用金额")
+        }
       let orderCargoDetailList = this.$refs.typeThree.tableData
       for(var i=1;i<orderCargoDetailList.length;i++){
           orderCargoDetailList[i].id = '',
@@ -1579,6 +1660,12 @@ export default {
     },
     // 客户发起对账
     async reconciliationClient(e) {
+      try {
+         await this.saveOrder()
+      }catch (err){
+        return 
+      }
+     
       // 客户发起对账前需选择付款单位
       const isAllApPriceFinish = this.initData.apOrderPriceList.every(price => {
         if (!price.expenseUnitName) {
@@ -1617,6 +1704,10 @@ export default {
       })()
       const typeTwo = this.initData.apOrderPriceList;
       tempArray = tempArray.concat(typeTwo);
+      if(tempArray.some(item=>!item.quantity || !item.price)) {
+        
+        return this.$message.warning("请填写数量和单价")
+      }
       let params = {
         departureDate: departureDate,
         fullLeg: fullLeg,
@@ -1632,6 +1723,7 @@ export default {
           console.log(res);
           if (res.code == 200) {
             // this.$router.push("/orderManagement/orderManage");
+            this.creatNewBillBoolen = false
             this.getOriganData()
           } else {
             console.log(res.message);
@@ -1707,7 +1799,7 @@ export default {
   margin-top: 20px;
 }
 .ml_20 {
-  margin-left: 20px;
+  margin:10px 0 10px 20px;
 }
 .setWidth {
   width: 200px;
@@ -1757,7 +1849,8 @@ export default {
 }
 .pTips {
   margin-left: 25px;
-  margin-top: 20px;
+  margin-top: 5x;
+  margin-bottom:15px;
 }
 .pTips > span:nth-child(2) {
   color: rgb(2, 175, 240);

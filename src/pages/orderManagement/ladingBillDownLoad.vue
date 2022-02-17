@@ -206,7 +206,7 @@ export default {
       this.orderNo = this.orderEmbed
       this.tabShow()
     }
-   if(this.$route.params.orderNo){
+    if(this.$route.params.orderNo){
       this.orderNo = this.$route.params.orderNo
       this.tabShow()
    }

@@ -3,9 +3,18 @@
     <div>
       <h1 class="title flex">
           <span>{{title}}</span> 
+          <span style="margin-left:30px;margin-right:5px" v-if="titleType==1 && !newBill">结算方式:</span>
+              <el-select v-if="titleType==1 && !newBill" :disabled="payWayDisabled" v-model="copyPayWay" clearable placeholder="请选择结算方式" size="small" @change="changePayWay">
+                <el-option
+                  v-for="(item,index) in payWayOpt"
+                  :key="index"
+                  :label="item.Name"
+                  :value="item.Value">
+                </el-option>
+              </el-select>
       </h1>
       <h1 class="title flex" style="margin-top:20px;margin-bottom:10px">
-        <span class="calcSome">
+        <span class="calcSome" v-show="notSaleBefore">
           <span v-if="titleType">{{(titleType==1?"应收核销金额:":"应付核销金额:")+(vertifyAmount?vertifyAmount:0)}}</span>
           <span style="margin-right:100px">原币合计{{totalOrgnStr}}</span>
           <span>人民币合计:{{totalCnyStr}}</span>
@@ -43,10 +52,10 @@
             >
             <template slot-scope="scope">
               <span v-if="expenseType == 1">
-                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.expenseUnitName" clearable></el-input>
+                <el-input size="small" :disabled="scope.row.ingStatic || scope.row.extraDisabled || tableLock" v-model="scope.row.expenseUnitName" clearable></el-input>
               </span>
               <span v-if="expenseType == 2">
-                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择">
+                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled="tableLock" @change="changeAgentName">
                     <el-option
                       v-for="item in agentIdList"
                       :key="item.id"
@@ -60,19 +69,19 @@
           <el-table-column
             label="数量">
             <template slot-scope="scope">
-                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.quantity" clearable></el-input>    
+                <el-input size="small" :disabled="scope.row.ingStatic|| tableLock" v-model="scope.row.quantity" clearable ></el-input>    
             </template>
           </el-table-column>
           <el-table-column
             label="单价">
             <template slot-scope="scope">
-                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.price" clearable></el-input>    
+                <el-input size="small" :disabled="scope.row.ingStatic|| tableLock" v-model="scope.row.price" clearable ></el-input>    
             </template>
           </el-table-column>
           <el-table-column
             label="币种">
             <template slot-scope="scope">
-                <el-select v-model="scope.row.currency" :disabled="scope.row.ingStatic"   placeholder="请选择">
+                <el-select v-model="scope.row.currency" :disabled="scope.row.ingStatic || tableLock"   placeholder="请选择">
                   <el-option
                     v-for="item in moneyList"
                     :key="item.value"
@@ -105,7 +114,7 @@
           <el-table-column
             label="备注">
             <template slot-scope="scope">
-                <el-input size="small"  v-model="scope.row.remark" clearable></el-input>    
+                <el-input size="small"  v-model="scope.row.remark" clearable :disabled="tableLock"></el-input>    
             </template>
           </el-table-column>
         </el-table>
@@ -150,9 +159,22 @@ class tableObj{
   }
 }
 export default {
-  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount"],
+  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay","newBill"],
   data() {
     return {
+     copyPayWay:'',
+     payWayDisabled:false,
+     payWayOpt: [
+          {
+            Name: '付款买单',
+            Value: 0
+          },
+          {
+            Name: '月结买单',
+            Value: 1
+          }
+        ],
+      tableLock:false,
       tableData: [], // 
       agentIdList:[],
       title:'',
@@ -192,6 +214,9 @@ export default {
     };
   },
   async mounted(){
+    if(this.currentStatus == 1) {
+      this.tableLock = true
+    }
     // 初始化table prop
 
     if(this.orderNoTemp == undefined){
@@ -221,7 +246,7 @@ export default {
       this.orderNo = this.orderNoTemp
       await this.getRates()
       await this.initExpenseCode()
-      this.addOneTableObj()
+      this.addOneTableObj(true)
     }
   },
   watch:{
@@ -230,9 +255,24 @@ export default {
       handler(newValue){
          this.dealOriginData(newValue) 
       }
+    },
+    currentStatus:{
+      handler(newValue,oldVale){
+        if(newValue == 1){
+           this.tableLock = true
+        }
+      }
     }
   },
   methods:{
+    changeAgentName(val){
+      this.$emit('changeAgentName',val)
+    },
+    //改变结算方式
+    changePayWay(val){
+      // console.log(val)
+      this.$emit('changePayWay',val)
+    },
     //代理公司
     initAgent() {
         var data = {
@@ -286,7 +326,7 @@ export default {
           return res
         }
       })
-      return someRate[0].val
+      return someRate[0]&&someRate[0].val
     },
 
     //费用名称 除了空运费
@@ -348,10 +388,11 @@ export default {
     return {temArray : dest,tempStr:str.substr(0, str.length - 1)}
     },
     // 添加
-    addOneTableObj(){
+    addOneTableObj(ifNewBill){
       let tempObj = new tableObj('',this.expenseUnitName)
 
       let a = Object.assign({},tempObj,{
+        extraDisabled:ifNewBill?false:true,
         orderId:this.orderId,
         expenseType:this.expenseType,
         orderNo:this.orderNo,
@@ -362,6 +403,9 @@ export default {
     },
     // 删除
     deleOneTableObj(e){
+      if(this.tableLock) {
+        return false
+      }
       let index = e.$index
       let ttt = this.$parent.judgeDeleteBIll()
       if(ttt){
@@ -381,7 +425,14 @@ export default {
       }
 
     },
-  }  
+  }, 
+   created(){
+     this.copyPayWay = this.payWay 
+    //  console.log(this.payWay)
+     if(this.payWay==0) {
+       this.payWayDisabled = true
+     }
+   }
 }
 </script>
 <style scoped>
@@ -397,8 +448,8 @@ export default {
 .title{
   font-size: 20px;
   font-weight: 800;
-  display: flex;
-  justify-content: space-between;
+  /* display: flex;
+  justify-content: space-between; */
 }
 .inData{
   margin-top: 10px;

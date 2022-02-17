@@ -43,6 +43,9 @@
         <span>航班号 </span>
         <span>
           <el-input
+           @blur="initData.flightNo = $event.target.value"
+            onkeyup="value=value.replace(/[\W]/g,'')"
+            maxlength='6'
             v-model="initData.flightNo"
             size="mini"
             placeholder="请输入航班号" />
@@ -60,7 +63,7 @@
           ></span
         >
       </div>
-      <div class="flex">
+     <div class="flex">
         <img src="../../assets/orderNo.svg" alt="" style="width:15px;height:15px" @click="jumpToOrder">
         <span>运单号 </span>
         <span>
@@ -71,15 +74,19 @@
           ></el-input>
         </span>
       </div>
-       <div class="flex">
+      <div class="flex">
         <span>分单号 </span>
         <span>
           <el-input
             v-model="initData.subWaybillNo"
             size="mini"
-            maxlength="80"
             placeholder="请输入内容"
+            maxlength="80"
           ></el-input>
+        </span>
+          <span style="fontSize:10px;fontWeight:400;color:#999;transform:translateY(-16px);margin-left:6px">
+        <img src="../../assets/billOrderTip.svg" alt="" style="width:15px;height:15px">
+        请使用逗号隔开
         </span>
       </div>
       <div>
@@ -473,6 +480,13 @@
               <el-radio :label="2">需要</el-radio>
             </el-radio-group>
           </div>
+          <!-- 提货表单 -->
+          <pick-up-form
+            v-show="initData.isPickUp === 2"
+            :pickUpAddress.sync="initData.pickUpAddress"
+            :pickUpContacts.sync="initData.pickUpContacts"
+            :pickUpTel.sync="initData.pickUpTel"
+            :pickUpTime.sync="initData.pickUpTime" />
           <div class="mtop_10">
             <span class="mr_25">清关服务</span>
             <el-radio-group v-model="initData.cclType">
@@ -482,6 +496,12 @@
               <el-radio :label="4">DAP</el-radio>
             </el-radio-group>
           </div>
+          <!-- 送货表单 -->
+          <deliver-goods-form
+            v-show="initData.cclType !== 1"
+            :deliveryAddress.sync="initData.deliveryAddress"
+            :deliveryContacts.sync="initData.deliveryContacts"
+            :deliveryTel.sync="initData.deliveryTel" />
         </div>
         <h1 class="title">订单备注</h1>
         <div class="inData">
@@ -498,6 +518,8 @@
       </div>
       <div v-show="radio1 == '2'">
         <bill-order
+        @changePayWay="changePayWay" 
+        :payWay="initData.payWay"
           v-show="notAirPeople"
           :getList="initData.arOrderPriceList[0].list"
           :notSaleBefore="true"
@@ -538,6 +560,8 @@ import TabBar from "./components/TabBar.vue";
 import ladingBill from './ladingBillDownLoad.vue'
 import EntryGuide from "./components/EntryGuide.vue";
 import DepartureDatePicker from "./components/DepartureDatePicker";
+import PickUpForm from './components/PickUpForm'
+import DeliverGoodsForm from './components/DeliverGoodsForm'
 export default {
   data() {
     return {
@@ -637,7 +661,9 @@ export default {
     TabBar,
     EntryGuide,
     DepartureDatePicker,
-    ladingBill
+    ladingBill,
+    PickUpForm,
+    DeliverGoodsForm,
   },
   computed: {
     //页面代理是否可选
@@ -686,7 +712,7 @@ export default {
     await this.initSysSetTing();
   },
   methods: {
-      //跳转到提单页面
+    //跳转到提单页面
     jumpToOrder(){
       this.$router.push({
         name:"ladingBillDownLoad",
@@ -694,6 +720,10 @@ export default {
           orderNo:this.initData.orderNo
         }
       })
+    },
+    changePayWay(val){
+      this.initData.payWay = val
+      // console.log(val)
     },
     trayAddClick(index, key) {
       var json = {
@@ -876,6 +906,25 @@ export default {
       } else {
         this.initData.waybillNo = null;
       }
+      const { pickUpAddress ,pickUpContacts, pickUpTel, pickUpTime, isPickUp, deliveryAddress, deliveryContacts, deliveryTel, cclType } = this.initData
+      // 校验提货信息
+      if (isPickUp === 2) {
+        const checkPickUp = [pickUpAddress ,pickUpContacts, pickUpTel, pickUpTime].every(item => item)
+        if (!checkPickUp) {
+          return this.$message.error(
+            "请填写国内提货相关信息"
+          )
+        }
+      }
+      // 校验收货信息
+      if (cclType !== 1) {
+        const checkDelivery = [deliveryAddress, deliveryContacts, deliveryTel].every(item => item)
+        if (!checkDelivery) {
+          return this.$message.error(
+            "请填写送货相关信息"
+          )
+        }
+      }
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
       let order = this.initData;
       if (order.hasOwnProperty("apOrderPriceList")) {
@@ -894,6 +943,9 @@ export default {
       let arrayTypeOne = this.$refs.typeOne.tableData;
       let arrayTypeTwo = this.$refs.typeTwo.tableData;
       let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
+       if(orderPriceList.some(item=>!item.quantity || !item.price)){
+          return this.$message.warning("请填写费用金额")
+        }
       let params = {
         order: order,
         orderPriceList: orderPriceList,

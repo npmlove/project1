@@ -8,7 +8,13 @@
         label-position="left"
       >
         <div class="content-search-normal" style="position:relative">
-          <el-form-item label="订单号:" class="formItem" label-width="80px">
+           <div style="position:absolute;right:10px;top:10px">
+              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+          </div>
+          </div>
+          <el-form-item label="订单号:" class="formItem" >
             <el-popover
                placement="right"
                width="200"
@@ -17,17 +23,17 @@
                  {{index==19?"...":item}}
                </div>
             <el-input
-                style="width: 190px"
                 slot="reference"
                 v-model="selectResult.orderNos"
                 placeholder="请输入订单号"
+                style="width:185px"
                 clearable
                   >
               </el-input>
           </el-popover>
 
           </el-form-item>
-          <el-form-item label="运单号:" class="formItem" label-width="80px">
+          <el-form-item label="运单号:" class="formItem" >
             <el-popover
                placement="right"
                width="200"
@@ -37,7 +43,6 @@
                </div>
            <el-input
               slot="reference"
-               style="width: 190px"
                v-model="selectResult.waybillNos"
                placeholder="请输入运单号"
                clearable
@@ -45,20 +50,18 @@
             </el-input>
           </el-popover>
           </el-form-item>
-          <el-form-item label="应收对象:" class="formItem" label-width="80px">
+          <el-form-item label="应收对象:" class="formItem" >
             <el-input
               v-model="selectResult.reconciliationUnit"
-              style="width: 190px"
               size="medium"
               maxlength="30"
               clearable
               placeholder="请输入应收对象"
             ></el-input>
           </el-form-item>
-          <el-form-item label="订舱客户:" class="formItem" label-width="80px">
+          <el-form-item label="订舱客户:" class="formItem" >
             <el-input
               v-model="selectResult.customerName"
-              style="width: 190px"
               size="medium"
               maxlength="30"
               clearable
@@ -66,7 +69,7 @@
             ></el-input>
           </el-form-item>
 
-          <el-form-item label="代理上家:" class="formItem" label-width="80px" >
+          <el-form-item label="代理上家:" class="formItem"  >
             <el-select
               v-model="selectResult.agentId"
               id="agentId"
@@ -78,7 +81,6 @@
               remote
               maxlength="30"
               reserve-keyword
-              style="width: 190px"
             >
               <el-option
                 v-for="item in agentOpt"
@@ -89,7 +91,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="航司:" class="formItem" label-width="80px" v-show="selectControl">
+          <el-form-item label="航司:" class="formItem"  v-show="selectControl">
             <el-select
               v-model="selectResult.airCompanyCode"
               id="airCompany"
@@ -101,7 +103,6 @@
               remote
               maxlength="15"
               reserve-keyword
-              style="width: 190px"
             >
               <el-option
                 v-for="(item,index) in airCompanyCodeOpt"
@@ -115,7 +116,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="起运港:" class="formItem" label-width="80px" v-show="selectControl">
+          <el-form-item label="起运港:" class="formItem"  v-show="selectControl">
             <el-select
               @blur="autoValue($event.target.value.toUpperCase(),'pol')"
               v-model="selectResult.pol"
@@ -126,7 +127,6 @@
               maxlength="15"
               remote
               reserve-keyword
-              style="width: 190px"
             >
               <el-option
                 v-for="(item, index) in polOpt"
@@ -140,7 +140,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="目的港:" class="formItem" label-width="80px" v-show="selectControl">
+          <el-form-item label="目的港:" class="formItem"  v-show="selectControl">
             <el-select
               @blur="autoValue($event.target.value.toUpperCase(),'pod')"
               v-model="selectResult.pod"
@@ -151,7 +151,6 @@
               filterable
               remote
               reserve-keyword
-              style="width: 190px"
             >
               <el-option
                 v-for="item in podOpt"
@@ -164,8 +163,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-         <el-form-item label="核销状态" label-width="80px" style="width:320px" v-show="selectControl">
-            <el-select v-model="selectResult.rcvWriteOffStatusList" placeholder="核销状态" clearable multiple collapse-tags  @change="dealAllChange" style="width: 190px;">
+         <el-form-item label="核销状态"  class="formItem"  v-show="selectControl">
+            <el-select v-model="selectResult.rcvWriteOffStatusList" placeholder="核销状态" clearable multiple collapse-tags  @change="dealAllChange" >
               <el-option
                 v-for="(item,index) in writeOffStatus"
                 :key="index"
@@ -175,7 +174,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="售前客服:" class="formItem" label-width="80px" v-show="selectControl">
+          <el-form-item label="售前客服:" class="formItem"  v-show="selectControl">
             <el-select
               id="pscsId"
               v-model="selectResult.pscsId"
@@ -185,7 +184,6 @@
               filterable
               remote
               reserve-keyword
-              style="width: 190px"
             >
               <el-option
                 v-for="item in payBefore"
@@ -196,7 +194,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="售中客服:" class="formItem" label-width="80px" v-show="selectControl">
+          <el-form-item label="售中客服:" class="formItem"  v-show="selectControl">
             <el-select
               id="mscsId"
               v-model="selectResult.mscsId"
@@ -206,7 +204,6 @@
               filterable
               remote
               reserve-keyword
-              style="width: 190px"
             >
               <el-option
                 v-for="item in paying"
@@ -220,52 +217,52 @@
 
           <el-form-item
             label="航班日期:"
-            style="width: 480px"
-            label-width="80px"
+             class="formItem"
             v-show="selectControl">
             <el-date-picker
-              style="width: 180px"
               value-format="yyyy-MM-dd"
               v-model="selectResult.startDepartureDate"
               type="date"
               :picker-options="pickerOptionsStartOne"
               placeholder="选择日期"
+              style="width:175px"
             >
             </el-date-picker
             >-
             <el-date-picker
-              style="width: 180px"
               value-format="yyyy-MM-dd"
               v-model="selectResult.endDepartureDate"
               type="date"
               :picker-options="pickerOptionsEndOne"
               placeholder="选择日期"
+              style="width:175px"
+
             >
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item label="下单时间:" style="width: 480px" v-show="selectControl">
+          <el-form-item label="交单时间:" v-show="selectControl"  class="formItem">
             <el-date-picker
               value-format="yyyy-MM-dd"
-              style="width: 180px"
-              v-model="selectResult.startOrderTime"
+              v-model="selectResult.startPresentationTime"
               type="date"
               :picker-options="pickerOptionsStartTwo"
+              style="width:175px"
               placeholder="选择日期"
             >
             </el-date-picker
             >-
             <el-date-picker
               value-format="yyyy-MM-dd"
-              style="width: 180px"
-              v-model="selectResult.endOrderTime"
+              v-model="selectResult.endPresentationTime"
               type="date"
               :picker-options="pickerOptionsEndTwo"
+              style="width:175px"
               placeholder="选择日期"
             >
             </el-date-picker>
           </el-form-item>
-           <el-form-item label="结算方式:" label-width="80px" style="width:320px" v-show="selectControl">
+           <el-form-item label="结算方式:"  class="formItem"  v-show="selectControl">
             <el-select
               v-model="selectResult.payWay"
               placeholder="请选择结算方式"
@@ -280,7 +277,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="航线:" class="formItem" label-width="80px" v-show="selectControl">
+          <el-form-item label="航线:" class="formItem"  v-show="selectControl">
             <el-select
               id="principalId"
               v-model="selectResult.principalId"
@@ -290,7 +287,6 @@
               filterable
               remote
               reserve-keyword
-              style="width: 190px"
             >
               <el-option
                 v-for="item in airManger"
@@ -301,13 +297,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-             <div style="text-align:center">
-              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
-            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span> 
-          </div>
-          </div>
+          
           <div class="operateButton">
             <el-button
               @click="searchClick"
@@ -517,23 +507,7 @@
               <el-button type="primary" size="mini" @click="getStatistData"
                 >数据统计</el-button
               >
-              <div style="margin-top: 15px;display:flex;font-size:12px" v-if="statistDataShow">
-                <div class="statist">
-                  <div>应收总金额:{{statistData.totalArCny}}</div>
-                  <div v-html="dealOrgnS(statistData.totalArOrgn,'应收原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
-                </div>
-                <div class="statist">
-                  <div>已核销总金额:{{statistData.totalRcWoCny}}</div>
-                  <div v-html="dealOrgnS(statistData.totalRcWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
-                </div>
-                <div class="statist">
-                  <div>未核销总金额:{{statistData.totalRcUnwoCny}}</div>
-                  <div v-html="dealOrgnS(statistData.totalRcUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
-                </div>
-                <div class="statist" style="color:red;font-size:20px" v-if = "errorStatist">
-                  <div>存在异常订单！</div>
-                </div>
-              </div>
+            
             </div>
           <div style="display:flex">
             <div style="margin:23px 10px 0 0">
@@ -561,7 +535,23 @@
             </el-pagination>
           </div>
           </div>
-            
+              <div style="padding-bottom: 20px;display:flex;font-size:12px" v-if="statistDataShow">
+                <div class="statist">
+                  <div>应收总金额:{{statistData.totalArCny}}</div>
+                  <div v-html="dealOrgnS(statistData.totalArOrgn,'应收原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
+                </div>
+                <div class="statist">
+                  <div>已核销总金额:{{statistData.totalRcWoCny}}</div>
+                  <div v-html="dealOrgnS(statistData.totalRcWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
+                </div>
+                <div class="statist">
+                  <div>未核销总金额:{{statistData.totalRcUnwoCny}}</div>
+                  <div v-html="dealOrgnS(statistData.totalRcUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right" class="statists"></div>
+                </div>
+                <div class="statist" style="color:red;font-size:20px" v-if = "errorStatist">
+                  <div>存在异常订单！</div>
+                </div>
+              </div>
         </el-tab-pane>
       </el-tabs>
       <el-dialog :title="dialogTitleOne+' 订单详情'" :visible.sync="dialogFormVisibleOne" width="80%">
@@ -869,8 +859,8 @@
         pscsId:"",
         startDepartureDate:"",
         endDepartureDate:"",
-        startOrderTime:"",
-        endOrderTime:"",
+        startPresentationTime:"",
+        endPresentationTime:"",
         principalId:"",
     },
     //表格选中数据
@@ -955,7 +945,7 @@
       //生成对账单弹框数据
       dialFourTable:[],
       dialFourDatas:{},
-      dialCheckInfo:{feeWarnInfo:"",accountName:"上海飞莱达供应链管理有限公司",accountBank:"中国银行上海万科支行",bankAccountCny:"4390817",bankAccountUsd:"",statementWarnInfo:""},
+      dialCheckInfo:{feeWarnInfo:"上信息请确认签字盖章回传,如若未回复三个工作日内默认确认,请悉知！",accountName:"上海飞莱达供应链管理有限公司",accountBank:"中国银行上海万科支行",bankAccountCny:"4390817",bankAccountUsd:"",statementWarnInfo:"若有异议,请联系我司财务部,联系电话:17898843921"},
       //航班日期选择器
          // 限制结束日期大于开始日期
         pickerOptionsStartOne: {
@@ -977,7 +967,7 @@
         // 下单时间
          pickerOptionsStartTwo: {
           disabledDate: time => {
-            let endDateVal = this.selectResult.endOrderTime
+            let endDateVal = this.selectResult.endPresentationTime
             if (endDateVal) {
               return time.getTime() > new Date(endDateVal).getTime()
             }
@@ -985,7 +975,7 @@
         },
         pickerOptionsEndTwo: {
           disabledDate: time => {
-            let beginDateVal = this.selectResult.startOrderTime
+            let beginDateVal = this.selectResult.startPresentationTime
             if (beginDateVal) {
               return time.getTime() < new Date(beginDateVal).getTime()-8.64e7
             }
@@ -1208,7 +1198,7 @@
             message:"应收对象不一致,请重新勾选"
           })
         } else {
-        this.dialCheckInfo={feeWarnInfo:"",accountName:"上海飞莱达供应链管理有限公司",accountBank:"中国银行上海万科支行",bankAccountCny:"4390817",bankAccountUsd:"",statementWarnInfo:""}
+        this.dialCheckInfo={feeWarnInfo:"上信息请确认签字盖章回传,如若未回复三个工作日内默认确认,请悉知！",accountName:"上海飞莱达供应链管理有限公司",accountBank:"中国银行上海万科支行",bankAccountCny:"4390817",bankAccountUsd:"",statementWarnInfo:"若有异议,请联系我司财务部,联系电话:17898843921"}
         let requestData = {}
         if(this.pageSkipChecked == false) {
           requestData.overPageCheck = false
@@ -1415,7 +1405,29 @@
         this.errorStatist = false
         this.statistDataShow = !this.statistDataShow
         if(this.statistDataShow == false) return""
-        this.$http.post(this.$service.receivableSum,this.searchDataDeal()).then(res=>{
+        // let requestS = JSON.parse(JSON.stringify(this.searchDataDeal()))
+        // if(this.selectTableData) {
+        //   requestS.rcvIds = this.selectTableData.map(item=>item.id)
+        // }
+        // delete requestS.pageSize
+        // delete requestS.pageNum
+        let requestS = JSON.parse(JSON.stringify(this.searchDataDeal()))
+        delete requestS.pageSize
+        delete requestS.pageNum
+        let requestData;
+        if(this.pageSkipChecked == true) {
+          requestData = {
+            financePageDTO:requestS,
+            overPageCheck:true,
+          }
+        } else {
+          requestData = {
+            financePageDTO:requestS,
+            rcvIds:this.selectTableData.map(item=>item.id),
+            overPageCheck:false,
+          }
+        }
+        this.$http.post(this.$service.receivableSum,requestData).then(res=>{
           this.statistData = {
             totalArCny:res.data.totalArCny.toLocaleString('en-US'),
             totalArOrgn:res.data.totalArOrgn,
@@ -1657,8 +1669,8 @@
         pscsId:"",
         startDepartureDate:"",
         endDepartureDate:"",
-        startOrderTime:"",
-        endOrderTime:"",
+        startPresentationTime:"",
+        endPresentationTime:"",
         principalId:"",
     }
       },
@@ -1765,6 +1777,10 @@
 /deep/ .el-tag.el-tag--info{
   max-width: 100px;
 }
+ .el-button--primary{
+      width:90px;
+      // text-align: center;
+  }
 
 .statist {
     margin-left:15px;
@@ -1796,12 +1812,11 @@
         padding: 20px 20px 0 20px !important;
         background: #fff;
         .formItem {
-          width: 320px;
-          margin-top: -5px;
+         margin:0 28px 8px 0;
         }
         .operateButton {
            display: flex;
-           justify-content: flex-end;
+           justify-content: center;
            margin-bottom: -10px;
            button {
              margin: 0px 10px 20px 10px;

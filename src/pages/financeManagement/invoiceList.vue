@@ -3,30 +3,36 @@
     <div class="content">
       <el-form :inline="true" size="medium" :model="selectResult" class="demo-form-inline" label-position="left">
         <div class="content-search-normal" style="position:relative">
+             <div style="position:absolute;right:10px;top:10px">
+              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+          </div>
+          </div>
           <div class="formItem">
-          <el-form-item label="订单号:" label-width="80px">
-            <el-input v-model="selectResult.orderNo" style="width: 210px;" size="medium" maxlength="15" clearable placeholder="请输入订单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.orderNo = $event.target.value"></el-input>
+          <el-form-item label="订单号:" >
+            <el-input v-model="selectResult.orderNo"  size="medium" maxlength="15" clearable placeholder="请输入订单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.orderNo = $event.target.value"></el-input>
           </el-form-item>
         </div>
 
         <div class="formItem">
-          <el-form-item label="运单号:" label-width="80px">
-            <el-input v-model="selectResult.waybillNo" style="width: 210px;" size="medium" clearable placeholder="请输入运单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.waybillNo = $event.target.value.substr(0,11)"></el-input>
+          <el-form-item label="运单号:" >
+            <el-input v-model="selectResult.waybillNo"  size="medium" clearable placeholder="请输入运单号" onkeyup="this.value = this.value.replace(/[^\da-zA-Z]/g,'');" @blur="selectResult.waybillNo = $event.target.value.substr(0,11)"></el-input>
           </el-form-item>
         </div>
         <div class="formItem">
-          <el-form-item label="订舱公司:" label-width="80px">
-            <el-input v-model="selectResult.customerName" style="width: 210px;" size="medium" maxlength="30" clearable placeholder="请输入订舱客户"></el-input>
+          <el-form-item label="订舱公司:" >
+            <el-input v-model="selectResult.customerName"  size="medium" maxlength="30" clearable placeholder="请输入订舱客户"></el-input>
           </el-form-item>
         </div>
         <div class="formItem">
-          <el-form-item label="发票抬头:" label-width="80px">
-            <el-input v-model="selectResult.invoiceTitle" style="width: 210px;" size="medium" maxlength="30" clearable placeholder="请输入发票抬头"></el-input>
+          <el-form-item label="发票抬头:" >
+            <el-input v-model="selectResult.invoiceTitle"  size="medium" maxlength="30" clearable placeholder="请输入发票抬头"></el-input>
           </el-form-item>
         </div>
         <div class="formItem">
-          <el-form-item label="是否上传:" label-width="80px">
-            <el-select  v-model="selectResult.upload" style="width: 210px;">
+          <el-form-item label="是否上传:" >
+            <el-select  v-model="selectResult.upload">
               <el-option
                 v-for="(item,index) in ifUpload"
                 :key="index"
@@ -37,13 +43,13 @@
           </el-form-item>
         </div>
          <div class="formItem" v-show="selectControl">
-          <el-form-item label="发票号:" label-width="80px">
-            <el-input v-model="selectResult.invoiceNum" style="width: 210px;" size="medium" maxlength="8" clearable placeholder="请输入发票号" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" @blur="selectResult.invoiceNum = $event.target.value"></el-input>
+          <el-form-item label="发票号:" >
+            <el-input v-model="selectResult.invoiceNum"  size="medium" maxlength="8" clearable placeholder="请输入发票号" onkeyup="this.value = this.value.replace(/[^\d]/g,'');" @blur="selectResult.invoiceNum = $event.target.value"></el-input>
           </el-form-item>
         </div>
         <div class="formItem" v-show="selectControl">
-          <el-form-item label="发票类型:" label-width="80px">
-            <el-select v-model="selectResult.invoiceType" multiple  collapse-tags style="width: 210px;" @change="dealAllChange">
+          <el-form-item label="发票类型:" >
+            <el-select v-model="selectResult.invoiceType" multiple  collapse-tags @change="dealAllChange">
               <el-option
                 v-for="(item,index) in billType"
                 :key="index"
@@ -54,8 +60,8 @@
           </el-form-item>
         </div>
         <div class="formItem" v-show="selectControl">
-          <el-form-item label="开票进度:" label-width="80px">
-            <el-select v-model="selectResult.invoicingStatus" multiple  collapse-tags style="width: 210px;" @change="dealAllChange">
+          <el-form-item label="开票进度:" >
+            <el-select v-model="selectResult.invoicingStatus" multiple  collapse-tags  @change="dealAllChange">
               <el-option
                 v-for="(item,index) in billProgress"
                 :key="index"
@@ -66,8 +72,8 @@
           </el-form-item>
         </div>
         <div class="formItem" v-show="selectControl">
-          <el-form-item label="发票状态:" label-width="80px">
-            <el-select v-model="selectResult.invoiceStatus" style="width: 210px;">
+          <el-form-item label="发票状态:" >
+            <el-select v-model="selectResult.invoiceStatus">
               <el-option
                 v-for="(item,index) in billState"
                 :key="index"
@@ -79,8 +85,8 @@
           </el-form-item>
         </div>
         <div class="formItem" v-show="selectControl">
-          <el-form-item label="快递状态:" label-width="80px">
-            <el-select v-model="selectResult.expressStatus" style="width: 210px;">
+          <el-form-item label="快递状态:" >
+            <el-select v-model="selectResult.expressStatus" >
               <el-option
                 v-for="(item,index) in expressState"
                 :key="index"
@@ -90,10 +96,9 @@
             </el-select>
           </el-form-item>
         </div>
-       <div style="width:400px" class="formItem" v-show="selectControl">
-          <el-form-item label="航班日期" label-width="80px">
+       <div  class="formItem" v-show="selectControl">
+          <el-form-item label="航班日期" >
              <el-date-picker
-             style="width:150px"
               v-model="selectResult.startDepartureDate"
               type="date"
               :picker-options="pickerOptionsStartOne"
@@ -101,7 +106,6 @@
               placeholder="选择日期">
             </el-date-picker >-
              <el-date-picker
-             style="width:150px"
               v-model="selectResult.endDepartureDate"
               type="date"
               :picker-options="pickerOptionsEndOne"
@@ -110,10 +114,9 @@
             </el-date-picker>
           </el-form-item>
         </div>
-        <div style="width:400px" class="formItem" v-show="selectControl">
-          <el-form-item label="交单时间:" label-width="80px">
+        <div  class="formItem" v-show="selectControl">
+          <el-form-item label="交单时间:" >
             <el-date-picker
-             style="width:150px"
               v-model="selectResult.startPresentationTime"
               type="date"
               :picker-options="pickerOptionsStartTwo"
@@ -121,7 +124,6 @@
               placeholder="选择日期">
             </el-date-picker >-
              <el-date-picker
-             style="width:150px"
               v-model="selectResult.endPresentationTime"
               type="date"
               value-format="yyyy-MM-dd"
@@ -130,10 +132,9 @@
             </el-date-picker>
           </el-form-item>
         </div>
-        <div style="width:400px" class="formItem" v-show="selectControl">
-          <el-form-item label="申请时间:" label-width="80px">
+        <div  class="formItem" v-show="selectControl">
+          <el-form-item label="申请时间:" >
             <el-date-picker
-             style="width:150px"
               v-model="selectResult.startInvoiceApplyTime"
               :picker-options="pickerOptionsStartThree"
               value-format="yyyy-MM-dd"
@@ -141,7 +142,6 @@
               placeholder="选择日期">
             </el-date-picker >-
              <el-date-picker
-             style="width:150px"
               v-model="selectResult.endInvoiceApplyTime"
               :picker-options="pickerOptionsEndThree"
               value-format="yyyy-MM-dd"
@@ -150,10 +150,9 @@
             </el-date-picker>
           </el-form-item>
         </div>
-        <div style="width:400px" class="formItem"  v-show="selectControl">
-          <el-form-item label="开票日期:" label-width="80px">
+        <div  class="formItem"  v-show="selectControl">
+          <el-form-item label="开票日期:" >
             <el-date-picker
-             style="width:140px"
               v-model="selectResult.startInvoicingTime"
               :picker-options="pickerOptionsStartFour"
               value-format="yyyy-MM-dd"
@@ -161,7 +160,6 @@
               placeholder="选择日期">
             </el-date-picker >-
              <el-date-picker
-             style="width:140px"
               v-model="selectResult.endInvoicingTime"
               :picker-options="pickerOptionsEndFour"
               value-format="yyyy-MM-dd"
@@ -170,13 +168,7 @@
             </el-date-picker>
           </el-form-item>
         </div>
-         <div style="text-align:center">
-              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
-            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-             <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span> 
-          </div>
-          </div>
+        
         <div class="operateButton">
               <el-button @click="searchClick(true)" size="mini" type="primary" icon="el-icon-search" style="margin-right:0">查询</el-button>
               <el-button @click="restClick" size="mini" type="primary">清空</el-button>
@@ -186,7 +178,7 @@
       </el-form>
       <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData" value="全部">
         <el-tab-pane v-for="(item,index) in tabName" :key="index" :label="item+'('+tabNum[index]+')'" :name="item">
-      <foldTable :tableData="tableData" :pageSkipAll="pageSkipChecked" @changeCheckBox="handleSelectionChange" @showOrderWayBill="showOrderWayBill" @showInvoice="showInvoice" @openPost="openPost"></foldTable>
+      <foldTable :tableData="tableData" :pageSkipAll="pageSkipChecked" :checkedTable="checkedTable" @changeCheckBox="handleSelectionChange" @showOrderWayBill="showOrderWayBill" @showInvoice="showInvoice" @openPost="openPost"></foldTable>
              <div style="display:flex;justify-content:space-between">
                <div>
                  <el-button size="mini" class="pageSkip"><el-checkbox v-model="pageSkipChecked" @change="selectAllTable" style="color:white">跨页全选</el-checkbox></el-button>
@@ -214,6 +206,8 @@
                         <el-button type="primary" size="medium" @click="uploadResolve">上传发票</el-button>
                       </el-upload>
                       <el-button size='mini' type="primary" @click="exportList" style="height:28px">导出列表</el-button>
+                      <el-button size='mini' type="primary" @click="drawer = true" style="height:28px">选择表格列</el-button>
+                      
                       <!-- <el-button @click="drawer = true" type="primary" size='mini'>选择表格列</el-button> -->
                     </div>
                   <el-pagination
@@ -477,9 +471,10 @@
         checkAll: false,
         isIndeterminate: true,
         direction: 'rtl',
-        checkedTable:['序号','订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票信息','应收费用总金额','申请开票金额','发票种类','申请人','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','快递状态','发票状态','是否上传'],
+        checkedTable:['订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票备注','开票信息','申请开票金额','发票种类','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','邮寄状态','发票状态','是否上传'],
+        tableOptions:['订单号', '运单号', '订舱公司','发票抬头','开票信息','发票种类','申请开票金额','已开票金额','开票备注','开票进度','发票号码','发票状态','是否上传','开票时间','航班日期','交单时间','申请时间','快递信息','邮寄状态',],
+
         
-        tableOptions:['序号','订单号', '运单号', '订舱公司','航班日期','交单时间','发票抬头','开票信息','应收费用总金额','申请开票金额','发票种类','申请人','申请时间','开票进度','已开票金额','发票号码','开票时间','快递信息','快递状态','发票状态','是否上传'],
         //表格tab页
         tabName:["全部","合并开票","单独开票","异常"],
         tabNum:[0,0,0,0],
@@ -1029,7 +1024,7 @@
       },
       //作废按钮
       delInvoice(){
-        console.log(this.ifDataDel())
+        // console.log(this.ifDataDel())0   
         if(this.pageSkipChecked) {
           this.$message({
             message: '作废不支持跨页全选',
@@ -1394,11 +1389,12 @@
       },
       //数据统计按钮
       getStatistData(){
-        console.log(this.tableData)
+        // console.log(this.tableData)
         this.statistDataShow = !this.statistDataShow
         if(this.statistDataShow == false) return""
         this.statistData = {shouldGet:0,applyInvoice:0,invoicedMoney:0}
-        let request = {financePageDTO:this.selectResultData()}
+      
+        let request = {financePageDTO:this.selectResultData(),iaId:this.selectTableData.map(item=>item.id)}
         this.$http.post(this.$service.invoiceStatistics,request).then(res=>{
           this.statistData.shouldGet = res.data.totalArCny;
           this.statistData.applyInvoice =res.data.applyAmount;
@@ -1636,6 +1632,13 @@
 </style>
 <style scoped lang="less">
   @import url("../../assets/icon/iconfont.css");
+   .el-button--primary{
+      width:100px;
+      // text-align: center;
+  }
+  /deep/.el-form-item{
+    margin-bottom: 0;
+  }
    /deep/ .el-checkbox__label {
      color:#000
    }
@@ -1652,8 +1655,7 @@
   .content-search-normal {
     .formItem{
       display:inline-block;
-      width: 320px;
-      margin-top:-5px;
+      margin:0 28px 10px 0;
     }
   }
   .operateButton {
@@ -1709,8 +1711,8 @@
   }
 
   .el-form--inline .el-form-item {
-    margin-bottom: 20px;
-    vertical-align: bottom;
+    // margin-bottom: 20px;
+    // vertical-align: bottom;
   }
 
   .parimary_btn {

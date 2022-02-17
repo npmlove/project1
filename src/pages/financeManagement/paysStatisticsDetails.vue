@@ -2,53 +2,28 @@
   <div class="content-wrapper">
     <div class="content">
       <el-form :inline="true" size="medium" class="demo-form-inline" label-position="left">
-        <div class="content-search-normal">
-          <el-form-item label="订单号:" class="formItem" label-width="80px">
+        <div class="content-search-normal" style="position:relative">
+          <div style="position:absolute;right:10px;top:10px">
+              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+          </div>
+          </div>
+          <el-form-item label="订单号:" class="formItem">
             <el-input v-model="orderNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入订单号"></el-input>
           </el-form-item>
 
-          <el-form-item label="运单号:" class="formItem" label-width="80px">
+          <el-form-item label="运单号:" class="formItem">
             <el-input v-model="waybillNo" style="width: 200px;" size="medium"  clearable
                       placeholder="请输入运单号"></el-input>
           </el-form-item>
-
-          <el-form-item label="应付对象:" class="formItem" label-width="80px">
+         
+          <el-form-item label="应付对象:" class="formItem">
             <el-input v-model="reconciliationUnit" style="width: 230px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入应付对象"></el-input>
           </el-form-item>
-
-          <el-form-item label="开户行:" class="formItem" label-width="80px">
-            <el-input v-model="accountBank" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
-                      placeholder="请输入开户行"></el-input>
-          </el-form-item>
-          <el-form-item label="户名:" class="formItem" label-width="80px">
-            <el-input v-model="accountName" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
-                      placeholder="请输入户名"></el-input>
-          </el-form-item>
-          <el-form-item label="付款方式:" class="formItem" label-width="80px" v-if="this.selectControl">
-            <el-select v-model="writeOffWay" placeholder="付款方式" :loading="loading" clearable filterable remote
-                       reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in writeOffWayOpt"
-                :key="item.id"
-                :label="item.writeOffWay"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="结算方式:" class="formItem" label-width="80px" v-if="this.selectControl">
-            <el-select v-model="payWay" placeholder="结算方式" :remote-method="agentMethod" :loading="loading" clearable
-                       filterable remote reserve-keyword style="width: 200px;">
-              <el-option
-                v-for="item in payWayOpt"
-                :key="item.value"
-                :label="item.payWay"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="核销状态:" class="formItem" label-width="80px" v-if="this.selectControl">
+          <el-form-item label="核销状态:" class="formItem" >
             <el-select v-model="rcvWriteOffStatus" placeholder="核销状态" multiple collapse-tags @change="dealAllChange"
                        :loading="loading"
                        clearable filterable remote reserve-keyword style="width: 230px;">
@@ -61,42 +36,12 @@
             </el-select>
           </el-form-item>
           <el-form-item
-            label="付款日期:"
-            style="width: 480px"
-            label-width="80px"
-            v-if="this.selectControl"
-          >
-            <el-date-picker
-              style="width: 180px"
-              value-format="yyyy-MM-dd"
-              v-model="startPayTime"
-              type="date"
-              :picker-options="pickerOptionsStartOne"
-              placeholder="选择日期"
-            >
-            </el-date-picker
-            >
-            -
-            <el-date-picker
-              style="width: 180px"
-              value-format="yyyy-MM-dd"
-              v-model="endPayTime"
-              type="date"
-              :picker-options="pickerOptionsEndOne"
-              placeholder="选择日期"
-            >
-            </el-date-picker>
-          </el-form-item>
-
-
-          <el-form-item
             label="核销日期:"
-            style="width: 480px"
-            label-width="80px"
+            style="width: 445px"
             v-if="this.selectControl"
           >
             <el-date-picker
-              style="width: 180px"
+              style="width: 175px"
               value-format="yyyy-MM-dd"
               v-model="startWriteOffTime"
               type="date"
@@ -107,7 +52,7 @@
             >
             -
             <el-date-picker
-              style="width: 180px"
+              style="width: 175px"
               value-format="yyyy-MM-dd"
               v-model="endWriteOffTime"
               type="date"
@@ -116,13 +61,63 @@
             >
             </el-date-picker>
           </el-form-item>
-          <div style="text-align:center">
-            <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
-              <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-              <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-              <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span>
-            </div>
-          </div>
+           <el-form-item
+            label="付款日期:"
+            style="width: 445px"
+           
+            v-if="this.selectControl"
+          >
+            <el-date-picker
+              style="width: 175px"
+              value-format="yyyy-MM-dd"
+              v-model="startPayTime"
+              type="date"
+              :picker-options="pickerOptionsStartOne"
+              placeholder="选择日期"
+            >
+            </el-date-picker
+            >
+            -
+            <el-date-picker
+              style="width: 175px"
+              value-format="yyyy-MM-dd"
+              v-model="endPayTime"
+              type="date"
+              :picker-options="pickerOptionsEndOne"
+              placeholder="选择日期"
+            >
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="开户行:" class="formItem" v-if="this.selectControl"> 
+            <el-input v-model="accountBank" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
+                      placeholder="请输入开户行"></el-input>
+          </el-form-item>
+          <el-form-item label="户名:" class="formItem"  v-if="this.selectControl">
+            <el-input v-model="accountName" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
+                      placeholder="请输入户名"></el-input>
+          </el-form-item>
+          <el-form-item label="付款方式:" class="formItem" v-if="this.selectControl">
+            <el-select v-model="writeOffWay" placeholder="付款方式" :loading="loading" clearable filterable remote
+                       reserve-keyword style="width: 180px;">
+              <el-option
+                v-for="item in writeOffWayOpt"
+                :key="item.id"
+                :label="item.writeOffWay"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="结算方式:" class="formItem" v-if="this.selectControl">
+            <el-select v-model="payWay" placeholder="结算方式" :remote-method="agentMethod" :loading="loading" clearable
+                       filterable remote reserve-keyword style="width: 180px;">
+              <el-option
+                v-for="item in payWayOpt"
+                :key="item.value"
+                :label="item.payWay"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <div class="operateButton">
             <el-button
               @click="searchClick"
@@ -178,6 +173,7 @@
             :pageSize='pageSize'
             @sizeChange='handleSizeChange'
             @showWOLogs='showWOLogs'
+            @handleSelect='handleSelect'
             @showFees='showFees'
             @currentChange='handleCurrentChange'>
           </Table>
@@ -192,6 +188,7 @@
             :operation='operation'
             :total='total'
             :currentPage='pageNum'
+            @handleSelect='handleSelect'
             :pageSize='pageSize'
             @sizeChange='handleSizeChange'
             @showWOLogs='showWOLogs'
@@ -232,26 +229,7 @@
             <el-checkbox v-model="pageSkipChecked" @change="selectAllTable">跨页全选</el-checkbox>
           </el-button>
           <el-button type="primary" size="mini" @click="getStatistData">数据统计</el-button>
-          <div style="margin-top: 15px;display:flex;font-size:12px" v-if="statistDataShow">
-            <div class="statist">
-              <div>应付总金额:{{ statistData.totalApCny }}</div>
-              <div v-html="dealOrgnS(statistData.totalApOrgn,'应付原币')" style="white-space:pre-wrap;text-align:right"
-                   class="statists"></div>
-            </div>
-            <div class="statist">
-              <div>已核销总金额:{{ statistData.totalApWoCny }}</div>
-              <div v-html="dealOrgnS(statistData.totalApWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right"
-                   class="statists"></div>
-            </div>
-            <div class="statist">
-              <div>未核销总金额:{{ statistData.totalApUnwoCny }}</div>
-              <div v-html="dealOrgnS(statistData.totalApUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right"
-                   class="statists"></div>
-            </div>
-            <div class="statist" style="color:red;font-size:20px" v-if="statistData.hasAbNormal">
-              <div>存在异常订单！</div>
-            </div>
-          </div>
+       
         </div>
 
 
@@ -274,7 +252,34 @@
             style="text-align: right;padding: 19px 30px 18px 0;background: #fff">
           </el-pagination>
         </div>
+        
       </div>
+         <div style="display:flex;font-size:12px;background: rgb(255, 255, 255);padding-bottom:15px" v-if="statistDataShow">
+            <div class="statist">
+              <div>应付总金额:{{ statistData.totalApCny }}</div>
+              <div  style="white-space:pre-wrap;display:flex"
+                   class="statists">
+                   <div>应付原币:</div>
+                   <div v-html="dealOrgnS(statistData.totalApOrgn)"></div></div>
+            </div>
+            <div class="statist">
+              <div>已核销总金额:{{ statistData.totalApWoCny }}</div>
+              <div style="white-space:pre-wrap;display:flex"
+                   class="statists">
+                   <div>已核销原币:</div>
+                   <div v-html="dealOrgnS(statistData.totalApWoOrgn)" ></div></div>
+            </div>
+            <div class="statist">
+              <div>未核销总金额:{{ statistData.totalApUnwoCny }}</div>
+              <div  style="white-space:pre-wrap;display:flex"
+                   class="statists">
+                   <div>未核销原币:</div>
+                   <div v-html="dealOrgnS(statistData.totalApUnwoOrgn)"></div></div>
+            </div>
+            <div class="statist" style="color:red;font-size:20px" v-if="statistData.hasAbNormal">
+              <div>存在异常订单！</div>
+            </div>
+          </div>
     </div>
     <el-dialog title="应收核销操作记录" :visible.sync="logDialogVisible" width="80%">
       <Table
@@ -385,6 +390,7 @@ export default {
       pageSize: 10,
       pageNum: 1,
       total: 0,
+      financialSeriesNo:"",
       // 列
       columns: [
         {label: 'id', prop: "id", show: false, width: '50'},
@@ -731,11 +737,19 @@ export default {
       })
     },
     exportList() {
+      let idsResult = []
+      if(this.detailTabs && this.detailTabs.length>0) {
+        let ids = this.detailTabs.map(item=>item.ids)
+        ids.forEach(item=>{
+          idsResult.push(...JSON.parse(item))
+        })
+      }
       axios.post(this.$service.exportWriteOffExcel, {
         overPageCheck: this.overPageCheck,
         rcvIds: this.rcvIds,
         orderNo: this.orderNo,
         waybillNo: this.waybillNo,
+        ids:idsResult,
         reconciliationUnit: this.reconciliationUnit,
         accountBank: this.accountBank,
         accountName: this.accountName,
@@ -775,6 +789,7 @@ export default {
 
     handleSelect(val) {
       this.detailTabs = val;
+      console.log(this.detailTabs)
     },
     //代理公司
     initAgentList(agentName) {
@@ -874,6 +889,7 @@ export default {
         waybillNoList: waybillNoFlag.length>1 ? waybillNoFlag : null,
         waybillNo: waybillNoFlag.length>1 ? null : this.waybillNo,
         reconciliationUnit: this.reconciliationUnit,
+        financialSeriesNo:this.financialSeriesNo,
         accountBank: this.accountBank,
         accountName: this.accountName,
         startPayTime: this.startPayTime,
@@ -989,6 +1005,14 @@ export default {
         this.statistDataShow = !this.statistDataShow
         return;
       }
+      let idsResult = []
+      if(this.detailTabs && this.detailTabs.length>0) {
+        let ids = this.detailTabs.map(item=>item.ids)
+        ids.forEach(item=>{
+          idsResult.push(...JSON.parse(item))
+        })
+      }
+      
       var json = {
         orderNo: this.orderNo,
         waybillNo: this.waybillNo,
@@ -1001,6 +1025,7 @@ export default {
         endWriteOffTime: this.endWriteOffTime,
         writeOffWay: this.writeOffWay,
         payWay: this.payWay,
+        ids:idsResult,
         payWriteOffStatusList: this.rcvWriteOffStatus.length == 0 || this.rcvWriteOffStatus.indexOf("") != -1 ? null : this.rcvWriteOffStatus,
         woStatus: this.woStatus,
         pageNum: this.pageNum,
@@ -1040,7 +1065,10 @@ export default {
 
 <style scoped lang="less">
 @import url("../../assets/icon/iconfont.css");
-
+ .el-button--primary{
+      width:100px;
+      // text-align: center;
+  }
 /deep/ .pageSkip {
   padding: 3px 5px !important
 }
@@ -1059,8 +1087,8 @@ export default {
 }
 
 .el-form--inline .el-form-item {
-  margin-bottom: 20px;
-  vertical-align: bottom;
+  margin-bottom: 8px;
+  // vertical-align: bottom;
 }
 
 .parimary_btn {
@@ -1115,7 +1143,7 @@ export default {
 
 .operateButton {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-bottom: -10px;
 
   button {
