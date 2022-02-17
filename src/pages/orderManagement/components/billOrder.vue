@@ -55,7 +55,7 @@
                 <el-input size="small" :disabled="scope.row.ingStatic || scope.row.extraDisabled || tableLock" v-model="scope.row.expenseUnitName" clearable></el-input>
               </span>
               <span v-if="expenseType == 2">
-                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled="tableLock">
+                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled="tableLock" @change="changeAgentName">
                     <el-option
                       v-for="item in agentIdList"
                       :key="item.id"
@@ -180,7 +180,6 @@ export default {
       title:'',
       expenseType:1,
       expenseUnitName:'',
-      billId:0,
       orderIdTemp:'',
       orderNoTemp:'',
       orderId:''  ,// 订单id
@@ -213,6 +212,16 @@ export default {
       }]
     };
   },
+  computed: {
+    billId() {
+      const bill = this.tableData.find(item => {
+        console.log(item.billId)
+        return item.billId
+      })
+      console.log(bill)
+      return (bill && bill.billId) || 0
+    },
+  },
   async mounted(){
     if(this.currentStatus == 1) {
       this.tableLock = true
@@ -222,7 +231,7 @@ export default {
     if(this.orderNoTemp == undefined){
       let a = this.getList
 
-      let {orderId,expenseType,orderNo,expenseUnitName,billId} = a[0]
+      let {orderId,expenseType,orderNo,expenseUnitName} = a[0]
         a.map((res)=>{
             res.ingStatic = true
             delete res.createTime
@@ -233,7 +242,6 @@ export default {
       this.expenseType = expenseType
       this.orderNo = orderNo
       this.expenseUnitName = expenseUnitName
-      this.billId = billId
       this.title =  expenseType == 1 ? '应收账单' : '应付账单'
       if(expenseType == 2){
         this.initAgent()
@@ -265,6 +273,9 @@ export default {
     }
   },
   methods:{
+    changeAgentName(val){
+      this.$emit('changeAgentName',val)
+    },
     //改变结算方式
     changePayWay(val){
       // console.log(val)
@@ -323,7 +334,7 @@ export default {
           return res
         }
       })
-      return someRate[0].val
+      return someRate[0]&&someRate[0].val
     },
 
     //费用名称 除了空运费
@@ -386,6 +397,8 @@ export default {
     },
     // 添加
     addOneTableObj(ifNewBill){
+      console.log(this.billId)
+      console.log(this.tableData.map(item => item.billId))
       let tempObj = new tableObj('',this.expenseUnitName)
 
       let a = Object.assign({},tempObj,{

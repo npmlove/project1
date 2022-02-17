@@ -55,6 +55,9 @@
         <span>航班号 </span>
         <span>
           <el-input
+           @blur="initData.flightNo = $event.target.value"
+            onkeyup="value=value.replace(/[\W]/g,'')"
+            maxlength='6'
             v-model="initData.flightNo"
             size="mini"
             placeholder="请输入航班号" />
@@ -1121,7 +1124,7 @@ export default {
           }
         }
       }
-      console.log(this.initData.waybillNo)
+      console.log(this.initData)
       if (this.initData.waybillNo) {
         // 校验运单号
         const { waybillNo } = this.initData;
@@ -1136,6 +1139,7 @@ export default {
       }
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
       let order = this.initData;
+      console.log(this.initData.subWaybillNo)
       if (order.hasOwnProperty("apOrderPriceList")) {
         delete order.apOrderPriceList;
       }

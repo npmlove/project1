@@ -61,7 +61,7 @@
               :label="item.airCompanyCode + '-' + item.name"
               :value="item.airCompanyCode"
             >
-            </el-option>
+            </el-option>                                                                                                                                                    
           </el-select>
         </span>
       </div>
@@ -70,6 +70,9 @@
         <span>
           <el-input
             v-model="initData.flightNo"
+            @blur="initData.flightNo = $event.target.value"
+            maxlength='6'
+            onkeyup="value=value.replace(/[\W]/g,'')"
             size="mini"
             placeholder="请输入航班号" />
         </span>
@@ -78,7 +81,7 @@
         <span>订舱单价 </span>
         <span>
           <el-input
-            :disabled="initData.arOrderPriceList[0].status != 0"
+            :disabled="initData.canPriceChange"
             v-model="initData.bookingPrice"
             size="mini"
             placeholder="请输入内容"
@@ -630,7 +633,7 @@
             <el-button
               v-if="
                 index == initData.arOrderPriceList.length - 1 &&
-                index !== 4 &&
+                index < 4 &&
                 item.status == 3 &&
                 (initData.financeStatus == 0 || initData.financeStatus == 4)
               "
@@ -663,7 +666,7 @@
         </div>
         <div class="line"></div>
         <div></div>
-        <billOrder :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"  :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
+        <billOrder @changeAgentName="changeAgentName" :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"  :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
         <!-- 应收添加 -->
         <el-button
           class="setWidth ml_20"
@@ -703,7 +706,7 @@
         </p>
         </div>
         <opeartes ref="addOpearte" :oplist="operateList" />
-        <div class="line"></div>
+        <div class="line" v-if="notSaleBefore"></div>
         <div class="paddingBottom"></div>
       </div>
       <!-- 进仓指引 -->
@@ -908,6 +911,9 @@ export default {
     DeliverGoodsForm,
   },
   methods: {
+    changeAgentName(val){
+      this.initData.agentName = val
+    },
     //跳转到提单页面
     jumpToOrder(){
       this.$router.push({
@@ -1008,7 +1014,7 @@ export default {
             this.$set(a[i], "price", e);
           }
         }
-        let b = this.$refs.typeTwo.tableData;
+        let b = this.$refs.typeTwo && this.$refs.typeTwo.tableData;
         for (let i in b) {
           if (b[i].expenseName == "空运费") {
             b[i].price = e;
@@ -1029,7 +1035,7 @@ export default {
             this.$set(a[i], "quantity", num);
           }
         }
-        let b = this.$refs.typeTwo.tableData;
+        let b = this.$refs.typeTwo && this.$refs.typeTwo.tableData;
         for (let i in b) {
           if (b[i].expenseName == "空运费") {
             b[i].quantity = num;
