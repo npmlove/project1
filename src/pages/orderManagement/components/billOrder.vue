@@ -14,7 +14,7 @@
               </el-select>
       </h1>
       <h1 class="title flex" style="margin-top:20px;margin-bottom:10px">
-        <span class="calcSome">
+        <span class="calcSome" v-show="notSaleBefore">
           <span v-if="titleType">{{(titleType==1?"应收核销金额:":"应付核销金额:")+(vertifyAmount?vertifyAmount:0)}}</span>
           <span style="margin-right:100px">原币合计{{totalOrgnStr}}</span>
           <span>人民币合计:{{totalCnyStr}}</span>
