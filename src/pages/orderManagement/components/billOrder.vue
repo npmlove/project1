@@ -55,7 +55,7 @@
                 <el-input size="small" :disabled="scope.row.ingStatic || scope.row.extraDisabled || tableLock" v-model="scope.row.expenseUnitName" clearable></el-input>
               </span>
               <span v-if="expenseType == 2">
-                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled="tableLock">
+                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled="tableLock" @change="changeAgentName">
                     <el-option
                       v-for="item in agentIdList"
                       :key="item.id"
@@ -265,6 +265,9 @@ export default {
     }
   },
   methods:{
+    changeAgentName(val){
+      this.$emit('changeAgentName',val)
+    },
     //改变结算方式
     changePayWay(val){
       // console.log(val)
@@ -323,7 +326,7 @@ export default {
           return res
         }
       })
-      return someRate[0].val
+      return someRate[0]&&someRate[0].val
     },
 
     //费用名称 除了空运费

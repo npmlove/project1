@@ -49,7 +49,7 @@
         <span>订舱单价 </span>
         <span>
           <el-input
-            :disabled="initData.arOrderPriceList[0].status != 0"
+            :disabled="initData.canPriceChange"
             v-model="initData.bookingPrice"
             size="mini"
             placeholder="请输入内容"
@@ -618,7 +618,7 @@
         </div>
         <div class="line"></div>
         <div></div>
-        <billOrder :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore" :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
+        <billOrder @changeAgentName="changeAgentName" :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore" :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
         <!-- 应收添加 -->
         <el-button
           class="setWidth ml_20"
@@ -854,6 +854,9 @@ export default {
     DeliverGoodsForm,
   },
   methods: {
+     changeAgentName(val){
+      this.initData.agentName = val
+    },
     //跳转到提单页面
     jumpToOrder(){
       this.$router.push({
@@ -951,7 +954,7 @@ export default {
             this.$set(a[i], "price", e);
           }
         }
-        let b = this.$refs.typeTwo.tableData;
+        let b = this.$refs.typeTwo && this.$refs.typeTwo.tableData;
         for (let i in b) {
           if (b[i].expenseName == "空运费") {
             b[i].price = e;
@@ -972,7 +975,7 @@ export default {
             this.$set(a[i], "quantity", num);
           }
         }
-        let b = this.$refs.typeTwo.tableData;
+        let b = this.$refs.typeTwo && this.$refs.typeTwo.tableData;
         for (let i in b) {
           if (b[i].expenseName == "空运费") {
             b[i].quantity = num;
