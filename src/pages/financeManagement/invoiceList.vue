@@ -875,9 +875,9 @@
         } 
         if(this.pageSkipChecked == true) {
           if(this.tableData.length == 0) {
-            this.$message.warning("暂无数据,不支持导出列表")
+           return this.$message.warning("暂无数据,不支持导出列表")
           }
-          return false
+          
         }
         let requestData = {}
         if(this.pageSkipChecked == true) {

@@ -680,6 +680,9 @@
             this.total = data.data.total
             this.tableData = data.data.records?data.data.records:[]
             this.sumInfo = data.data.sumInfo
+            for(let i of Object.keys(this.sumInfo)){
+               this.sumInfo[i]= this.sumInfo[i].toLocaleString('en-US')
+            }
             this.countInfo = data.data.countInfo
             this.ifLoading = false
 
