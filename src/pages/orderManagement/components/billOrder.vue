@@ -180,7 +180,6 @@ export default {
       title:'',
       expenseType:1,
       expenseUnitName:'',
-      billId:0,
       orderIdTemp:'',
       orderNoTemp:'',
       orderId:''  ,// 订单id
@@ -213,6 +212,16 @@ export default {
       }]
     };
   },
+  computed: {
+    billId() {
+      const bill = this.tableData.find(item => {
+        console.log(item.billId)
+        return item.billId
+      })
+      console.log(bill)
+      return (bill && bill.billId) || 0
+    },
+  },
   async mounted(){
     if(this.currentStatus == 1) {
       this.tableLock = true
@@ -222,7 +231,7 @@ export default {
     if(this.orderNoTemp == undefined){
       let a = this.getList
 
-      let {orderId,expenseType,orderNo,expenseUnitName,billId} = a[0]
+      let {orderId,expenseType,orderNo,expenseUnitName} = a[0]
         a.map((res)=>{
             res.ingStatic = true
             delete res.createTime
@@ -233,7 +242,6 @@ export default {
       this.expenseType = expenseType
       this.orderNo = orderNo
       this.expenseUnitName = expenseUnitName
-      this.billId = billId
       this.title =  expenseType == 1 ? '应收账单' : '应付账单'
       if(expenseType == 2){
         this.initAgent()
@@ -386,6 +394,8 @@ export default {
     },
     // 添加
     addOneTableObj(ifNewBill){
+      console.log(this.billId)
+      console.log(this.tableData.map(item => item.billId))
       let tempObj = new tableObj('',this.expenseUnitName)
 
       let a = Object.assign({},tempObj,{

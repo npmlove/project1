@@ -611,7 +611,7 @@
             <el-button
               v-if="
                 index == initData.arOrderPriceList.length - 1 &&
-                index !== 4 &&
+                index < 4 &&
                 item.status == 3 &&
                 (initData.financeStatus == 0 || initData.financeStatus == 4)
               "

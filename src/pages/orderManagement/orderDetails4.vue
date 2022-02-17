@@ -621,7 +621,7 @@
             <el-button
               v-if="
                 index == initData.arOrderPriceList.length - 1 &&
-                index !== 4 &&
+                index < 4 &&
                 item.status == 3 &&
                 (initData.financeStatus == 0 || initData.financeStatus == 4)
               "
@@ -1292,7 +1292,8 @@ export default {
         });
     },
     // 保存账单
-    saveOrder() {
+    // isGetDetail 保存后是否需要获取订单详情
+    saveOrder(isGetDetail = true) {
       let { inboundWeight, inboundCbm, inboundCw, inboundPiece, inboundNo } =
         this.initData;
       if (!inboundNo) {
@@ -1415,7 +1416,7 @@ export default {
           if (data.code == 200) {
             this.$message("保存成功");
             // this.$router.push("/orderManagement/orderManage");
-            this.getOriganData()
+            isGetDetail && this.getOriganData()
           } else {
             this.$message.error(data.message);
           }
@@ -1502,7 +1503,7 @@ export default {
     // 客户发起对账
     async reconciliationClient(e) {
        try {
-         await this.saveOrder()
+         await this.saveOrder(false)
       }catch (err){
         return 
       }
