@@ -80,6 +80,10 @@
             :disabled="initData.status>21"
           ></el-input>
         </span>
+          <span style="fontSize:10px;fontWeight:400;color:#999;transform:translateY(-16px);margin-left:6px">
+        <img src="../../assets/billOrderTip.svg" alt="" style="width:15px;height:15px">
+        请使用逗号隔开
+        </span>
       </div>
       <div>
         <span>目的港 </span>

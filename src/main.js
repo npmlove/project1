@@ -8,9 +8,7 @@ import serviceAPI from '@/service/index'
 import '@/vendor/directives3'
 import {constantRoutes,asyncRoutes} from "@/router/config"
 import {filterAsyncRoutes,whiteList} from "@/util/permission"
-import dataV from '@jiaminghi/data-view'
 import '../node_modules/echarts/map/js/world.js'
-Vue.use(dataV)
 // 引入公共插件
 import '@/plugins'
 
