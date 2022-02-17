@@ -219,7 +219,7 @@ const routeManagementCenter = [{
     title: '航线管理',
     icon: 'icon iconfont icon-kucun',
     breadcrumb: false,
-    roles:['航线负责人','售中客服','售前客服','财务人员']
+    roles:['航线负责人','财务人员']
   },
   children: [
     {
