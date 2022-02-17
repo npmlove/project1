@@ -202,6 +202,10 @@ export default {
       this.orderNo = this.orderEmbed
       this.tabShow()
     }
+    if(this.$route.params.orderNo){
+      this.orderNo = this.$route.params.orderNo
+      this.tabShow()
+   }
   },
   methods: {
     // 子组件调用 返还页面数据
