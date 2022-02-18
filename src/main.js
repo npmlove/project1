@@ -9,6 +9,7 @@ import '@/vendor/directives3'
 import {constantRoutes,asyncRoutes} from "@/router/config"
 import {filterAsyncRoutes,whiteList} from "@/util/permission"
 import '../node_modules/echarts/map/js/world.js'
+import store from '@/store'
 // 引入公共插件
 import '@/plugins'
 
@@ -77,5 +78,6 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  store,
 })
