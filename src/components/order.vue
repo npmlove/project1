@@ -1051,7 +1051,7 @@ export default {
           } else {
             axios
               .get(
-                `billUrl/preview/bill/pdf/${data.id}`
+                `${billUrl}/preview/bill/pdf/${data.id}`
               )
               .then((res) => {
                 if (res.data.code) {
