@@ -652,7 +652,7 @@
             >
           </div>
         </div>
-        <div v-if="creatNewBillBoolen">
+        <div v-if="creatNewBillBoolen && notAirPeople">
           <billOrder
             :newBill = "true"
             ref="typeNewBill"
@@ -660,7 +660,7 @@
             :titleType="1"
             :orderIdTemp="orderId"
             :orderNoTemp="orderNo"
-            :notSaleBefore="notSaleBefore"
+            :notSaleBefore="true"
           />
           <el-button class="setWidth ml_20" @click="fatherAddOneItem(100)" 
             >添加费用</el-button
@@ -669,7 +669,7 @@
             class="setWidth ml_20"
             type="primary"
             @click="reconciliationClient(100)"
-            v-if="notSaleBefore"
+            
             >发起客户对账</el-button
           >
         </div>

@@ -608,6 +608,7 @@
             :orderIdTemp="orderId"
             :titleType="1"
             :orderNoTemp="orderNo"
+            :notSaleBefore="true"
           />
           <el-button class="setWidth ml_20" @click="fatherAddOneItem(100)"
             >添加费用</el-button
