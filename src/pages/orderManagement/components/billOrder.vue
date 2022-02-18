@@ -39,7 +39,7 @@
             <template slot-scope="scope">
                 <el-select v-model="scope.row.expenseName" :disabled="scope.row.ingStatic"  placeholder="请选择">
                   <el-option
-                    v-for="item in  expenseCodeOpt "
+                    v-for="item in $store.state.common.expenseCodeOpt "
                     :key="item.sortNo"
                     :label="item.label"
                     :value="item.expenseName">
@@ -123,7 +123,6 @@
   </div>
 </template>
 <script>
-  import {toData} from '@/util/assist'
 // expenseName      费用名称
 // expenseType      费用类型 1=应收 2=应付
 //  expenseUnitId   费用源单位id
@@ -184,8 +183,7 @@ export default {
       orderNoTemp:'',
       orderId:''  ,// 订单id
       orderNo:'',//
-      rates:[], // 汇率数组
-      expenseCodeOpt:[] ,// 选择费用 
+      rates:[], // 汇率数组 
       totalOrgnArr:[],// 原币合并数组
       totalOrgnStr:'',// 原币合并字符串
       totalCnyStr:"",//人民币合计字符串
@@ -233,7 +231,11 @@ export default {
 
       let {orderId,expenseType,orderNo,expenseUnitName} = a[0]
         a.map((res)=>{
-            res.ingStatic = true
+            if (!res.id) {
+              res.ingStatic = false
+            } else {
+              res.ingStatic = true
+            }
             delete res.createTime
             delete res.updateTime
         })
@@ -247,13 +249,11 @@ export default {
         this.initAgent()
       }
       await this.getRates()
-      await this.initExpenseCode()
       this.dealOriginData(a)
     }else{
       this.orderId = this.orderIdTemp
       this.orderNo = this.orderNoTemp
       await this.getRates()
-      await this.initExpenseCode()
       this.addOneTableObj(true)
     }
   },
@@ -268,6 +268,9 @@ export default {
       handler(newValue,oldVale){
         if(newValue == 1){
            this.tableLock = true
+        }
+        if(newValue == 0){
+           this.tableLock = false
         }
       }
     }
@@ -337,19 +340,6 @@ export default {
       return someRate[0]&&someRate[0].val
     },
 
-    //费用名称 除了空运费
-    async  initExpenseCode() {
-        var json = {
-          pageSize: 50000,
-        }
-        json = toData(json)
-        this.$http.get(this.$service.expenseSearchExcludeAirFee+'?'+json).then((data) => {
-          if(data.code == 200){
-            this.expenseCodeOpt = data.data.records
-          }
-        })
-      },
-
     // 计算人民币合计
     calcTotalCny(array){
       return  array.reduce((total, cur) => { return total += cur.totalCny}, 0);
@@ -397,10 +387,7 @@ export default {
     },
     // 添加
     addOneTableObj(ifNewBill){
-      console.log(this.billId)
-      console.log(this.tableData.map(item => item.billId))
       let tempObj = new tableObj('',this.expenseUnitName)
-
       let a = Object.assign({},tempObj,{
         extraDisabled:ifNewBill?false:true,
         orderId:this.orderId,
@@ -408,7 +395,6 @@ export default {
         orderNo:this.orderNo,
         billId:this.billId}
       )
-      console.log(a)
       this.tableData.push(a)
     },
     // 删除

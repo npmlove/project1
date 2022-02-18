@@ -1324,8 +1324,7 @@ export default {
         });
     },
     // 保存账单
-    // isGetDetail 保存后是否需要获取订单详情
-    saveOrder(isGetDetail = true) {
+    saveOrder() {
       let { inboundWeight, inboundCbm, inboundCw, inboundPiece, inboundNo } =
         this.initData;
       if (!inboundNo) {
@@ -1388,42 +1387,42 @@ export default {
             )
           }
         }
-        let arrayTypeOne = this.initData.arOrderPriceList.reduce((arr, item) => {
-          arr.push(...item.list)
-          return arr
-        }, [])
+        // let arrayTypeOne = this.initData.arOrderPriceList.reduce((arr, item) => {
+        //   arr.push(...item.list)
+        //   return arr
+        // }, [])
         // 获取应收账单的长度 为 12345
-        // let tempLength = this.initData.arOrderPriceList.length;
-        // let arrayTypeOne = [];
-        // if (tempLength == 1) {
-        //   arrayTypeOne = this.$refs.typeBill0[0].tableData;
-        // } else if (tempLength == 2) {
-        //   arrayTypeOne = [
-        //     ...this.$refs.typeBill0[0].tableData,
-        //     ...this.$refs.typeBill1[0].tableData,
-        //   ];
-        // } else if (tempLength == 3) {
-        //   arrayTypeOne = [
-        //     ...this.$refs.typeBill0[0].tableData,
-        //     ...this.$refs.typeBill1[0].tableData,
-        //     ...this.$refs.typeBill2[0].tableData,
-        //   ];
-        // } else if (tempLength == 4) {
-        //   arrayTypeOne = [
-        //     ...this.$refs.typeBill0[0].tableData,
-        //     ...this.$refs.typeBill1[0].tableData,
-        //     ...this.$refs.typeBill2[0].tableData,
-        //     ...this.$refs.typeBill3[0].tableData,
-        //   ];
-        // } else if (tempLength == 5) {
-        //   arrayTypeOne = [
-        //     ...this.$refs.typeBill0[0].tableData,
-        //     ...this.$refs.typeBill1[0].tableData,
-        //     ...this.$refs.typeBill2[0].tableData,
-        //     ...this.$refs.typeBill3[0].tableData,
-        //     ...this.$refs.typeBill4[0].tableData,
-        //   ];
-        // }
+        let tempLength = this.initData.arOrderPriceList.length;
+        let arrayTypeOne = [];
+        if (tempLength == 1) {
+          arrayTypeOne = this.$refs.typeBill0[0].tableData;
+        } else if (tempLength == 2) {
+          arrayTypeOne = [
+            ...this.$refs.typeBill0[0].tableData,
+            ...this.$refs.typeBill1[0].tableData,
+          ];
+        } else if (tempLength == 3) {
+          arrayTypeOne = [
+            ...this.$refs.typeBill0[0].tableData,
+            ...this.$refs.typeBill1[0].tableData,
+            ...this.$refs.typeBill2[0].tableData,
+          ];
+        } else if (tempLength == 4) {
+          arrayTypeOne = [
+            ...this.$refs.typeBill0[0].tableData,
+            ...this.$refs.typeBill1[0].tableData,
+            ...this.$refs.typeBill2[0].tableData,
+            ...this.$refs.typeBill3[0].tableData,
+          ];
+        } else if (tempLength == 5) {
+          arrayTypeOne = [
+            ...this.$refs.typeBill0[0].tableData,
+            ...this.$refs.typeBill1[0].tableData,
+            ...this.$refs.typeBill2[0].tableData,
+            ...this.$refs.typeBill3[0].tableData,
+            ...this.$refs.typeBill4[0].tableData,
+          ];
+        }
         let arrayTypeTwo = this.$refs.typeTwo.tableData;
         let order = this.initData;
         // if (order.hasOwnProperty("apOrderPriceList")) {
@@ -1452,7 +1451,7 @@ export default {
           if (data.code == 200) {
             this.$message("保存成功");
             // this.$router.push("/orderManagement/orderManage");
-            isGetDetail && this.getOriganData()
+            this.getOriganData()
           } else {
             this.$message.error(data.message);
           }
@@ -1539,7 +1538,7 @@ export default {
     // 客户发起对账
     async reconciliationClient(e) {
        try {
-         await this.saveOrder(false)
+         await this.saveOrder()
       }catch (err){
         return 
       }
@@ -1555,30 +1554,24 @@ export default {
       }
       let { departureDate, fullLeg, orderNo, waybillNo } = this.initData;
       let userId = sessionStorage.getItem("userId");
-      // let tempArray = [];
+      let tempArray = [];
 
-      // if (e == 0) {
-      //   tempArray = this.$refs.typeBill0[0].tableData;
-      // } else if (e == 1) {
-      //   tempArray = this.$refs.typeBill1[0].tableData;
-      // } else if (e == 2) {
-      //   tempArray = this.$refs.typeBill2[0].tableData;
-      // } else if (e == 3) {
-      //   tempArray = this.$refs.typeBill3[0].tableData;
-      // } else if (e == 4) {
-      //   tempArray = this.$refs.typeBill4[0].tableData;
-      // } else if (e == 100) {
-      //   tempArray = this.$refs.typeNewBill.tableData;
-      // }
-
+      if (e == 0) {
+        tempArray = this.$refs.typeBill0[0].tableData;
+      } else if (e == 1) {
+        tempArray = this.$refs.typeBill1[0].tableData;
+      } else if (e == 2) {
+        tempArray = this.$refs.typeBill2[0].tableData;
+      } else if (e == 3) {
+        tempArray = this.$refs.typeBill3[0].tableData;
+      } else if (e == 4) {
+        tempArray = this.$refs.typeBill4[0].tableData;
+      } else if (e == 100) {
+        tempArray = this.$refs.typeNewBill.tableData;
+      }
+      
       // let typeTwo = this.$refs.typeTwo.tableData;
-      let tempArray = (() => {
-        if (e != 100) {
-          return this.initData.arOrderPriceList[e].list
-        } else {
-          return this.$refs.typeNewBill.tableData;
-        }
-      })()
+
       const typeTwo = this.initData.apOrderPriceList;
       tempArray = tempArray.concat(typeTwo);
       if(tempArray.some(item=>!item.quantity || !item.price)) {

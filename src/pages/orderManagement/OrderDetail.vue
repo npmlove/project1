@@ -24,6 +24,8 @@ export default {
     orderDetails8,
   },
   created() {
+    // 获取费用列表
+    this.$store.dispatch('getExpenseCodeOpt')
     this.getOrderDetail()
   },
   data() {
