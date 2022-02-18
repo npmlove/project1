@@ -933,11 +933,11 @@
           this.tableDataOne = data.data.arOrderPriceList
           this.tableDataTwo = data.data.apOrderPriceList
           this.tableDataThree = data.data.orderPresentLogs
-          this.totalArOrgn = data.data.totalArOrgn;
-          this.totalApOrgn = data.data.totalApOrgn;
-          this.totalArCny = data.data.totalArCny;
-          this.totalApCny = data.data.totalApCny;
-          this.orderProfit = data.data.orderProfit;
+          this.totalArOrgn = data.data.totalArOrgn.toLocaleString('en-US');
+          this.totalApOrgn = data.data.totalApOrgn.toLocaleString('en-US');
+          this.totalArCny = data.data.totalArCny.toLocaleString('en-US');
+          this.totalApCny = data.data.totalApCny.toLocaleString('en-US');
+          this.orderProfit = data.data.orderProfit.toLocaleString('en-US');
         })
       },
       //表格选择列显示drawer -全选

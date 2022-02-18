@@ -650,11 +650,11 @@
                     v-for="(item, index) in dataStaticObj.totalApOrgn"
                     :key="index"
                   >
-                    <div v-if="item.currency == 1"> {{"¥ " + item.amount }}</div>
-                    <div v-if="item.currency == 2">{{"HK$ " + item.amount }}</div>
-                    <div v-if="item.currency == 3">{{ "$ " + item.amount }}</div>
-                    <div v-if="item.currency == 4">{{"€ " + item.amount }}</div>
-                    <div v-if="item.currency == 5">{{"￡ " + item.amount }}</div>
+                    <div v-if="item.currency == 1"> {{"¥ " + item.amount.toLocaleString('en-US') }}</div>
+                    <div v-if="item.currency == 2">{{"HK$ " + item.amount.toLocaleString('en-US') }}</div>
+                    <div v-if="item.currency == 3">{{ "$ " + item.amount.toLocaleString('en-US') }}</div>
+                    <div v-if="item.currency == 4">{{"€ " + item.amount.toLocaleString('en-US') }}</div>
+                    <div v-if="item.currency == 5">{{"￡ " + item.amount.toLocaleString('en-US') }}</div>
                   </div>
                   <div v-if="!dataStaticObj.totalApOrgn"> {{"¥ "}}0
                   </div>
@@ -667,11 +667,11 @@
                     v-for="(item, index) in dataStaticObj.totalApWoOrgn"
                     :key="index"
                   >
-                    <div v-if="item.currency == 1">{{"¥ " + item.amount }}</div>
-                    <div v-if="item.currency == 2">{{"HK$ " + item.amount }}</div>
-                    <div v-if="item.currency == 3">{{ "$ " + item.amount }}</div>
-                    <div v-if="item.currency == 4">{{"€ " + item.amount }}</div>
-                    <div v-if="item.currency == 5">{{"￡ " + item.amount }}</div>
+                    <div v-if="item.currency == 1">{{"¥ " + item.amount.toLocaleString('en-US') }}</div>
+                    <div v-if="item.currency == 2">{{"HK$ " + item.amount.toLocaleString('en-US') }}</div>
+                    <div v-if="item.currency == 3">{{ "$ " + item.amount.toLocaleString('en-US') }}</div>
+                    <div v-if="item.currency == 4">{{"€ " + item.amount.toLocaleString('en-US') }}</div>
+                    <div v-if="item.currency == 5">{{"￡ " + item.amount.toLocaleString('en-US') }}</div>
                   </div>
                   <div v-if="!dataStaticObj.totalApWoOrgn">{{"¥ "}} 0
                   </div>
@@ -684,11 +684,11 @@
                     v-for="(item, index) in dataStaticObj.totalApUnwoOrgn"
                     :key="index"
                   >
-                    <div v-if="item.currency == 1">{{"¥ " + item.amount }}</div>
-                    <div v-if="item.currency == 2">{{"HK$ " + item.amount }}</div>
-                    <div v-if="item.currency == 3">{{ "$ " + item.amount }}</div>
-                    <div v-if="item.currency == 4">{{"€ " + item.amount }}</div>
-                    <div v-if="item.currency == 5">{{"￡ " + item.amount }}</div>
+                    <div v-if="item.currency == 1">{{"¥ " + item.amount.toLocaleString('en-US') }}</div>
+                    <div v-if="item.currency == 2">{{"HK$ " + item.amount.toLocaleString('en-US') }}</div>
+                    <div v-if="item.currency == 3">{{ "$ " + item.amount.toLocaleString('en-US') }}</div>
+                    <div v-if="item.currency == 4">{{"€ " + item.amount.toLocaleString('en-US') }}</div>
+                    <div v-if="item.currency == 5">{{"￡ " + item.amount.toLocaleString('en-US') }}</div>
                   </div>
                   <div v-if="!dataStaticObj.totalApUnwoOrgn">{{"¥ "}}0
                   </div>
@@ -1146,11 +1146,11 @@ export default {
       }
       totalOrgn = ''
 
-      totalOrgn += value1 || value1 == 0 ? "¥ " +value1  + '+' : ''
-      totalOrgn += value2 ?  "HK$ " +value2  + '+' : ''
-      totalOrgn += value3 ?  "$ " +value3  + '+' : ''
-      totalOrgn += value4 ? "€ " +value4  + '+' : ''
-      totalOrgn += value5 ? "￡ " +value5  : ''
+      totalOrgn += value1 || value1 == 0 ? "¥ " +value1.toLocaleString('en-US')  + '+' : ''
+      totalOrgn += value2 ?  "HK$ " +value2.toLocaleString('en-US')  + '+' : ''
+      totalOrgn += value3 ?  "$ " +value3.toLocaleString('en-US')  + '+' : ''
+      totalOrgn += value4 ? "€ " +value4.toLocaleString('en-US')  + '+' : ''
+      totalOrgn += value5 ? "￡ " +value5.toLocaleString('en-US')  : ''
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
       return totalOrgn;
     },
@@ -1164,7 +1164,7 @@ export default {
           this.arData = data.data.arOrderPriceList
           this.orderLogs = data.data.orderPresentLogs
           this.totalApOrgn = data.data.totalApOrgn
-          this.totalApCny = data.data.totalApCny
+          this.totalApCny = data.data.totalApCny.toLocaleString('en-US')
           this.orderProfit = data.data.orderProfit
           // this.orderId = data.data.orderId
           this.orderData[0].customerName = data.data.customerName
