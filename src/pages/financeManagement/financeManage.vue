@@ -1238,11 +1238,11 @@ export default {
             this.arData = data.data.arOrderPriceList;
             this.apData = data.data.apOrderPriceList;
             this.logData = data.data.logs;
-            this.totalArOrgn = data.data.totalArOrgn;
-            this.totalApOrgn = data.data.totalApOrgn;
-            this.totalArCny = data.data.totalArCny;
-            this.totalApCny = data.data.totalApCny;
-            this.orderProfit = data.data.orderProfit;
+            this.totalArOrgn = data.data.totalArOrgn.toLocaleString('en-US');
+            this.totalApOrgn = data.data.totalApOrgn.toLocaleString('en-US');
+            this.totalArCny = data.data.totalArCny.toLocaleString('en-US');
+            this.totalApCny = data.data.totalApCny.toLocaleString('en-US');
+            this.orderProfit = data.data.orderProfit.toLocaleString('en-US');
             this.payWay = payWay;
             this.orderId = orderId;
             this.orderFinanceStatus = financeStatus;
@@ -1315,11 +1315,11 @@ export default {
         }
       }
       totalOrgn = "";
-      totalOrgn += value1 || value1 == 0 ?"¥ " +  value1 + "+" : "";
-      totalOrgn += value2 ?  "HK$ "+value2 + "+" : "";
-      totalOrgn += value3 ?   "$ " +value3 + "+" : "";
-      totalOrgn += value4 ?  " € " +value4 + "+" : "";
-      totalOrgn += value5 ?  "￡ " +value5 + "+" : "";
+      totalOrgn += value1 || value1 == 0 ?"¥ " +  value1.toLocaleString('en-US') + "+" : "";
+      totalOrgn += value2 ?  "HK$ "+value2.toLocaleString('en-US') + "+" : "";
+      totalOrgn += value3 ?   "$ " +value3.toLocaleString('en-US') + "+" : "";
+      totalOrgn += value4 ?  " € " +value4.toLocaleString('en-US') + "+" : "";
+      totalOrgn += value5 ?  "￡ " +value5.toLocaleString('en-US') + "+" : "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return totalOrgn;
     },

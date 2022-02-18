@@ -712,7 +712,7 @@ export default {
           this.orderNoTab = data.data.orderNo
           this.orderLogs = data.data.orderPresentLogs
           this.totalApOrgn = data.data.totalApOrgn
-          this.totalApCny = data.data.totalApCny
+          this.totalApCny = data.data.totalApCny.toLocaleString('en-US')
           this.orderProfit = data.data.orderProfit
           this.orderId = data.data.orderId
           this.orderData[0].customerName = data.data.customerName
@@ -861,11 +861,11 @@ export default {
       }
       totalOrgn = ''
 
-      totalOrgn += value1 || value1 == 0 ?"¥ " +  value1  + '+' : ''
-      totalOrgn += value2 ? "HK$ "+value2  + '+' : ''
-      totalOrgn += value3 ? "$ " + value3  + '+' : ''
-      totalOrgn += value4 ? "€ " + value4  + '+' : ''
-      totalOrgn += value5 ? "￡ " + value5  : ''
+      totalOrgn += value1 || value1 == 0 ?"¥ " +  value1.toLocaleString('en-US')  + '+' : ''
+      totalOrgn += value2 ? "HK$ "+value2.toLocaleString('en-US')  + '+' : ''
+      totalOrgn += value3 ? "$ " + value3.toLocaleString('en-US') + '+' : ''
+      totalOrgn += value4 ? "€ " + value4.toLocaleString('en-US')  + '+' : ''
+      totalOrgn += value5 ? "￡ " + value5.toLocaleString('en-US') : ''
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
       return totalOrgn;
     },
@@ -1035,12 +1035,12 @@ export default {
         if (data.code == 200) {
 
           this.statistData.hasAbNormal = data.data.hasAbNormal;
-          this.statistData.totalApCny = data.data.totalApCny;
-          this.statistData.totalApOrgn = data.data.totalApOrgn;
-          this.statistData.totalApUnwoCny = data.data.totalApUnwoCny;
-          this.statistData.totalApUnwoOrgn = data.data.totalApUnwoOrgn;
-          this.statistData.totalApWoCny = data.data.totalApWoCny;
-          this.statistData.totalApWoOrgn = data.data.totalApWoOrgn;
+          this.statistData.totalApCny = data.data.totalApCny.toLocaleString('en-US');
+          this.statistData.totalApOrgn = data.data.totalApOrgn.toLocaleString('en-US');
+          this.statistData.totalApUnwoCny = data.data.totalApUnwoCny.toLocaleString('en-US');
+          this.statistData.totalApUnwoOrgn = data.data.totalApUnwoOrgn.toLocaleString('en-US');
+          this.statistData.totalApWoCny = data.data.totalApWoCny.toLocaleString('en-US');
+          this.statistData.totalApWoOrgn = data.data.totalApWoOrgn.toLocaleString('en-US');
           this.statistDataShow = !this.statistDataShow
         } else {
           this.$message.error(data.message)
