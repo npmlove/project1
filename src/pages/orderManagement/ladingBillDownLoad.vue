@@ -419,6 +419,7 @@ export default {
           }
         )
           .then(() => {
+            this.subshow();
             this.initData();
             this.initOrderBubblePoint()
           })
