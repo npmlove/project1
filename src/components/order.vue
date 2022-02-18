@@ -820,9 +820,9 @@ export default {
           
           //&& this.carrierInfo != ""
         ) {
-          if (this.noPrice == 1) {
-             this.$message.warning("价格无法找到,支持excel版本下载后本地修改");
-          }
+          // if (this.noPrice == 1) {
+          //    this.$message.warning("价格无法找到,支持excel版本下载后本地修改");
+          // }
           this.saveMainData();
         } else {
           this.$message.error("带*的为必填项，请输入完后再操作");
@@ -842,9 +842,9 @@ export default {
             this.inputData.input5 
             // &&this.carrierInfo
           ) {
-            if (this.noPrice == 1) {
-             this.$message.warning("价格无法找到,支持excel版本下载后本地修改");
-            }
+            // if (this.noPrice == 1) {
+            //  this.$message.warning("价格无法找到,支持excel版本下载后本地修改");
+            // }
             this.saveOtherData(type, index);
           } else {
             this.$message.error("带*的为必填项，请输入完后再操作");
@@ -859,9 +859,9 @@ export default {
             this.inputData.input2
             // &&this.carrierInfo
           ) {
-            if (this.noPrice == 1) {
-             this.$message.warning("价格无法找到,支持excel版本下载后本地修改");
-            }
+            // if (this.noPrice == 1) {
+            //  this.$message.warning("价格无法找到,支持excel版本下载后本地修改");
+            // }
             this.saveOtherData(type, index);
           } else {
             this.$message.error("带*的为必填项，请输入完后再操作");
