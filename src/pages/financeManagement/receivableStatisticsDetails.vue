@@ -690,7 +690,7 @@ export default {
     },
     dealOrgnS(orgn, extraWord) {
       if (!orgn) {
-        return 0 + 'CNY';
+        return"¥ " + 0;
       }
       orgn = JSON.parse(orgn);
       var totalOrgn = "";
@@ -714,10 +714,10 @@ export default {
         }
       }
       totalOrgn = "";
-      totalOrgn += (value1 || value1 == 0) ? "¥ " + value1.toLocaleString('en-US') + "\n" : "";
-      totalOrgn += (value2 || value2 == 0) ?  "HK$ " + value2.toLocaleString('en-US') + "\n" : "";
-      totalOrgn += (value3 || value3 == 0) ?  "$ " + value3.toLocaleString('en-US') + "\n" : "";
-      totalOrgn += (value4 || value4 == 0) ? "€ " + value4.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value1 || value1 == 0) ? "¥ " +  value1.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value2 || value2 == 0) ? "HK$ "+ value2.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value3 || value3 == 0) ? "$ " +  value3.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value4 || value4 == 0) ? "€ " +  value4.toLocaleString('en-US') + "\n" : "";
       totalOrgn += (value5 || value5 == 0) ? "￡ " + value5.toLocaleString('en-US') + "\n" : "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return (extraWord ? extraWord + ":" : "") + totalOrgn;

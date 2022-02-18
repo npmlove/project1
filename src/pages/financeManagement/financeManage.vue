@@ -1315,11 +1315,11 @@ export default {
         }
       }
       totalOrgn = "";
-      totalOrgn += value1 || value1 == 0 ? value1 + "CNY" + "+" : "";
-      totalOrgn += value2 ? value2 + "HKD" + "+" : "";
-      totalOrgn += value3 ? value3 + "USD" + "+" : "";
-      totalOrgn += value4 ? value4 + "EUR" + "+" : "";
-      totalOrgn += value5 ? value5 + "GBP" + "+" : "";
+      totalOrgn += value1 || value1 == 0 ?"¥ " +  value1 + "+" : "";
+      totalOrgn += value2 ?  "HK$ "+value2 + "+" : "";
+      totalOrgn += value3 ?   "$ " +value3 + "+" : "";
+      totalOrgn += value4 ?  " € " +value4 + "+" : "";
+      totalOrgn += value5 ?  "￡ " +value5 + "+" : "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return totalOrgn;
     },

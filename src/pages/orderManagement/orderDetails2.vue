@@ -97,7 +97,7 @@
         <span>日期 </span>
         <departure-date-picker :date.sync="initData.departureDate" />
       </div>
-      <div v-if="notAirPeople">
+      <div v-if="notAirPeople && notSaleBefore">
         <span>利润 </span>
         <span>￥{{ initData.orderProfit }}</span>
       </div>

@@ -744,7 +744,7 @@
       //原币处理
       dealOrgn(orgn,extraWord) {
       if (!orgn) {
-        return 0+'CNY';
+        return "¥ "+0;
       }
        orgn = JSON.parse(orgn);
       var totalOrgn = "";
@@ -778,7 +778,7 @@
     },
      dealOrgnS(orgn,extraWord) {
       if (!orgn) {
-        return 0+'CNY';
+        return "¥ "+0;
       }
        orgn = JSON.parse(orgn);
       var totalOrgn = "";
@@ -1191,11 +1191,11 @@
           }
         }
         totalOrgn = ''
-        totalOrgn += value1 ? value1.toLocaleString('en-US') + 'CNY' + '+' : ''
-        totalOrgn += value2 ? value2.toLocaleString('en-US') + 'HKD' + '+' : ''
-        totalOrgn += value3 ? value3.toLocaleString('en-US') + 'USD' + '+' : ''
-        totalOrgn += value4 ? value4.toLocaleString('en-US') + 'EUR' + '+' : ''
-        totalOrgn += value5 ? value5.toLocaleString('en-US') + 'GBP' + '+' : ''
+        totalOrgn += value1 ? '¥'+value1.toLocaleString('en-US') + '+' : ''
+        totalOrgn += value2 ? 'HK$'+value2.toLocaleString('en-US') + '+' : ''
+        totalOrgn += value3 ? '$'+value3.toLocaleString('en-US') + '+' : ''
+        totalOrgn += value4 ? '€'+value4.toLocaleString('en-US') + '+' : ''
+        totalOrgn += value5 ? '￡'+value5.toLocaleString('en-US') + '+' : ''
         totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
         return totalOrgn;
       }

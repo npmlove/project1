@@ -248,13 +248,13 @@
           :visible.sync="orderWayBillFrame"
         >
         <el-table :data="orderTableData">
-            <el-table-column prop="orderNo" label="订单号" min-width="80"></el-table-column>
-            <el-table-column prop="waybillNo" label="运单号" min-width="80"></el-table-column>
+            <el-table-column prop="orderNo" label="订单号" min-width="110"></el-table-column>
+            <el-table-column prop="waybillNo" label="运单号" min-width="110"></el-table-column>
             <el-table-column prop="customerName" label="订舱客户" min-width="80"></el-table-column>
             <el-table-column prop="agentName" label="代理上家" min-width="80"></el-table-column>
             <el-table-column prop="airCompanyCode" label="航司" min-width="80"></el-table-column>
-            <el-table-column prop="pol" label="起运港" min-width="80"></el-table-column>
-            <el-table-column prop="pod" label="目的港" min-width="80"></el-table-column>
+            <el-table-column prop="pol" label="起运港" min-width="50"></el-table-column>
+            <el-table-column prop="pod" label="目的港" min-width="50"></el-table-column>
             <el-table-column prop="date20" label="货物信息" min-width="80">
               <template slot-scope="scope">
                <span>
@@ -269,8 +269,8 @@
             <el-table-column label="操作人员" min-width="80">
                <template slot-scope="scope">
               <span>
-                <div>客服：{{ scope.row.operator.split(",")[1] }}</div>
-                <div>销售：{{ scope.row.operator.split(",")[0] }}</div>
+                <div>售中：{{ scope.row.operator.split(",")[1] }}</div>
+                <div>售前：{{ scope.row.operator.split(",")[0] }}</div>
                 <div>航线：{{ scope.row.operator.split(",")[2] }}</div>
               </span>
             </template>
@@ -1612,11 +1612,11 @@
           }
         }
         totalOrgn = ''
-        totalOrgn += value1 || value1 == 0 ? value1.toLocaleString('en-US') + 'CNY' + '+' : ''
-        totalOrgn += value2 ? value2.toLocaleString('en-US') + 'HKD' + '+' : ''
-        totalOrgn += value3 ? value3.toLocaleString('en-US') + 'USD' + '+' : ''
-        totalOrgn += value4 ? value4.toLocaleString('en-US') + 'EUR' + '+' : ''
-        totalOrgn += value5 ? value5.toLocaleString('en-US') + 'GBP' : ''
+        totalOrgn += value1 || value1 == 0 ? "¥ " +value1.toLocaleString('en-US')  + '+' : ''
+        totalOrgn += value2 ?  "HK$ "+value2.toLocaleString('en-US')  + '+' : ''
+        totalOrgn += value3 ?   "$ " +value3.toLocaleString('en-US')  + '+' : ''
+        totalOrgn += value4 ?  "€ " +value4.toLocaleString('en-US')  + '+' : ''
+        totalOrgn += value5 ?  "￡ " +value5.toLocaleString('en-US') : ''
         totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
         return totalOrgn;
       },
