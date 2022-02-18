@@ -1576,11 +1576,11 @@
         }
       }
       totalOrgn = "";
-      totalOrgn += value1 || value1 == 0 ? value1 + "CNY" + "\n" : "";
-      totalOrgn += value2 ? value2 + "HKD" + "\n" : "";
-      totalOrgn += value3 ? value3 + "USD" + "\n" : "";
-      totalOrgn += value4 ? value4 + "EUR" + "\n" : "";
-      totalOrgn += value5 ? value5 + "GBP" + "\n": "";
+      totalOrgn += value1 || value1 == 0 ? "¥ " +value1 + "\n" : "";
+      totalOrgn += value2 ? "HK$ "+value2 + "\n" : "";
+      totalOrgn += value3 ?  "$ " +value3 + "\n" : "";
+      totalOrgn += value4 ?  "€ " +value4 + "\n" : "";
+      totalOrgn += value5 ? "￡ " +value5 + "\n": "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return totalOrgn;
     },
