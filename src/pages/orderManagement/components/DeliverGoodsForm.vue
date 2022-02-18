@@ -90,6 +90,9 @@ export default {
 
 <style lang="less" scoped>
 .deliver-goods-form {
+  .el-form {
+    background: transparent !important;
+  }
   margin-left: -20px;
   padding: 20px 0;
   width: 360px;
