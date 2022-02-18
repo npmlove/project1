@@ -1050,7 +1050,7 @@
       //原币处理
       dealOrgn(orgn,extraWord) {
       if (!orgn) {
-        return 0+'CNY';
+        return "¥ " +0;
       }
        orgn = JSON.parse(orgn);
       var totalOrgn = "";
@@ -1074,11 +1074,11 @@
         }
       }
       totalOrgn = "";
-      totalOrgn += value1 || value1 == 0 ? value1 + "CNY" + "\n" : "";
-      totalOrgn += value2 || value2 == 0 ? value2 + "HKD" + "\n" : "";
-      totalOrgn += value3 || value3 == 0 ? value3 + "USD" + "\n" : "";
-      totalOrgn += value4 || value4 == 0 ? value4 + "EUR" + "\n" : "";
-      totalOrgn += value5 || value5 == 0 ? value5 + "GBP" + "\n": "";
+      totalOrgn += value1 || value1 == 0 ? "¥ " +  value1  + "\n" : "";
+      totalOrgn += value2 || value2 == 0 ? "HK$ "+value2  + "\n" : "";
+      totalOrgn += value3 || value3 == 0 ? "$ " + value3  + "\n" : "";
+      totalOrgn += value4 || value4 == 0 ? "€ " +  value4  + "\n" : "";
+      totalOrgn += value5 || value5 == 0 ? "￡ " + value5  + "\n": "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return (extraWord?extraWord+":":"") +totalOrgn;
     },
@@ -1108,11 +1108,11 @@
         }
       }
       totalOrgn = "";
-      totalOrgn += (value1 || value1 == 0) ? value1.toLocaleString('en-US') + "CNY" + "\n" : "";
-      totalOrgn += (value2 || value2 == 0) ? value2.toLocaleString('en-US') + "HKD" + "\n" : "";
-      totalOrgn += (value3 || value3 == 0) ? value3.toLocaleString('en-US') + "USD" + "\n" : "";
-      totalOrgn += (value4 || value4 == 0) ? value4.toLocaleString('en-US') + "EUR" + "\n" : "";
-      totalOrgn += (value5 || value5 == 0) ? value5.toLocaleString('en-US') + "GBP" + "\n": "";
+      totalOrgn += (value1 || value1 == 0) ?  "¥ " + value1.toLocaleString('en-US')  + "\n" : "";
+      totalOrgn += (value2 || value2 == 0) ?  "HK$ "+value2.toLocaleString('en-US')  + "\n" : "";
+      totalOrgn += (value3 || value3 == 0) ?  "$ " + value3.toLocaleString('en-US')  + "\n" : "";
+      totalOrgn += (value4 || value4 == 0) ?  "€ " + value4.toLocaleString('en-US')  + "\n" : "";
+      totalOrgn += (value5 || value5 == 0) ?  "￡ " + value5.toLocaleString('en-US')  + "\n": "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return (extraWord?extraWord+":":"") +totalOrgn;
     },
@@ -1712,11 +1712,11 @@
           }
         }
         totalOrgn = ''
-        totalOrgn += value1 ? value1.toLocaleString('en-US') + 'CNY' + '+' : ''
-        totalOrgn += value2 ? value2.toLocaleString('en-US') + 'HKD' + '+' : ''
-        totalOrgn += value3 ? value3.toLocaleString('en-US') + 'USD' + '+' : ''
-        totalOrgn += value4 ? value4.toLocaleString('en-US') + 'EUR' + '+' : ''
-        totalOrgn += value5 ? value5.toLocaleString('en-US') + 'GBP' + '+': ''
+        totalOrgn += value1 ?  "¥ " + value1.toLocaleString('en-US') +'+' : ''
+        totalOrgn += value2 ?  "HK$ "+value2.toLocaleString('en-US') +'+' : ''
+        totalOrgn += value3 ?  "$ " + value3.toLocaleString('en-US') +'+' : ''
+        totalOrgn += value4 ?  "€ " + value4.toLocaleString('en-US') +'+' : ''
+        totalOrgn += value5 ?  "￡ " + value5.toLocaleString('en-US') +'+': ''
         totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
         return totalOrgn;
       },

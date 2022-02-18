@@ -258,7 +258,7 @@ export default {
             label: "申请开票金额",
             width: 120,
             key: "applyAmount",
-            unit: "CNY",
+            unit: "¥",
           },
           { label: "发票种类", width: 100, key: "invoiceType" },
           { label: "申请人", width: 100, key: "applicant" },

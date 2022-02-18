@@ -4,11 +4,11 @@
       <div style="min-width: 14%; margin: 5px 10px;">订单量:<span style="margin-left:5px">{{sumInfo.orderVols}}</span> </div>
       <div style="min-width: 14%; margin: 5px 10px;">正常单/取消单:<span style="margin-left:5px">{{sumInfo.normalVols}}/{{sumInfo.cancelledVols}}</span> </div>
       <div style="min-width: 14%; margin: 5px 10px;">正常单计费重:<span style="margin-left:5px">{{sumInfo.normalCws}}</span> </div>
-      <div style="min-width: 14%; margin: 5px 10px;">应收总计:<span style="margin-left:5px">{{sumInfo.arCnys}}</span> </div>
-      <div style="min-width: 14%; margin: 5px 10px;">应付总计:<span style="margin-left:5px">{{sumInfo.apCnys}}</span> </div>
-      <div style="min-width: 14%; margin: 5px 10px;">利润:<span style="margin-left:5px">{{sumInfo.profits}}</span> </div>
-      <div style="min-width: 14%; margin: 5px 10px;">应收已核销人民币:<span style="margin-left:5px">{{sumInfo.arWoCny}}</span> </div>
-      <div style="min-width: 14%; margin: 5px 10px;">应收未核销人民币:<span style="margin-left:5px">{{sumInfo.arUnWoCny}}</span> </div>
+      <div v-if="notAirPeople" style="min-width: 14%; margin: 5px 10px;">应收总计:<span style="margin-left:5px">{{sumInfo.arCnys}}</span> </div>
+      <div v-if="notSaleBefore" style="min-width: 14%; margin: 5px 10px;">应付总计:<span style="margin-left:5px">{{sumInfo.apCnys}}</span> </div>
+      <div v-if="notAirPeople && notSaleBefore" style="min-width: 14%; margin: 5px 10px;">利润:<span style="margin-left:5px">{{sumInfo.profits}}</span> </div>
+      <div v-if="notAirPeople" style="min-width: 14%; margin: 5px 10px;">应收已核销人民币:<span style="margin-left:5px">{{sumInfo.arWoCny}}</span> </div>
+      <div v-if="notAirPeople" style="min-width: 14%; margin: 5px 10px;">应收未核销人民币:<span style="margin-left:5px">{{sumInfo.arUnWoCny}}</span> </div>
     </div>
     <el-table stripe ref="multipleTable" @sort-change="handleSort" @selection-change="handleSelect" :data="tableData" style="width: 100%;">
       <template slot="empty">
@@ -86,7 +86,7 @@
                   <div>单价：￥{{scope.row.bookingPrice || 0}}/kg</div>
                   <div v-if="notAirPeople">应收账单：{{priceType(scope.row.totalArOrgn) || 0}}</div>
                   <div>应付账单：{{priceType(scope.row.totalApOrgn) || 0}}</div>
-                  <div v-if="notAirPeople">利润：￥{{scope.row.orderProfit || 0}}</div>
+                  <div v-if="notAirPeople && notSaleBefore">利润：￥{{scope.row.orderProfit || 0}}</div>
             </div>
           </div>
           <div v-else-if="column.label == '操作人员'" style="display:flex;align-items:center;justify-content:center;height:100%;" @click="orderDetails(scope)">
@@ -210,6 +210,7 @@ export default {
   data() {
     return {
       notAirPeople:true,
+      notSaleBefore:true,
       seletArr: [],
       userName: '',
       arr: [],
@@ -223,6 +224,9 @@ export default {
     if(dataShow.name != "admin"){
       if(dataShow.roleName == "航线负责人") {
         this.notAirPeople = false
+      }
+      else if(dataShow.roleName == "售前客服") {
+        this.notSaleBefore = false
       }
     }
   },

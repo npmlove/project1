@@ -109,7 +109,7 @@
         <span>日期 </span>
         <departure-date-picker :date.sync="initData.departureDate" :disabled="initData.statusDesc == '飞机待到达'"/>
       </div>
-      <div v-if="notAirPeople">
+      <div v-if="notAirPeople && notSaleBefore">
         <span>利润 </span>
         <span>￥{{ initData.orderProfit }}</span>
       </div>

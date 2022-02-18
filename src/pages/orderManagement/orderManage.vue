@@ -15,7 +15,7 @@
             <el-input v-model="inboundNo" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入进仓编号"></el-input>
           </el-form-item>
 
-          <el-form-item>
+          <el-form-item v-if="notSaleBefore">
             <el-select v-model="agentId" placeholder="代理公司名称" :remote-method="agentMethod" :loading="loading" clearable filterable remote reserve-keyword style="width: 220px;">
               <el-option
                 v-for="item in agentOpt"
@@ -26,7 +26,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item>
+          <el-form-item v-if="notAirPeople">
             <el-input v-model="customerName" style="width: 200px;" size="medium" :maxlength="inputMax" clearable placeholder="请输入客户"></el-input>
           </el-form-item>
 
@@ -377,6 +377,8 @@
   export default {
     data() {
       return {
+        notAirPeople:true,
+        notSaleBefore:true,
         ifLoading:false,
         //table
         tableData: [],
@@ -483,6 +485,17 @@
       currentCountDownText() {
         return `${this.currentCountDown / 1000}s 后刷新`
       },
+    },
+    created(){
+    let dataShow = JSON.parse(sessionStorage.getItem("userInfo"))
+    if(dataShow.name != "admin"){
+      if(dataShow.roleName == "航线负责人") {
+        this.notAirPeople = false
+      }
+      else if(dataShow.roleName == "售前客服") {
+        this.notSaleBefore = false
+      }
+    }
     },
     mounted() {
       this.initData()
