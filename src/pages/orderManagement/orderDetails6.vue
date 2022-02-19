@@ -1126,22 +1126,62 @@ export default {
           return;
         }
       }
-        let arrayTypeOne = this.initData.arOrderPriceList[0].list;
+      // 获取应收账单的长度 为 12345
+      let tempLength = this.initData.arOrderPriceList.length;
+      let arrayTypeOne = [];
+      if (tempLength == 1) {
+        arrayTypeOne = this.$refs.typeBill0[0].tableData;
+      } else if (tempLength == 2) {
+        arrayTypeOne = [
+          ...this.$refs.typeBill0[0].tableData,
+          ...this.$refs.typeBill1[0].tableData,
+        ];
+      } else if (tempLength == 3) {
+        arrayTypeOne = [
+          ...this.$refs.typeBill0[0].tableData,
+          ...this.$refs.typeBill1[0].tableData,
+          ...this.$refs.typeBill2[0].tableData,
+        ];
+      } else if (tempLength == 4) {
+        arrayTypeOne = [
+          ...this.$refs.typeBill0[0].tableData,
+          ...this.$refs.typeBill1[0].tableData,
+          ...this.$refs.typeBill2[0].tableData,
+          ...this.$refs.typeBill3[0].tableData,
+        ];
+      } else if (tempLength == 5) {
+        arrayTypeOne = [
+          ...this.$refs.typeBill0[0].tableData,
+          ...this.$refs.typeBill1[0].tableData,
+          ...this.$refs.typeBill2[0].tableData,
+          ...this.$refs.typeBill3[0].tableData,
+          ...this.$refs.typeBill4[0].tableData,
+        ];
+      }
       let arrayTypeTwo = this.initData.apOrderPriceList;
       let order = this.initData;
-      if (order.hasOwnProperty("apOrderPriceList")) {
-        delete order.apOrderPriceList;
-      }
+      // if (order.hasOwnProperty("apOrderPriceList")) {
+      //   delete order.apOrderPriceList;
+      // }
       if (order.hasOwnProperty("orderCargoDetailList")) {
         delete order.orderCargoDetailList;
       }
-      if (order.hasOwnProperty("orderPriceList")) {
-        delete order.orderPriceList;
-      }
+      // if (order.hasOwnProperty("orderPriceList")) {
+      //   delete order.orderPriceList;
+      // }
       if (order.hasOwnProperty("trayDetail")) {
         delete order.trayDetail;
       }
       let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
+      const newBillData = this.$refs.typeNewBill && this.$refs.typeNewBill.tableData || [];
+      orderPriceList = [...orderPriceList, ...newBillData]
+      if(orderPriceList.some(item=>!item.quantity || !item.price)){
+        return this.$message.warning("请填写费用金额")
+      }
+      if (orderPriceList.some(item => !item)) {
+        this.$message.warning("请刷新页面重新进行本操作")
+        return Promise.reject()
+      }
       let orderCargoDetailList = this.$refs.typeThree.tableData;
       let params = {
         order: order,
@@ -1372,15 +1412,15 @@ export default {
         }
         let arrayTypeTwo = this.$refs.typeTwo.tableData;
         let order = this.initData;
-        if (order.hasOwnProperty("apOrderPriceList")) {
-          delete order.apOrderPriceList;
-        }
+        // if (order.hasOwnProperty("apOrderPriceList")) {
+        //   delete order.apOrderPriceList;
+        // }
         if (order.hasOwnProperty("orderCargoDetailList")) {
           delete order.orderCargoDetailList;
         }
-        if (order.hasOwnProperty("orderPriceList")) {
-          delete order.orderPriceList;
-        }
+        // if (order.hasOwnProperty("orderPriceList")) {
+        //   delete order.orderPriceList;
+        // }
         if (order.hasOwnProperty("trayDetail")) {
           delete order.trayDetail;
         }
@@ -1404,6 +1444,7 @@ export default {
           if (data.code == 200) {
             this.$message("保存成功");
             // this.$router.push("/orderManagement/orderManage");
+            this.creatNewBillBoolen = false
             this.getOriganData()
           } else {
             this.$message.error(data.message);
