@@ -158,7 +158,7 @@ class tableObj{
   }
 }
 export default {
-  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay","newBill"],
+  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay","newBill", 'customerName'],
   data() {
     return {
      copyPayWay:'',
@@ -387,9 +387,9 @@ export default {
     },
     // 添加
     addOneTableObj(ifNewBill){
-      let tempObj = new tableObj('',this.expenseUnitName)
+      let tempObj = new tableObj('',(this.expenseUnitName || this.customerName))
       let a = Object.assign({},tempObj,{
-        extraDisabled:ifNewBill?false:true,
+        extraDisabled:ifNewBill?true:true,
         orderId:this.orderId,
         expenseType:this.expenseType,
         orderNo:this.orderNo,
@@ -405,13 +405,17 @@ export default {
       let index = e.$index
       let ttt = this.$parent.judgeDeleteBIll()
       if(ttt){
-        if(index == 0){
+        if(index == 0 && !this.newBill){
           this.$message({
             message: '这条数据不能删除',
             type: 'warning'
           });
         }else{
           this.tableData.splice(index,1)
+          // 新建账单可以删除最后一个，然后关闭新账单表格
+          if (this.newBill && this.tableData.length <= 0) {
+            this.$emit('closeNewBill')
+          }
         }
       }else{
         this.$message({

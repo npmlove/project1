@@ -531,7 +531,7 @@
           >添加费用</el-button
         >
         <div class="line"></div>
-        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore" :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
+        <bill-order :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore" :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
         <el-button class="setWidth ml_20" @click="fatherAddOneItem(2)"
           >添加费用</el-button
         >
