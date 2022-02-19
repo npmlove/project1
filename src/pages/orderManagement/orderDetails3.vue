@@ -634,7 +634,7 @@
               v-if="
                 index == initData.arOrderPriceList.length - 1 &&
                 index < 4 &&
-                item.status == 3 &&
+                ( item.status == 3 || item.status == 4 ) &&
                 (initData.financeStatus == 0 || initData.financeStatus == 4)
               "
               type="primary"
@@ -645,7 +645,7 @@
           </div>
         </div>
         <div v-if="creatNewBillBoolen && notAirPeople">
-          <billOrder
+          <bill-order
             :newBill = "true"
             :notSaleBefore="true"
             ref="typeNewBill"
@@ -653,6 +653,9 @@
             :titleType="1"
             :orderIdTemp="orderId"
             :orderNoTemp="orderNo"
+            :customerName="initData.customerName"
+            @closeNewBill="creatNewBillBoolen = false"
+
           />
           <el-button class="setWidth ml_20" @click="fatherAddOneItem(100)"
             >添加费用</el-button
@@ -666,7 +669,7 @@
         </div>
         <div class="line"></div>
         <div></div>
-        <billOrder @changeAgentName="changeAgentName" :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"  :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
+        <bill-order @changeAgentName="changeAgentName" :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"  :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
         <!-- 应收添加 -->
         <el-button
           class="setWidth ml_20"
@@ -1547,8 +1550,14 @@ export default {
           delete order.trayDetail;
         }
         let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
+        const newBillData = this.$refs.typeNewBill && this.$refs.typeNewBill.tableData || [];
+        orderPriceList = [...orderPriceList, ...newBillData]
         if(orderPriceList.some(item=>!item.quantity || !item.price)){
           return this.$message.warning("请填写费用金额")
+        }
+        if (orderPriceList.some(item => !item)) {
+          this.$message.warning("请刷新页面重新进行本操作")
+          return Promise.reject()
         }
       let orderCargoDetailList = this.$refs.typeThree.tableData
       for(var i=1;i<orderCargoDetailList.length;i++){
