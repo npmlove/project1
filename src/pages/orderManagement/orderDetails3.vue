@@ -489,13 +489,13 @@
           class="inData"
           style="background: rgb(240, 240, 240); padding-left: 20px"
         >
-          <!-- <div>
-                      <span class="mr_25">报关服务</span>
-                      <el-radio-group v-model="initData.customsType">
-                        <el-radio :label="1">自行报关</el-radio>
-                        <el-radio :label="2">委托报关</el-radio>
-                      </el-radio-group>
-                  </div> -->
+          <div>
+            <span class="mr_25">报关服务</span>
+            <el-radio-group v-model="initData.customsType">
+              <el-radio :label="1">自行报关</el-radio>
+              <el-radio :label="2">委托报关</el-radio>
+            </el-radio-group>
+          </div>
           <div class="mtop_10">
             <span class="mr_25">国内提货</span>
             <el-radio-group v-model="initData.isPickUp">
@@ -647,6 +647,7 @@
         </div>
         <div v-if="creatNewBillBoolen && notAirPeople">
           <bill-order
+            :newCreatedBill="true"
             :newBill = "true"
             :notSaleBefore="true"
             ref="typeNewBill"
@@ -1626,7 +1627,6 @@ export default {
           if (data.code == 200) {
             this.$message("保存成功");
             // this.$router.push("/orderManagement/orderManage");
-            this.creatNewBillBoolen = false
             this.getOriganData()
           } else {
             this.$message.error(data.message);

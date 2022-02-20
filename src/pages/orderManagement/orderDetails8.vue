@@ -61,7 +61,16 @@
             </el-form-item>
           </div>
         </div>
-
+        <!-- 其他服务-报关服务 -->
+        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">其他服务-报关服务</div>
+        <div>
+          <el-form-item label="报关服务">
+              <el-radio-group v-model="customsType">
+                <el-radio :label="1">自行报关</el-radio>
+                <el-radio :label="2">委托报关</el-radio>
+              </el-radio-group>
+          </el-form-item>
+        </div>
         <!-- 其他服务-国内提货 -->
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">其他服务-国内提货</div>
         <div>
@@ -900,7 +909,8 @@
           bookingCbm:this.bookingCbm,
           bookingWeight:this.bookingWeight,
           bookingVwr:this.bookingVwr,
-          bookingCw:this.bookingCw
+          bookingCw:this.bookingCw,
+          customsType: this.customsType,
         }
         var orderPriceList = []
         if(this.arOrderPriceList && this.apOrderPriceList){
