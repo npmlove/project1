@@ -339,7 +339,7 @@
             <div>{{ initData.bookingCw }}</div>
           </div>
         </div>
-        <div class="bg_table">
+        <div class="bg_table"  v-if="initData.trayDetail&&initData.trayDetail[0]&& !Object.values(initData.trayDetail[0]).every(item=>!item)">
           <div class="flex_center border padding_contont" style="">
             <div>托盘数量</div>
             <div>长（cm）</div>
