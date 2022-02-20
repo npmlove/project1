@@ -23,6 +23,7 @@
             v-model="initData.airCompanyCode"
             filterable
             size="mini"
+            disabled
             placeholder="请选择"
           >
             <el-option
@@ -52,7 +53,7 @@
         <span>订舱单价 </span>
         <span>
           <el-input
-            :disabled="initData.canPriceChange"
+            disabled
             v-model="initData.bookingPrice"
             size="mini"
             placeholder="请输入内容"
@@ -67,6 +68,7 @@
         <span>
           <el-input
             v-model="initData.waybillNo"
+            disabled
             size="mini"
             placeholder="请输入内容"
           ></el-input>
@@ -80,7 +82,7 @@
             size="mini"
             placeholder="请输入内容"
             maxlength="80"
-            :disabled="initData.status>21"
+            disabled
           ></el-input>
         </span>
           <span style="fontSize:10px;fontWeight:400;color:#999;transform:translateY(-16px);margin-left:6px">
@@ -94,7 +96,7 @@
       </div>
       <div>
         <span>日期 </span>
-        <departure-date-picker :date.sync="initData.departureDate" :disabled="initData.statusDesc == '飞机已到达'"/>
+        <departure-date-picker :date.sync="initData.departureDate" :disabled="true"/>
       </div>
       <div v-if="notAirPeople && notSaleBefore">
         <span>利润 </span>
@@ -111,8 +113,7 @@
             filterable
             size="mini"
             @change="changeAgent"
-
-            :disabled="canSelectAgent"
+            disabled
             placeholder="请选择"
           >
             <el-option
@@ -129,7 +130,7 @@
         <span>
           <el-input
             v-model="initData.inboundNo"
-            :disabled="initData.status >= 13"
+            disabled
             size="mini"
             placeholder="请输入内容"
           ></el-input
@@ -142,6 +143,7 @@
             v-model="initData.principalName"
             @change="getSelectPrincipalId"
             filterable
+            disabled
             size="mini"
             placeholder="请选择"
           >
@@ -163,6 +165,7 @@
             @change="getSelectPscsId"
             size="mini"
             filterable
+            disabled
             placeholder="请选择"
           >
             <el-option
@@ -182,6 +185,7 @@
             v-model="initData.mscsName"
             @change="getSelectMscsId"
             filterable
+            disabled
             size="mini"
             placeholder="请选择"
           >
@@ -208,6 +212,7 @@
             <el-input
               size="mini"
               class="ml_10"
+              disabled
               v-model="initData.cargoName"
               placeholder="请输入内容"
             ></el-input>
@@ -219,6 +224,7 @@
             <el-select
               class="ml_10"
               size="mini"
+              disabled
               v-model="initData.cargoType"
               placeholder="请选择"
             >
@@ -237,6 +243,7 @@
           <div>
             <el-select
               class="ml_10"
+              disabled
               size="mini"
               v-model="initData.packageType"
               placeholder="请选择"
@@ -1312,72 +1319,13 @@ export default {
     },
     // 保存账单
     saveOrder() {
-      let { inboundWeight, inboundCbm, inboundCw, inboundPiece, inboundNo } =
+      let { inboundNo } =
         this.initData;
-      if (!inboundNo) {
-        this.$message.error("请输入进仓编号");
-        return;
-      }
-      if (!inboundPiece) {
-        this.$message.error("请输入进仓件数");
-        return;
-      }
-      if (!inboundWeight) {
-        this.$message.error("请输入毛重");
-        return;
-      }
-      if (!inboundCbm) {
-        this.$message.error("请输入体积");
-        return;
-      }
-      if (!inboundCw) {
-        this.$message.error("请输入计费重");
-        return;
-      }
+    
       let boolenNo = judgeWaybillNo(inboundNo);
       if (boolenNo) {
-        let arrayTypeThree = this.$refs.typeThree.tableData;
-        let tempthree = arrayTypeThree.filter((item) => {
-          return (
-            item.piece == undefined ||
-            item.piece == "" ||
-            item.cbm == undefined ||
-            item.cbm == "" ||
-            item.width == undefined ||
-            item.width == "" ||
-            item.height == undefined ||
-            item.height == "" ||
-            item.length == undefined ||
-            item.length == ""
-          );
-        });
-        if (tempthree.length > 0) {
-          this.$message.error("进仓数据未填写");
-          return;
-        }
-        const { pickUpAddress ,pickUpContacts, pickUpTel, pickUpTime, isPickUp, deliveryAddress, deliveryContacts, deliveryTel, cclType } = this.initData
-        // 校验提货信息
-        if (isPickUp === 2) {
-          const checkPickUp = [pickUpAddress ,pickUpContacts, pickUpTel, pickUpTime].every(item => item)
-          if (!checkPickUp) {
-            return this.$message.error(
-              "请填写国内提货相关信息"
-            )
-          }
-        }
-        // 校验收货信息
-        if (cclType !== 1) {
-          const checkDelivery = [deliveryAddress, deliveryContacts, deliveryTel].every(item => item)
-          if (!checkDelivery) {
-            return this.$message.error(
-              "请填写送货相关信息"
-            )
-          }
-        }
-        // let arrayTypeOne = this.initData.arOrderPriceList.reduce((arr, item) => {
-        //   arr.push(...item.list)
-        //   return arr
-        // }, [])
+        
+      
         // 获取应收账单的长度 为 12345
         let tempLength = this.initData.arOrderPriceList.length;
         let arrayTypeOne = [];
