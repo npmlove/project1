@@ -81,11 +81,6 @@
           </el-form-item>
         </div>
         <div v-if="isPickUp == '2'">
-          <el-form-item label="提货地址">
-            <el-input disabled v-model="pickUpAddress" placeholder="请输入提货地址" maxlength="50" type="textarea" style="width: 596px;" show-word-limit></el-input>
-          </el-form-item>
-        </div>
-        <div v-if="isPickUp == '2'">
           <el-form-item label="提货时间" prop="pickUpTime">
             <el-date-picker
               disabled
@@ -96,6 +91,11 @@
               placeholder="选择提货时间"
             >
             </el-date-picker>
+          </el-form-item>
+        </div>
+        <div v-if="isPickUp == '2'">
+          <el-form-item label="提货地址">
+            <el-input disabled v-model="pickUpAddress" placeholder="请输入提货地址" maxlength="50" type="textarea" style="width: 596px;" show-word-limit></el-input>
           </el-form-item>
         </div>
         <div v-if="isPickUp == '2'">
