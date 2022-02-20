@@ -669,7 +669,7 @@
         </div>
         <div class="line"></div>
         <div></div>
-        <bill-order @changeAgentName="changeAgentName" :getList.sync="initData.apOrderPriceList" :canSelectAgent="canSelectAgent" ref="typeTwo" :notSaleBefore="notSaleBefore"  :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
+        <bill-order :payStatusControl="initData.financeStatus" @changeAgentName="changeAgentName" :getList.sync="initData.apOrderPriceList" :canSelectAgent="canSelectAgent" ref="typeTwo" :notSaleBefore="notSaleBefore"  :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
         <!-- 应收添加 -->
         <el-button
           class="setWidth ml_20"
