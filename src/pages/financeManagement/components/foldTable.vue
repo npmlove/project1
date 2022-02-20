@@ -31,7 +31,7 @@
               class="tb-td"
               v-for="(item, index) in columns"
               :key="index"
-              :style="{ 'flex': (item.width ? `0 0 ${item.width + 'px'}` : ''),'backgroundColor':(typeCode=='异常'?'rgb(205, 92, 92)':'') }"
+              :style="{ 'flex': (item.width ? `0 0 ${item.width + 'px'}` : ''),'backgroundColor':(item2.abnormalFlag==1?'rgb(205, 92, 92)':'') }"
               v-show="checkedTable.indexOf(item.label) !== -1 ||item.checkBox"
             >
               <div v-if="item.checkBox == true">
@@ -196,7 +196,7 @@
                 v-for="(item, index4) of columns"
                 :key="index4"
                 v-show="checkedTable.indexOf(item.label) !== -1 ||item.checkBox"
-                :style="{ flex: item.width ? `0 0 ${item.width + 'px'}` : '','backgroundColor':(typeCode=='异常'?'rgb(205, 92, 92)':'')  }"
+                :style="{ flex: item.width ? `0 0 ${item.width + 'px'}` : ''}"
               >
                 <div v-if="item.checkBox == true" style="opacity:0">
                   <el-checkbox
@@ -233,10 +233,7 @@
 // import anime from '../../utils/anime.es'
 export default {
   props: {
-    typeCode:{
-      type:String,
-      default:()=>""
-    },
+    
     //显示表格列
     checkedTable:{
       type:Array,
@@ -306,7 +303,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.typeCode=='单独开票')
   },
   watch: {
     tableData() {

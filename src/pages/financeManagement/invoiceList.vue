@@ -178,7 +178,7 @@
       </el-form>
       <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData" value="全部">
         <el-tab-pane v-for="(item,index) in tabName" :key="index" :label="item+'('+tabNum[index]+')'" :name="item">
-      <foldTable :tableData="tableData" :typeCode="copyTypeCode" :pageSkipAll="pageSkipChecked" :checkedTable="checkedTable" @changeCheckBox="handleSelectionChange" @showOrderWayBill="showOrderWayBill" @showInvoice="showInvoice" @openPost="openPost"></foldTable>
+      <foldTable :tableData="tableData"  :pageSkipAll="pageSkipChecked" :checkedTable="checkedTable" @changeCheckBox="handleSelectionChange" @showOrderWayBill="showOrderWayBill" @showInvoice="showInvoice" @openPost="openPost"></foldTable>
              <div style="display:flex;justify-content:space-between">
                <div>
                  <el-button size="mini" class="pageSkip"><el-checkbox v-model="pageSkipChecked" @change="selectAllTable" style="color:white">跨页全选</el-checkbox></el-button>
