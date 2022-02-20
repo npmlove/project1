@@ -54,8 +54,8 @@
               <div>航班日期:{{scope.row.departureDate}}</div>
             </div>
             <div style="display:flex;justify-content:space-around">
-              <div style="flex:0 0 50px">{{scope.row.airCompanyCode}}</div>
-              <div  style="flex:0 0 50px">{{scope.row.flightNo}}</div>
+              <div style="flex:0 0 50px;white-space:nowrap">{{scope.row.airCompanyCode}}</div>
+              <div  style="flex:0 0 50px;white-space:nowrap">{{scope.row.flightNo}}</div>
             </div>
           </div>
           <div v-else-if="column.label == '客户代理'" style="height:100%;display:flex;align-items:center;justify-content:flex-start;margin-left:15px" @click="orderDetails(scope)">

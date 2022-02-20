@@ -178,16 +178,12 @@
       </el-form>
       <el-tabs class="nth9_class" v-model="typeCode" type="border-card" @tab-click="tabClickData" value="全部">
         <el-tab-pane v-for="(item,index) in tabName" :key="index" :label="item+'('+tabNum[index]+')'" :name="item">
-      <foldTable :tableData="tableData" :pageSkipAll="pageSkipChecked" :checkedTable="checkedTable" @changeCheckBox="handleSelectionChange" @showOrderWayBill="showOrderWayBill" @showInvoice="showInvoice" @openPost="openPost"></foldTable>
+      <foldTable :tableData="tableData" :typeCode="copyTypeCode" :pageSkipAll="pageSkipChecked" :checkedTable="checkedTable" @changeCheckBox="handleSelectionChange" @showOrderWayBill="showOrderWayBill" @showInvoice="showInvoice" @openPost="openPost"></foldTable>
              <div style="display:flex;justify-content:space-between">
                <div>
                  <el-button size="mini" class="pageSkip"><el-checkbox v-model="pageSkipChecked" @change="selectAllTable" style="color:white">跨页全选</el-checkbox></el-button>
                  <el-button  size="mini" type="primary" @click="getStatistData">数据统计</el-button>
-                 <div style="margin-top:15px" v-if="statistDataShow">
-                   <span>应收总金额:{{statistData.shouldGet.toLocaleString('en-US')}}</span>
-                   <span style="margin-left:15px">申请开票金额: {{statistData.applyInvoice.toLocaleString('en-US')}}</span>
-                   <span style="margin-left:15px">已开票金额:{{statistData.invoicedMoney.toLocaleString('en-US')}}</span>
-                 </div>
+               
                </div>
                 <div style="display:flex">
                     <div class="operateButton" style="margin:20px 10px 0 0">
@@ -224,6 +220,12 @@
                 </div>
                
              </div>
+               <div style="padding-bottom:15px" v-if="statistDataShow">
+                   <span>应收总金额:{{statistData.shouldGet.toLocaleString('en-US')}}</span>
+                   <span style="margin-left:15px">申请开票金额: {{statistData.applyInvoice.toLocaleString('en-US')}}</span>
+                   <span style="margin-left:15px">已开票金额:{{statistData.invoicedMoney.toLocaleString('en-US')}}</span>
+                   <!-- <span style="color:red">存在异常订单!</span> -->
+                 </div>
         </el-tab-pane>
       </el-tabs>
       <!-- 表格控制列显示 -->
@@ -679,7 +681,8 @@
         statistDataShow:false,
         //表格tab栏
         typeCode: '全部',
-        fileList:[]
+        fileList:[],
+        copyTypeCode:''
       }
     },
     created() {
@@ -1408,11 +1411,12 @@
         }
       },
       //tab切换
-      tabClickData(tab,event) {
+     async tabClickData(tab,event) {
         this.pageNum = 1
         this.pageSkipChecked = false
         this.statistDataShow = false
-        this.searchClick()
+        await this.searchClick()
+        this.copyTypeCode = this.typeCode
       },
       //查询条件数据
       selectResultData(){
@@ -1442,7 +1446,7 @@
         arrayCopy.pageNum = this.pageNum
         arrayCopy.pageSize = this.pageSize
         
-        this.$http.post(this.$service.invoiceSearch,arrayCopy).then((data) => {
+        return this.$http.post(this.$service.invoiceSearch,arrayCopy).then((data) => {
           let dData = data.data
           if (data.code == 200) {
             //获取信息总数，及表格tab页的数据数量
