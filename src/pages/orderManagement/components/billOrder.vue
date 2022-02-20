@@ -405,7 +405,7 @@ export default {
     },
     // 删除
     deleOneTableObj(e){
-      if(this.tableLock|| payTableLock) {
+      if(this.tableLock|| this.payTableLock) {
         return false
       }
       let index = e.$index
