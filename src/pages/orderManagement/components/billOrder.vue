@@ -233,7 +233,8 @@ export default {
       this.tableLock = true
     }
     // 非 未交单和修改交单状态 需要禁止删除
-      if(![0, 4].includes(this.payStatusControl)) {
+    // undefined 是应收的
+      if(![0, 4, undefined].includes(this.payStatusControl)) {
         this.payTableLock = true
       }
     //应付账单除未交单状态都不能进行操作
