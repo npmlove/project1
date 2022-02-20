@@ -626,7 +626,7 @@
               >
             </p>
             <p class="pTips" v-if="item.status == 4">
-              <span>账单已确认，发票开具￥{{ item.invoiceAmount }}</span>
+              <span :style="{color:calcTotalCny(item.list)<item.invoiceAmount?'#d53116':''}">账单已确认，发票开具￥{{ item.invoiceAmount }}</span>
               <span
                 @click="reWriteBill(index)"
                 v-if="
@@ -634,6 +634,7 @@
                 "
                 >修改账单</span
               >
+              <span v-if="calcTotalCny(item.list)<item.invoiceAmount" style="color:#d53116;margin-left:10px">账单异常</span>
             </p>
           </div>
           <!-- 新增账单 -->
@@ -915,6 +916,10 @@ export default {
     DeliverGoodsForm,
   },
   methods: {
+    // 计算人民币合计
+    calcTotalCny(array){
+      return  array.reduce((total, cur) => { return total += cur.totalCny}, 0);
+    },
      changeAgentName(val){
       this.initData.agentName = val
     },
