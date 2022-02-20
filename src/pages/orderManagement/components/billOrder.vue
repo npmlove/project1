@@ -55,7 +55,7 @@
                 <el-input size="small" :disabled="scope.row.ingStatic || scope.row.extraDisabled || tableLock" v-model="scope.row.expenseUnitName" clearable></el-input>
               </span>
               <span v-if="expenseType == 2">
-                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled="tableLock" @change="changeAgentName">
+                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled="tableLock || canSelectAgent" @change="changeAgentName">
                     <el-option
                       v-for="item in agentIdList"
                       :key="item.id"
@@ -158,7 +158,7 @@ class tableObj{
   }
 }
 export default {
-  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay","newBill", 'customerName'],
+  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay","newBill", 'customerName','canSelectAgent'],
   data() {
     return {
      copyPayWay:'',
