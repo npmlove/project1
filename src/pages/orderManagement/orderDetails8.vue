@@ -437,7 +437,7 @@
             <el-form-item label="人民币合计">
               <div>{{totalApCny}}</div>
             </el-form-item>
-            <el-form-item label="利润">
+            <el-form-item label="利润" v-show="notAirPeople">
               <div>{{totalArCny - totalApCny}}</div>
             </el-form-item>
           </div>
