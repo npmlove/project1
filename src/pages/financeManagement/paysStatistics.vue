@@ -16,30 +16,40 @@
           </div>
           </div>
           <el-form-item class="test" label="订单号:">
-            <el-autocomplete
-              class="inline-input"
-              v-model="testNos"
-              :fetch-suggestions="querySearch"
-              placeholder="请输入订单号"
-              clearable
-              style="width:160px"
-              @select="dealNo"
-              :trigger-on-focus="true"
-            >
-            </el-autocomplete>
+          <el-popover
+               placement="right"
+               width="200"
+               trigger="click">
+               <div v-for="(item,index) in formInline.orderNos.split(/[,，/' ']/).splice(0,20)" :key="index">
+                 {{index==19?"...":item}}
+               </div>
+            <el-input
+                slot="reference"
+                v-model="formInline.orderNos"
+                placeholder="请输入订单号"
+                style="width:185px"
+                clearable
+                  >
+              </el-input>
+          </el-popover>
           </el-form-item>
           <el-form-item label="运单号:" >
-            <el-autocomplete
-              class="inline-input"
-              clearable
-              v-model="testBIllNos"
-              @select="dealNo2"
-              style="width:160px"
-              :fetch-suggestions="querySearch2"
-              placeholder="请输入运单号"
-              :trigger-on-focus="true"
-            >
-            </el-autocomplete>
+            <el-popover
+               placement="right"
+               width="200"
+               trigger="click">
+               <div v-for="(item,index) in formInline.waybillNo.split(/[,，/' ']/).splice(0,20)" :key="index">
+                 {{index==19?"...":item}}
+               </div>
+            <el-input
+                slot="reference"
+                v-model="formInline.waybillNos"
+                placeholder="请输入订单号"
+                style="width:185px"
+                clearable
+                  >
+              </el-input>
+          </el-popover>
           </el-form-item>
          
           <el-form-item label="应付对象:">
