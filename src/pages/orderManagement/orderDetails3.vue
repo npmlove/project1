@@ -647,6 +647,7 @@
         </div>
         <div v-if="creatNewBillBoolen && notAirPeople">
           <bill-order
+            :newCreatedBill="true"
             :newBill = "true"
             :notSaleBefore="true"
             ref="typeNewBill"
@@ -1626,7 +1627,6 @@ export default {
           if (data.code == 200) {
             this.$message("保存成功");
             // this.$router.push("/orderManagement/orderManage");
-            this.creatNewBillBoolen = false
             this.getOriganData()
           } else {
             this.$message.error(data.message);
