@@ -1451,28 +1451,28 @@ export default {
     },
     // 保存账单
     saveOrder() {
-      let { inboundWeight, inboundCbm, inboundCw, inboundPiece, inboundNo } =
-        this.initData;
-      if (!inboundNo) {
-        this.$message.error("请输入进仓编号");
-        return;
-      }
-      if (!inboundPiece) {
-        this.$message.error("请输入进仓件数");
-        return;
-      }
-      if (!inboundWeight) {
-        this.$message.error("请输入毛重");
-        return;
-      }
-      if (!inboundCbm) {
-        this.$message.error("请输入体积");
-        return;
-      }
-      if (!inboundCw) {
-        this.$message.error("请输入计费重");
-        return;
-      }
+      // let { inboundWeight, inboundCbm, inboundCw, inboundPiece, inboundNo } =
+      //   this.initData;
+      // if (!inboundNo) {
+      //   this.$message.error("请输入进仓编号");
+      //   return;
+      // }
+      // if (!inboundPiece) {
+      //   this.$message.error("请输入进仓件数");
+      //   return;
+      // }
+      // if (!inboundWeight) {
+      //   this.$message.error("请输入毛重");
+      //   return;
+      // }
+      // if (!inboundCbm) {
+      //   this.$message.error("请输入体积");
+      //   return;
+      // }
+      // if (!inboundCw) {
+      //   this.$message.error("请输入计费重");
+      //   return;
+      // }
       if (this.initData.waybillNo) {
         // 校验运单号
         const { waybillNo } = this.initData;
@@ -1506,39 +1506,39 @@ export default {
       }
       let boolenNo = judgeWaybillNo(inboundNo);
       if (boolenNo) {
-        let arrayTypeThree = this.$refs.typeThree.tableData;
-        let tempthree = arrayTypeThree.filter((item) => {
-          return (
-            item.piece == undefined ||
-            item.piece == "" ||
-            item.cbm == undefined ||
-            item.cbm == "" ||
-            item.width == undefined ||
-            item.width == "" ||
-            item.height == undefined ||
-            item.height == "" ||
-            item.length == undefined ||
-            item.length == ""
-          );
-        });
-        if (tempthree.length > 0) {
-          this.$message.error("进仓数据未填写");
-          return;
-        }
-        let b=arrayTypeThree.reduce((pre,item)=>{
-            return pre+Number(item.piece)
-        },0)
-      let C_B_M = arrayTypeThree.reduce((pre,item)=>{
-            return pre+Number(item.cbm)
-        },0)
-        if(b !== Number(this.initData.inboundPiece)){
-          this.$message.error('总件数与分件数不匹配')
-          return;
-        }
-        if(C_B_M !== Number(this.initData.inboundCbm) && this.initData.status === 13){
-          console.log(C_B_M,this.initData.inboundCbm);
-          this.$message.error('总体积与分体积不匹配')
-        }
+      //   let arrayTypeThree = this.$refs.typeThree.tableData;
+      //   let tempthree = arrayTypeThree.filter((item) => {
+      //     return (
+      //       item.piece == undefined ||
+      //       item.piece == "" ||
+      //       item.cbm == undefined ||
+      //       item.cbm == "" ||
+      //       item.width == undefined ||
+      //       item.width == "" ||
+      //       item.height == undefined ||
+      //       item.height == "" ||
+      //       item.length == undefined ||
+      //       item.length == ""
+      //     );
+      //   });
+        // if (tempthree.length > 0) {
+        //   this.$message.error("进仓数据未填写");
+        //   return;
+        // }
+      //   let b=arrayTypeThree.reduce((pre,item)=>{
+      //       return pre+Number(item.piece)
+      //   },0)
+      // let C_B_M = arrayTypeThree.reduce((pre,item)=>{
+      //       return pre+Number(item.cbm)
+      //   },0)
+        // if(b !== Number(this.initData.inboundPiece)){
+        //   this.$message.error('总件数与分件数不匹配')
+        //   return;
+        // }
+        // if(C_B_M !== Number(this.initData.inboundCbm) && this.initData.status === 13){
+        //   console.log(C_B_M,this.initData.inboundCbm);
+        //   this.$message.error('总体积与分体积不匹配')
+        // }
         // let arrayTypeOne = this.initData.arOrderPriceList.reduce((arr, item) => {
         //   arr.push(...item.list)
         //   return arr
