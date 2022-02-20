@@ -37,7 +37,7 @@
             label="费用名称"
             >
             <template slot-scope="scope">
-                <el-select v-model="scope.row.expenseName" :disabled="scope.row.ingStatic || payTableLock"  placeholder="请选择">
+                <el-select v-model="scope.row.expenseName" :disabled="scope.row.ingStatic || tableLock || payTableLock"  placeholder="请选择">
                   <el-option
                     v-for="item in $store.state.common.expenseCodeOpt "
                     :key="item.sortNo"
@@ -52,7 +52,7 @@
             >
             <template slot-scope="scope">
               <span v-if="expenseType == 1">
-                <el-input size="small" :disabled="scope.row.ingStatic || scope.row.extraDisabled || tableLock " v-model="scope.row.expenseUnitName" clearable></el-input>
+                <el-input size="small" :disabled="scope.row.ingStatic || scope.row.extraDisabled || tableLock || scope.row.id" v-model="scope.row.expenseUnitName" clearable></el-input>
               </span>
               <span v-if="expenseType == 2">
                   <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled=" (canSelectAgent && scope.$index == 0) || payTableLock" @change="changeAgentName">
@@ -106,9 +106,7 @@
           <el-table-column
             label="操作">
             <template slot-scope="scope">
-              <div >
-                <span @click="deleOneTableObj(scope)" >删除</span>
-              </div>
+              <el-button type="text" @click="deleOneTableObj(scope)" :disabled="delBtnDisabled">删除</el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -220,13 +218,22 @@ export default {
       console.log(bill)
       return (bill && bill.billId) || 0
     },
+    delBtnDisabled() {
+      if (this.expenseType === 1) {
+        return this.currentStatus !== 0
+      }
+      if (this.expenseType === 2) {
+        return this.payTableLock
+      }
+    },
   },
   async mounted(){
     //应收账单发起对账后，不能修改和删除
     if(this.currentStatus == 1) {
       this.tableLock = true
     }
-      if(this.payStatusControl !=0) {
+    // 非 未交单和修改交单状态 需要禁止删除
+      if(![0, 4].includes(this.payStatusControl)) {
         this.payTableLock = true
       }
     //应付账单除未交单状态都不能进行操作
