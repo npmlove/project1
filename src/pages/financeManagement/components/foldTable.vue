@@ -488,7 +488,7 @@ export default {
         }
       }
       .tb-son {
-         height:300px;
+         max-height:300px;
          overflow-y:scroll;
          min-width:2200px;
         .tb-tr {
