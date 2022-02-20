@@ -521,7 +521,7 @@
         @changePayWay="changePayWay" 
         :payWay="initData.payWay"
           v-show="notAirPeople"
-          :getList="initData.arOrderPriceList[0].list"
+          :getList="initData.arOrderPriceList && initData.arOrderPriceList[0] && initData.arOrderPriceList[0].list"
           :notSaleBefore="true"
           ref="typeOne"
           :titleType="1"
