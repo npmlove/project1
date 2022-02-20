@@ -1474,6 +1474,8 @@ export default {
         }
         let arrayTypeTwo = this.$refs.typeTwo.tableData;
         let order = this.initData;
+        order.agentId = this.agentIdList.filter(item=>item.agentName == order.agentName)[0].id
+
         // if (order.hasOwnProperty("apOrderPriceList")) {
         //   delete order.apOrderPriceList;
         // }
