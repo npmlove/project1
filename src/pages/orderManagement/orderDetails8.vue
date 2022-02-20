@@ -361,9 +361,9 @@
         </div>
 
         <!-- 账单信息-应付账单 -->
-        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">账单信息-应付账单</div>
-        <div class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
-          <div class="flight-template" style="width: auto;margin-left: 0;" v-show="notSaleBefore">
+        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;" v-show="notSaleBefore">账单信息-应付账单</div>
+        <div class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;" v-show="notSaleBefore">
+          <div class="flight-template" style="width: auto;margin-left: 0;" >
             <div class="flight-template-ul-header">
               <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">序号</div>
               <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">费用名称</div>
