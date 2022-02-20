@@ -903,7 +903,18 @@
           bookingCw:this.bookingCw
         }
         var orderPriceList = []
-        orderPriceList = this.arOrderPriceList.concat(this.apOrderPriceList)
+        if(this.arOrderPriceList && this.apOrderPriceList){
+          orderPriceList = this.arOrderPriceList.concat(this.apOrderPriceList)
+        }
+        else if(this.arOrderPriceList && !this.apOrderPriceList) {
+          orderPriceList = this.arOrderPriceList
+        }
+        else if(!this.arOrderPriceList && this.apOrderPriceList) {
+          orderPriceList = this.apOrderPriceList
+        }
+        else {
+          orderPriceList=[]
+        }
         if(orderPriceList.length > 0){
           for(var m = 0; m < orderPriceList.length; m++){
             if(!orderPriceList[m].expenseName){
