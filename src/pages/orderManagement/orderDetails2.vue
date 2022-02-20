@@ -532,10 +532,10 @@
         >
         <div class="line"></div>
         <bill-order :getList="initData.apOrderPriceList" ref="typeTwo" :canSelectAgent="canSelectAgent" :notSaleBefore="notSaleBefore" :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
-        <el-button class="setWidth ml_20" @click="fatherAddOneItem(2)"
+        <el-button class="setWidth ml_20" @click="fatherAddOneItem(2)" v-if="notSaleBefore"
           >添加费用</el-button
         >
-        <div class="line"></div>
+        <div class="line" v-if="notSaleBefore"></div>
       </div>
       <!-- 进仓指引 -->
       <entry-guide
