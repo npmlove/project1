@@ -324,6 +324,6 @@ export default {
 .warehouse-list-wrap {
   margin: 20px;
   padding: 20px;
-  background: #fff;
+  background: #fff !important;
 }
 </style>
