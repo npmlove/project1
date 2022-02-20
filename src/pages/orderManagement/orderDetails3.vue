@@ -1451,8 +1451,8 @@ export default {
     },
     // 保存账单
     saveOrder() {
-      // let { inboundWeight, inboundCbm, inboundCw, inboundPiece, inboundNo } =
-      //   this.initData;
+      let { inboundWeight, inboundCbm, inboundCw, inboundPiece, inboundNo } =
+        this.initData;
       // if (!inboundNo) {
       //   this.$message.error("请输入进仓编号");
       //   return;
