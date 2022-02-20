@@ -156,7 +156,7 @@ class tableObj{
   }
 }
 export default {
-  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay","newBill", 'customerName','canSelectAgent','payStatusControl'],
+  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay","newBill", 'customerName','canSelectAgent','payStatusControl', 'newCreatedBill'],
   data() {
     return {
      copyPayWay:'',
@@ -219,6 +219,9 @@ export default {
       return (bill && bill.billId) || 0
     },
     delBtnDisabled() {
+      if (this.newCreatedBill) {
+        return false
+      }
       if (this.expenseType === 1) {
         return this.currentStatus !== 0
       }
