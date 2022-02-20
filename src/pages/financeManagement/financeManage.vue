@@ -1222,11 +1222,14 @@ export default {
           this.showFeesPage = true
           orderId = this.selectTableData[0].id
           financeStatus = this.selectTableData[0].financeStatus
+          payWay = this.selectTableData[0].payWay
+          this.dialogTitle = this.selectTableData[0].orderNo
         }
       }
       if(pageSkip) {
         this.showFeesPage = true
       }
+      console.log(orderId,financeStatus,payWay)
       //判断是否是表格运单号列点击进入弹框
       onlyShow ==true ? this.onlyShow = true : this.onlyShow = false
       this.dialogFormVisible = true;
