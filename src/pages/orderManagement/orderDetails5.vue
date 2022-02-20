@@ -794,7 +794,7 @@ export default {
           lable: "危险品",
         },
         {
-          value: 5,
+          value: 4,
           lable: "防疫物资",
         },
       ],
