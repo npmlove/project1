@@ -55,7 +55,7 @@
                 <el-input size="small" :disabled="scope.row.ingStatic || scope.row.extraDisabled || tableLock || scope.row.id" v-model="scope.row.expenseUnitName" clearable></el-input>
               </span>
               <span v-if="expenseType == 2">
-                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled=" (canSelectAgent && scope.$index == 0) || payTableLock" @change="changeAgentName">
+                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled=" (canSelectAgent && scope.$index == 0) || payTableLock" @change="changeAgentName($event,scope.$index)">
                     <el-option
                       v-for="item in agentIdList"
                       :key="item.id"
@@ -293,8 +293,10 @@ export default {
     }
   },
   methods:{
-    changeAgentName(val){
-      this.$emit('changeAgentName',val)
+    changeAgentName(val,index){
+      if(index==0) {
+         this.$emit('changeAgentName',val)
+      }
     },
     //改变结算方式
     changePayWay(val){
