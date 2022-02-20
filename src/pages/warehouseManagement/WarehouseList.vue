@@ -1,5 +1,5 @@
 <template>
-  <div class="warehouse-list-wrap">
+  <div class="warehouse-list-wrap content-wrapper">
     <!-- 工具栏 -->
     <header class="tools-bar">
       <el-form :inline="true">
