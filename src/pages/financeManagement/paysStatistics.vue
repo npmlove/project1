@@ -38,7 +38,7 @@
                placement="right"
                width="200"
                trigger="click">
-               <div v-for="(item,index) in formInline.waybillNo.split(/[,，/' ']/).splice(0,20)" :key="index">
+               <div v-for="(item,index) in formInline.waybillNos.split(/[,，/' ']/).splice(0,20)" :key="index">
                  {{index==19?"...":item}}
                </div>
             <el-input
@@ -1244,6 +1244,7 @@ export default {
         orderNo: "",
         orderNos: "",
         waybillNo: "",
+        waybillNos: "",
         customerName: "",
         airCompanyCode: "",
         agentName: "",
@@ -1335,7 +1336,7 @@ export default {
         });
         exportFile(res, "application/x-xls", "应付统计");
       } else {
-        if (multipleSelection.length > 0) {
+        if (this.selectTableData.length > 0) {
           let idArray = this.idsArray
           let params = {
             ids: idArray,
