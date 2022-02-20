@@ -66,8 +66,7 @@
             <input
               style="border: 1px solid black"
               type="text"
-              maxlength="6"
-              onkeyup="this.value= this.value.match(/^\d{0,4}(\.\d{0,2})?/)? this.value.match(/^\d{0,4}(\.\d{0,2})?/)[0] : ''"
+              onkeyup="this.value= this.value.match(/^\d{0,6}(\.\d{0,2})?/)? this.value.match(/^\d{0,6}(\.\d{0,2})?/)[0] : ''"
               ref="input1"
               @blur="
                 inputData.input3 = Number($event.target.value).toFixed(2);
