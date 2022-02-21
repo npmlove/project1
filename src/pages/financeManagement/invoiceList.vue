@@ -224,7 +224,7 @@
                    <span>应收总金额:{{statistData.shouldGet.toLocaleString('en-US')}}</span>
                    <span style="margin-left:15px">申请开票金额: {{statistData.applyInvoice.toLocaleString('en-US')}}</span>
                    <span style="margin-left:15px">已开票金额:{{statistData.invoicedMoney.toLocaleString('en-US')}}</span>
-                   <!-- <span style="color:red">存在异常订单!</span> -->
+                   <span style="color:red" v-if="isExitAbnormalFlag">存在异常订单!</span>
                  </div>
         </el-tab-pane>
       </el-tabs>
@@ -465,6 +465,7 @@
     },
     data() {
       return {
+        isExitAbnormalFlag:false,
         selectControl:false,
         tableKey :1,
         ifDisable:true,
@@ -1392,6 +1393,7 @@
       },
       //数据统计按钮
       getStatistData(){
+        this.isExitAbnormalFlag = false
         // console.log(this.tableData)
         this.statistDataShow = !this.statistDataShow
         if(this.statistDataShow == false) return""
@@ -1402,6 +1404,7 @@
           this.statistData.shouldGet = res.data.totalArCny;
           this.statistData.applyInvoice =res.data.applyAmount;
           this.statistData.invoicedMoney = res.data.invoicedAmount;
+          this.isExitAbnormalFlag = res.data.isExitAbnormalFlag == 1? true :false
         })
       },
       //跨页全选按钮
