@@ -1478,8 +1478,19 @@ export default {
     async onSubmit() {
       this.currentPage = 1;
       let { formInline, currentPage, woStatus, slectAllDataStatic } = this;
+      let copyS = JSON.parse(JSON.stringify(formInline))
+      
+       if(copyS.orderNos.length <= 11){
+        copyS.orderNo = copyS.orderNos
+        copyS.orderNos = ""
+      }
+       if(copyS.waybillNos.length <= 15){
+        copyS.waybillNo = copyS.waybillNos
+        copyS.waybillNos = ""
+      }
+      console.log(copyS)
       await this.getTabelData(
-        formInline,
+        copyS,
         currentPage,
         woStatus,
         slectAllDataStatic
