@@ -435,7 +435,7 @@ export default {
     },
     ifSame(index,event){
       
-      this.tableData[index].name = event.replace(/[\W]/g,'')
+      this.tableData[index].name = event.replace(/[\W]/g,'').toUpperCase()
       let copy = JSON.parse(JSON.stringify(this.tableData))
       let resultS = copy.map(item=>{
         if (!item.name || item.name != ""){
