@@ -346,7 +346,7 @@
             <div>{{ initData.bookingCw }}</div>
           </div>
         </div>
-        <div class="bg_table">
+        <div class="bg_table" v-if="initData.trayDetail&&initData.trayDetail[0]&& !Object.values(initData.trayDetail[0]).every(item=>!item)">
           <div class="flex_center border padding_contont" style="">
             <div>托盘数量</div>
             <div>长（cm）</div>
@@ -471,7 +471,7 @@
                   </div> -->
           <div class="mtop_10">
             <span class="mr_25">国内提货</span>
-            <el-radio-group v-model="initData.isPickUp">
+            <el-radio-group v-model="initData.isPickUp" disabled>
               <el-radio :label="1">不需要</el-radio>
               <el-radio :label="2">需要</el-radio>
             </el-radio-group>
@@ -485,7 +485,7 @@
             :pickUpTime.sync="initData.pickUpTime" />
           <div class="mtop_10">
             <span class="mr_25">清关服务</span>
-            <el-radio-group v-model="initData.cclType">
+            <el-radio-group v-model="initData.cclType" disabled>
               <el-radio :label="1">自行清关</el-radio>
               <el-radio :label="2">DDU</el-radio>
               <el-radio :label="3">DDP</el-radio>
@@ -504,6 +504,7 @@
           <el-input
             type="textarea"
             :rows="2"
+            disabled
             placeholder="请输入备注"
             v-model="initData.remark"
           >
