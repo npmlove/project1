@@ -1,115 +1,123 @@
 <template>
-  <div class="warehouse-list-wrap content-wrapper">
-    <!-- 工具栏 -->
-    <header class="tools-bar">
-      <el-form :inline="true">
-        <el-form-item label="仓库名称:">
-          <el-autocomplete
-            v-model="warehouseName"
-            :fetch-suggestions="(query, cb) => querySearch(query, cb, 'warehouseNames')"
-            placeholder="请输入仓库名称"
-            clearable
-          ></el-autocomplete>
-        </el-form-item>
-        <el-form-item label="是否自有:">
-          <el-select
-            clearable
-            v-model="warehouseType"
-            placeholder="请选择是否自有"
+  <div class="warehouse-list-wrap">
+    <div class="warehouse-list-content">
+      <!-- 工具栏 -->
+      <header class="tools-bar">
+        <el-form :inline="true">
+          <el-form-item label="仓库名称:">
+            <el-autocomplete
+              v-model="warehouseName"
+              :fetch-suggestions="
+                (query, cb) => querySearch(query, cb, 'warehouseNames')
+              "
+              placeholder="请输入仓库名称"
+              clearable
+            ></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="是否自有:">
+            <el-select
+              clearable
+              v-model="warehouseType"
+              placeholder="请选择是否自有"
+            >
+              <el-option
+                v-for="item in warehouseTypes"
+                :key="item.label"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="城市:">
+            <el-input
+              v-model="city"
+              clearable
+              type="text"
+              :maxlength="30"
+              placeholder="请输入城市名称"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="仓库所属:">
+            <el-autocomplete
+              v-model="belong"
+              :fetch-suggestions="
+                (query, cb) => querySearch(query, cb, 'belongs')
+              "
+              placeholder="请输入仓库所属"
+              clearable
+            ></el-autocomplete>
+          </el-form-item>
+          <el-form-item label="提交者:">
+            <el-autocomplete
+              v-model="userName"
+              :fetch-suggestions="
+                (query, cb) => querySearch(query, cb, 'userNames')
+              "
+              placeholder="请输入提交者"
+              clearable
+            ></el-autocomplete>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="currentPageChange(1)"
+              >搜索</el-button
+            >
+          </el-form-item>
+        </el-form>
+        <div style="text-align: right">
+          <el-button type="primary" @click="openWarehouseDialog()"
+            >添加仓库</el-button
           >
-            <el-option
-              v-for="item in warehouseTypes"
-              :key="item.label"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="城市:">
-          <el-input
-            v-model="city"
-            clearable
-            type="text"
-            :maxlength="30"
-            placeholder="请输入城市名称"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="仓库所属:">
-          <el-autocomplete
-            v-model="belong"
-            :fetch-suggestions="(query, cb) => querySearch(query, cb, 'belongs')"
-            placeholder="请输入仓库所属"
-            clearable
-          ></el-autocomplete>
-        </el-form-item>
-        <el-form-item label="提交者:">
-          <el-autocomplete
-            v-model="userName"
-            :fetch-suggestions="(query, cb) => querySearch(query, cb, 'userNames')"
-            placeholder="请输入提交者"
-            clearable
-          ></el-autocomplete>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="currentPageChange(1)"
-            >搜索</el-button
-          >
-        </el-form-item>
-      </el-form>
-      <div style="text-align: right">
-        <el-button type="primary" @click="openWarehouseDialog()"
-          >添加仓库</el-button
-        >
-      </div>
-    </header>
-    <!-- 表格 -->
-    <dc-table
-      style="margin-top: 20px"
-      :columns="columns"
-      :data="warehouses"
-      :total="total"
-      :current-page="pageNum"
-      :page-size="pageSize"
-      @page-size-change="pageSizeChange"
-      @current-page-change="currentPageChange"
-      border
-    >
-      <template #tools="{ row }">
-        <el-button type="text" @click="openWarehouseDialog(row)"
-          >编辑</el-button
-        >
-        <el-button type="text" @click="delWarehouse(row)">删除</el-button>
-      </template>
-      <template #map="{ row }">
-        <div style="display: flex; align-items: center">
-          <img
-            :src="mapIcon"
-            style="width: 30px; cursor: zoom-in"
-            @click="$utils.previewDocx({ xpath: row.xpath })"
-          />
-          <i
-            class="el-icon-download"
-            style="margin-left: 10px; cursor: pointer; font-size: 24px"
-            @click="
-              $utils.downloadFile({ url: row.xpath, name: row.mapModuleName })
-            "
-          ></i>
         </div>
-      </template>
-    </dc-table>
-    <!-- 编辑|新建弹窗 -->
-    <warehouse-dialog
-      ref="WarehouseDialog"
-      :form.sync="form"
-      @afterEdit="
-        currentPageChange();
-        searchCondList();
-      "
-      @afterAdd="
-        currentPageChange(1);
-        searchCondList();
-      "
-    />
+      </header>
+      <!-- 表格 -->
+      <dc-table
+        style="margin-top: 20px"
+        :columns="columns"
+        :data="warehouses"
+        :total="total"
+        :current-page="pageNum"
+        :page-size="pageSize"
+        @page-size-change="pageSizeChange"
+        @current-page-change="currentPageChange"
+        border
+      >
+        <template #tools="{ row }">
+          <el-button type="text" @click="openWarehouseDialog(row)"
+            >编辑</el-button
+          >
+          <el-button type="text" @click="delWarehouse(row)">删除</el-button>
+        </template>
+        <template #map="{ row }">
+          <div style="display: flex; align-items: center">
+            <img
+              :src="mapIcon"
+              style="width: 30px; cursor: zoom-in"
+              @click="$utils.previewDocx({ xpath: row.xpath })"
+            />
+            <i
+              class="el-icon-download"
+              style="margin-left: 10px; cursor: pointer; font-size: 24px"
+              @click="
+                $utils.downloadFile({ url: row.xpath, name: row.mapModuleName })
+              "
+            ></i>
+          </div>
+        </template>
+      </dc-table>
+      <!-- 编辑|新建弹窗 -->
+      <warehouse-dialog
+        ref="WarehouseDialog"
+        :form.sync="form"
+        @afterEdit="
+          currentPageChange();
+          searchCondList();
+        "
+        @afterAdd="
+          currentPageChange(1);
+          searchCondList();
+        "
+      />
+    </div>
   </div>
 </template>
 
@@ -263,7 +271,7 @@ export default {
           );
           if (code === 200) {
             this.currentPageChange();
-            this.searchCondList()
+            this.searchCondList();
           } else {
             this.$message.error(message);
           }
@@ -295,24 +303,25 @@ export default {
     // 查询筛选栏列表
     async searchCondList() {
       const { code, data, message } = await this.$http.get(
-        this.$service.searchCondList, {
+        this.$service.searchCondList,
+        {
           params: {
-            typeCode: '0,1,2', // 0=仓库名称，1=仓库所属，2=提交者
-          }
+            typeCode: "0,1,2", // 0=仓库名称，1=仓库所属，2=提交者
+          },
         }
       );
       if (code === 200) {
-        this.warehouseNames = data[0].map(item => ({ value: item }))
-        this.belongs = data[1].map(item => ({ value: item }))
-        this.userNames = data[2].map(item => ({ value: item }))
+        this.warehouseNames = data[0].map((item) => ({ value: item }));
+        this.belongs = data[1].map((item) => ({ value: item }));
+        this.userNames = data[2].map((item) => ({ value: item }));
       } else {
         this.$message.error(message);
       }
     },
     querySearch(query, cb, attr) {
-      const results = this[attr].filter(item => {
-        return item.value.includes(query)
-      })
+      const results = this[attr].filter((item) => {
+        return item.value.includes(query);
+      });
       cb(results);
     },
   },
@@ -322,8 +331,12 @@ export default {
 
 <style scoped lang="less">
 .warehouse-list-wrap {
-  margin: 20px;
   padding: 20px;
-  background: #fff !important;
+  overflow: auto;
+  height: calc(100vh - 121px);
+  .warehouse-list-content {
+    padding: 20px;
+    background: #fff;
+  }
 }
 </style>
