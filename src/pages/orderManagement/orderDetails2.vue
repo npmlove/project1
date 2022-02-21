@@ -43,6 +43,9 @@
         <span>航班号 </span>
         <span>
           <el-input
+           @blur="initData.flightNo = $event.target.value"
+            onkeyup="value=value.replace(/[\W]/g,'')"
+            maxlength='6'
             v-model="initData.flightNo"
             size="mini"
             placeholder="请输入航班号" />
@@ -60,7 +63,8 @@
           ></span
         >
       </div>
-      <div class="flex">
+     <div class="flex">
+        <img src="../../assets/orderNo.svg" alt="" style="width:15px;height:15px" @click="jumpToOrder">
         <span>运单号 </span>
         <span>
           <el-input
@@ -68,6 +72,21 @@
             size="mini"
             placeholder="请输入内容"
           ></el-input>
+        </span>
+      </div>
+      <div class="flex">
+        <span>分单号 </span>
+        <span>
+          <el-input
+            v-model="initData.subWaybillNo"
+            size="mini"
+            placeholder="请输入内容"
+            maxlength="80"
+          ></el-input>
+        </span>
+          <span style="fontSize:10px;fontWeight:400;color:#999;transform:translateY(-16px);margin-left:6px">
+        <img src="../../assets/billOrderTip.svg" alt="" style="width:15px;height:15px">
+        请使用逗号隔开
         </span>
       </div>
       <div>
@@ -78,7 +97,7 @@
         <span>日期 </span>
         <departure-date-picker :date.sync="initData.departureDate" />
       </div>
-      <div v-if="notAirPeople">
+      <div v-if="notAirPeople && notSaleBefore">
         <span>利润 </span>
         <span>￥{{ initData.orderProfit }}</span>
       </div>
@@ -88,7 +107,21 @@
       </div>
       <div>
         <span>代 理</span>
-        <span>{{ initData.agentName }}</span>
+          <el-select
+            v-model="initData.agentName"
+            filterable
+            size="mini"
+            :disabled="canSelectAgent"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in agentIdList"
+              :key="item.id"
+              :label="item.agentName"
+              :value="item.agentName"
+            >
+            </el-option>
+          </el-select>
       </div>
       <div class="flex">
         <span>进仓编号</span>
@@ -96,6 +129,7 @@
           <el-input
             v-model="initData.inboundNo"
             size="mini"
+            :disabled="initData.status >= 13"
             placeholder="请输入内容"
           ></el-input
         ></span>
@@ -432,13 +466,13 @@
           class="inData"
           style="background: rgb(240, 240, 240); padding-left: 20px"
         >
-          <!-- <div>
-                      <span class="mr_25">报关服务</span>
-                      <el-radio-group v-model="initData.customsType">
-                        <el-radio :label="1">自行报关</el-radio>
-                        <el-radio :label="2">委托报关</el-radio>
-                      </el-radio-group>
-                  </div> -->
+          <div>
+            <span class="mr_25">报关服务</span>
+            <el-radio-group v-model="initData.customsType">
+              <el-radio :label="1">自行报关</el-radio>
+              <el-radio :label="2">委托报关</el-radio>
+            </el-radio-group>
+        </div>
           <div class="mtop_10">
             <span class="mr_25">国内提货</span>
             <el-radio-group v-model="initData.isPickUp">
@@ -446,6 +480,13 @@
               <el-radio :label="2">需要</el-radio>
             </el-radio-group>
           </div>
+          <!-- 提货表单 -->
+          <pick-up-form
+            v-show="initData.isPickUp === 2"
+            :pickUpAddress.sync="initData.pickUpAddress"
+            :pickUpContacts.sync="initData.pickUpContacts"
+            :pickUpTel.sync="initData.pickUpTel"
+            :pickUpTime.sync="initData.pickUpTime" />
           <div class="mtop_10">
             <span class="mr_25">清关服务</span>
             <el-radio-group v-model="initData.cclType">
@@ -455,6 +496,12 @@
               <el-radio :label="4">DAP</el-radio>
             </el-radio-group>
           </div>
+          <!-- 送货表单 -->
+          <deliver-goods-form
+            v-show="initData.cclType !== 1"
+            :deliveryAddress.sync="initData.deliveryAddress"
+            :deliveryContacts.sync="initData.deliveryContacts"
+            :deliveryTel.sync="initData.deliveryTel" />
         </div>
         <h1 class="title">订单备注</h1>
         <div class="inData">
@@ -471,20 +518,24 @@
       </div>
       <div v-show="radio1 == '2'">
         <bill-order
+        @changePayWay="changePayWay" 
+        :payWay="initData.payWay"
           v-show="notAirPeople"
-          :getList="initData.arOrderPriceList[0].list"
+          :getList="initData.arOrderPriceList && initData.arOrderPriceList[0] && initData.arOrderPriceList[0].list"
           :notSaleBefore="true"
           ref="typeOne"
+          :titleType="1"
+          :vertifyAmount="initData.totalRcWoCny"
         />
         <el-button class="setWidth ml_20" @click="fatherAddOneItem(1)" v-if="notAirPeople"
           >添加费用</el-button
         >
         <div class="line"></div>
-        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"/>
-        <el-button class="setWidth ml_20" @click="fatherAddOneItem(2)"
+        <bill-order :getList="initData.apOrderPriceList" ref="typeTwo" :canSelectAgent="canSelectAgent" :notSaleBefore="notSaleBefore" :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
+        <el-button class="setWidth ml_20" @click="fatherAddOneItem(2)" v-if="notSaleBefore"
           >添加费用</el-button
         >
-        <div class="line"></div>
+        <div class="line" v-if="notSaleBefore"></div>
       </div>
       <!-- 进仓指引 -->
       <entry-guide
@@ -496,6 +547,9 @@
           }
         "
       />
+      <div v-if="radio1 == '111'" style="margin:-20px 0 0 -20px">
+        <ladingBill :orderEmbed="initData.orderNo"></ladingBill>
+      </div>
     </div>
   </div>
 </template>
@@ -503,8 +557,11 @@
 import billOrder from "./components/billOrder.vue";
 import { judgeWaybillNo } from "@/util/util";
 import TabBar from "./components/TabBar.vue";
+import ladingBill from './ladingBillDownLoad.vue'
 import EntryGuide from "./components/EntryGuide.vue";
 import DepartureDatePicker from "./components/DepartureDatePicker";
+import PickUpForm from './components/PickUpForm'
+import DeliverGoodsForm from './components/DeliverGoodsForm'
 export default {
   data() {
     return {
@@ -582,7 +639,7 @@ export default {
           lable: "危险品",
         },
         {
-          value: 5,
+          value: 4,
           lable: "防疫物资",
         },
       ],
@@ -596,6 +653,7 @@ export default {
           lable: "托盘",
         },
       ],
+      agentIdList:[]
     };
   },
   components: {
@@ -603,8 +661,27 @@ export default {
     TabBar,
     EntryGuide,
     DepartureDatePicker,
+    ladingBill,
+    PickUpForm,
+    DeliverGoodsForm,
   },
   computed: {
+    //页面代理是否可选
+    canSelectAgent() {
+      if(this.initData.status==39){ //取消
+        if(this.initData.prestatus >=25){
+                return true
+        }else{
+                return false
+        }
+      }else{
+        if(this.initData.status >=25){
+             return true
+        }else{
+          return false
+        }
+}
+    },
     getInboundCw() {
       return this.initData.inboundCw;
     },
@@ -635,6 +712,19 @@ export default {
     await this.initSysSetTing();
   },
   methods: {
+    //跳转到提单页面
+    jumpToOrder(){
+      this.$router.push({
+        name:"ladingBillDownLoad",
+        params:{
+          orderNo:this.initData.orderNo
+        }
+      })
+    },
+    changePayWay(val){
+      this.initData.payWay = val
+      // console.log(val)
+    },
     trayAddClick(index, key) {
       var json = {
         trayNumber: "",
@@ -816,6 +906,25 @@ export default {
       } else {
         this.initData.waybillNo = null;
       }
+      const { pickUpAddress ,pickUpContacts, pickUpTel, pickUpTime, isPickUp, deliveryAddress, deliveryContacts, deliveryTel, cclType } = this.initData
+      // 校验提货信息
+      if (isPickUp === 2) {
+        const checkPickUp = [pickUpAddress ,pickUpContacts, pickUpTel, pickUpTime].every(item => item)
+        if (!checkPickUp) {
+          return this.$message.error(
+            "请填写国内提货相关信息"
+          )
+        }
+      }
+      // 校验收货信息
+      if (cclType !== 1) {
+        const checkDelivery = [deliveryAddress, deliveryContacts, deliveryTel].every(item => item)
+        if (!checkDelivery) {
+          return this.$message.error(
+            "请填写送货相关信息"
+          )
+        }
+      }
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
       let order = this.initData;
       if (order.hasOwnProperty("apOrderPriceList")) {
@@ -834,6 +943,9 @@ export default {
       let arrayTypeOne = this.$refs.typeOne.tableData;
       let arrayTypeTwo = this.$refs.typeTwo.tableData;
       let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
+       if(orderPriceList.some(item=>!item.quantity || !item.price)){
+          return this.$message.warning("请填写费用金额")
+        }
       let params = {
         order: order,
         orderPriceList: orderPriceList,
@@ -1023,11 +1135,15 @@ export default {
       let res4 = await this.$http.get(
         this.$service.companySearchByPage + "?pageSize=50000"
       );
-      Promise.all([res1, res2, res3, res4]).then((res) => {
+       let res5 = await this.$http.post(this.$service.agentList, {
+        pageSize: 50000,
+      });
+      Promise.all([res1, res2, res3, res4,res5]).then((res) => {
         this.preSaleList = res[0].data.records;
         this.onSaleList = res[1].data.records;
         this.airLineList = res[2].data.records;
         this.airCompanyCodeList = res[3].data.records;
+        this.agentIdList = res[4].data.records;
       });
     },
     // 获取订单详情

@@ -61,29 +61,51 @@
             </el-form-item>
           </div>
         </div>
-
+        <!-- 其他服务-报关服务 -->
+        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">其他服务-报关服务</div>
+        <div>
+          <el-form-item label="报关服务">
+              <el-radio-group v-model="customsType">
+                <el-radio :label="1">自行报关</el-radio>
+                <el-radio :label="2">委托报关</el-radio>
+              </el-radio-group>
+          </el-form-item>
+        </div>
         <!-- 其他服务-国内提货 -->
         <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">其他服务-国内提货</div>
         <div>
           <el-form-item label="国内提货">
-            <el-radio-group v-model="isPickUp">
+            <el-radio-group v-model="isPickUp" disabled>
               <el-radio :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-for="(item,index) in isPickUpOpt" :key="index" :label="item.Value">{{item.Name}}</el-radio>
             </el-radio-group>
           </el-form-item>
         </div>
         <div v-if="isPickUp == '2'">
+          <el-form-item label="提货时间" prop="pickUpTime">
+            <el-date-picker
+              disabled
+              v-model="pickUpTime"
+              type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              format="yyyy-MM-dd HH:mm"
+              placeholder="选择提货时间"
+            >
+            </el-date-picker>
+          </el-form-item>
+        </div>
+        <div v-if="isPickUp == '2'">
           <el-form-item label="提货地址">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="pickUpAddress" placeholder="请输入提货地址" maxlength="50" type="textarea" style="width: 596px;" show-word-limit></el-input>
+            <el-input disabled v-model="pickUpAddress" placeholder="请输入提货地址" maxlength="50" type="textarea" style="width: 596px;" show-word-limit></el-input>
           </el-form-item>
         </div>
         <div v-if="isPickUp == '2'">
           <el-form-item label="提货联系人">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="pickUpContacts" placeholder="请输入提货联系人" maxlength="15" style="width: 596px;"></el-input>
+            <el-input disabled v-model="pickUpContacts" placeholder="请输入提货联系人" maxlength="15" style="width: 596px;"></el-input>
           </el-form-item>
         </div>
         <div v-if="isPickUp == '2'">
           <el-form-item label="联系电话">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="pickUpTel" placeholder="请输入联系电话" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="11" style="width: 596px;"></el-input>
+            <el-input disabled v-model="pickUpTel" placeholder="请输入联系电话" onkeyup="value=value.replace(/[^\d]/g, '')" maxlength="11" style="width: 596px;"></el-input>
           </el-form-item>
         </div>
 
@@ -92,23 +114,23 @@
         <div>
           <el-form-item label="清关服务">
             <el-radio-group v-model="cclType">
-              <el-radio :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-for="(item,index) in cclTypeOpt" :key="index" :label="item.Value">{{item.Name}}</el-radio>
+              <el-radio disabled v-for="(item,index) in cclTypeOpt" :key="index" :label="item.Value">{{item.Name}}</el-radio>
             </el-radio-group>
           </el-form-item>
         </div>
         <div v-if="cclType != '1'">
           <el-form-item label="送货地址">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryAddress" placeholder="请输入送货地址" maxlength="200" type="textarea" style="width: 596px;" show-word-limit></el-input>
+            <el-input disabled v-model="deliveryAddress" placeholder="请输入送货地址" maxlength="200" type="textarea" style="width: 596px;" show-word-limit></el-input>
           </el-form-item>
         </div>
         <div v-if="cclType != '1'">
           <el-form-item label="送货联系人">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryContacts" placeholder="请输入送货联系人" maxlength="50" style="width: 596px;"></el-input>
+            <el-input disabled v-model="deliveryContacts" placeholder="请输入送货联系人" maxlength="50" style="width: 596px;"></el-input>
           </el-form-item>
         </div>
         <div v-if="cclType != '1'">
           <el-form-item label="联系电话">
-            <el-input :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="deliveryTel" placeholder="请输入联系电话" maxlength="20" style="width: 596px;"></el-input>
+            <el-input disabled v-model="deliveryTel" placeholder="请输入联系电话" maxlength="20" style="width: 596px;"></el-input>
           </el-form-item>
         </div>
         <!-- 航线信息 -->
@@ -288,7 +310,7 @@
               </div>
               <div class="flight-template-li" style="flex: 0 0 13%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.expenseUnitName" :disabled="true" size="small" style="width: 90%;"></el-input>
-                <el-input v-else :disabled="orderStatus.indexOf(status) > -1 ? false : true" v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
+                <el-input v-else :disabled="orderStatus.indexOf(status) < 0 || childerItem.orderDisabled? true : false" v-model="childerItem.expenseUnitName" size="small" style="width: 90%;"></el-input>
               </div>
               <div class="flight-template-li" style="flex: 0 0 7%;">
                 <el-input v-if="childerItem.expenseName == '空运费'" :value="childerItem.price" :disabled="true" size="small" style="width: 90%;"></el-input>
@@ -348,9 +370,9 @@
         </div>
 
         <!-- 账单信息-应付账单 -->
-        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;">账单信息-应付账单</div>
-        <div class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;">
-          <div class="flight-template" style="width: auto;margin-left: 0;" v-show="notSaleBefore">
+        <div style="font-size: 18px;font-weight: 100;margin-bottom: 10px;" v-show="notSaleBefore">账单信息-应付账单</div>
+        <div class="route-module" style="margin-left: 0;width: 90%;padding-bottom: 0;" v-show="notSaleBefore">
+          <div class="flight-template" style="width: auto;margin-left: 0;" >
             <div class="flight-template-ul-header">
               <div class="flight-template-li" style="flex: 0 0 5%;text-align: center;">序号</div>
               <div class="flight-template-li" style="flex: 0 0 13%;text-align: center;">费用名称</div>
@@ -424,7 +446,7 @@
             <el-form-item label="人民币合计">
               <div>{{totalApCny}}</div>
             </el-form-item>
-            <el-form-item label="利润">
+            <el-form-item label="利润" v-show="notAirPeople">
               <div>{{totalArCny - totalApCny}}</div>
             </el-form-item>
           </div>
@@ -494,6 +516,7 @@
         remark: '',
         isPickUp: '1',
         pickUpAddress: '',
+        pickUpTime: '',
         pickUpContacts: '',
         pickUpTel: '',
         isPickUpOpt: [
@@ -861,6 +884,7 @@
           remark:this.remark,
           isPickUp:this.isPickUp,
           pickUpAddress:this.pickUpAddress,
+          pickUpTime: this.pickUpTime,
           pickUpContacts:this.pickUpContacts,
           pickUpTel:this.pickUpTel,
           cclType:this.cclType,
@@ -885,10 +909,22 @@
           bookingCbm:this.bookingCbm,
           bookingWeight:this.bookingWeight,
           bookingVwr:this.bookingVwr,
-          bookingCw:this.bookingCw
+          bookingCw:this.bookingCw,
+          customsType: this.customsType,
         }
         var orderPriceList = []
-        orderPriceList = this.arOrderPriceList.concat(this.apOrderPriceList)
+        if(this.arOrderPriceList && this.apOrderPriceList){
+          orderPriceList = this.arOrderPriceList.concat(this.apOrderPriceList)
+        }
+        else if(this.arOrderPriceList && !this.apOrderPriceList) {
+          orderPriceList = this.arOrderPriceList
+        }
+        else if(!this.arOrderPriceList && this.apOrderPriceList) {
+          orderPriceList = this.apOrderPriceList
+        }
+        else {
+          orderPriceList=[]
+        }
         if(orderPriceList.length > 0){
           for(var m = 0; m < orderPriceList.length; m++){
             if(!orderPriceList[m].expenseName){
@@ -917,7 +953,7 @@
           this.$http.post(this.$service.orderSaveOrder,data).then((data) => {
             if(data.code == 200){
               // this.$router.push('/orderManagement/orderManage')
-              this.initDetails()
+              // this.initDetails()
               this.$message.success("订单保存成功")
             } else {
               this.$message.error(data.message)
@@ -930,7 +966,7 @@
           this.$http.post(this.$service.orderExecuteOrder,data).then((data) => {
             if(data.code == 200){
               // this.$router.push('/orderManagement/orderManage')
-              this.$utils.orderDetailRefresh(this.detailsArr)
+              // this.$utils.orderDetailRefresh(this.detailsArr)
               this.$message.success("订单审核通过")
             } else {
               this.$message.error(data.message)
@@ -1288,7 +1324,7 @@
           expenseName: '',
           expenseType: 1,
           expenseUnitId: '',
-          expenseUnitName: '',
+          expenseUnitName: this.arOrderPriceList[0].expenseUnitName,
           id: '',
           orderId: this.orderId,
           price: '',
@@ -1296,6 +1332,7 @@
           remark: '',
           totalCny: '',
           totalOrgn: '',
+          orderDisabled:true
         }
         this.arOrderPriceList.push(json)
       },
@@ -1405,6 +1442,7 @@
             this.bookingCw = data.bookingCw
             this.isPickUp = data.isPickUp.toString()
             this.pickUpAddress = data.pickUpAddress
+            this.pickUpTime = data.pickUpTime
             this.pickUpContacts = data.pickUpContacts
             this.pickUpTel = data.pickUpTel
             this.cclType = data.cclType.toString()

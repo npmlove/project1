@@ -1,8 +1,8 @@
 <template>
-  <div class="content-wrapper">
+  <div class="content-wrapper" :class="{ embedPage:orderEmbed }">
     <div class="content">
       <div class="left">
-        <div class="search">
+        <div class="search" v-if="!orderEmbed">
           <div class="item">
             <el-input
               v-model="orderNo"
@@ -168,7 +168,14 @@ import order3 from "../../components/order.vue";
 import order4 from "../../components/order.vue";
 import order5 from "../../components/order.vue";
 import axios from "../../../static/axios.min.js";
+const { BILL_URL:billUrl} = process.env
 export default {
+  props:{
+    orderEmbed:{
+      type:String,
+      default:''
+    }
+  },
   components: { order0, order5, order1, order2, order3, order4 },
   data() {
     return {
@@ -191,7 +198,19 @@ export default {
       
     };
   },
+  created(){
 
+  },
+  mounted(){
+    if(this.orderEmbed){
+      this.orderNo = this.orderEmbed
+      this.tabShow()
+    }
+    if(this.$route.params.orderNo){
+      this.orderNo = this.$route.params.orderNo
+      this.tabShow()
+   }
+  },
   methods: {
     // 子组件调用 返还页面数据
     sonSaveData(data) {
@@ -333,7 +352,7 @@ export default {
     initData() {
       let param = this.orderNo;
       axios
-        .get(`/track/bill-of-lading/${param}`)
+        .get(`${billUrl}/${param}`)
         .then((data) => {  
            if(data.data.ext) {
             this.noPrice = 1
@@ -367,7 +386,7 @@ export default {
       if (this.mainData.hawbList) {
         let id = this.mainData.hawbList[i - 1].id;
         axios
-          .get("/track/bill-of-lading/delete/" + id)
+          .get(billUrl+"/delete/" + id)
           .then((data) => {
             if (data.data.code == 200) {
               this.$message.success("分单删除成功");
@@ -400,6 +419,7 @@ export default {
           }
         )
           .then(() => {
+            this.subshow();
             this.initData();
             this.initOrderBubblePoint()
           })
@@ -488,6 +508,10 @@ export default {
 };
 </script>
 <style scoped lang="less">
+.embedPage {
+  overflow-y:visible!important;
+  height:auto;
+}
 .content {
   background: #fff;
   margin: 20px 20px 0 20px;

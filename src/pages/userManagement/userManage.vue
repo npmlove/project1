@@ -68,13 +68,13 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item prop="customerServiceId" label="结算方式">
+        <el-form-item prop="payWay" label="结算方式">
           <el-radio-group v-model="ruleForm.payWay">
             <el-radio :label="0">付款买单</el-radio>
             <el-radio :label="1">月结</el-radio>
           </el-radio-group>
         </el-form-item>
-          <el-form-item  prop="certificationBody" label="账期" >
+          <el-form-item  prop="creditTerm" label="账期" >
             <el-input style="width: 125px" v-model="ruleForm.creditTerm" clearable onkeyup="value=value.replace(/[^\d]/g, '')"  placeholder="请输入账期"
                       :maxlength="3"></el-input>
             <el-select size="medium" v-model="ruleForm.unit" clearable style="width: 75px; margin-right: -5px;">
@@ -90,7 +90,7 @@
             <el-input style="width: 270px;" v-model="ruleForm.qqInput" clearable placeholder="请输入QQ号"  maxlength="16"  onkeyup="this.value=this.value.replace(/[^\d]/g,'')" @blur="ruleForm.qqInput = $event.target.value"
                     ></el-input>
           </el-form-item>
-        <el-form-item  prop="certificationBody" label="额度">
+        <el-form-item  prop="quota" label="额度">
           <el-input style="width: 270px;" v-model="ruleForm.quota" clearable placeholder="请输入额度"
                     :maxlength="7" onkeyup="value=value.replace(/[^\d]/g, '')"></el-input> 元
         </el-form-item>
@@ -158,9 +158,9 @@
         dialogTitle: '密码修改',
         dialogFormVisible: false,
         rules: {
-          // customerServiceId: [{required: true, message: '请选择售前客服', trigger: 'change'}],
-          certificationBody: [{max: 20, message: '认证主体最长20个字符', trigger: 'change'}],
-          qqInput:[{max:16,min:6,message:'QQ长度在6到16位',trigger: 'blur'}]
+          customerServiceId: [{required: true, message: '请选择售前客服', trigger: 'change'}],
+          certificationBody: [{max: 20, message: '认证主体最长20个字符', trigger: 'change'},{required: true, message: '请绑定认证主体', trigger: 'change'}],
+          qqInput:[{max:16,min:6,message:'QQ长度在6到16位',trigger: 'blur'},{required:true,message:'请输入QQ号',trigger:'change'}]
         },
         creditTerm:{
           creditTerm:'',

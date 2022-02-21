@@ -411,7 +411,7 @@
         <div>
           <el-form-item label="代理公司">
             <el-select
-              :disabled="orderStatus.indexOf(status) > -1 ? false : true"
+              :disabled="orderStatus.indexOf(status) > -1 ? false : canSelectAgent"
               v-model="agentId"
               filterable
               clearable
@@ -943,7 +943,7 @@
                   style="width: 90%"
                 ></el-input>
                 <el-input
-                  :disabled="orderStatus.indexOf(status) > -1 ? false : true"
+                  :disabled="orderStatus.indexOf(status) <0 ||childerItem.orderDisable? true : false"
                   v-else
                   v-model="childerItem.expenseUnitName"
                   size="small"
@@ -1313,7 +1313,7 @@
                 <el-input
                   :disabled="
                     childerItem.expenseName == '空运费' ||
-                    orderStatus.indexOf(status) == -1
+                    orderStatus.indexOf(status) == -1 
                       ? true
                       : false
                   "
@@ -2751,7 +2751,7 @@ export default {
         quantity: "",
         remark: "",
         totalCny: "",
-        totalOrgn: "",
+        totalOrgn: ""
       };
       this.apOrderPriceList.push(json);
     },
@@ -2766,7 +2766,8 @@ export default {
         expenseName: "",
         expenseType: 1,
         expenseUnitId: "",
-        expenseUnitName: "",
+        expenseUnitName: this.arOrderPriceList[priceIndex].list[0].expenseUnitName,
+        orderDisable:true,
         id: "",
         orderId: this.orderId,
         price: "",
@@ -2819,6 +2820,7 @@ export default {
             }
             this.statusDesc = data.statusDesc;
             this.status = data.status;
+            this.preStatus = data.preStatus
             this.pscsName = data.pscsName;
             this.principalName = data.principalName;
             this.mscsName = data.mscsName;
@@ -2939,6 +2941,24 @@ export default {
         });
     },
   },
+  computed:{
+        //页面代理是否可选
+    canSelectAgent() {
+      if(this.status == 39){ //取消
+        if(this.prestatus >=25){
+                return true
+        }else{
+                return false
+        }
+      }else{
+        if(this.status >=25){
+             return true
+        }else{
+          return false
+        }
+}
+    },
+  }
 };
 </script>
 

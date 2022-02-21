@@ -55,6 +55,9 @@
         <span>航班号 </span>
         <span>
           <el-input
+           @blur="initData.flightNo = $event.target.value"
+            onkeyup="value=value.replace(/[\W]/g,'')"
+            maxlength='6'
             v-model="initData.flightNo"
             size="mini"
             placeholder="请输入航班号" />
@@ -72,7 +75,8 @@
           ></span
         >
       </div>
-      <div class="flex">
+       <div class="flex">
+        <img src="../../assets/orderNo.svg" alt="" style="width:15px;height:15px" @click="jumpToOrder">
         <span>运单号 </span>
         <span>
           <el-input
@@ -80,6 +84,21 @@
             size="mini"
             placeholder="请输入内容"
           ></el-input>
+        </span>
+      </div>
+      <div class="flex">
+        <span>分单号 </span>
+        <span>
+          <el-input
+            v-model="initData.subWaybillNo"
+            size="mini"
+            placeholder="请输入内容"
+            maxlength="80"
+          ></el-input>
+        </span>
+          <span style="fontSize:10px;fontWeight:400;color:#999;transform:translateY(-16px);margin-left:6px">
+        <img src="../../assets/billOrderTip.svg" alt="" style="width:15px;height:15px">
+        请使用逗号隔开
         </span>
       </div>
       <div>
@@ -90,7 +109,7 @@
         <span>日期 </span>
         <departure-date-picker :date.sync="initData.departureDate" />
       </div>
-      <div v-if="notAirPeople">
+      <div v-if="notAirPeople && notSaleBefore">
         <span>利润 </span>
         <span>￥{{ initData.orderProfit }}</span>
       </div>
@@ -106,6 +125,7 @@
             filterable
             size="mini"
             placeholder="请选择"
+            :disabled="canSelectAgent"
           >
             <el-option
               v-for="item in agentIdList"
@@ -124,6 +144,7 @@
             v-model="initData.inboundNo"
             size="mini"
             placeholder="请输入内容"
+            :disabled="initData.status >= 13"
           ></el-input
         ></span>
       </div>
@@ -643,13 +664,13 @@
           class="inData"
           style="background: rgb(240, 240, 240); padding-left: 20px"
         >
-          <!-- <div>
-                      <span class="mr_25">报关服务</span>
-                      <el-radio-group v-model="initData.customsType">
-                        <el-radio :label="1">自行报关</el-radio>
-                        <el-radio :label="2">委托报关</el-radio>
-                      </el-radio-group>
-                  </div> -->
+          <div>
+              <span class="mr_25">报关服务</span>
+              <el-radio-group v-model="initData.customsType">
+                <el-radio :label="1">自行报关</el-radio>
+                <el-radio :label="2">委托报关</el-radio>
+              </el-radio-group>
+          </div>
           <div class="mtop_10">
             <span class="mr_25">国内提货</span>
             <el-radio-group v-model="initData.isPickUp">
@@ -682,20 +703,27 @@
       </div>
       <div v-show="radio1 == '2'" class="details">
         <bill-order
+        @changePayWay="changePayWay" 
+        :payWay="initData.payWay"
           v-show="notAirPeople"
-          :getList="initData.arOrderPriceList[0].list"
+          :getList="initData.arOrderPriceList&& initData.arOrderPriceList[0]&& initData.arOrderPriceList[0].list"
           :notSaleBefore="true"
+          :titleType="1"
+          :vertifyAmount="initData.totalRcWoCny"
           ref="typeOne"
         />
         <el-button class="setWidth ml_20" @click="fatherAddOneItem(1)"  v-if="notAirPeople"
           >添加费用</el-button
         >
         <div class="line"></div>
-        <billOrder :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"/>
+        <bill-order :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore" :titleType="2" :canSelectAgent="canSelectAgent"  :vertifyAmount="initData.totalApWoCny"/>
         <el-button class="setWidth ml_20" @click="fatherAddOneItem(2)" v-if="notSaleBefore"
           >添加费用</el-button
         >
         <div class="line"></div>
+      </div>
+      <div v-if="radio1 == '111'" style="margin:-20px 0 0 -20px">
+        <ladingBill :orderEmbed="initData.orderNo"></ladingBill>
       </div>
     </div>
   </div>
@@ -704,6 +732,7 @@
 import billOrder from "./components/billOrder.vue";
 import TabBar from "./components/TabBar.vue";
 import DepartureDatePicker from "./components/DepartureDatePicker";
+import ladingBill from './ladingBillDownLoad.vue'
 class orderSecondWays {
   constructor(
     pol,
@@ -820,7 +849,7 @@ export default {
           lable: "危险品",
         },
         {
-          value: 5,
+          value: 4,
           lable: "防疫物资",
         },
       ],
@@ -840,8 +869,25 @@ export default {
     billOrder,
     TabBar,
     DepartureDatePicker,
+    ladingBill
   },
   computed: {
+    //页面代理是否可选
+    canSelectAgent() {
+      if(this.initData.status == 39){ //取消
+        if(this.initData.prestatus >=25){
+                return true
+        }else{
+                return false
+        }
+      }else{
+        if(this.initData.status >=25){
+             return true
+        }else{
+          return false
+        }
+}
+    },
     getInboundCw() {
       return this.initData.inboundCw;
     },
@@ -873,6 +919,19 @@ export default {
     this.initPolPod();
   },
   methods: {
+    //跳转到提单页面
+    jumpToOrder(){
+      this.$router.push({
+        name:"ladingBillDownLoad",
+        params:{
+          orderNo:this.initData.orderNo
+        }
+      })
+    },
+    changePayWay(val){
+      this.initData.payWay = val
+      // console.log(val)
+    },
     trayAddClick(index, key) {
       var json = {
         trayNumber: "",
@@ -1065,7 +1124,7 @@ export default {
           }
         }
       }
-      console.log(this.initData.waybillNo)
+      console.log(this.initData)
       if (this.initData.waybillNo) {
         // 校验运单号
         const { waybillNo } = this.initData;
@@ -1080,6 +1139,7 @@ export default {
       }
       this.initData.trayDetail = JSON.stringify(irder.trayDetail);
       let order = this.initData;
+      console.log(this.initData.subWaybillNo)
       if (order.hasOwnProperty("apOrderPriceList")) {
         delete order.apOrderPriceList;
       }
@@ -1092,6 +1152,9 @@ export default {
       let arrayTypeOne = this.$refs.typeOne.tableData;
       let arrayTypeTwo = this.$refs.typeTwo.tableData;
       let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
+       if(orderPriceList.some(item=>!item.quantity || !item.price)){
+          return this.$message.warning("请填写费用金额")
+        }
       let tempArray = this.initData.orderOptionsList;
       let params = {};
       if (this.isShow5) {
@@ -1223,7 +1286,7 @@ export default {
     },
     // 如果子组件中有空运费 输入bookingPrice的时候同时修改子组件单价
     dealBookingPrice(e) {
-      console.log(e);
+      // console.log(e);
       if (e) {
         // 应收
         let a = this.$refs.typeOne.tableData;

@@ -12,6 +12,7 @@
       <el-radio-button label="1">订舱信息</el-radio-button>
       <el-radio-button label="3" v-if="showEntryGuide">进仓指引</el-radio-button>
       <el-radio-button label="2">账单</el-radio-button>
+      <!-- <el-radio-button label="4">提单</el-radio-button> -->
     </el-radio-group>
   </div>
 </template>
