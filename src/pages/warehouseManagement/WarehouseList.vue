@@ -333,7 +333,7 @@ export default {
 .warehouse-list-wrap {
   padding: 20px;
   overflow: auto;
-  height: calc(100vh - 134px);
+  height: calc(100vh - 121px);
   .warehouse-list-content {
     padding: 20px;
     background: #fff;
