@@ -16,8 +16,8 @@
       <h1 class="title flex" style="margin-top:20px;margin-bottom:10px">
         <span class="calcSome" v-show="notSaleBefore">
           <span v-if="titleType">{{(titleType==1?"应收核销金额:":"应付核销金额:")+(vertifyAmount?vertifyAmount:0)}}</span>
-          <span style="margin-right:100px">原币合计{{totalOrgnStr}}</span>
-          <span>人民币合计:{{totalCnyStr}}</span>
+          <span style="margin-right:100px">原币合计{{totalOrgnStr && totalOrgnStr!= 'undefined'?totalOrgnStr:'￥'+0}}</span>
+          <span>人民币合计:{{totalCnyStr?totalCnyStr:0}}</span>
         </span> 
       </h1>
         <el-table
@@ -227,8 +227,7 @@ export default {
     // 初始化table prop
 
     if(this.orderNoTemp == undefined){
-      let a = this.getList
-
+      let a = this.getList.length>0 ? this.getList : [{}]
       let {orderId,expenseType,orderNo,expenseUnitName} = a[0]
         a.map((res)=>{
             if (!res.id) {

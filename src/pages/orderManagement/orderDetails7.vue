@@ -142,8 +142,8 @@
           <el-select
             v-model="initData.principalName"
             @change="getSelectPrincipalId"
-            filterable
             disabled
+            filterable
             size="mini"
             placeholder="请选择"
           >
@@ -164,8 +164,8 @@
             v-model="initData.pscsName"
             @change="getSelectPscsId"
             size="mini"
-            filterable
             disabled
+            filterable
             placeholder="请选择"
           >
             <el-option
@@ -707,8 +707,12 @@ import DeliverGoodsForm from './components/DeliverGoodsForm'
 export default {
   data() {
     return {
+      //
+
+      //航线负责人售前客服显示权限
       notAirPeople:true,
       notSaleBefore:true,
+
       //pdf预览和下载
       pdfDownLoad: "",
       pdfDialogVisible: false,
@@ -868,7 +872,8 @@ export default {
     DeliverGoodsForm,
   },
   methods: {
-     changeAgentName(val){
+    //应付账单空运费修改代理联动修改
+    changeAgentName(val){
       this.initData.agentName = val
     },
     //跳转到提单页面
@@ -880,6 +885,7 @@ export default {
         }
       })
     },
+    //应收账单结算方式修改
     changePayWay(val){
       // console.log(val)
       this.initData.payWay = val
