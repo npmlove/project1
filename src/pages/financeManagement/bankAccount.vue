@@ -44,7 +44,7 @@
             </el-table>
     </div>
    
-    <el-dialog :title="this.buttonType==1 ? '新增银行账户':'修改银行账户'" :visible.sync="dialogFormVisible" style="width:60%;margin-left:20%">
+    <el-dialog :title="this.buttonType==1 ? '新增银行账户':'修改银行账户'" :visible.sync="dialogFormVisible" style="margin-left:20%">
       
       <div slot="footer" class="dialog-footer">
         <el-form label-position="left" :inline="true" size="medium" class="dialog-demo">
@@ -58,7 +58,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="账号" label-width="120px" required>
-            <el-input size="medium"  v-model.trim="bankMessage.bankAccount" placeholder="请输入账号" maxlength="19" onkeyup="this.value = this.value.replace(/[^\d.]/g,'');" style="width:300px">
+            <el-input size="medium"  v-model.trim="bankMessage.bankAccount" placeholder="请输入账号" maxlength="30" style="width:300px">
             </el-input>
           </el-form-item>
         </div>
@@ -164,7 +164,7 @@
            return
          }
         
-        this.bankMessage.bankAccount = this.bankMessage.bankAccount.replace(/[^\d.]/g,'')
+        // this.bankMessage.bankAccount = this.bankMessage.bankAccount.replace(/[^\d.]/g,'')
         this.$http.post(this.$service.editBankAccount,this.bankMessage).then(
           data =>{
             if(data.code == 200) {
@@ -172,6 +172,7 @@
               this.searchBankAccount()
             } else {
                 this.$message.error(data.message)
+                console.log(data.message);
               }
           }
         ).catch(() => {
@@ -277,7 +278,7 @@
   }
 
   /deep/ .el-dialog {
-    min-width: 480px;
+    width: 650px!important;
     border-radius: 6px;
   }
 </style>

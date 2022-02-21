@@ -2,31 +2,90 @@
   <div class="content-wrapper">
     <div class="content">
       <el-form :inline="true" size="medium" class="demo-form-inline" label-position="left">
-        <div class="content-search-normal">
-          <el-form-item label="订单号:" class="formItem" label-width="80px">
-            <el-input v-model="orderNo" style="width: 190px;" size="medium" :maxlength="inputMax" clearable
+        <div class="content-search-normal" style="position:relative">
+              <div style="position:absolute;right:10px;top:10px">
+              <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
+            <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+            <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
+          </div>
+          </div>
+          <el-form-item label="订单号:">
+            <el-input v-model="orderNo" style="width: 170px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入订单号"></el-input>
           </el-form-item>
 
-          <el-form-item label="运单号:" class="formItem" label-width="80px">
-            <el-input v-model="waybillNo" style="width: 200px;" size="medium"  clearable
+          <el-form-item label="运单号:">
+            <el-input v-model="waybillNo" style="width: 170px;" size="medium"  clearable
                       placeholder="请输入运单号"></el-input>
           </el-form-item>
-
-          <el-form-item label="应收对象:" class="formItem" label-width="80px">
+        
+          <el-form-item label="应收对象:">
             <el-input v-model="reconciliationUnit" style="width: 230px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入应收对象"></el-input>
           </el-form-item>
 
-          <el-form-item label="开户行:" class="formItem" label-width="80px">
-            <el-input v-model="accountBank" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
+          <el-form-item label="开户行:">
+            <el-input v-model="accountBank" style="width: 195px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入开户行"></el-input>
           </el-form-item>
-          <el-form-item label="户名:" class="formItem" label-width="80px">
-            <el-input v-model="accountName" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
+          <el-form-item label="户名:">
+            <el-input v-model="accountName" style="width: 190px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入户名"></el-input>
           </el-form-item>
+          
+          <el-form-item
+            label="付款日期:"
+            v-if="this.selectControl"
+          >
+            <el-date-picker
+              style="width: 157px"
+              value-format="yyyy-MM-dd"
+              v-model="startPayTime"
+              type="date"
+              :picker-options="pickerOptionsStartOne"
+              placeholder="选择日期"
+            >
+            </el-date-picker
+            >
+            -
+            <el-date-picker
+              style="width: 157px"
+              value-format="yyyy-MM-dd"
+              v-model="endPayTime"
+              type="date"
+              :picker-options="pickerOptionsEndOne"
+              placeholder="选择日期"
+            >
+            </el-date-picker>
+          </el-form-item>
 
+
+          <el-form-item
+            label="核销日期:"
+            v-if="this.selectControl"
+          >
+            <el-date-picker
+              style="width: 157px"
+              value-format="yyyy-MM-dd"
+              v-model="startWriteOffTime"
+              type="date"
+              :picker-options="pickerOptionsStartTwo"
+              placeholder="选择日期"
+            >
+            </el-date-picker
+            >
+            -
+            <el-date-picker
+              style="width: 157px"
+              value-format="yyyy-MM-dd"
+              v-model="endWriteOffTime"
+              type="date"
+              :picker-options="pickerOptionsEndTwo"
+              placeholder="选择日期"
+            >
+            </el-date-picker>
+          </el-form-item>
+         
 
           <!--          <el-form-item>
                       <el-date-picker
@@ -51,9 +110,9 @@
                     </el-form-item>-->
 
 
-          <el-form-item label="收款方式:" class="formItem" label-width="80px">
+          <el-form-item label="收款方式:"  v-if="this.selectControl">
             <el-select v-model="writeOffWay" placeholder="收款方式" :loading="loading" clearable filterable remote
-                       reserve-keyword style="width: 190px;">
+                       reserve-keyword style="width: 150px;">
               <el-option
                 v-for="item in writeOffWayOpt"
                 :key="item.id"
@@ -62,9 +121,9 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="结算方式:" class="formItem" label-width="80px" v-if="this.selectControl">
+          <el-form-item label="结算方式:" v-if="this.selectControl">
             <el-select v-model="payWay" placeholder="结算方式" :remote-method="agentMethod" :loading="loading" clearable
-                       filterable remote reserve-keyword style="width: 200px;">
+                       filterable remote reserve-keyword style="width: 140px;">
               <el-option
                 v-for="item in payWayOpt"
                 :key="item.value"
@@ -73,7 +132,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="核销状态:" class="formItem" label-width="80px" v-if="this.selectControl">
+          <el-form-item label="核销状态:" class="formItem" v-if="this.selectControl">
             <el-select v-model="rcvWriteOffStatus" multiple collapse-tags placeholder="核销状态" @change="dealAllChange"
                        :loading="loading"
                        clearable filterable remote reserve-keyword style="width: 230px;">
@@ -86,69 +145,6 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item
-            label="付款日期:"
-            style="width: 480px"
-            label-width="80px"
-            v-if="this.selectControl"
-          >
-            <el-date-picker
-              style="width: 180px"
-              value-format="yyyy-MM-dd"
-              v-model="startPayTime"
-              type="date"
-              :picker-options="pickerOptionsStartOne"
-              placeholder="选择日期"
-            >
-            </el-date-picker
-            >
-            -
-            <el-date-picker
-              style="width: 180px"
-              value-format="yyyy-MM-dd"
-              v-model="endPayTime"
-              type="date"
-              :picker-options="pickerOptionsEndOne"
-              placeholder="选择日期"
-            >
-            </el-date-picker>
-          </el-form-item>
-
-
-          <el-form-item
-            label="核销日期:"
-            style="width: 480px"
-            label-width="80px"
-            v-if="this.selectControl"
-          >
-            <el-date-picker
-              style="width: 180px"
-              value-format="yyyy-MM-dd"
-              v-model="startWriteOffTime"
-              type="date"
-              :picker-options="pickerOptionsStartTwo"
-              placeholder="选择日期"
-            >
-            </el-date-picker
-            >
-            -
-            <el-date-picker
-              style="width: 180px"
-              value-format="yyyy-MM-dd"
-              v-model="endWriteOffTime"
-              type="date"
-              :picker-options="pickerOptionsEndTwo"
-              placeholder="选择日期"
-            >
-            </el-date-picker>
-          </el-form-item>
-          <div style="text-align:center">
-            <div style="cursor:pointer;display:inline-block;" @click="shiftSelectControl">
-              <img v-if="selectControl"  src="../../assets/doubleArrowUp.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-              <img v-if="!selectControl" src="../../assets/doubleArrowDown.png" alt="" style="width:30px;height:30px;margin:0 0 18px 0;transform:translateY(7px)">
-              <span style="fontSize:15px;fontWeight:bold">{{selectControl?'点击收起部分搜索条件':'点击展开所有搜索条件'}}</span>
-            </div>
-          </div>
           <div class="operateButton">
             <el-button
               @click="searchClick"
@@ -198,6 +194,7 @@
             :currentPage='pageNum'
             :pageSize='pageSize'
             @sizeChange='handleSizeChange'
+            @handleSelect='handleSelect'
             @showWOLogs='showWOLogs'
             @showFees='showFees'
             @currentChange='handleCurrentChange'>
@@ -214,6 +211,7 @@
             :total='total'
             :currentPage='pageNum'
             :pageSize='pageSize'
+            @handleSelect='handleSelect'
             @sizeChange='handleSizeChange'
             @showWOLogs='showWOLogs'
             @showFees='showFees'
@@ -253,26 +251,7 @@
             <el-checkbox v-model="pageSkipChecked" @change="selectAllTable">跨页全选</el-checkbox>
           </el-button>
           <el-button type="primary" size="mini" @click="getStatistData">数据统计</el-button>
-          <div style="margin-top: 15px;display:flex;font-size:12px" v-if="statistDataShow">
-            <div class="statist">
-              <div>应收总金额:{{ statistData.totalArCny }}</div>
-              <div v-html="dealOrgnS(statistData.totalArOrgn,'应收原币')" style="white-space:pre-wrap;text-align:right"
-                   class="statists"></div>
-            </div>
-            <div class="statist">
-              <div>已核销总金额:{{ statistData.totalRcWoCny }}</div>
-              <div v-html="dealOrgnS(statistData.totalRcWoOrgn,'已核销原币')" style="white-space:pre-wrap;text-align:right"
-                   class="statists"></div>
-            </div>
-            <div class="statist">
-              <div>未核销总金额:{{ statistData.totalRcUnwoCny }}</div>
-              <div v-html="dealOrgnS(statistData.totalRcUnwoOrgn,'未核销原币')" style="white-space:pre-wrap;text-align:right"
-                   class="statists"></div>
-            </div>
-            <div class="statist" style="color:red;font-size:20px" v-if="statistData.hasAbNormal">
-              <div>存在异常订单！</div>
-            </div>
-          </div>
+          
         </div>
         <div style="display:flex;">
           <div style="widht:100%;margin:5px 10px 0 0">
@@ -296,6 +275,35 @@
 
 
       </div>
+      <div style="display:flex;font-size:12px;background: rgb(255, 255, 255)" v-if="statistDataShow">
+            <div class="statist">
+              <div>应收总金额:{{ statistData.totalArCny }}</div>
+              <div style="white-space:pre-wrap;display:flex"
+                   class="statists">
+                   <div>应收原币:</div>
+                   <div v-html="dealOrgnS(statistData.totalArOrgn)" ></div>
+                   </div>
+            </div>
+            <div class="statist">
+              <div>已核销总金额:{{ statistData.totalRcWoCny }}</div>
+              <div style="white-space:pre-wrap;display:flex"
+                   class="statists">
+                   <div>已核销原币:</div>
+                   <div v-html="dealOrgnS(statistData.totalRcWoOrgn)"></div>
+                   </div>
+            </div>
+            <div class="statist">
+              <div>未核销总金额:{{ statistData.totalRcUnwoCny }}</div>
+              <div style="white-space:pre-wrap;display:flex"
+                   class="statists">
+                   <div>未核销原币:</div>
+                   <div v-html="dealOrgnS(statistData.totalRcUnwoOrgn)"></div>
+                   </div>
+            </div>
+            <div class="statist" style="color:red;font-size:20px" v-if="statistData.hasAbNormal">
+              <div>存在异常订单！</div>
+            </div>
+        </div>
     </div>
     <el-dialog title="应收核销操作记录" :visible.sync="logDialogVisible" width="80%">
       <Table
@@ -682,7 +690,7 @@ export default {
     },
     dealOrgnS(orgn, extraWord) {
       if (!orgn) {
-        return 0 + 'CNY';
+        return"¥ " + 0;
       }
       orgn = JSON.parse(orgn);
       var totalOrgn = "";
@@ -706,11 +714,11 @@ export default {
         }
       }
       totalOrgn = "";
-      totalOrgn += (value1 || value1 == 0) ? value1.toLocaleString('en-US') + "CNY" + "\n" : "";
-      totalOrgn += (value2 || value2 == 0) ? value2.toLocaleString('en-US') + "HKD" + "\n" : "";
-      totalOrgn += (value3 || value3 == 0) ? value3.toLocaleString('en-US') + "USD" + "\n" : "";
-      totalOrgn += (value4 || value4 == 0) ? value4.toLocaleString('en-US') + "EUR" + "\n" : "";
-      totalOrgn += (value5 || value5 == 0) ? value5.toLocaleString('en-US') + "GBP" + "\n" : "";
+      totalOrgn += (value1 || value1 == 0) ? "¥ " +  value1.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value2 || value2 == 0) ? "HK$ "+ value2.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value3 || value3 == 0) ? "$ " +  value3.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value4 || value4 == 0) ? "€ " +  value4.toLocaleString('en-US') + "\n" : "";
+      totalOrgn += (value5 || value5 == 0) ? "￡ " + value5.toLocaleString('en-US') + "\n" : "";
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1);
       return (extraWord ? extraWord + ":" : "") + totalOrgn;
     },
@@ -745,25 +753,12 @@ export default {
       return result
     },
     exportList() {
-      axios.post(this.$service.exportWoDetailExcel, {
+       var json = {
         overPageCheck: this.overPageCheck,
-        rcvIds: this.rcvIds,
-        orderNo: this.orderNo,
-        waybillNo: this.waybillNo,
-        reconciliationUnit: this.reconciliationUnit,
-        accountBank: this.accountBank,
-        accountName: this.accountName,
-        startPayTime: this.startPayTime,
-        endPayTime: this.endPayTime,
-        startWriteOffTime: this.startWriteOffTime,
-        endWriteOffTime: this.endWriteOffTime,
-        writeOffWay: this.writeOffWay,
-        payWay: this.payWay,
-        rcvWriteOffStatusList: this.rcvWriteOffStatus.length == 0 || this.rcvWriteOffStatus.indexOf("") != -1 ? null : this.rcvWriteOffStatus,
-        woStatus: this.woStatus,
-        pageNum: this.pageNum,
-        pageSize: this.pageSize
-      }, {
+        rcvIds: this.rcvIds.length>0?this.rcvIds:null,
+        financePageDTO:this.useRequest()
+      }
+      axios.post(this.$service.exportWoDetailExcel, json, {
         responseType: 'arraybuffer'
       }).then((res) => {
         let enc = new TextDecoder("utf-8");
@@ -798,9 +793,9 @@ export default {
           this.arData = data.data.arOrderPriceList
           this.orderNoTab = data.data.orderNo
           this.orderLogs = data.data.orderPresentLogs
-          this.totalArOrgn = data.data.totalArOrgn
-          this.totalArCny = data.data.totalArCny
-          this.orderProfit = data.data.orderProfit
+          this.totalArOrgn = data.data.totalArOrgn.toLocaleString('en-US')
+          this.totalArCny = data.data.totalArCny.toLocaleString('en-US')
+          this.orderProfit = data.data.orderProfit.toLocaleString('en-US')
           this.orderId = data.data.orderId
           this.orderData[0].customerName = data.data.customerName
           this.orderData[0].agentName = data.data.agentName
@@ -896,11 +891,11 @@ export default {
       }
       totalOrgn = ''
 
-      totalOrgn += value1 || value1 == 0 ? value1 + 'CNY' + '+' : ''
-      totalOrgn += value2 ? value2 + 'HKD' + '+' : ''
-      totalOrgn += value3 ? value3 + 'USD' + '+' : ''
-      totalOrgn += value4 ? value4 + 'EUR' + '+' : ''
-      totalOrgn += value5 ? value5 + 'GBP' : ''
+      totalOrgn += value1 || value1 == 0 ? "¥ " + value1.toLocaleString('en-US') + '+' : ''
+      totalOrgn += value2 ?  "HK$ " + value2.toLocaleString('en-US') + '+' : ''
+      totalOrgn += value3 ?  "$ " + value3.toLocaleString('en-US') + '+' : ''
+      totalOrgn += value4 ? "€ " + value4.toLocaleString('en-US') + '+' : ''
+      totalOrgn += value5 ? "￡ " + value5.toLocaleString('en-US') : ''
       totalOrgn = totalOrgn.substring(0, totalOrgn.length - 1)
       return totalOrgn;
     },
@@ -994,6 +989,25 @@ export default {
       this.pageSize = e
       this.initData()
     },
+    //请求数据用
+    useRequest(){
+      return {
+        orderNo:this.orderNo,
+      waybillNo:this.waybillNo,
+      reconciliationUnit:this.reconciliationUnit,
+      accountBank:this.accountBank,
+      accountName:this.accountName,
+      startPayTime:this.startPayTime,
+      endPayTime:this.endPayTime,
+      startWriteOffTime:this.startWriteOffTime,
+      endWriteOffTime:this.endWriteOffTime,
+      writeOffWay:this.writeOffWay ,
+      payWay:this.payWay,
+      rcvWriteOffStatus:this.rcvWriteOffStatus[0]==""?null:this.rcvWriteOffStatus,
+      woStatus: this.woStatus,
+
+      }
+    },
     //数据统计按钮
     getStatistData() {
       if (this.statistDataShow) {
@@ -1001,32 +1015,20 @@ export default {
         return;
       }
       var json = {
-        orderNo: this.orderNo,
-        waybillNo: this.waybillNo,
-        reconciliationUnit: this.reconciliationUnit,
-        accountBank: this.accountBank,
-        accountName: this.accountName,
-        startPayTime: this.startPayTime,
-        endPayTime: this.endPayTime,
-        startWriteOffTime: this.startWriteOffTime,
-        endWriteOffTime: this.endWriteOffTime,
-        writeOffWay: this.writeOffWay,
-        payWay: this.payWay,
-        rcvWriteOffStatusList: this.rcvWriteOffStatus.length == 0 || this.rcvWriteOffStatus.indexOf("") != -1 ? null : this.rcvWriteOffStatus,
-        woStatus: this.woStatus,
-        pageNum: this.pageNum,
-        pageSize: this.pageSize
+        overPageCheck: this.overPageCheck,
+        rcvIds: this.rcvIds.length>0?this.rcvIds:null,
+        financePageDTO:this.useRequest()
       }
       this.$http.post(this.$service.sumWoDetail, json).then(data => {
         if (data.code == 200) {
           //        statistData:{hasAbNormal:true,totalArCny:0,totalArOrgn:'',totalRcUnwoCny:0,totalRcUnwoOrgn:'',totalRcWoCny:0,totalRcWoOrgn:''},
           this.statistData.hasAbNormal = data.data.hasAbNormal;
-          this.statistData.totalArCny = data.data.totalArCny;
-          this.statistData.totalArOrgn = data.data.totalArOrgn;
-          this.statistData.totalRcUnwoCny = data.data.totalRcUnwoCny;
-          this.statistData.totalRcUnwoOrgn = data.data.totalRcUnwoOrgn;
-          this.statistData.totalRcWoCny = data.data.totalRcWoCny;
-          this.statistData.totalRcWoOrgn = data.data.totalRcWoOrgn;
+          this.statistData.totalArCny = data.data.totalArCny.toLocaleString('en-US');
+          this.statistData.totalArOrgn = data.data.totalArOrgn.toLocaleString('en-US');
+          this.statistData.totalRcUnwoCny = data.data.totalRcUnwoCny.toLocaleString('en-US');
+          this.statistData.totalRcUnwoOrgn = data.data.totalRcUnwoOrgn.toLocaleString('en-US');
+          this.statistData.totalRcWoCny = data.data.totalRcWoCny.toLocaleString('en-US');
+          this.statistData.totalRcWoOrgn = data.data.totalRcWoOrgn.toLocaleString('en-US');
           this.statistDataShow = !this.statistDataShow
         } else {
           this.$message.error(data.message)
@@ -1051,7 +1053,10 @@ export default {
 
 <style scoped lang="less">
 @import url("../../assets/icon/iconfont.css");
-
+ .el-button--primary{
+      width:100px;
+      // text-align: center;
+  }
 /deep/ .pageSkip {
   padding: 3px 5px !important
 }
@@ -1130,7 +1135,7 @@ export default {
 
 .operateButton {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-bottom: -10px;
 
   button {
@@ -1139,6 +1144,7 @@ export default {
 }
 .statist {
   margin-left:15px;
+  padding-bottom: 15px;
   .statists {
     margin-top:10px;
   }
@@ -1146,5 +1152,10 @@ export default {
 /deep/ .el-dialog {
   min-width: 480px;
   border-radius: 6px;
+}
+.el-form--inline .el-form-item {
+  margin-bottom: 10px;
+  margin-right: 20px;
+  vertical-align: bottom;
 }
 </style>

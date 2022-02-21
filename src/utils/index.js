@@ -11,7 +11,7 @@ const Utils = {
     let duringTime = endTime - nowTime
     if (duringTime <= 0) {
       duringTime = 0
-      clearInterval(timer)
+      // clearInterval(timer)
     }
     const h = Math.floor(duringTime / 1000 / 60 / 60 % 24);
     const m = Math.floor(duringTime / 1000 / 60 % 60);

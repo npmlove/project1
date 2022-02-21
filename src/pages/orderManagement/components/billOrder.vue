@@ -3,8 +3,23 @@
     <div>
       <h1 class="title flex">
           <span>{{title}}</span> 
-          <span class="calcSome"><span>原币合计{{totalOrgnStr}}</span><span>人民币合计:{{totalCnyStr}}</span></span> 
-          </h1>
+          <span style="margin-left:30px;margin-right:5px" v-if="titleType==1 && !newBill">结算方式:</span>
+              <el-select v-if="titleType==1 && !newBill" :disabled="payWayDisabled" v-model="copyPayWay" clearable placeholder="请选择结算方式" size="small" @change="changePayWay">
+                <el-option
+                  v-for="(item,index) in payWayOpt"
+                  :key="index"
+                  :label="item.Name"
+                  :value="item.Value">
+                </el-option>
+              </el-select>
+      </h1>
+      <h1 class="title flex" style="margin-top:20px;margin-bottom:10px">
+        <span class="calcSome" v-show="notSaleBefore">
+          <span v-if="titleType">{{(titleType==1?"应收核销金额:":"应付核销金额:")+(vertifyAmount?vertifyAmount:0)}}</span>
+          <span style="margin-right:100px">原币合计{{totalOrgnStr}}</span>
+          <span>人民币合计:{{totalCnyStr}}</span>
+        </span> 
+      </h1>
         <el-table
            v-show="notSaleBefore"
           :data="tableData"
@@ -22,9 +37,9 @@
             label="费用名称"
             >
             <template slot-scope="scope">
-                <el-select v-model="scope.row.expenseName" :disabled="scope.row.ingStatic"  placeholder="请选择">
+                <el-select v-model="scope.row.expenseName" :disabled="scope.row.ingStatic || tableLock || payTableLock"  placeholder="请选择">
                   <el-option
-                    v-for="item in  expenseCodeOpt "
+                    v-for="item in $store.state.common.expenseCodeOpt "
                     :key="item.sortNo"
                     :label="item.label"
                     :value="item.expenseName">
@@ -33,14 +48,14 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="付款单位"
+            :label="titleType==1?'收款单位':'付款单位'"
             >
             <template slot-scope="scope">
               <span v-if="expenseType == 1">
-                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.expenseUnitName" clearable></el-input>
+                <el-input size="small" :disabled="scope.row.ingStatic || scope.row.extraDisabled || tableLock || scope.row.id" v-model="scope.row.expenseUnitName" clearable></el-input>
               </span>
               <span v-if="expenseType == 2">
-                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择">
+                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled=" (canSelectAgent && scope.$index == 0) || payTableLock" @change="changeAgentName($event,scope.$index)">
                     <el-option
                       v-for="item in agentIdList"
                       :key="item.id"
@@ -54,19 +69,19 @@
           <el-table-column
             label="数量">
             <template slot-scope="scope">
-                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.quantity" clearable></el-input>    
+                <el-input size="small" :disabled="scope.row.ingStatic|| tableLock|| payTableLock" v-model="scope.row.quantity" clearable ></el-input>    
             </template>
           </el-table-column>
           <el-table-column
             label="单价">
             <template slot-scope="scope">
-                <el-input size="small" :disabled="scope.row.ingStatic" v-model="scope.row.price" clearable></el-input>    
+                <el-input size="small" :disabled="scope.row.ingStatic|| tableLock|| payTableLock" v-model="scope.row.price" clearable ></el-input>    
             </template>
           </el-table-column>
           <el-table-column
             label="币种">
             <template slot-scope="scope">
-                <el-select v-model="scope.row.currency" :disabled="scope.row.ingStatic"   placeholder="请选择">
+                <el-select v-model="scope.row.currency" :disabled="scope.row.ingStatic || tableLock|| payTableLock"   placeholder="请选择">
                   <el-option
                     v-for="item in moneyList"
                     :key="item.value"
@@ -91,15 +106,13 @@
           <el-table-column
             label="操作">
             <template slot-scope="scope">
-              <div >
-                <span @click="deleOneTableObj(scope)" >删除</span>
-              </div>
+              <el-button type="text" @click="deleOneTableObj(scope)" :disabled="delBtnDisabled">删除</el-button>
             </template>
           </el-table-column>
           <el-table-column
             label="备注">
             <template slot-scope="scope">
-                <el-input size="small"  v-model="scope.row.remark" clearable></el-input>    
+                <el-input size="small"  v-model="scope.row.remark" clearable :disabled="tableLock|| payTableLock"></el-input>    
             </template>
           </el-table-column>
         </el-table>
@@ -108,7 +121,6 @@
   </div>
 </template>
 <script>
-  import {toData} from '@/util/assist'
 // expenseName      费用名称
 // expenseType      费用类型 1=应收 2=应付
 //  expenseUnitId   费用源单位id
@@ -144,21 +156,33 @@ class tableObj{
   }
 }
 export default {
-  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore"],
+  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay","newBill", 'customerName','canSelectAgent','payStatusControl', 'newCreatedBill'],
   data() {
     return {
+     copyPayWay:'',
+     payWayDisabled:false,
+     payWayOpt: [
+          {
+            Name: '付款买单',
+            Value: 0
+          },
+          {
+            Name: '月结买单',
+            Value: 1
+          }
+        ],
+      tableLock:false, //应收账单发起对账后不能修改
+      payTableLock:false,//应付账单未交单之后都不能修改
       tableData: [], // 
       agentIdList:[],
       title:'',
       expenseType:1,
       expenseUnitName:'',
-      billId:0,
       orderIdTemp:'',
       orderNoTemp:'',
       orderId:''  ,// 订单id
       orderNo:'',//
-      rates:[], // 汇率数组
-      expenseCodeOpt:[] ,// 选择费用 
+      rates:[], // 汇率数组 
       totalOrgnArr:[],// 原币合并数组
       totalOrgnStr:'',// 原币合并字符串
       totalCnyStr:"",//人民币合计字符串
@@ -185,15 +209,50 @@ export default {
       }]
     };
   },
+  computed: {
+    billId() {
+      const bill = this.tableData.find(item => {
+        console.log(item.billId)
+        return item.billId
+      })
+      console.log(bill)
+      return (bill && bill.billId) || 0
+    },
+    delBtnDisabled() {
+      if (this.newCreatedBill) {
+        return false
+      }
+      if (this.expenseType === 1) {
+        return this.currentStatus !== 0
+      }
+      if (this.expenseType === 2) {
+        return this.payTableLock
+      }
+    },
+  },
   async mounted(){
+    //应收账单发起对账后，不能修改和删除
+    if(this.currentStatus == 1) {
+      this.tableLock = true
+    }
+    // 非 未交单和修改交单状态 需要禁止删除
+    // undefined 是应收的
+      if(![0, 4, undefined].includes(this.payStatusControl)) {
+        this.payTableLock = true
+      }
+    //应付账单除未交单状态都不能进行操作
     // 初始化table prop
 
     if(this.orderNoTemp == undefined){
       let a = this.getList
 
-      let {orderId,expenseType,orderNo,expenseUnitName,billId} = a[0]
+      let {orderId,expenseType,orderNo,expenseUnitName} = a[0]
         a.map((res)=>{
-            res.ingStatic = true
+            if (!res.id) {
+              res.ingStatic = false
+            } else {
+              res.ingStatic = true
+            }
             delete res.createTime
             delete res.updateTime
         })
@@ -202,20 +261,17 @@ export default {
       this.expenseType = expenseType
       this.orderNo = orderNo
       this.expenseUnitName = expenseUnitName
-      this.billId = billId
       this.title =  expenseType == 1 ? '应收账单' : '应付账单'
       if(expenseType == 2){
         this.initAgent()
       }
       await this.getRates()
-      await this.initExpenseCode()
       this.dealOriginData(a)
     }else{
       this.orderId = this.orderIdTemp
       this.orderNo = this.orderNoTemp
       await this.getRates()
-      await this.initExpenseCode()
-      this.addOneTableObj()
+      this.addOneTableObj(true)
     }
   },
   watch:{
@@ -224,9 +280,29 @@ export default {
       handler(newValue){
          this.dealOriginData(newValue) 
       }
+    },
+    currentStatus:{
+      handler(newValue,oldVale){
+        if(newValue == 1){
+           this.tableLock = true
+        }
+        if(newValue == 0){
+           this.tableLock = false
+        }
+      }
     }
   },
   methods:{
+    changeAgentName(val,index){
+      if(index==0) {
+         this.$emit('changeAgentName',val)
+      }
+    },
+    //改变结算方式
+    changePayWay(val){
+      // console.log(val)
+      this.$emit('changePayWay',val)
+    },
     //代理公司
     initAgent() {
         var data = {
@@ -280,21 +356,8 @@ export default {
           return res
         }
       })
-      return someRate[0].val
+      return someRate[0]&&someRate[0].val
     },
-
-    //费用名称 除了空运费
-    async  initExpenseCode() {
-        var json = {
-          pageSize: 50000,
-        }
-        json = toData(json)
-        this.$http.get(this.$service.expenseSearchExcludeAirFee+'?'+json).then((data) => {
-          if(data.code == 200){
-            this.expenseCodeOpt = data.data.records
-          }
-        })
-      },
 
     // 计算人民币合计
     calcTotalCny(array){
@@ -342,30 +405,36 @@ export default {
     return {temArray : dest,tempStr:str.substr(0, str.length - 1)}
     },
     // 添加
-    addOneTableObj(){
-      let tempObj = new tableObj('',this.expenseUnitName)
-
+    addOneTableObj(ifNewBill){
+      let tempObj = new tableObj('',(this.expenseUnitName || this.customerName))
       let a = Object.assign({},tempObj,{
+        extraDisabled:ifNewBill?true:true,
         orderId:this.orderId,
         expenseType:this.expenseType,
         orderNo:this.orderNo,
         billId:this.billId}
       )
-      console.log(a)
       this.tableData.push(a)
     },
     // 删除
     deleOneTableObj(e){
+      if(this.tableLock|| this.payTableLock) {
+        return false
+      }
       let index = e.$index
       let ttt = this.$parent.judgeDeleteBIll()
       if(ttt){
-        if(index == 0){
+        if(index == 0 && !this.newBill){
           this.$message({
             message: '这条数据不能删除',
             type: 'warning'
           });
         }else{
           this.tableData.splice(index,1)
+          // 新建账单可以删除最后一个，然后关闭新账单表格
+          if (this.newBill && this.tableData.length <= 0) {
+            this.$emit('closeNewBill')
+          }
         }
       }else{
         this.$message({
@@ -375,11 +444,21 @@ export default {
       }
 
     },
-  }  
+  }, 
+   created(){
+     this.copyPayWay = this.payWay 
+    //  console.log(this.payWay)
+     if(this.payWay==0) {
+       this.payWayDisabled = true
+     }
+   }
 }
 </script>
 <style scoped>
-
+.calcSome:first-child{
+  margin-left:20px;
+  
+}
 .contont{
 
   margin: 0 20px;
@@ -388,8 +467,8 @@ export default {
 .title{
   font-size: 20px;
   font-weight: 800;
-  display: flex;
-  justify-content: space-between;
+  /* display: flex;
+  justify-content: space-between; */
 }
 .inData{
   margin-top: 10px;

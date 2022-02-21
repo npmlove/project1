@@ -76,7 +76,7 @@
                 </el-input>
                 <el-form style="display:flex;margin-top:10px;flex-wrap:wrap" label-position="center">
                      <el-form-item label="目的港" label-width="70px" style="width:200px" required>
-                        <el-input style="width:100px" size="medium" v-model="newMessage.pod" @blur="getCountry()">
+                        <el-input style="width:100px" size="medium" v-model.trim="newMessage.pod" @blur="getCountry()">
                      </el-input>
                     </el-form-item>
                     <el-form-item label="件数" label-width="70px" style="width:200px">
@@ -453,7 +453,7 @@ export default {
                 this.$message.warning("请选择航线人员")
                 return 
             }
-            else if(this.newMessage.pod == ""){
+            else if(!this.newMessage.pod){
                 this.$message.warning("请在输入框中输入内容获取目的港")
                 return
             }
@@ -462,7 +462,7 @@ export default {
                 return
             }
             let request = {}
-            request.roleName = this.pageRoleName
+            request.roleName = "售前客服"
             request.workOrderType = this.form.workOrderType
             request.urgency = this.form.urgency
             request.principalIds = this.form.airLinePeople.map(item=>item.split(",")[1]).join()

@@ -76,6 +76,7 @@ export default {
         );
         if (code === 200) {
           this.images.push(data);
+          this.$message.success("上传成功")
         } else {
           this.$message.error(message);
         }
