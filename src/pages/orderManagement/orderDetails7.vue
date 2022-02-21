@@ -202,7 +202,9 @@
     </div>
     </header>
     <!-- 标签切换 -->
-    <tab-bar :tab.sync="radio1" :order="initData" />
+    <tab-bar :tab.sync="radio1" :order="initData" 
+        :showEntryGuide="lastPage ==1? false : true"
+    />
     <div class="order-tab-details-wrap">
       <div v-show="radio1 == '1'">
         <h1 class="title">订舱信息</h1>
@@ -316,8 +318,8 @@
             <embed style="width: 100%; height: 90vh" :src="filePath" />
           </el-dialog>
         </div>
-        <h1 class="title mtop_15">订舱数据</h1>
-        <div class="bg_dark">
+        <h1 class="title mtop_15" v-show="lastPage!=1 && lastPage!=2">订舱数据</h1>
+        <div class="bg_dark" v-show="lastPage!=1 && lastPage!=2">
           <div class="flex_center">
             <div>件数</div>
             <div>毛重</div>
@@ -707,7 +709,8 @@ import DeliverGoodsForm from './components/DeliverGoodsForm'
 export default {
   data() {
     return {
-      //
+      //前一级页面
+      lastPage:0,
 
       //航线负责人售前客服显示权限
       notAirPeople:true,
@@ -1331,8 +1334,6 @@ export default {
     
       let boolenNo = judgeWaybillNo(inboundNo);
       if (boolenNo) {
-        
-      
         // 获取应收账单的长度 为 12345
         let tempLength = this.initData.arOrderPriceList.length;
         let arrayTypeOne = [];
@@ -1366,7 +1367,7 @@ export default {
           ];
         }
         let arrayTypeTwo = this.$refs.typeTwo.tableData;
-        let order = this.initData;
+        let order = {};
         // if (order.hasOwnProperty("apOrderPriceList")) {
         //   delete order.apOrderPriceList;
         // }
@@ -1389,11 +1390,9 @@ export default {
           this.$message.warning("请刷新页面重新进行本操作")
           return Promise.reject()
         }
-        let orderCargoDetailList = arrayTypeThree;
         let params = {
           order: order,
           orderPriceList: orderPriceList,
-          orderCargoDetailList: orderCargoDetailList,
         };
         return this.$http.post(this.$service.orderSaveOrder, params).then((data) => {
           if (data.code == 200) {
@@ -1468,6 +1467,15 @@ export default {
           ...tempObj,
           totalImages: tempObj.orderAttachmentList.filter(item => item.attachmentType === 1),
         };
+        //判断前一级页面
+        if(this.initData.preStatus == 3 || this.initData.preStatus == 5) {
+          this.lastPage = 1
+        }
+
+        if(this.initData.preStatus == 9) {
+          this.lastPage = 2
+        }
+
         this.isDataDone = true;
         this.billTimer = setInterval(() => {
           this.initData.arOrderPriceList = this.initData.arOrderPriceList.map(item => {
