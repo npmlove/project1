@@ -1228,7 +1228,7 @@ export default {
             return pre+Number(item.piece)
         },0)
       let C_B_M = arrayTypeThree.reduce((pre,item)=>{
-            return pre+Number(item.cbm)
+            return pre+Number(item.cbm)*100
         },0)
         if(b !== Number(this.initData.inboundPiece)){
           this.$message.error('总件数与分件数不匹配')
@@ -1256,7 +1256,7 @@ export default {
           this.initData.waybillNo = null;
         }
       }
-      if(C_B_M !== Number(this.initData.inboundCbm) && this.initData.status === 13){
+      if(C_B_M/100 !== Number(this.initData.inboundCbm) && this.initData.status === 13){
           this.$message.error('总体积与分体积不匹配')
         }
       // 获取应收账单的长度 为 12345
@@ -1512,7 +1512,7 @@ export default {
       }
       let boolenNo = judgeWaybillNo(inboundNo);
       if (boolenNo) {
-      //   let arrayTypeThree = this.$refs.typeThree.tableData;
+        let arrayTypeThree = this.$refs.typeThree.tableData;
       //   let tempthree = arrayTypeThree.filter((item) => {
       //     return (
       //       item.piece == undefined ||
@@ -1535,13 +1535,13 @@ export default {
       //       return pre+Number(item.piece)
       //   },0)
       // let C_B_M = arrayTypeThree.reduce((pre,item)=>{
-      //       return pre+Number(item.cbm)
+      //       return pre+Number(item.cbm)*100
       //   },0)
         // if(b !== Number(this.initData.inboundPiece)){
         //   this.$message.error('总件数与分件数不匹配')
         //   return;
         // }
-        // if(C_B_M !== Number(this.initData.inboundCbm) && this.initData.status === 13){
+        // if(C_B_M/100 !== Number(this.initData.inboundCbm) && this.initData.status === 13){
         //   console.log(C_B_M,this.initData.inboundCbm);
         //   this.$message.error('总体积与分体积不匹配')
         // }
