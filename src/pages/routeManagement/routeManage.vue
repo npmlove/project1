@@ -64,7 +64,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-input placeholder="航线id" onkeyup="this.value = this.value.replace(/[^\d]/g,'')" maxlength="10" v-model="arilineId"></el-input>
+            <el-input placeholder="航线id" onkeyup="this.value = this.value.replace(/[^\d]/g,'')" maxlength="10" v-model="ariLineId"></el-input>
           </el-form-item>
               <el-form-item>
             <el-select
@@ -127,7 +127,7 @@
         //新添字段：航线id航线负责人
         airManger:[],
         airLinePersonName:'',
-        arilineId:'',
+        ariLineId:'',
 
         //table
         tableData: [],
@@ -406,7 +406,7 @@
         const vm = this
         var data = {
           airLinePersonName:this.airLinePersonName,
-          arilineId:this.arilineId,
+          ariLineId:this.ariLineId,
           pageNum: this.pageNum,
           pageSize: this.pageSize,
           pol: this.pol,
@@ -436,7 +436,7 @@
       },
       //重置
       restClick() {
-        this.arilineId = ''
+        this.ariLineId = ''
         this.airLinePersonName = ''
         this.pol = ''
         this.pod = ''
