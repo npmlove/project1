@@ -64,10 +64,26 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-input placeholder="航线id" onkeyup="this.value = this.value.replace(/[^\d]/g,'')" maxlength="10" v-model="status"></el-input>
+            <el-input placeholder="航线id" onkeyup="this.value = this.value.replace(/[^\d]/g,'')" maxlength="10" v-model="arilineId"></el-input>
           </el-form-item>
-          <el-form-item>
-            <el-input placeholder="航线id" onkeyup="this.value = this.value.replace(/[^\d]/g,'')" maxlength="10" v-model="status"></el-input>
+              <el-form-item>
+            <el-select
+              v-model="airLinePersonName"
+              placeholder="航线负责人"
+              :loading="loading"
+              clearable
+              filterable
+              remote
+              reserve-keyword
+            >
+              <el-option
+                v-for="item in airManger"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name"
+              >
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item>
             <el-select placeholder="状态" size="medium" v-model="status" clearable style="width: 130px;">
@@ -108,6 +124,11 @@
   export default {
     data() {
       return {
+        //新添字段：航线id航线负责人
+        airManger:[],
+        airLinePersonName:'',
+        arilineId:'',
+
         //table
         tableData: [],
         pageSize: 10,
@@ -149,6 +170,12 @@
             prop: 'nonStop',
             show: true,
             width: '100'
+          },
+            {
+            label: '航线负责人',
+            prop: 'airLinePersonName',
+            show: true,
+            width: '150'
           },
           {
             label: '航程',
@@ -280,6 +307,11 @@
         agentOpt: [],
       }
     },
+    created(){
+      this.$http.get(this.$service.userSearchNoAuth+'?roleName=航线负责人&pageSize=50000').then(data=>{
+          this.airManger = data.data.records
+      })
+    },
     mounted() {
       this.initAirlineSearchByPage()
       this.initAirportSearchByPage()
@@ -373,6 +405,8 @@
       initAirlineSearchByPage() {
         const vm = this
         var data = {
+          airLinePersonName:this.airLinePersonName,
+          arilineId:this.arilineId,
           pageNum: this.pageNum,
           pageSize: this.pageSize,
           pol: this.pol,
@@ -402,6 +436,8 @@
       },
       //重置
       restClick() {
+        this.arilineId = ''
+        this.airLinePersonName = ''
         this.pol = ''
         this.pod = ''
         this.agentName = ''
