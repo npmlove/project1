@@ -51,11 +51,11 @@
             :label="titleType==1?'收款单位':'付款单位'"
             >
             <template slot-scope="scope">
-              <span v-if="expenseType == 1">
+              <span v-if="expenseType == 1 ">
                 <el-input size="small" :disabled="scope.row.ingStatic || scope.row.extraDisabled || tableLock" v-model="scope.row.expenseUnitName" clearable></el-input>
               </span>
               <span v-if="expenseType == 2">
-                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled="tableLock" @change="changeAgentName">
+                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled="tableLock" @change="changeAgentName($event,scope.$index)">
                     <el-option
                       v-for="item in agentIdList"
                       :key="item.id"
@@ -158,7 +158,7 @@ class tableObj{
   }
 }
 export default {
-  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay","newBill", 'customerName'],
+  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay","newBill", 'customerName','ifCancelled'],
   data() {
     return {
      copyPayWay:'',
@@ -179,7 +179,7 @@ export default {
       title:'',
       expenseType:1,
       expenseUnitName:'',
-      orderIdTemp:'',
+      // orderIdTemp:'',
       orderNoTemp:'',
       orderId:''  ,// 订单id
       orderNo:'',//
@@ -213,10 +213,10 @@ export default {
   computed: {
     billId() {
       const bill = this.tableData.find(item => {
-        console.log(item.billId)
+      
         return item.billId
       })
-      console.log(bill)
+
       return (bill && bill.billId) || 0
     },
   },
@@ -225,9 +225,10 @@ export default {
       this.tableLock = true
     }
     // 初始化table prop
-
-    if(this.orderNoTemp == undefined){
-      let a = this.getList.length>0 ? this.getList : [{}]
+    console.log(this.orderNoTemp)
+    if(this.orderNoTemp == undefined || !this.orderNoTemp){
+      let a = this.getList.length>0 ? this.getList : [{expenseType:this.titleType==1?1:2}]
+      
       let {orderId,expenseType,orderNo,expenseUnitName} = a[0]
         a.map((res)=>{
             if (!res.id) {
@@ -239,19 +240,23 @@ export default {
             delete res.updateTime
         })
       this.tableData = a
-      this.orderId = orderId
+      this.orderId = orderId ? orderId : this.$route.query.id
       this.expenseType = expenseType
       this.orderNo = orderNo
       this.expenseUnitName = expenseUnitName
       this.title =  expenseType == 1 ? '应收账单' : '应付账单'
-      if(expenseType == 2){
+      if(expenseType == 2 || this.titleType ==2){
         this.initAgent()
       }
       await this.getRates()
       this.dealOriginData(a)
     }else{
-      this.orderId = this.orderIdTemp
+     this.orderId = this.orderIdTemp
       this.orderNo = this.orderNoTemp
+      this.expenseType = this.titleType==1?1:2
+      if( this.expenseType == 2 ){
+        this.initAgent()
+      }
       await this.getRates()
       this.addOneTableObj(true)
     }
@@ -275,8 +280,10 @@ export default {
     }
   },
   methods:{
-    changeAgentName(val){
-      this.$emit('changeAgentName',val)
+    changeAgentName(val,index){
+      if(index == 0 && !this.ifCancelled){
+        this.$emit('changeAgentName',val)
+      }
     },
     //改变结算方式
     changePayWay(val){
@@ -291,6 +298,7 @@ export default {
         this.$http.post(this.$service.agentList,data).then((data) => {
           if(data.code == 200){
             this.agentIdList = data.data.records
+            console.log(this.agentIdList)
           }else{
             this.$message.error(data.message)
           }
@@ -298,11 +306,12 @@ export default {
     },
     // 处理原始传入数据
     dealOriginData(newValue){
-         
         for(let i in newValue){
           let {price,quantity,currency} = newValue[i]
           if(price && quantity && currency){
+            console.log(price,quantity,currency)
             newValue[i].exchangeRate =  this.getCurrentRate(newValue[i].currency) 
+            console.log(newValue[i].exchangeRate)
             newValue[i].totalOrgn = Math.floor((isNaN(Number(newValue[i].quantity) * Number(newValue[i].price)) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)) * 100) /100 
             newValue[i].totalCny =  Math.floor(( isNaN(Number(newValue[i].quantity) * Number(newValue[i].price) * newValue[i].exchangeRate) ? '' : Number(newValue[i].quantity) * Number(newValue[i].price)  * newValue[i].exchangeRate )*100)/100
           }
@@ -313,6 +322,7 @@ export default {
         this.totalOrgnArr = temArray
         this.totalOrgnStr = tempStr
         this.$emit('update:getList', newValue)
+        console.log(newValue)
     },
     async getRates(){ // 获取当前订单的汇率
       let res = await this.$http.get(this.$service.getExchangeRatesForOrder+'?orderId='+this.orderId)

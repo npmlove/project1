@@ -634,7 +634,7 @@
         </div>
         <div class="line"></div>
         <div></div>
-        <bill-order @changeAgentName="changeAgentName" :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore" :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
+        <bill-order @changeAgentName="changeAgentName" :getList.sync="initData.apOrderPriceList" :ifCancelled="true" ref="typeTwo" :notSaleBefore="notSaleBefore" :titleType="2"  :orderIdTemp="initData.apOrderPriceList.length == 0?orderId:''"  :orderNoTemp="initData.apOrderPriceList.length == 0?orderNo:''" :vertifyAmount="initData.totalApWoCny"/>
         <!-- 应收添加 -->
         <el-button
           class="setWidth ml_20"
@@ -1329,11 +1329,10 @@ export default {
     },
     // 保存账单
     saveOrder() {
-      let { inboundNo } =
-        this.initData;
+      
     
-      let boolenNo = judgeWaybillNo(inboundNo);
-      if (boolenNo) {
+      
+      
         // 获取应收账单的长度 为 12345
         let tempLength = this.initData.arOrderPriceList.length;
         let arrayTypeOne = [];
@@ -1367,23 +1366,31 @@ export default {
           ];
         }
         let arrayTypeTwo = this.$refs.typeTwo.tableData;
+        //只传调已取消保存接口
         let order = {};
+        order.activityCodeDoing = this.initData.activityCodeDoing
+        order.activityCodeDone = this.initData.activityCodeDone
+        order.status = this.initData.status
+        order.orderNo = this.initData.orderNo
+        order.id = this.initData.id
+        order.payWay = this.initData.payWay
+
         // if (order.hasOwnProperty("apOrderPriceList")) {
         //   delete order.apOrderPriceList;
         // }
-        if (order.hasOwnProperty("orderCargoDetailList")) {
-          delete order.orderCargoDetailList;
-        }
+        // if (order.hasOwnProperty("orderCargoDetailList")) {
+        //   delete order.orderCargoDetailList;
+        // }
         // if (order.hasOwnProperty("orderPriceList")) {
         //   delete order.orderPriceList;
         // }
-        if (order.hasOwnProperty("trayDetail")) {
-          delete order.trayDetail;
-        }
+        // if (order.hasOwnProperty("trayDetail")) {
+        //   delete order.trayDetail;
+        // }
         let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
         const newBillData = this.$refs.typeNewBill && this.$refs.typeNewBill.tableData || [];
         orderPriceList = [...orderPriceList, ...newBillData]
-         if(orderPriceList.some(item=>!item.quantity || !item.price)){
+         if(orderPriceList.some(item=>!item.quantity || !item.price || !item.expenseName)){
           return this.$message.warning("请填写费用金额")
         }
         if (orderPriceList.some(item => !item)) {
@@ -1404,9 +1411,7 @@ export default {
             this.$message.error(data.message);
           }
         });
-      } else {
-        this.$message.error("进仓编号最大输入20位");
-      }
+      
     },
     // 获取页面初始配置
     async initSysSetTing() {

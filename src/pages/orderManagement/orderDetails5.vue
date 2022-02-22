@@ -1451,7 +1451,7 @@ export default {
         let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
         const newBillData = this.$refs.typeNewBill && this.$refs.typeNewBill.tableData || [];
         orderPriceList = [...orderPriceList, ...newBillData]
-         if(orderPriceList.some(item=>!item.quantity || !item.price)){
+         if(orderPriceList.some(item=>!item.quantity || !item.price || !item.expenseName)){
           return this.$message.warning("请填写费用金额")
         }
         if (orderPriceList.some(item => !item)) {
