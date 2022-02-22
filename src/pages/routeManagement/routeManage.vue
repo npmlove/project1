@@ -63,7 +63,18 @@
               </el-option>
             </el-select>
           </el-form-item>
-
+          <el-form-item>
+            <el-input placeholder="航线id" onkeyup="this.value = this.value.replace(/[^\d]/g,'')" maxlength="10" v-model="status"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input placeholder="航线id" onkeyup="this.value = this.value.replace(/[^\d]/g,'')" maxlength="10" v-model="status"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-select placeholder="状态" size="medium" v-model="status" clearable style="width: 130px;">
+              <el-option v-for="item in statusOpt" :key="item.value" :label="item.name" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item>
             <el-row>
               <el-button @click="searchClick" size="medium" type="primary" icon="el-icon-search">查询</el-button>
