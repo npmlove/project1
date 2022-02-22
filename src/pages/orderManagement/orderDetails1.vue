@@ -69,6 +69,8 @@
           <el-input
             v-model="initData.bookingPrice"
             size="mini"
+            onkeyup="this.value= this.value.match(/^\d{0,6}(\.\d{0,2})?/)? this.value.match(/^\d{0,6}(\.\d{0,2})?/)[0] : ''"
+             @blur="initData.bookingPrice = $event.target.value"
             placeholder="请输入内容"
           >
             <template slot="prepend">￥</template></el-input
@@ -1152,7 +1154,7 @@ export default {
       let arrayTypeOne = this.$refs.typeOne.tableData;
       let arrayTypeTwo = this.$refs.typeTwo.tableData;
       let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
-       if(orderPriceList.some(item=>!item.quantity || !item.price)){
+       if(orderPriceList.some(item=>!item.quantity || !item.price || !item.expenseName)){
           return this.$message.warning("请填写费用金额")
         }
       let tempArray = this.initData.orderOptionsList;

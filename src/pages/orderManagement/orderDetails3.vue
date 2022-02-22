@@ -18,7 +18,7 @@
         initData.statusDesc
       }}</el-button>
       <el-button type="primary" @click="saveOrder">保存</el-button>
-      <el-button type="primary" class="setWidth" @click="exdeOrder(1)"
+      <el-button type="primary" class="setWidth" @click="exdeOrder(1,true)"
         >进仓数据已确认</el-button
       >
       <el-button type="danger" @click="exdeOrder(2)"
@@ -83,6 +83,8 @@
           <el-input
             :disabled="initData.canPriceChange"
             v-model="initData.bookingPrice"
+            onkeyup="this.value= this.value.match(/^\d{0,6}(\.\d{0,2})?/)? this.value.match(/^\d{0,6}(\.\d{0,2})?/)[0] : ''"
+             @blur="initData.bookingPrice = $event.target.value"
             size="mini"
             placeholder="请输入内容"
           >
@@ -1181,7 +1183,7 @@ export default {
         });
     },
     // 操作完成 推进订单进程 不然没法对账
-    exdeOrder(e) {
+    exdeOrder(e,ifNeedConfirm) {
       let { inboundWeight, inboundCbm, inboundCw, inboundPiece, inboundNo } =
         this.initData;
       if (!inboundNo) {
@@ -1336,15 +1338,39 @@ export default {
           ctrlFlag: e,
         },
       };
-      this.$http.post(this.$service.orderExecuteOrder, params).then((data) => {
-        if (data.code == 200) {
-          this.$message("成功");
-          // this.$router.push("/orderManagement/orderManage");
-          this.$utils.orderDetailRefresh(this.initData)
-        } else {
-          this.$message.error(data.message);
-        }
-      });
+      if(e==1 && ifNeedConfirm){
+          this.$confirm("客户已完成对进仓数据确认", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+             this.$http.post(this.$service.orderExecuteOrder, params).then((data) => {
+              if (data.code == 200) {
+                this.$message("成功");
+                
+                // this.$router.push("/orderManagement/orderManage");
+                this.$utils.orderDetailRefresh(this.initData)
+              } else {
+                this.$message.error(data.message);
+              }
+            })
+          }).catch(() => {
+            console.log('取消')
+          })
+      } else {
+         this.$http.post(this.$service.orderExecuteOrder, params).then((data) => {
+              if (data.code == 200) {
+                this.$message("成功");
+                
+                // this.$router.push("/orderManagement/orderManage");
+                this.$utils.orderDetailRefresh(this.initData)
+              } else {
+                this.$message.error(data.message);
+              }
+            })
+      }
+    
+    
     },
     // 交单
     async commitionBill() {
@@ -1601,7 +1627,7 @@ export default {
         let orderPriceList = arrayTypeOne.concat(arrayTypeTwo);
         const newBillData = this.$refs.typeNewBill && this.$refs.typeNewBill.tableData || [];
         orderPriceList = [...orderPriceList, ...newBillData]
-        if(orderPriceList.some(item=>!item.quantity || !item.price)){
+        if(orderPriceList.some(item=>!item.quantity || !item.price || !item.expenseName)){
           return this.$message.warning("请填写费用金额")
         }
         if (orderPriceList.some(item => !item)) {
