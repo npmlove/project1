@@ -334,6 +334,7 @@ export default {
   padding: 20px;
   overflow: auto;
   height: calc(100vh - 121px);
+  background: #f3f6f9;
   .warehouse-list-content {
     padding: 20px;
     background: #fff;
