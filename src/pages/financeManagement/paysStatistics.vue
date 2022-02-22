@@ -27,7 +27,7 @@
                 slot="reference"
                 v-model="formInline.orderNos"
                 placeholder="请输入订单号"
-                style="width:185px"
+                style="width:160px"
                 clearable
                   >
               </el-input>
@@ -45,13 +45,23 @@
                 slot="reference"
                 v-model="formInline.waybillNos"
                 placeholder="请输入订单号"
-                style="width:185px"
+                style="width:160px"
                 clearable
                   >
               </el-input>
           </el-popover>
           </el-form-item>
          
+         <el-form-item label="财务系列号:">
+            <el-input
+              v-model="formInline.financialSeriesNo"
+              style="width: 180px"
+              size="medium"
+              maxlength="12"
+              clearable
+              placeholder="请输入财务系列号"
+            ></el-input>
+          </el-form-item>
           <el-form-item label="应付对象:">
             <el-input
               v-model="formInline.expenseUnitName"
@@ -144,9 +154,9 @@
               :remote-method="remoteMethodFour"
             >
               <el-option
-                v-for="(item,index) in optionFour"
-                :key="index"
-                :label="item.name"
+                v-for="item in optionFour"
+                :key="item.airCompanyCode"
+                :label="item.label"
                 :value="item.airCompanyCode"
               >
               </el-option>
@@ -302,7 +312,6 @@
               </el-option>
             </el-select>
           </el-form-item>
-        
          
           <div class="operateButton">
             <el-button size="mini" type="primary" @click="onSubmit"
@@ -325,7 +334,9 @@
       <el-checkbox v-model="checkedIndex0" style="margin: 0 0 20px 20px"
         >全选</el-checkbox
       >
-      
+       <el-checkbox class="mycheckbox" v-model="checkedIndex99"
+        >财务系列号</el-checkbox
+      >
       <el-checkbox class="mycheckbox" v-model="checkedIndex1"
         >订单号</el-checkbox
       >
@@ -416,6 +427,12 @@
           width="55"
         >
         </el-table-column>
+       <el-table-column prop="financialSeriesNo" label="财务系列号" width="140" v-if="checkedIndex99">
+               <template slot-scope="scope">
+            <div style="color: skyblue;cursor:pointer" @click="orderNoDetail(scope.row)">
+              {{ scope.row.financialSeriesNo }}
+            </div>
+          </template>
         </el-table-column>
        
         <el-table-column
