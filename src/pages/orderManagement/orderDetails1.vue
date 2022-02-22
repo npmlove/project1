@@ -664,13 +664,13 @@
           class="inData"
           style="background: rgb(240, 240, 240); padding-left: 20px"
         >
-          <!-- <div>
-                      <span class="mr_25">报关服务</span>
-                      <el-radio-group v-model="initData.customsType">
-                        <el-radio :label="1">自行报关</el-radio>
-                        <el-radio :label="2">委托报关</el-radio>
-                      </el-radio-group>
-                  </div> -->
+          <div>
+              <span class="mr_25">报关服务</span>
+              <el-radio-group v-model="initData.customsType">
+                <el-radio :label="1">自行报关</el-radio>
+                <el-radio :label="2">委托报关</el-radio>
+              </el-radio-group>
+          </div>
           <div class="mtop_10">
             <span class="mr_25">国内提货</span>
             <el-radio-group v-model="initData.isPickUp">
@@ -706,7 +706,7 @@
         @changePayWay="changePayWay" 
         :payWay="initData.payWay"
           v-show="notAirPeople"
-          :getList="initData.arOrderPriceList[0].list"
+          :getList="initData.arOrderPriceList&& initData.arOrderPriceList[0]&& initData.arOrderPriceList[0].list"
           :notSaleBefore="true"
           :titleType="1"
           :vertifyAmount="initData.totalRcWoCny"
@@ -716,7 +716,7 @@
           >添加费用</el-button
         >
         <div class="line"></div>
-        <bill-order :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore" :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
+        <bill-order :getList="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore" :titleType="2" :canSelectAgent="canSelectAgent"  :vertifyAmount="initData.totalApWoCny"/>
         <el-button class="setWidth ml_20" @click="fatherAddOneItem(2)" v-if="notSaleBefore"
           >添加费用</el-button
         >
@@ -849,7 +849,7 @@ export default {
           lable: "危险品",
         },
         {
-          value: 5,
+          value: 4,
           lable: "防疫物资",
         },
       ],

@@ -66,8 +66,7 @@
             <input
               style="border: 1px solid black"
               type="text"
-              maxlength="6"
-              onkeyup="this.value= this.value.match(/^\d{0,4}(\.\d{0,2})?/)? this.value.match(/^\d{0,4}(\.\d{0,2})?/)[0] : ''"
+              onkeyup="this.value= this.value.match(/^\d{0,6}(\.\d{0,2})?/)? this.value.match(/^\d{0,6}(\.\d{0,2})?/)[0] : ''"
               ref="input1"
               @blur="
                 inputData.input3 = Number($event.target.value).toFixed(2);
@@ -179,9 +178,7 @@
                 <el-input
                   clearable
                   maxlength="50"
-                  onKeyUp="value=value.replace(/[\W]/g,'')"
-                  @blur="tableData[index].name = $event.target.value"
-                  @change="ifSame(index)"
+                  @change="ifSame(index,$event)"
                   v-model="tableData[index].name"
                 >
                 </el-input>
@@ -436,14 +433,17 @@ export default {
         } 
         return false; 
     },
-    ifSame(index){
+    ifSame(index,event){
+      
+      this.tableData[index].name = event.replace(/[\W]/g,'').toUpperCase()
       let copy = JSON.parse(JSON.stringify(this.tableData))
       let resultS = copy.map(item=>{
         if (!item.name || item.name != ""){
-            return item.name
+            return String(item.name).toUpperCase()
         }
       })
       let result = resultS.filter(item=>item!="")
+      console.log(result)
      if(this.isRepeat(result)){
        this.$message.warning("杂费不允许重复")
        this.tableData[index].name = ""

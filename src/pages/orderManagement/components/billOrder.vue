@@ -37,7 +37,7 @@
             label="费用名称"
             >
             <template slot-scope="scope">
-                <el-select v-model="scope.row.expenseName" :disabled="scope.row.ingStatic"  placeholder="请选择">
+                <el-select v-model="scope.row.expenseName" :disabled="scope.row.ingStatic || tableLock || payTableLock"  placeholder="请选择">
                   <el-option
                     v-for="item in $store.state.common.expenseCodeOpt "
                     :key="item.sortNo"
@@ -51,11 +51,11 @@
             :label="titleType==1?'收款单位':'付款单位'"
             >
             <template slot-scope="scope">
-              <span v-if="expenseType == 1 ">
-                <el-input size="small" :disabled="scope.row.ingStatic || scope.row.extraDisabled || tableLock" v-model="scope.row.expenseUnitName" clearable></el-input>
+              <span v-if="expenseType == 1">
+                <el-input size="small" :disabled="scope.row.ingStatic || scope.row.extraDisabled || tableLock || scope.row.id" v-model="scope.row.expenseUnitName" clearable></el-input>
               </span>
               <span v-if="expenseType == 2">
-                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled="tableLock" @change="changeAgentName($event,scope.$index)">
+                  <el-select v-model="scope.row.expenseUnitName" filterable placeholder="请选择" :disabled=" (canSelectAgent && scope.$index == 0) || payTableLock" @change="changeAgentName($event,scope.$index)">
                     <el-option
                       v-for="item in agentIdList"
                       :key="item.id"
@@ -69,19 +69,19 @@
           <el-table-column
             label="数量">
             <template slot-scope="scope">
-                <el-input size="small" :disabled="scope.row.ingStatic|| tableLock" v-model="scope.row.quantity" clearable ></el-input>    
+                <el-input size="small" :disabled="scope.row.ingStatic|| tableLock|| payTableLock" v-model="scope.row.quantity" clearable ></el-input>    
             </template>
           </el-table-column>
           <el-table-column
             label="单价">
             <template slot-scope="scope">
-                <el-input size="small" :disabled="scope.row.ingStatic|| tableLock" v-model="scope.row.price" clearable ></el-input>    
+                <el-input size="small" :disabled="scope.row.ingStatic|| tableLock|| payTableLock" v-model="scope.row.price" clearable ></el-input>    
             </template>
           </el-table-column>
           <el-table-column
             label="币种">
             <template slot-scope="scope">
-                <el-select v-model="scope.row.currency" :disabled="scope.row.ingStatic || tableLock"   placeholder="请选择">
+                <el-select v-model="scope.row.currency" :disabled="scope.row.ingStatic || tableLock|| payTableLock"   placeholder="请选择">
                   <el-option
                     v-for="item in moneyList"
                     :key="item.value"
@@ -106,15 +106,13 @@
           <el-table-column
             label="操作">
             <template slot-scope="scope">
-              <div >
-                <span @click="deleOneTableObj(scope)" >删除</span>
-              </div>
+              <el-button type="text" @click="deleOneTableObj(scope)" :disabled="delBtnDisabled">删除</el-button>
             </template>
           </el-table-column>
           <el-table-column
             label="备注">
             <template slot-scope="scope">
-                <el-input size="small"  v-model="scope.row.remark" clearable :disabled="tableLock"></el-input>    
+                <el-input size="small"  v-model="scope.row.remark" clearable :disabled="tableLock|| payTableLock"></el-input>    
             </template>
           </el-table-column>
         </el-table>
@@ -158,7 +156,7 @@ class tableObj{
   }
 }
 export default {
-  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay","newBill", 'customerName','ifCancelled'],
+  props:['orderIdTemp','orderNoTemp','getList',"notSaleBefore","titleType","vertifyAmount",'currentStatus',"payWay","newBill", 'customerName','ifCancelled','canSelectAgent','payStatusControl', 'newCreatedBill'],
   data() {
     return {
      copyPayWay:'',
@@ -173,7 +171,8 @@ export default {
             Value: 1
           }
         ],
-      tableLock:false,
+      tableLock:false, //应收账单发起对账后不能修改
+      payTableLock:false,//应付账单未交单之后都不能修改
       tableData: [], // 
       agentIdList:[],
       title:'',
@@ -219,11 +218,29 @@ export default {
 
       return (bill && bill.billId) || 0
     },
+    delBtnDisabled() {
+      if (this.newCreatedBill) {
+        return false
+      }
+      if (this.expenseType === 1) {
+        return this.currentStatus !== 0
+      }
+      if (this.expenseType === 2) {
+        return this.payTableLock
+      }
+    },
   },
   async mounted(){
+    //应收账单发起对账后，不能修改和删除
     if(this.currentStatus == 1) {
       this.tableLock = true
     }
+    // 非 未交单和修改交单状态 需要禁止删除
+    // undefined 是应收的
+      if(![0, 4, undefined].includes(this.payStatusControl)) {
+        this.payTableLock = true
+      }
+    //应付账单除未交单状态都不能进行操作
     // 初始化table prop
     console.log(this.orderNoTemp)
     if(this.orderNoTemp == undefined || !this.orderNoTemp){
@@ -408,7 +425,7 @@ export default {
     },
     // 删除
     deleOneTableObj(e){
-      if(this.tableLock) {
+      if(this.tableLock|| this.payTableLock) {
         return false
       }
       let index = e.$index

@@ -368,7 +368,7 @@
             <div>{{ initData.bookingCw }}</div>
           </div>
         </div>
-        <div class="bg_table">
+        <div class="bg_table"  v-if="initData.trayDetail&&initData.trayDetail[0]&& !Object.values(initData.trayDetail[0]).every(item=>!item)">
           <div class="flex_center border padding_contont" style="">
             <div>托盘数量</div>
             <div>长（cm）</div>
@@ -489,13 +489,13 @@
           class="inData"
           style="background: rgb(240, 240, 240); padding-left: 20px"
         >
-          <!-- <div>
-                      <span class="mr_25">报关服务</span>
-                      <el-radio-group v-model="initData.customsType">
-                        <el-radio :label="1">自行报关</el-radio>
-                        <el-radio :label="2">委托报关</el-radio>
-                      </el-radio-group>
-                  </div> -->
+          <div>
+            <span class="mr_25">报关服务</span>
+            <el-radio-group v-model="initData.customsType">
+              <el-radio :label="1">自行报关</el-radio>
+              <el-radio :label="2">委托报关</el-radio>
+            </el-radio-group>
+          </div>
           <div class="mtop_10">
             <span class="mr_25">国内提货</span>
             <el-radio-group v-model="initData.isPickUp">
@@ -617,7 +617,7 @@
               >
             </p>
             <p class="pTips" v-if="item.status == 4">
-              <span>账单已确认，发票开具￥{{ item.invoiceAmount }}</span>
+              <span :style="{color:calcTotalCny(item.list)<item.invoiceAmount?'#d53116':''}">账单已确认，发票开具￥{{ item.invoiceAmount }}</span>
               <span
                 @click="reWriteBill(index)"
                 v-if="
@@ -625,6 +625,7 @@
                 "
                 >修改账单</span
               >
+              <span v-if="calcTotalCny(item.list)<item.invoiceAmount" style="color:#d53116;margin-left:10px">账单异常</span>
             </p>
             <!-- <billHistory v-if="showBillHistory" @shiftShowBill ="shiftShowBill" :tableData="this.initData.orderInvoiceApply.orderInvoiceApply"></billHistory> -->
           </div>
@@ -646,6 +647,7 @@
         </div>
         <div v-if="creatNewBillBoolen && notAirPeople">
           <bill-order
+            :newCreatedBill="true"
             :newBill = "true"
             :notSaleBefore="true"
             ref="typeNewBill"
@@ -669,7 +671,7 @@
         </div>
         <div class="line"></div>
         <div></div>
-        <bill-order @changeAgentName="changeAgentName" :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"  :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
+        <bill-order :payStatusControl="initData.financeStatus" @changeAgentName="changeAgentName" :getList.sync="initData.apOrderPriceList" :canSelectAgent="canSelectAgent" ref="typeTwo" :notSaleBefore="notSaleBefore"  :titleType="2"  :vertifyAmount="initData.totalApWoCny" :key="initData.financeStatus" />
         <!-- 应收添加 -->
         <el-button
           class="setWidth ml_20"
@@ -827,7 +829,7 @@ export default {
           lable: "危险品",
         },
         {
-          value: 5,
+          value: 4,
           lable: "防疫物资",
         },
       ],
@@ -914,6 +916,10 @@ export default {
     DeliverGoodsForm,
   },
   methods: {
+    // 计算人民币合计
+    calcTotalCny(array){
+      return  array.reduce((total, cur) => { return total += cur.totalCny}, 0);
+    },
     changeAgentName(val){
       this.initData.agentName = val
     },
@@ -1222,7 +1228,7 @@ export default {
             return pre+Number(item.piece)
         },0)
       let C_B_M = arrayTypeThree.reduce((pre,item)=>{
-            return pre+Number(item.cbm)
+            return pre+Number(item.cbm)*100
         },0)
         if(b !== Number(this.initData.inboundPiece)){
           this.$message.error('总件数与分件数不匹配')
@@ -1250,7 +1256,7 @@ export default {
           this.initData.waybillNo = null;
         }
       }
-      if(C_B_M !== Number(this.initData.inboundCbm) && this.initData.status === 13){
+      if(C_B_M/100 !== Number(this.initData.inboundCbm) && this.initData.status === 13){
           this.$message.error('总体积与分体积不匹配')
         }
       // 获取应收账单的长度 为 12345
@@ -1453,26 +1459,26 @@ export default {
     saveOrder() {
       let { inboundWeight, inboundCbm, inboundCw, inboundPiece, inboundNo } =
         this.initData;
-      if (!inboundNo) {
-        this.$message.error("请输入进仓编号");
-        return;
-      }
-      if (!inboundPiece) {
-        this.$message.error("请输入进仓件数");
-        return;
-      }
-      if (!inboundWeight) {
-        this.$message.error("请输入毛重");
-        return;
-      }
-      if (!inboundCbm) {
-        this.$message.error("请输入体积");
-        return;
-      }
-      if (!inboundCw) {
-        this.$message.error("请输入计费重");
-        return;
-      }
+      // if (!inboundNo) {
+      //   this.$message.error("请输入进仓编号");
+      //   return;
+      // }
+      // if (!inboundPiece) {
+      //   this.$message.error("请输入进仓件数");
+      //   return;
+      // }
+      // if (!inboundWeight) {
+      //   this.$message.error("请输入毛重");
+      //   return;
+      // }
+      // if (!inboundCbm) {
+      //   this.$message.error("请输入体积");
+      //   return;
+      // }
+      // if (!inboundCw) {
+      //   this.$message.error("请输入计费重");
+      //   return;
+      // }
       if (this.initData.waybillNo) {
         // 校验运单号
         const { waybillNo } = this.initData;
@@ -1507,38 +1513,38 @@ export default {
       let boolenNo = judgeWaybillNo(inboundNo);
       if (boolenNo) {
         let arrayTypeThree = this.$refs.typeThree.tableData;
-        let tempthree = arrayTypeThree.filter((item) => {
-          return (
-            item.piece == undefined ||
-            item.piece == "" ||
-            item.cbm == undefined ||
-            item.cbm == "" ||
-            item.width == undefined ||
-            item.width == "" ||
-            item.height == undefined ||
-            item.height == "" ||
-            item.length == undefined ||
-            item.length == ""
-          );
-        });
-        if (tempthree.length > 0) {
-          this.$message.error("进仓数据未填写");
-          return;
-        }
-        let b=arrayTypeThree.reduce((pre,item)=>{
-            return pre+Number(item.piece)
-        },0)
-      let C_B_M = arrayTypeThree.reduce((pre,item)=>{
-            return pre+Number(item.cbm)
-        },0)
-        if(b !== Number(this.initData.inboundPiece)){
-          this.$message.error('总件数与分件数不匹配')
-          return;
-        }
-        if(C_B_M !== Number(this.initData.inboundCbm) && this.initData.status === 13){
-          console.log(C_B_M,this.initData.inboundCbm);
-          this.$message.error('总体积与分体积不匹配')
-        }
+      //   let tempthree = arrayTypeThree.filter((item) => {
+      //     return (
+      //       item.piece == undefined ||
+      //       item.piece == "" ||
+      //       item.cbm == undefined ||
+      //       item.cbm == "" ||
+      //       item.width == undefined ||
+      //       item.width == "" ||
+      //       item.height == undefined ||
+      //       item.height == "" ||
+      //       item.length == undefined ||
+      //       item.length == ""
+      //     );
+      //   });
+        // if (tempthree.length > 0) {
+        //   this.$message.error("进仓数据未填写");
+        //   return;
+        // }
+      //   let b=arrayTypeThree.reduce((pre,item)=>{
+      //       return pre+Number(item.piece)
+      //   },0)
+      // let C_B_M = arrayTypeThree.reduce((pre,item)=>{
+      //       return pre+Number(item.cbm)*100
+      //   },0)
+        // if(b !== Number(this.initData.inboundPiece)){
+        //   this.$message.error('总件数与分件数不匹配')
+        //   return;
+        // }
+        // if(C_B_M/100 !== Number(this.initData.inboundCbm) && this.initData.status === 13){
+        //   console.log(C_B_M,this.initData.inboundCbm);
+        //   this.$message.error('总体积与分体积不匹配')
+        // }
         // let arrayTypeOne = this.initData.arOrderPriceList.reduce((arr, item) => {
         //   arr.push(...item.list)
         //   return arr
@@ -1577,9 +1583,12 @@ export default {
         }
         let arrayTypeTwo = this.$refs.typeTwo.tableData;
         let order = this.initData;
+        order.agentId = this.agentIdList.filter(item=>item.agentName == order.agentName)[0].id
         // if (order.hasOwnProperty("apOrderPriceList")) {
         //   delete order.apOrderPriceList;
         // }
+
+        console.log(order,this.agentIdList)
         if (order.hasOwnProperty("orderCargoDetailList")) {
           delete order.orderCargoDetailList;
         }
@@ -1621,7 +1630,6 @@ export default {
           if (data.code == 200) {
             this.$message("保存成功");
             // this.$router.push("/orderManagement/orderManage");
-            this.creatNewBillBoolen = false
             this.getOriganData()
           } else {
             this.$message.error(data.message);

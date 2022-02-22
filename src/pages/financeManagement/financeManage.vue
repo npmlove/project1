@@ -17,7 +17,7 @@
           <el-form-item label="订单号:" class="formItem">
             <el-input
               v-model="selectResult.orderNo"
-              style="width: 160px"
+              style="width: 175px"
               size="medium"
               @blur="selectResult.orderNo = $event.target.value"
               maxlength="15"
@@ -30,7 +30,7 @@
           <el-form-item label="运单号:" class="formItem orderNOs">
             <el-input
               v-model="selectResult.waybillNo"
-              style="width: 130px"
+              style="width: 150px"
               size="medium"
               onkeyup="this.value = this.value.replace(/[^\d]/g,'');"
               @blur="selectResult.waybillNo = $event.target.value.substr(0,11)"
@@ -38,11 +38,20 @@
               placeholder="请输入运单号"
             ></el-input>
           </el-form-item>
-           
+            <el-form-item label="财务系列号:" class="formItem" >
+            <el-input
+              v-model="selectResult.financialSeriesNo"
+              style="width: 180px"
+              size="medium"
+              maxlength="12"
+              clearable
+              placeholder="请输入财务系列号"
+            ></el-input>
+          </el-form-item>
           <el-form-item label="订舱客户:" class="formItem">
             <el-input
               v-model="selectResult.customerName"
-              style="width: 200px"
+              style="width: 220px"
               size="medium"
               maxlength="30"
               clearable
@@ -62,7 +71,7 @@
               maxlength="3"
               reserve-keyword
               id="agentId"
-              style="width: 200px"
+              style="width: 240px"
             >
               <el-option
                 v-for="item in agentOpt"
@@ -104,7 +113,7 @@
               maxlength="15"
               remote
               reserve-keyword
-              style="width: 140px"
+              style="width: 155px"
             >
               <el-option
                 v-for="(item, index) in polOpt"
@@ -130,7 +139,7 @@
               filterable
               remote
               reserve-keyword
-              style="width: 140px"
+              style="width: 155px"
             >
               <el-option
                 v-for="item in podOpt"
@@ -144,7 +153,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="航司:" class="formItem" v-show="selectControl" style="margin-right:30px">
+          <el-form-item label="航司:" class="formItem" v-show="selectControl" style="margin-right:35px">
             <el-select
               id="airCompany"
               v-model="selectResult.airCompanyCode"
@@ -156,7 +165,7 @@
               remote
               maxlength="15"
               reserve-keyword
-              style="width: 200px"
+              style="width: 215px"
             >
               <el-option
                 v-for="(item,index) in airCompanyCodeOpt"
@@ -181,7 +190,7 @@
               remote
               reserve-keyword
               maxlength="10"
-              style="width: 200px"
+              style="width: 215px"
             >
               <el-option
                 v-for="item in payBefore"
@@ -203,7 +212,7 @@
               remote
               reserve-keyword
               maxlength="10"
-              style="width: 200px"
+              style="width: 215px"
             >
               <el-option
                 v-for="item in paying"
@@ -224,7 +233,7 @@
               filterable
               remote
               reserve-keyword
-              style="width: 200px"
+              style="width: 215px"
             >
               <el-option
                 v-for="item in airManger"
@@ -237,11 +246,11 @@
           </el-form-item>
           <el-form-item
             label="航班日期:"
-            style="width: 480px"
+            style="width: 480px;margin-bottom:5px"
              v-show="selectControl"
           >
             <el-date-picker
-              style="width: 180px"
+              style="width: 190px"
               value-format="yyyy-MM-dd"
               v-model="selectResult.startDepartureDate"
               type="date"
@@ -261,7 +270,7 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item label="交单时间:" style="width: 480px" v-show="selectControl">
+          <el-form-item label="交单时间:" style="width: 480px;margin-bottom:5px" v-show="selectControl">
             <el-date-picker
               value-format="yyyy-MM-dd"
               style="width: 180px"
@@ -329,6 +338,14 @@
               <p>暂无数据</p>
             </template>
             <el-table-column type="selection" width="50" :selectable="ifDisabled" fixed="left"></el-table-column>
+            <el-table-column label="财务系列号" prop="financialSeriesNo" width="160" v-if="checkedTable.indexOf('财务系列号') !== -1">
+              <template slot-scope="scope">
+              <div style="color:skyblue;cursor:pointer" @click="showFees(scope.row,true)">
+                  {{scope.row.financialSeriesNo}}
+              </div>
+            </template>
+            </el-table-column>
+         
             <el-table-column
               label="订单号"
               min-width="160"
@@ -735,6 +752,7 @@ export default {
       isIndeterminate: true,
       direction: "rtl",
       checkedTable: [
+        "财务系列号",
         "订单号",
         "运单号",
         "航班日期",
@@ -749,6 +767,7 @@ export default {
         "开票金额",
         "订单状态",],
       tableOptions: [
+        "财务系列号",
         "订单号",
         "运单号",
         "订舱客户",
@@ -1222,11 +1241,14 @@ export default {
           this.showFeesPage = true
           orderId = this.selectTableData[0].id
           financeStatus = this.selectTableData[0].financeStatus
+          payWay = this.selectTableData[0].payWay
+          this.dialogTitle = this.selectTableData[0].orderNo
         }
       }
       if(pageSkip) {
         this.showFeesPage = true
       }
+      console.log(orderId,financeStatus,payWay)
       //判断是否是表格运单号列点击进入弹框
       onlyShow ==true ? this.onlyShow = true : this.onlyShow = false
       this.dialogFormVisible = true;

@@ -441,7 +441,8 @@ const orderManagementCenter = [{
       meta: {
         title: '提单制作',
         keepAlive: false,
-        needLogin: true
+        needLogin: true,
+        roles:['售中客服','财务人员']
       }
     },
     {

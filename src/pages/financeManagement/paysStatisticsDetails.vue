@@ -15,12 +15,21 @@
           </el-form-item>
 
           <el-form-item label="运单号:" class="formItem">
-            <el-input v-model="waybillNo" style="width: 200px;" size="medium"  clearable
+            <el-input v-model="waybillNo" style="width: 210px;" size="medium"  clearable
                       placeholder="请输入运单号"></el-input>
           </el-form-item>
-         
+         <el-form-item label="财务系列号:">
+            <el-input
+              v-model="financialSeriesNo"
+              style="width: 180px"
+              size="medium"
+              maxlength="12"
+              clearable
+              placeholder="请输入财务系列号"
+            ></el-input>
+          </el-form-item>
           <el-form-item label="应付对象:" class="formItem">
-            <el-input v-model="reconciliationUnit" style="width: 230px;" size="medium" :maxlength="inputMax" clearable
+            <el-input v-model="reconciliationUnit" style="width: 235px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入应付对象"></el-input>
           </el-form-item>
           <el-form-item label="核销状态:" class="formItem" >
@@ -37,11 +46,11 @@
           </el-form-item>
           <el-form-item
             label="核销日期:"
-            style="width: 445px"
+            style="width: 465px"
             v-if="this.selectControl"
           >
             <el-date-picker
-              style="width: 175px"
+              style="width: 185px"
               value-format="yyyy-MM-dd"
               v-model="startWriteOffTime"
               type="date"
@@ -52,7 +61,7 @@
             >
             -
             <el-date-picker
-              style="width: 175px"
+              style="width: 185px"
               value-format="yyyy-MM-dd"
               v-model="endWriteOffTime"
               type="date"
@@ -96,6 +105,7 @@
             <el-input v-model="accountName" style="width: 200px;" size="medium" :maxlength="inputMax" clearable
                       placeholder="请输入户名"></el-input>
           </el-form-item>
+          <br>
           <el-form-item label="付款方式:" class="formItem" v-if="this.selectControl">
             <el-select v-model="writeOffWay" placeholder="付款方式" :loading="loading" clearable filterable remote
                        reserve-keyword style="width: 180px;">
@@ -395,6 +405,7 @@ export default {
       columns: [
         {label: 'id', prop: "id", show: false, width: '50'},
         {label: '序号', show: true, width: '50'},
+        {label: '财务系列号', prop: 'financialSeriesNo', show: true, width: '150'},
         {label: '订单号', prop: 'orderNo', show: true, width: '150'},
         {label: '运单号', prop: 'waybillNo', show: true, width: '150'},
         {label: '应付对象', prop: 'expenseUnitName', show: true, width: '160'},
@@ -605,6 +616,7 @@ export default {
       }],
       checkedTable: [
         "序号",
+        '财务系列号',
         "订单号",
         "运单号",
         "应付对象",
@@ -625,6 +637,7 @@ export default {
       ],
       tableOptions: [
         "序号",
+        '财务系列号',
         "订单号",
         "运单号",
         "应付对象",
@@ -975,6 +988,7 @@ export default {
     restClick() {
       this.orderNo = ''
       this.waybillNo = ''
+      this.financialSeriesNo = ''
       this.reconciliationUnit = ''
       this.accountBank = ''
       this.accountName = ''

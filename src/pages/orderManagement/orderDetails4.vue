@@ -391,7 +391,7 @@
             <div>{{ initData.bookingCw }}</div>
           </div>
         </div>
-        <div class="bg_table">
+        <div class="bg_table"  v-if="initData.trayDetail&&initData.trayDetail[0]&& !Object.values(initData.trayDetail[0]).every(item=>!item)">
           <div class="flex_center border padding_contont" style="">
             <div>托盘数量</div>
             <div>长（cm）</div>
@@ -507,13 +507,13 @@
           class="inData"
           style="background: rgb(240, 240, 240); padding-left: 20px"
         >
-          <!-- <div>
-                      <span class="mr_25">报关服务</span>
-                      <el-radio-group v-model="initData.customsType">
-                        <el-radio :label="1">自行报关</el-radio>
-                        <el-radio :label="2">委托报关</el-radio>
-                      </el-radio-group>
-                  </div> -->
+          <div>
+              <span class="mr_25">报关服务</span>
+              <el-radio-group v-model="initData.customsType">
+                <el-radio :label="1">自行报关</el-radio>
+                <el-radio :label="2">委托报关</el-radio>
+              </el-radio-group>
+          </div>
           <div class="mtop_10">
             <span class="mr_25">国内提货</span>
             <el-radio-group v-model="initData.isPickUp">
@@ -626,7 +626,7 @@
               >
             </p>
             <p class="pTips" v-if="item.status == 4">
-              <span>账单已确认，发票开具￥{{ item.invoiceAmount }}</span>
+              <span :style="{color:calcTotalCny(item.list)<item.invoiceAmount?'#d53116':''}">账单已确认，发票开具￥{{ item.invoiceAmount }}</span>
               <span
                 @click="reWriteBill(index)"
                 v-if="
@@ -634,6 +634,7 @@
                 "
                 >修改账单</span
               >
+              <span v-if="calcTotalCny(item.list)<item.invoiceAmount" style="color:#d53116;margin-left:10px">账单异常</span>
             </p>
           </div>
           <!-- 新增账单 -->
@@ -654,6 +655,7 @@
         </div>
         <div v-if="creatNewBillBoolen && notAirPeople">
           <bill-order
+            :newCreatedBill="true"
             :newBill = "true"
             ref="typeNewBill"
             :getList="[]"
@@ -677,7 +679,7 @@
         </div>
         <div class="line"></div>
         <div></div>
-        <bill-order @changeAgentName="changeAgentName" :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"  :titleType="2"  :vertifyAmount="initData.totalApWoCny"/>
+        <bill-order :payStatusControl="initData.financeStatus" @changeAgentName="changeAgentName" :canSelectAgent="canSelectAgent" :getList.sync="initData.apOrderPriceList" ref="typeTwo" :notSaleBefore="notSaleBefore"  :titleType="2"  :vertifyAmount="initData.totalApWoCny" :key="initData.financeStatus" />
         <!-- 应收添加 -->
         <el-button
           class="setWidth ml_20"
@@ -830,7 +832,7 @@ export default {
           lable: "危险品",
         },
         {
-          value: 5,
+          value: 4,
           lable: "防疫物资",
         },
       ],
@@ -915,6 +917,10 @@ export default {
     DeliverGoodsForm,
   },
   methods: {
+    // 计算人民币合计
+    calcTotalCny(array){
+      return  array.reduce((total, cur) => { return total += cur.totalCny}, 0);
+    },
      changeAgentName(val){
       this.initData.agentName = val
     },
@@ -1468,6 +1474,8 @@ export default {
         }
         let arrayTypeTwo = this.$refs.typeTwo.tableData;
         let order = this.initData;
+        order.agentId = this.agentIdList.filter(item=>item.agentName == order.agentName)[0].id
+
         // if (order.hasOwnProperty("apOrderPriceList")) {
         //   delete order.apOrderPriceList;
         // }
@@ -1500,7 +1508,6 @@ export default {
           if (data.code == 200) {
             this.$message("保存成功");
             // this.$router.push("/orderManagement/orderManage");
-            this.creatNewBillBoolen = false
             this.getOriganData()
           } else {
             this.$message.error(data.message);

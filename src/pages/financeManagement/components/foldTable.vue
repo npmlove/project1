@@ -26,12 +26,12 @@
       </div>
       <div class="tb-tbody" v-if="tableData && tableData.length > 0">
         <template v-for="(item2, index2) of tableData">
-          <div class="tb-father" :key="index2">
+          <div class="tb-father" :key="index2" >
             <div
               class="tb-td"
               v-for="(item, index) in columns"
               :key="index"
-              :style="{ flex: item.width ? `0 0 ${item.width + 'px'}` : '' }"
+              :style="{ 'flex': (item.width ? `0 0 ${item.width + 'px'}` : ''),'backgroundColor':(item2.abnormalFlag==1?'rgb(205, 92, 92)':'') }"
               v-show="checkedTable.indexOf(item.label) !== -1 ||item.checkBox"
             >
               <div v-if="item.checkBox == true">
@@ -196,7 +196,7 @@
                 v-for="(item, index4) of columns"
                 :key="index4"
                 v-show="checkedTable.indexOf(item.label) !== -1 ||item.checkBox"
-                :style="{ flex: item.width ? `0 0 ${item.width + 'px'}` : '' }"
+                :style="{ flex: item.width ? `0 0 ${item.width + 'px'}` : ''}"
               >
                 <div v-if="item.checkBox == true" style="opacity:0">
                   <el-checkbox
@@ -233,6 +233,7 @@
 // import anime from '../../utils/anime.es'
 export default {
   props: {
+    
     //显示表格列
     checkedTable:{
       type:Array,
@@ -245,32 +246,36 @@ export default {
       type: Array,
       default: () => {
         return [
-          { checkBox: true, width: 50 },
+            { checkBox: true, width: 50 },
+          { label: "财务系列号", width: 140, key: "financialSeriesNo" },
           { label: "订单号", width: 140, key: "orderNo" },
           { label: "运单号", width: 110, key: "waybillNo" },
           { label: "订舱公司", width: 160, key: "customerName" },
-          { label: "航班日期", width: 110, key: "departureDate" },
-          { label: "交单时间", width: 110, key: "presentationTime" },
           { label: "发票抬头", width: 140, key: "invoiceTitle" },
           { label: "开票信息", width: 60, key: "showInvoice" },
-          { label: "应收费用总金额", width: 100, key: "totalArCny" },
+          { label: "发票种类", width: 100, key: "invoiceType" },
           {
             label: "申请开票金额",
             width: 120,
             key: "applyAmount",
             unit: "¥",
           },
-          { label: "发票种类", width: 100, key: "invoiceType" },
-          { label: "申请人", width: 100, key: "applicant" },
-          { label: "申请时间", width: 120, key: "applyTime" },
+          { label: "已开票金额", width: 100, key: "invoicedAmount",unit:"¥"},
+          { label: "开票备注", width: 80, key: "invoicedAmount" },
+
           { label: "开票进度", width: 80, key: "invoicingStatus" },
-          { label: "已开票金额", width: 100, key: "invoicedAmount" },
           { label: "发票号码", width: 160, key: "invoiceNum" },
-          { label: "开票时间", width: 160, key: "invoicingTime" },
-          { label: "快递信息", width: 160, key: "expressInfo" },
-          { label: "邮寄状态", width: 100, key: "expressStatus" },
           { label: "发票状态", width: 100, key: "invoiceStatus" },
           { label: "是否上传", width: 100, key: "upload" },
+          { label: "开票时间", width: 160, key: "invoicingTime" },
+          { label: "航班日期", width: 110, key: "departureDate" },
+          { label: "交单时间", width: 110, key: "presentationTime" },
+          { label: "申请时间", width: 120, key: "applyTime" },
+         
+          // { label: "应收费用总金额", width: 100, key: "totalArCny" },
+        
+          { label: "快递信息", width: 160, key: "expressInfo" },
+          { label: "邮寄状态", width: 100, key: "expressStatus" },
         ];
       },
     },
@@ -301,7 +306,8 @@ export default {
       checkAll: false,
     };
   },
-  mounted() {},
+  mounted() {
+  },
   watch: {
     tableData() {
       console.log();
@@ -407,7 +413,7 @@ export default {
       .tb-father {
         display: flex;
         &:nth-child(odd) {
-          background-color: #ffffff;
+          // background-color: #ffffff;
           .tb-td {
           background-color: #ffffff;
             &:first-child {
@@ -419,6 +425,8 @@ export default {
           }
         }
         &:nth-child(even) {
+          // background-color: #f2f6ff;
+
           .tb-td {
           background-color: #f2f6ff;
             &:first-child {
@@ -480,7 +488,7 @@ export default {
         }
       }
       .tb-son {
-         height:300px;
+         max-height:300px;
          overflow-y:scroll;
          min-width:2200px;
         .tb-tr {
